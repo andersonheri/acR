@@ -38,7 +38,20 @@ vignettes/*.pdf
 *.knit.md
 
 # pkgdown site
-docs/
+# pkgdown site (gerado por pkgdown::build_site)
+docs/reference/
+docs/articles/
+docs/news/
+docs/index.html
+docs/pkgdown.yml
+docs/sitemap.xml
+docs/search.json
+docs/404.html
+docs/authors.html
+docs/CODE_OF_CONDUCT.html
+docs/CONTRIBUTING.html
+docs/LICENSE.html
+docs/LICENSE-text.html
 
 # translation temp files
 po/*~
