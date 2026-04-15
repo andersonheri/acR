@@ -17,3 +17,6 @@
 ^scratch$
 ^sandbox$
 ^acR\.Rproj$
+^data$
+^vignettes$
+^inst/extdata$

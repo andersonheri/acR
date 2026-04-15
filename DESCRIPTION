@@ -28,29 +28,28 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends:
     R (>= 4.3)
-Imports:
-    cli,
-    dplyr,
-    ellmer,
-    ggplot2,
-    irrCAC,
-    quanteda,
-    quanteda.textstats,
-    rlang,
-    tibble,
-    tidyr,
-    topicmodels
-Suggests:
-    cachem,
-    geobr,
-    ggraph,
-    knitr,
-    ldatuning,
-    rmarkdown,
-    sf,
-    testthat (>= 3.0.0),
-    udpipe,
-    wordcloud2
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: pt-BR
+Suggests:
+    cachem,
+    cli,
+    dplyr,
+    ellmer,
+    geobr,
+    ggplot2,
+    ggraph,
+    irrCAC,
+    knitr,
+    ldatuning,
+    quanteda,
+    quanteda.textstats,
+    rlang,
+    rmarkdown,
+    sf,
+    testthat (>= 3.0.0),
+    tibble,
+    tidyr,
+    topicmodels,
+    udpipe,
+    wordcloud2
