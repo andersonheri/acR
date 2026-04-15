@@ -1,0 +1,25 @@
+citHeader("Para citar o pacote `acR` em publicações, utilize:")
+
+bibentry(
+  bibtype = "Manual",
+  title   = "{acR}: Análise de Conteúdo em R — Pipeline Integrado Qualitativo (LLMs) e Quantitativo",
+  author  = c(person("Anderson", "Henrique")),
+  year    = "2026",
+  note    = "R package version 0.0.0.9000",
+  url     = "https://github.com/andersonheri/acR",
+  textVersion = paste(
+    "Henrique, A. (2026).",
+    "acR: Análise de Conteúdo em R — Pipeline Integrado Qualitativo (LLMs) e Quantitativo.",
+    "R package version 0.0.0.9000.",
+    "https://github.com/andersonheri/acR"
+  )
+)
+
+citFooter(
+  "Se você usa o módulo de sentimento (OpLexicon), por favor cite também:\n",
+  "Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter Data ",
+  "for Portuguese Language. PROPOR.\n",
+  "Souza, M.; Vieira, R.; Busetti, D.; Chishman, R.; Alves, I. M. (2011). ",
+  "Construction of a Portuguese Opinion Lexicon from multiple resources. ",
+  "STIL/SBC."
+)

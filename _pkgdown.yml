@@ -1,0 +1,67 @@
+url: https://andersonheri.github.io/acR/
+
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+  bslib:
+    primary: "#0072B2"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
+
+development:
+  mode: auto
+
+home:
+  title: acR — Análise de Conteúdo em R
+  description: >
+    Pipeline integrado de análise de conteúdo em R, combinando codificação
+    qualitativa via LLMs com análise quantitativa clássica e visualização
+    moderna, com foco em corpora brasileiros.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Comece aqui
+      href: articles/acR.html
+    articles:
+      text: Vignettes
+      menu:
+      - text: Visão geral
+        href: articles/acR.html
+      - text: Pipeline qualitativo (LLMs)
+        href: articles/qualitativo-llm.html
+      - text: Pipeline quantitativo
+        href: articles/quantitativo.html
+      - text: Análise de sentimento
+        href: articles/sentimento.html
+      - text: LDA validada
+        href: articles/lda.html
+
+reference:
+- title: Corpus e pré-processamento
+  contents:
+  - has_concept("corpus")
+- title: Análise quantitativa
+  contents:
+  - has_concept("quantitative")
+- title: Análise qualitativa (LLM)
+  contents:
+  - has_concept("qualitative")
+- title: Confiabilidade e validação
+  contents:
+  - has_concept("reliability")
+- title: Visualização
+  contents:
+  - has_concept("visualization")
+- title: Dados
+  contents:
+  - has_keyword("datasets")
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with

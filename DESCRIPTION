@@ -1,0 +1,56 @@
+Package: acR
+Type: Package
+Title: Análise de Conteúdo em R: Pipeline Integrado Qualitativo (LLMs) e Quantitativo
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Anderson", "Henrique",
+           email = "anderson.henrique@usp.br",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1842-2725"))
+    )
+Description: Oferece um pipeline integrado para análise de conteúdo em R,
+    combinando codificação qualitativa assistida por modelos de linguagem
+    (LLMs) com análise quantitativa clássica de textos. Inclui módulos para
+    pré-processamento (tokenização, lematização, stopwords PT-BR),
+    estatísticas descritivas, keyness, co-ocorrência, nuvens de palavras
+    (incluindo comparativa e X-ray), análise de sentimento (OpLexicon),
+    Latent Dirichlet Allocation (LDA), métricas de confiabilidade entre
+    codificadores (Krippendorff, Gwet), e visualizações modernas baseadas
+    em ggplot2. Foco especial em corpora brasileiros, com codebooks
+    validados para o contexto político-institucional nacional. Inspirado
+    em Maerz e Benoit (2025) <https://quallmer.github.io/quallmer/>.
+License: MIT + file LICENSE
+URL: https://github.com/andersonheri/acR, https://andersonheri.github.io/acR/
+BugReports: https://github.com/andersonheri/acR/issues
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.3)
+Imports:
+    cli,
+    dplyr,
+    ellmer,
+    ggplot2,
+    irrCAC,
+    quanteda,
+    quanteda.textstats,
+    rlang,
+    tibble,
+    tidyr,
+    topicmodels
+Suggests:
+    cachem,
+    geobr,
+    ggraph,
+    knitr,
+    ldatuning,
+    rmarkdown,
+    sf,
+    testthat (>= 3.0.0),
+    udpipe,
+    wordcloud2
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Language: pt-BR
