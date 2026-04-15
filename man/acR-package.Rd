@@ -36,7 +36,7 @@ Para começar, veja \code{vignette("acR")}.
 O \code{acR} reconhece dívida intelectual com \code{quallmer}
 (Maerz & Benoit, 2025), \code{quanteda} (Benoit et al.), e \code{ellmer}
 (Wickham et al., Posit). Ver decisões arquiteturais em
-\url{https://github.com/andersonheri/acR/tree/main/docs/adr}.
+\url{https://github.com/andersonheri/acR/tree/main/inst/docs/adr}.
 }
 
 \seealso{

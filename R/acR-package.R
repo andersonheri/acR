@@ -27,7 +27,7 @@
 #' O `acR` reconhece dívida intelectual com `quallmer`
 #' (Maerz & Benoit, 2025), `quanteda` (Benoit et al.), e `ellmer`
 #' (Wickham et al., Posit). Ver decisões arquiteturais em
-#' \url{https://github.com/andersonheri/acR/tree/main/docs/adr}.
+#' \url{https://github.com/andersonheri/acR/tree/main/inst/docs/adr}.
 #'
 #' @keywords internal
 "_PACKAGE"

@@ -37,7 +37,8 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-# pkgdown site
+# pkgdown site (gerado por pkgdown::build_site)
+docs/
 # pkgdown site (gerado por pkgdown::build_site)
 docs/reference/
 docs/articles/

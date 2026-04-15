@@ -59,7 +59,7 @@ coded <- ac_qual_code(corpus, codebook = cb, model = "anthropic/claude-sonnet-4-
 
 - Site do pacote: [andersonheri.github.io/acR](https://andersonheri.github.io/acR/)
 - Vignettes (em desenvolvimento)
-- Decisões arquiteturais: [`docs/adr/`](docs/adr/)
+- Decisões arquiteturais: [`inst/docs/adr/`](inst/docs/adr/)
 
 ## Citação
 
