@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,11 +19,15 @@
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/acR.html">Visão geral</a></li>
-    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Pipeline qualitativo (LLMs)</a></li>
-    <li><a class="dropdown-item" href="../articles/quantitativo.html">Pipeline quantitativo</a></li>
-    <li><a class="dropdown-item" href="../articles/sentimento.html">Análise de sentimento</a></li>
-    <li><a class="dropdown-item" href="../articles/lda.html">LDA validada</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/acR.html">Visao geral do pacote</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Pipeline qualitativo</h6></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Pipeline quantitativo</h6></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html">Analise de frequencias e keyness</a></li>
+    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento</a></li>
+    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -42,27 +46,68 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.0.0.9001" id="acr-0009001">acR 0.0.0.9001<a class="anchor" aria-label="anchor" href="#acr-0009001"></a></h2>
-<ul><li>Versão inicial em desenvolvimento.</li>
-<li>Estrutura do pacote criada.</li>
-<li>Decisões arquiteturais documentadas em <code>inst/docs/adr/0001-decisoes-iniciais-acR.md</code>.</li>
+<h2 class="pkg-version" data-toc-text="0.1.0" id="acr-010">acR 0.1.0<a class="anchor" aria-label="anchor" href="#acr-010"></a></h2>
+<p>Primeira versão estável do pacote. Pipeline quantitativo completo e módulo qualitativo via LLM implementados e testados.</p>
+<div class="section level3">
+<h3 id="pipeline-quantitativo-0-1-0">Pipeline quantitativo<a class="anchor" aria-label="anchor" href="#pipeline-quantitativo-0-1-0"></a></h3>
+<ul><li>
+<code><a href="../reference/ac_corpus.html">ac_corpus()</a></code>: construtor de corpus com suporte a data.frame, vetor e quanteda::corpus</li>
+<li>
+<code><a href="../reference/ac_clean.html">ac_clean()</a></code>: limpeza com 3 presets de stopwords PT-BR (<code>"pt"</code>, <code>"pt-br-extended"</code>, <code>"pt-legislativo"</code>), proteção de termos e normalização coloquial</li>
+<li>
+<code><a href="../reference/ac_tokenize.html">ac_tokenize()</a></code>: tokenização tidy (doc_id, token_id, token)</li>
+<li>
+<code><a href="../reference/ac_count.html">ac_count()</a></code>: frequências e n-gramas</li>
+<li>
+<code><a href="../reference/ac_top_terms.html">ac_top_terms()</a></code>: top termos por grupo</li>
+<li>
+<code><a href="../reference/ac_tf_idf.html">ac_tf_idf()</a></code>: TF-IDF com agrupamento por metadados</li>
+<li>
+<code><a href="../reference/ac_keyness.html">ac_keyness()</a></code>: keyness com chi², log-likelihood e outras métricas</li>
+<li>
+<code><a href="../reference/ac_cooccurrence.html">ac_cooccurrence()</a></code>: co-ocorrência por janela deslizante ou documento, com PMI e Dice</li>
+<li>
+<code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code>: análise de sentimento via OpLexicon (Souza &amp; Vieira,
+<ol start="2012" style="list-style-type: decimal"><li>com cache local</li>
+</ol></li>
+<li>
+<code><a href="../reference/ac_lda.html">ac_lda()</a></code> + <code><a href="../reference/ac_lda_tune.html">ac_lda_tune()</a></code>: LDA via topicmodels com seleção de k por perplexidade</li>
+<li>Visualizações correspondentes: <code><a href="../reference/ac_plot_top_terms.html">ac_plot_top_terms()</a></code>, <code><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>, <code><a href="../reference/ac_plot_keyness.html">ac_plot_keyness()</a></code>, <code><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code>, <code>ac_plot_wordcloud()</code>, <code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code>, <code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code>, <code><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment()</a></code>, <code><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code>, <code><a href="../reference/ac_plot_lda_tune.html">ac_plot_lda_tune()</a></code>
+</li>
 </ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.0.0.9001" id="acr-0009001-1">acR 0.0.0.9001<a class="anchor" aria-label="anchor" href="#acr-0009001-1"></a></h2>
-<ul><li>Adiciona função <code><a href="../reference/ac_clean.html">ac_clean()</a></code> para limpeza de textos em português:
-<ul><li>pipeline com ordem fixa (lower, remoção de URL/e-mail, <code>normalize_pt</code>, stopwords, pontuação, números, símbolos, acentos, espaços);</li>
-<li>presets de stopwords (<code>"pt"</code>, <code>"pt-br-extended"</code>, <code>"pt-legislativo"</code>);</li>
-<li>mecanismo de proteção de termos (<code>protect</code>) para siglas como partidos e cortes;</li>
-<li>registro de etapas aplicadas no atributo <code>cleaning_steps</code>.</li>
-</ul></li>
-<li>Inclui conjunto de testes unitários abrangentes para <code><a href="../reference/ac_clean.html">ac_clean()</a></code>.</li>
-<li>Estrutura interna de stopwords (<code>.ac_get_stopwords()</code>) e normalização coloquial (<code>.ac_normalize_pt()</code>).</li>
+<div class="section level3">
+<h3 id="pipeline-qualitativo-llm-0-1-0">Pipeline qualitativo (LLM)<a class="anchor" aria-label="anchor" href="#pipeline-qualitativo-llm-0-1-0"></a></h3>
+<ul><li>
+<code><a href="../reference/ac_qual_codebook.html">ac_qual_codebook()</a></code>: criação de codebook com modo manual e modo literatura (busca definições em periódicos nacionais e internacionais)</li>
+<li>
+<code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code>: banco estruturado de referências com trecho original, tradução PT, autor, ano, revista e link</li>
+<li>
+<code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>: classificação de textos via LLM com self-consistency (k = 3, Wang et al., 2023), grau de certeza por variável ou total, e coluna de raciocínio. Suporta qualquer provedor via ellmer (Anthropic, OpenAI, Google, Groq, Ollama, Azure, endpoints institucionais)</li>
+<li>
+<code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>: Krippendorff alpha, Gwet AC1 (implementação própria, sem dependência de irrCAC), F1 macro, com IC bootstrap (Landis &amp; Koch, 1977; Gwet, 2014)</li>
+<li>
+<code><a href="../reference/ac_qual_sample.html">ac_qual_sample()</a></code>: amostragem por incerteza, estratificada, aleatória ou por discordância de self-consistency</li>
+<li>
+<code><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>: exportação para Excel para validação humana</li>
+<li>
+<code><a href="../reference/ac_qual_import_human.html">ac_qual_import_human()</a></code>: importação de codificação humana do Excel</li>
+<li>
+<code><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code> / <code><a href="../reference/ac_qual_load_codebook.html">ac_qual_load_codebook()</a></code>: persistência de codebooks em YAML</li>
+<li>
+<code><a href="../reference/ac_qual_list_models.html">ac_qual_list_models()</a></code>: banco curado de 25 modelos em 7 provedores com custo, janela de contexto e suporte ao português</li>
+<li>
+<code><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code>: recomendação baseada em tarefa, orçamento e idioma (Gilardi et al., 2023; Törnberg, 2023)</li>
 </ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.0.0.9001" id="acr-0009001-2">acR 0.0.0.9001<a class="anchor" aria-label="anchor" href="#acr-0009001-2"></a></h2>
-<ul><li>Adiciona <code><a href="../reference/ac_clean.html">ac_clean()</a></code> para limpeza de textos em português, com pipeline configurável, presets de stopwords e registro de etapas aplicadas.</li>
-<li>Adiciona <code><a href="../reference/ac_tokenize.html">ac_tokenize()</a></code> para tokenizar objetos <code>ac_corpus</code> em palavras, retornando tibble tidy com colunas <code>doc_id</code>, <code>token_id</code> e <code>token</code>.</li>
+<div class="section level3">
+<h3 id="infraestrutura-0-1-0">Infraestrutura<a class="anchor" aria-label="anchor" href="#infraestrutura-0-1-0"></a></h3>
+<ul><li>327+ testes automatizados (0 falhas)</li>
+<li>CI em 5 ambientes (Ubuntu, macOS, Windows × R 4.3/release/devel)</li>
+<li>Site pkgdown em <a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a>
+</li>
+<li>ADR documentado em <code>inst/docs/adr/</code>
+</li>
 </ul></div>
+</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

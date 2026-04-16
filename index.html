@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="index.html">acR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,11 +40,15 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes">
-<li><a class="dropdown-item" href="articles/acR.html">Visão geral</a></li>
-    <li><a class="dropdown-item" href="articles/qualitativo-llm.html">Pipeline qualitativo (LLMs)</a></li>
-    <li><a class="dropdown-item" href="articles/quantitativo.html">Pipeline quantitativo</a></li>
-    <li><a class="dropdown-item" href="articles/sentimento.html">Análise de sentimento</a></li>
-    <li><a class="dropdown-item" href="articles/lda.html">LDA validada</a></li>
+<li><a class="dropdown-item" href="articles/acR.html">Visao geral do pacote</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Pipeline qualitativo</h6></li>
+    <li><a class="dropdown-item" href="articles/qualitativo-llm.html">Codificacao com LLMs</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Pipeline quantitativo</h6></li>
+    <li><a class="dropdown-item" href="articles/quantitativo.html">Analise de frequencias e keyness</a></li>
+    <li><a class="dropdown-item" href="articles/sentimento.html">Analise de sentimento</a></li>
+    <li><a class="dropdown-item" href="articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -167,6 +171,8 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/andersonheri/acR/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/andersonheri/acR/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/andersonheri/acR" class="external-link">Repositório no GitHub</a></li>
+<li><a href="https://github.com/andersonheri/acR/issues" class="external-link">Reportar problema</a></li>
 </ul>
 </div>
 
@@ -200,15 +206,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://github.com/andersonheri/acR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/andersonheri/acR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/andersonheri/acR?branch=main" class="external-link"><img src="https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></li>
-</ul>
-</div>
+
 
   </aside>
 </div>

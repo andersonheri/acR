@@ -100,98 +100,109 @@ MIT © 2026 Anderson Henrique
 
 # Package index
 
-## Corpus e pré-processamento
+## Corpus e pre-processamento
 
-- [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
-  : Limpar e normalizar texto de um corpus
+Criacao, limpeza e tokenizacao de corpus em portugues.
 
 - [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
   : Construir um corpus para análise de conteúdo
 
-- [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-  : Contar frequencias de tokens ou n-gramas em um corpus
-
-- [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
-  : Calcular estatisticas de keyness entre dois grupos
-
-- [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md)
-  : Plotar estatisticas de keyness
-
-- [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md)
-  : Plotar termos mais caracteristicos por tf-idf
-
-- [`ac_plot_top_terms()`](https://andersonheri.github.io/acR/reference/ac_plot_top_terms.md)
-  : Plotar termos mais frequentes
-
-- [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
-  : Calcular tf-idf para termos em documentos ou grupos
+- [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+  : Limpar e normalizar texto de um corpus
 
 - [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
   : Tokenizar textos de um corpus acR
-
-- [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
-  : Selecionar os termos mais frequentes
-
-- [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
-  : Criar nuvem de palavras
 
 - [`is_ac_corpus()`](https://andersonheri.github.io/acR/reference/is_ac_corpus.md)
   :
 
   Verificar se um objeto é um corpus do `acR`
 
-## Análise quantitativa
+## Analise quantitativa
 
+Frequencias, associacoes e modelagem estatistica de textos. Funcoes
+principais do pipeline quantitativo.
+
+- [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
+  : Contar frequencias de tokens ou n-gramas em um corpus
+- [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
+  : Selecionar os termos mais frequentes
+- [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
+  : Calcular tf-idf para termos em documentos ou grupos
+- [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+  : Calcular estatisticas de keyness entre dois grupos
 - [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md)
   : Calcular co-ocorrências de termos
+- [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+  : Análise de sentimento com OpLexicon
 - [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md) :
   Ajustar modelo LDA (Latent Dirichlet Allocation)
 - [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
   : Ajustar múltiplos modelos LDA para selecionar k
-- [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
-  : Análise de sentimento com OpLexicon
 
-## Análise qualitativa (LLM)
+## Codificacao qualitativa via LLM
 
-- [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
-  : Classificar textos com LLM usando um codebook
+Pipeline de analise de conteudo qualitativa assistida por modelos de
+linguagem. Suporta Anthropic, OpenAI, Google, Groq, Ollama e qualquer
+provedor OpenAI-compativel (incluindo LLMs institucionais).
+
 - [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
   : Criar um codebook para análise de conteúdo qualitativa
-- [`ac_qual_export_for_review()`](https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.md)
-  : Exportar amostra para revisão humana em Excel
-- [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md)
-  : Importar classificação humana de Excel
-- [`ac_qual_list_models()`](https://andersonheri.github.io/acR/reference/ac_qual_list_models.md)
-  : Listar modelos LLM disponíveis para análise de conteúdo
+- [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
+  : Buscar literatura acadêmica para um conceito
+- [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+  : Classificar textos com LLM usando um codebook
+- [`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)
+  : Salvar codebook em arquivo YAML
 - [`ac_qual_load_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_load_codebook.md)
   : Carregar codebook de arquivo YAML
-- [`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md)
-  : Recomendar modelo LLM para análise de conteúdo qualitativa
+
+## Validacao e confiabilidade
+
+Amostragem para validacao humana, metricas de concordancia
+inter-codificador e importacao/exportacao de codificacoes humanas.
+
 - [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
   : Calcular confiabilidade entre codificação LLM e humana
 - [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
   : Amostrar documentos para validação humana
-- [`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)
-  : Salvar codebook em arquivo YAML
-- [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
-  : Buscar literatura acadêmica para um conceito
+- [`ac_qual_export_for_review()`](https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.md)
+  : Exportar amostra para revisão humana em Excel
+- [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md)
+  : Importar classificação humana de Excel
 
-## Confiabilidade e validação
+## Selecao de modelos LLM
 
-## Visualização
+Listagem e recomendacao de modelos LLM para analise de conteudo
+qualitativa, com informacoes de custo, contexto e suporte ao portugues.
+
+- [`ac_qual_list_models()`](https://andersonheri.github.io/acR/reference/ac_qual_list_models.md)
+  : Listar modelos LLM disponíveis para análise de conteúdo
+- [`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md)
+  : Recomendar modelo LLM para análise de conteúdo qualitativa
+
+## Visualizacao
+
+Graficos modernos baseados em ggplot2 para todos os modulos.
 
 - [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
   : Visualizar rede de co-ocorrência de termos
+- [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md)
+  : Plotar estatisticas de keyness
 - [`ac_plot_lda_topics()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.md)
   : Visualizar top termos por tópico
 - [`ac_plot_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_tune.md)
   : Visualizar curva de seleção de k (perplexidade)
 - [`ac_plot_sentiment()`](https://andersonheri.github.io/acR/reference/ac_plot_sentiment.md)
   : Visualizar sentimento ao longo dos documentos
+- [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md)
+  : Plotar termos mais caracteristicos por tf-idf
+- [`ac_plot_top_terms()`](https://andersonheri.github.io/acR/reference/ac_plot_top_terms.md)
+  : Plotar termos mais frequentes
 - [`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md)
   : Nuvem de palavras comparativa entre grupos
 - [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)
   : Gráfico X-ray — dispersão lexical de termos no corpus
-
-## Dados
+- [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
+  : Criar nuvem de palavras
 

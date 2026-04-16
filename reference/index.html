@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,11 +19,15 @@
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/acR.html">Visão geral</a></li>
-    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Pipeline qualitativo (LLMs)</a></li>
-    <li><a class="dropdown-item" href="../articles/quantitativo.html">Pipeline quantitativo</a></li>
-    <li><a class="dropdown-item" href="../articles/sentimento.html">Análise de sentimento</a></li>
-    <li><a class="dropdown-item" href="../articles/lda.html">LDA validada</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><a class="dropdown-item" href="../articles/acR.html">Visao geral do pacote</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Pipeline qualitativo</h6></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Pipeline quantitativo</h6></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html">Analise de frequencias e keyness</a></li>
+    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento</a></li>
+    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -41,9 +45,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="corpus-e-pr-processamento">Corpus e pré-processamento<a class="anchor" aria-label="anchor" href="#corpus-e-pr-processamento"></a></h2>
+      <h2 id="corpus-e-pre-processamento">Corpus e pre-processamento<a class="anchor" aria-label="anchor" href="#corpus-e-pre-processamento"></a></h2>
 
-
+      <div class="section-desc"><p>Criacao, limpeza e tokenizacao de corpus em portugues.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -52,13 +56,6 @@
 
       <dl><dt>
 
-          <code><a href="ac_clean.html">ac_clean()</a></code>
-
-        </dt>
-        <dd>Limpar e normalizar texto de um corpus</dd>
-
-        <dt>
-
           <code><a href="ac_corpus.html">ac_corpus()</a></code>
 
         </dt>
@@ -66,45 +63,10 @@
 
         <dt>
 
-          <code><a href="ac_count.html">ac_count()</a></code>
+          <code><a href="ac_clean.html">ac_clean()</a></code>
 
         </dt>
-        <dd>Contar frequencias de tokens ou n-gramas em um corpus</dd>
-
-        <dt>
-
-          <code><a href="ac_keyness.html">ac_keyness()</a></code>
-
-        </dt>
-        <dd>Calcular estatisticas de keyness entre dois grupos</dd>
-
-        <dt>
-
-          <code><a href="ac_plot_keyness.html">ac_plot_keyness()</a></code>
-
-        </dt>
-        <dd>Plotar estatisticas de keyness</dd>
-
-        <dt>
-
-          <code><a href="ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>
-
-        </dt>
-        <dd>Plotar termos mais caracteristicos por tf-idf</dd>
-
-        <dt>
-
-          <code><a href="ac_plot_top_terms.html">ac_plot_top_terms()</a></code>
-
-        </dt>
-        <dd>Plotar termos mais frequentes</dd>
-
-        <dt>
-
-          <code><a href="ac_tf_idf.html">ac_tf_idf()</a></code>
-
-        </dt>
-        <dd>Calcular tf-idf para termos em documentos ou grupos</dd>
+        <dd>Limpar e normalizar texto de um corpus</dd>
 
         <dt>
 
@@ -115,28 +77,14 @@
 
         <dt>
 
-          <code><a href="ac_top_terms.html">ac_top_terms()</a></code>
-
-        </dt>
-        <dd>Selecionar os termos mais frequentes</dd>
-
-        <dt>
-
-          <code><a href="ac_wordcloud.html">ac_wordcloud()</a></code>
-
-        </dt>
-        <dd>Criar nuvem de palavras</dd>
-
-        <dt>
-
           <code><a href="is_ac_corpus.html">is_ac_corpus()</a></code>
 
         </dt>
         <dd>Verificar se um objeto é um corpus do <code>acR</code></dd>
       </dl></div><div class="section level2">
-      <h2 id="an-lise-quantitativa">Análise quantitativa<a class="anchor" aria-label="anchor" href="#an-lise-quantitativa"></a></h2>
+      <h2 id="analise-quantitativa">Analise quantitativa<a class="anchor" aria-label="anchor" href="#analise-quantitativa"></a></h2>
 
-
+      <div class="section-desc"><p>Frequencias, associacoes e modelagem estatistica de textos. Funcoes principais do pipeline quantitativo.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -145,10 +93,45 @@
 
       <dl><dt>
 
+          <code><a href="ac_count.html">ac_count()</a></code>
+
+        </dt>
+        <dd>Contar frequencias de tokens ou n-gramas em um corpus</dd>
+
+        <dt>
+
+          <code><a href="ac_top_terms.html">ac_top_terms()</a></code>
+
+        </dt>
+        <dd>Selecionar os termos mais frequentes</dd>
+
+        <dt>
+
+          <code><a href="ac_tf_idf.html">ac_tf_idf()</a></code>
+
+        </dt>
+        <dd>Calcular tf-idf para termos em documentos ou grupos</dd>
+
+        <dt>
+
+          <code><a href="ac_keyness.html">ac_keyness()</a></code>
+
+        </dt>
+        <dd>Calcular estatisticas de keyness entre dois grupos</dd>
+
+        <dt>
+
           <code><a href="ac_cooccurrence.html">ac_cooccurrence()</a></code>
 
         </dt>
         <dd>Calcular co-ocorrências de termos</dd>
+
+        <dt>
+
+          <code><a href="ac_sentiment.html">ac_sentiment()</a></code>
+
+        </dt>
+        <dd>Análise de sentimento com OpLexicon</dd>
 
         <dt>
 
@@ -163,17 +146,10 @@
 
         </dt>
         <dd>Ajustar múltiplos modelos LDA para selecionar k</dd>
-
-        <dt>
-
-          <code><a href="ac_sentiment.html">ac_sentiment()</a></code>
-
-        </dt>
-        <dd>Análise de sentimento com OpLexicon</dd>
       </dl></div><div class="section level2">
-      <h2 id="an-lise-qualitativa-llm-">Análise qualitativa (LLM)<a class="anchor" aria-label="anchor" href="#an-lise-qualitativa-llm-"></a></h2>
+      <h2 id="codificacao-qualitativa-via-llm">Codificacao qualitativa via LLM<a class="anchor" aria-label="anchor" href="#codificacao-qualitativa-via-llm"></a></h2>
 
-
+      <div class="section-desc"><p>Pipeline de analise de conteudo qualitativa assistida por modelos de linguagem. Suporta Anthropic, OpenAI, Google, Groq, Ollama e qualquer provedor OpenAI-compativel (incluindo LLMs institucionais).</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -182,13 +158,6 @@
 
       <dl><dt>
 
-          <code><a href="ac_qual_code.html">ac_qual_code()</a></code>
-
-        </dt>
-        <dd>Classificar textos com LLM usando um codebook</dd>
-
-        <dt>
-
           <code><a href="ac_qual_codebook.html">ac_qual_codebook()</a></code>
 
         </dt>
@@ -196,24 +165,24 @@
 
         <dt>
 
-          <code><a href="ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>
+          <code><a href="ac_qual_search_literature.html">ac_qual_search_literature()</a></code>
 
         </dt>
-        <dd>Exportar amostra para revisão humana em Excel</dd>
+        <dd>Buscar literatura acadêmica para um conceito</dd>
 
         <dt>
 
-          <code><a href="ac_qual_import_human.html">ac_qual_import_human()</a></code>
+          <code><a href="ac_qual_code.html">ac_qual_code()</a></code>
 
         </dt>
-        <dd>Importar classificação humana de Excel</dd>
+        <dd>Classificar textos com LLM usando um codebook</dd>
 
         <dt>
 
-          <code><a href="ac_qual_list_models.html">ac_qual_list_models()</a></code>
+          <code><a href="ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code>
 
         </dt>
-        <dd>Listar modelos LLM disponíveis para análise de conteúdo</dd>
+        <dd>Salvar codebook em arquivo YAML</dd>
 
         <dt>
 
@@ -221,15 +190,17 @@
 
         </dt>
         <dd>Carregar codebook de arquivo YAML</dd>
+      </dl></div><div class="section level2">
+      <h2 id="validacao-e-confiabilidade">Validacao e confiabilidade<a class="anchor" aria-label="anchor" href="#validacao-e-confiabilidade"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Amostragem para validacao humana, metricas de concordancia inter-codificador e importacao/exportacao de codificacoes humanas.</p></div>
 
-          <code><a href="ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code>
+      <dl></dl></div><div class="section level2">
 
-        </dt>
-        <dd>Recomendar modelo LLM para análise de conteúdo qualitativa</dd>
 
-        <dt>
+
+
+      <dl><dt>
 
           <code><a href="ac_qual_reliability.html">ac_qual_reliability()</a></code>
 
@@ -245,31 +216,44 @@
 
         <dt>
 
-          <code><a href="ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code>
+          <code><a href="ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>
 
         </dt>
-        <dd>Salvar codebook em arquivo YAML</dd>
+        <dd>Exportar amostra para revisão humana em Excel</dd>
 
         <dt>
 
-          <code><a href="ac_qual_search_literature.html">ac_qual_search_literature()</a></code>
+          <code><a href="ac_qual_import_human.html">ac_qual_import_human()</a></code>
 
         </dt>
-        <dd>Buscar literatura acadêmica para um conceito</dd>
+        <dd>Importar classificação humana de Excel</dd>
       </dl></div><div class="section level2">
-      <h2 id="confiabilidade-e-valida-o">Confiabilidade e validação<a class="anchor" aria-label="anchor" href="#confiabilidade-e-valida-o"></a></h2>
+      <h2 id="selecao-de-modelos-llm">Selecao de modelos LLM<a class="anchor" aria-label="anchor" href="#selecao-de-modelos-llm"></a></h2>
 
-
-
-      <dl></dl></div><div class="section level2">
-
-
-
+      <div class="section-desc"><p>Listagem e recomendacao de modelos LLM para analise de conteudo qualitativa, com informacoes de custo, contexto e suporte ao portugues.</p></div>
 
       <dl></dl></div><div class="section level2">
-      <h2 id="visualiza-o">Visualização<a class="anchor" aria-label="anchor" href="#visualiza-o"></a></h2>
 
 
+
+
+      <dl><dt>
+
+          <code><a href="ac_qual_list_models.html">ac_qual_list_models()</a></code>
+
+        </dt>
+        <dd>Listar modelos LLM disponíveis para análise de conteúdo</dd>
+
+        <dt>
+
+          <code><a href="ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code>
+
+        </dt>
+        <dd>Recomendar modelo LLM para análise de conteúdo qualitativa</dd>
+      </dl></div><div class="section level2">
+      <h2 id="visualizacao">Visualizacao<a class="anchor" aria-label="anchor" href="#visualizacao"></a></h2>
+
+      <div class="section-desc"><p>Graficos modernos baseados em ggplot2 para todos os modulos.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -282,6 +266,13 @@
 
         </dt>
         <dd>Visualizar rede de co-ocorrência de termos</dd>
+
+        <dt>
+
+          <code><a href="ac_plot_keyness.html">ac_plot_keyness()</a></code>
+
+        </dt>
+        <dd>Plotar estatisticas de keyness</dd>
 
         <dt>
 
@@ -306,6 +297,20 @@
 
         <dt>
 
+          <code><a href="ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>
+
+        </dt>
+        <dd>Plotar termos mais caracteristicos por tf-idf</dd>
+
+        <dt>
+
+          <code><a href="ac_plot_top_terms.html">ac_plot_top_terms()</a></code>
+
+        </dt>
+        <dd>Plotar termos mais frequentes</dd>
+
+        <dt>
+
           <code><a href="ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code>
 
         </dt>
@@ -317,17 +322,14 @@
 
         </dt>
         <dd>Gráfico X-ray — dispersão lexical de termos no corpus</dd>
-      </dl></div><div class="section level2">
-      <h2 id="dados">Dados<a class="anchor" aria-label="anchor" href="#dados"></a></h2>
 
+        <dt>
 
+          <code><a href="ac_wordcloud.html">ac_wordcloud()</a></code>
 
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl></dl></div>
+        </dt>
+        <dd>Criar nuvem de palavras</dd>
+      </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
