@@ -53,6 +53,29 @@
 
 ## Análise qualitativa (LLM)
 
+- [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+  : Classificar textos com LLM usando um codebook
+- [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
+  : Criar um codebook para análise de conteúdo qualitativa
+- [`ac_qual_export_for_review()`](https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.md)
+  : Exportar amostra para revisão humana em Excel
+- [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md)
+  : Importar classificação humana de Excel
+- [`ac_qual_list_models()`](https://andersonheri.github.io/acR/reference/ac_qual_list_models.md)
+  : Listar modelos LLM disponíveis para análise de conteúdo
+- [`ac_qual_load_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_load_codebook.md)
+  : Carregar codebook de arquivo YAML
+- [`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md)
+  : Recomendar modelo LLM para análise de conteúdo qualitativa
+- [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+  : Calcular confiabilidade entre codificação LLM e humana
+- [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
+  : Amostrar documentos para validação humana
+- [`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)
+  : Salvar codebook em arquivo YAML
+- [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
+  : Buscar literatura acadêmica para um conceito
+
 ## Confiabilidade e validação
 
 ## Visualização

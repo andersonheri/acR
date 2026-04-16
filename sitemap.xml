@@ -25,6 +25,17 @@
 <url><loc>https://andersonheri.github.io/acR/reference/ac_plot_top_terms.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_plot_xray.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_code.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_import_human.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_list_models.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_load_codebook.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_reliability.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_sample.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_search_literature.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_sentiment.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_tf_idf.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_tokenize.html</loc></url>
