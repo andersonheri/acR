@@ -1,7 +1,7 @@
 Package: acR
 Type: Package
 Title: Análise de Conteúdo em R: Pipeline Integrado Qualitativo (LLMs) e Quantitativo
-Version: 0.0.0.9001
+Version: 0.1.0
 Authors@R: c(
     person("Anderson", "Henrique",
            email = "anderson.henrique@usp.br",

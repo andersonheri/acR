@@ -1,5 +1,4 @@
 url: https://andersonheri.github.io/acR/
-
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -18,6 +17,11 @@ home:
     Pipeline integrado de análise de conteúdo em R, combinando codificação
     qualitativa via LLMs com análise quantitativa clássica e visualização
     moderna, com foco em corpora brasileiros.
+  links:
+  - text: Repositório no GitHub
+    href: https://github.com/andersonheri/acR
+  - text: Reportar problema
+    href: https://github.com/andersonheri/acR/issues
 
 navbar:
   structure:
@@ -30,38 +34,82 @@ navbar:
     articles:
       text: Vignettes
       menu:
-      - text: Visão geral
+      - text: "Visao geral do pacote"
         href: articles/acR.html
-      - text: Pipeline qualitativo (LLMs)
+      - text: "---"
+      - text: "Pipeline qualitativo"
+      - text: Codificacao com LLMs
         href: articles/qualitativo-llm.html
-      - text: Pipeline quantitativo
+      - text: "---"
+      - text: "Pipeline quantitativo"
+      - text: Analise de frequencias e keyness
         href: articles/quantitativo.html
-      - text: Análise de sentimento
+      - text: Analise de sentimento
         href: articles/sentimento.html
-      - text: LDA validada
+      - text: Modelagem de topicos (LDA)
         href: articles/lda.html
 
 reference:
-- title: Corpus e pré-processamento
+- title: "Corpus e pre-processamento"
+  desc: "Criacao, limpeza e tokenizacao de corpus em portugues."
   contents:
-  - has_concept("corpus")
-- title: Análise quantitativa
+  - ac_corpus
+  - ac_clean
+  - ac_tokenize
+  - is_ac_corpus
+
+- title: "Analise quantitativa"
+  desc: >
+    Frequencias, associacoes e modelagem estatistica de textos.
+    Funcoes principais do pipeline quantitativo.
   contents:
-  - has_concept("quantitative")
-- title: Análise qualitativa (LLM)
+  - ac_count
+  - ac_top_terms
+  - ac_tf_idf
+  - ac_keyness
+  - ac_cooccurrence
+  - ac_sentiment
+  - ac_lda
+  - ac_lda_tune
+
+- title: "Codificacao qualitativa via LLM"
+  desc: >
+    Pipeline de analise de conteudo qualitativa assistida por modelos de
+    linguagem. Suporta Anthropic, OpenAI, Google, Groq, Ollama e qualquer
+    provedor OpenAI-compativel (incluindo LLMs institucionais).
   contents:
-  - has_concept("qualitative")
-- title: Confiabilidade e validação
+  - ac_qual_codebook
+  - ac_qual_search_literature
+  - ac_qual_code
+  - ac_qual_save_codebook
+  - ac_qual_load_codebook
+
+- title: "Validacao e confiabilidade"
+  desc: >
+    Amostragem para validacao humana, metricas de concordancia inter-codificador
+    e importacao/exportacao de codificacoes humanas.
   contents:
-  - has_concept("reliability")
-- title: Visualização
+  - ac_qual_reliability
+  - ac_qual_sample
+  - ac_qual_export_for_review
+  - ac_qual_import_human
+
+- title: "Selecao de modelos LLM"
+  desc: >
+    Listagem e recomendacao de modelos LLM para analise de conteudo qualitativa,
+    com informacoes de custo, contexto e suporte ao portugues.
   contents:
-  - has_concept("visualization")
-- title: Dados
+  - ac_qual_list_models
+  - ac_qual_recommend_model
+
+- title: "Visualizacao"
+  desc: "Graficos modernos baseados em ggplot2 para todos os modulos."
   contents:
-  - has_keyword("datasets")
+  - starts_with("ac_plot_")
+  - ac_wordcloud
 
 footer:
   structure:
     left: developed_by
     right: built_with
+
