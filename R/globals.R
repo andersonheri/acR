@@ -20,5 +20,9 @@ utils::globalVariables(c(
   # ac_plot_xray
   "pos_rel", "n_total", "term_label",
   # ac_lda_tune
-  "k", "perplexity"
+  "k", "perplexity",
+  # ac_qual_*
+  "categoria", "raciocinio", "confidence_score", "confidence_level",
+  "llm_cat", "human_cat", "sample_reason", "categoria_humano",
+  "notas_humano", "coeff.val", "text"
 ))

@@ -48,7 +48,10 @@ Suggests:
     ipeaplot,
     wordcloud,
     igraph,
-    slam
+    slam,
+    openxlsx,
+    irr,
+    irrCAC
 Imports: 
     cli,
     dplyr,
@@ -62,4 +65,6 @@ Imports:
     purrr,
     tidyr,
     scales,
-    tidytext
+    tidytext,
+    jsonlite,
+    yaml
