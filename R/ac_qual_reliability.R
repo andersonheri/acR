@@ -125,34 +125,23 @@ ac_qual_reliability <- function(llm,
   }
 
   # Gwet AC1
-  if ("gwet_ac1" %in% metrics) {
-    if (!requireNamespace("irrCAC", quietly = TRUE)) {
-      cli::cli_warn("{.pkg irrCAC} n\u00e3o instalado. Pulando Gwet AC1.")
-    } else {
-      ratings_df <- data.frame(llm = llm_vec, human = human_vec)
-      gwet <- tryCatch(
-        irrCAC::gwet.ac1.raw(ratings_df)$est$coeff.val,
-        error = function(e) NA_real_
-      )
-      gwet_ci <- if (!is.na(gwet)) {
-        .ac_bootstrap_metric(llm_vec, human_vec, bootstrap, ci_level,
-          function(l, h) {
-            tryCatch(
-              irrCAC::gwet.ac1.raw(data.frame(l, h))$est$coeff.val,
-              error = function(e) NA_real_
-            )
-          }
-        )
-      } else c(NA_real_, NA_real_)
 
-      results_list[["gwet_ac1"]] <- tibble::tibble(
-        metric         = "gwet_ac1",
-        estimate       = gwet,
-        ci_lower       = gwet_ci[1],
-        ci_upper       = gwet_ci[2],
-        interpretation = .ac_interpret_agreement(gwet, "kappa")
+  # Gwet AC1 — implementacao propria (Gwet, 2014)
+  if ("gwet_ac1" %in% metrics) {
+    gwet <- .ac_gwet_ac1(llm_vec, human_vec)
+    gwet_ci <- if (!is.na(gwet)) {
+      .ac_bootstrap_metric(llm_vec, human_vec, bootstrap, ci_level,
+        function(l, h) .ac_gwet_ac1(l, h)
       )
-    }
+    } else c(NA_real_, NA_real_)
+
+    results_list[["gwet_ac1"]] <- tibble::tibble(
+      metric         = "gwet_ac1",
+      estimate       = gwet,
+      ci_lower       = gwet_ci[1],
+      ci_upper       = gwet_ci[2],
+      interpretation = .ac_interpret_agreement(gwet, "kappa")
+    )
   }
 
   # F1 macro
@@ -470,4 +459,28 @@ ac_qual_import_human <- function(path,
       TRUE          ~ "fraca (Landis & Koch, 1977)"
     )
   }
+}
+
+#' @keywords internal
+#' @noRd
+# Gwet AC1 — formula de Gwet (2014, cap. 3)
+# Corrige o paradoxo do kappa quando categorias sao altamente prevalentes.
+.ac_gwet_ac1 <- function(r1, r2) {
+  # Remover NAs pareados
+  ok  <- !is.na(r1) & !is.na(r2)
+  r1  <- r1[ok]; r2 <- r2[ok]
+  n   <- length(r1)
+  if (n < 2L) return(NA_real_)
+  cats <- unique(c(r1, r2))
+  q   <- length(cats)
+  if (q < 2L) return(NA_real_)
+  # Proporcao observada de concordancia
+  pa  <- mean(r1 == r2)
+  # Proporcao esperada pelo acaso (Gwet AC1)
+  pi_k <- sapply(cats, function(k) {
+    (mean(r1 == k) + mean(r2 == k)) / 2
+  })
+  pe  <- (1 / (q - 1)) * sum(pi_k * (1 - pi_k))
+  if (abs(1 - pe) < 1e-10) return(NA_real_)
+  (pa - pe) / (1 - pe)
 }

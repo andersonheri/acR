@@ -50,8 +50,7 @@ Suggests:
     igraph,
     slam,
     openxlsx,
-    irr,
-    irrCAC
+    irr
 Imports: 
     cli,
     dplyr,

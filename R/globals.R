@@ -24,5 +24,7 @@ utils::globalVariables(c(
   # ac_qual_*
   "categoria", "raciocinio", "confidence_score", "confidence_level",
   "llm_cat", "human_cat", "sample_reason", "categoria_humano",
-  "notas_humano", "coeff.val", "text"
+  "notas_humano", "coeff.val", "text",
+  # ac_qual_models
+  "rank", "justificativa", "model_id", "input", "output"
 ))
