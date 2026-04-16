@@ -9,7 +9,9 @@
 
 ## acR 0.0.0.9001
 
-- Adiciona função `ac_clean()` para limpeza de textos em português:
+- Adiciona função
+  [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+  para limpeza de textos em português:
   - pipeline com ordem fixa (lower, remoção de URL/e-mail,
     `normalize_pt`, stopwords, pontuação, números, símbolos, acentos,
     espaços);
@@ -18,6 +20,18 @@
   - mecanismo de proteção de termos (`protect`) para siglas como
     partidos e cortes;
   - registro de etapas aplicadas no atributo `cleaning_steps`.
-- Inclui conjunto de testes unitários abrangentes para `ac_clean()`.
+- Inclui conjunto de testes unitários abrangentes para
+  [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md).
 - Estrutura interna de stopwords (`.ac_get_stopwords()`) e normalização
   coloquial (`.ac_normalize_pt()`).
+
+## acR 0.0.0.9001
+
+- Adiciona
+  [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+  para limpeza de textos em português, com pipeline configurável,
+  presets de stopwords e registro de etapas aplicadas.
+- Adiciona
+  [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+  para tokenizar objetos `ac_corpus` em palavras, retornando tibble tidy
+  com colunas `doc_id`, `token_id` e `token`.

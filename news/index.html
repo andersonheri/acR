@@ -49,14 +49,19 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9001" id="acr-0009001-1">acR 0.0.0.9001<a class="anchor" aria-label="anchor" href="#acr-0009001-1"></a></h2>
-<ul><li>Adiciona função <code>ac_clean()</code> para limpeza de textos em português:
+<ul><li>Adiciona função <code><a href="../reference/ac_clean.html">ac_clean()</a></code> para limpeza de textos em português:
 <ul><li>pipeline com ordem fixa (lower, remoção de URL/e-mail, <code>normalize_pt</code>, stopwords, pontuação, números, símbolos, acentos, espaços);</li>
 <li>presets de stopwords (<code>"pt"</code>, <code>"pt-br-extended"</code>, <code>"pt-legislativo"</code>);</li>
 <li>mecanismo de proteção de termos (<code>protect</code>) para siglas como partidos e cortes;</li>
 <li>registro de etapas aplicadas no atributo <code>cleaning_steps</code>.</li>
 </ul></li>
-<li>Inclui conjunto de testes unitários abrangentes para <code>ac_clean()</code>.</li>
+<li>Inclui conjunto de testes unitários abrangentes para <code><a href="../reference/ac_clean.html">ac_clean()</a></code>.</li>
 <li>Estrutura interna de stopwords (<code>.ac_get_stopwords()</code>) e normalização coloquial (<code>.ac_normalize_pt()</code>).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.0.9001" id="acr-0009001-2">acR 0.0.0.9001<a class="anchor" aria-label="anchor" href="#acr-0009001-2"></a></h2>
+<ul><li>Adiciona <code><a href="../reference/ac_clean.html">ac_clean()</a></code> para limpeza de textos em português, com pipeline configurável, presets de stopwords e registro de etapas aplicadas.</li>
+<li>Adiciona <code><a href="../reference/ac_tokenize.html">ac_tokenize()</a></code> para tokenizar objetos <code>ac_corpus</code> em palavras, retornando tibble tidy com colunas <code>doc_id</code>, <code>token_id</code> e <code>token</code>.</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

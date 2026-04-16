@@ -111,9 +111,9 @@
 <span></span>
 <span><span class="co"># Pipeline quantitativo</span></span>
 <span><span class="va">corpus</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ac_clean</span><span class="op">(</span>remove_stopwords <span class="op">=</span> <span class="st">"pt-br-extended"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/ac_clean.html">ac_clean</a></span><span class="op">(</span>remove_stopwords <span class="op">=</span> <span class="st">"pt-br-extended"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ac_quant_keyness</span><span class="op">(</span>target <span class="op">=</span> <span class="va">partido</span> <span class="op">==</span> <span class="st">"PT"</span>, reference <span class="op">=</span> <span class="va">partido</span> <span class="op">==</span> <span class="st">"PL"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ac_plot_keyness</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/ac_plot_keyness.html">ac_plot_keyness</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Pipeline qualitativo (LLM)</span></span>
 <span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook</span><span class="op">(</span><span class="st">"iliberalismo_br"</span><span class="op">)</span></span>
