@@ -35,7 +35,6 @@ Suggests:
     cachem,
     ellmer,
     geobr,
-    ggplot2,
     ggraph,
     knitr,
     quanteda,
@@ -43,10 +42,13 @@ Suggests:
     rmarkdown,
     sf,
     testthat (>= 3.0.0),
-    tidyr,
     topicmodels,
     udpipe,
-    wordcloud2
+    wordcloud2,
+    ipeaplot,
+    wordcloud,
+    igraph,
+    slam
 Imports: 
     cli,
     dplyr,
@@ -55,4 +57,9 @@ Imports:
     stringi,
     stringr,
     tibble,
-    tidyselect
+    tidyselect,
+    ggplot2,
+    purrr,
+    tidyr,
+    scales,
+    tidytext
