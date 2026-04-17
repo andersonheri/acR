@@ -4,21 +4,24 @@ template:
   bootswatch: cosmo
   bslib:
     primary: "#0072B2"
-    base_font: {google: "Inter"}
-    heading_font: {google: "Inter"}
-    code_font: {google: "JetBrains Mono"}
+    base_font:
+      google: "Inter"
+    heading_font:
+      google: "Inter"
+    code_font:
+      google: "JetBrains Mono"
 
 development:
   mode: auto
 
 home:
-  title: acR — Análise de Conteúdo em R
+  title: acR — Analise de Conteudo em R
   description: >
-    Pipeline integrado de análise de conteúdo em R, combinando codificação
-    qualitativa via LLMs com análise quantitativa clássica e visualização
+    Pipeline integrado de analise de conteudo em R, combinando codificacao
+    qualitativa via LLMs com analise quantitativa classica e visualizacao
     moderna, com foco em corpora brasileiros.
   links:
-  - text: Repositório no GitHub
+  - text: Repositorio no GitHub
     href: https://github.com/andersonheri/acR
   - text: Reportar problema
     href: https://github.com/andersonheri/acR/issues
@@ -30,26 +33,40 @@ navbar:
   components:
     intro:
       text: Comece aqui
-      href: articles/acR.html
+      href: articles/introducao-acR.html
     articles:
       text: Vignettes
       menu:
       - text: "Visao geral do pacote"
-        href: articles/acR.html
+        href: articles/introducao-acR.html
       - text: "---"
       - text: "Pipeline qualitativo"
       - text: Codificacao com LLMs
         href: articles/qualitativo-llm.html
+      - text: Analise de proposicoes com qwen3.6
+        href: articles/analise-proposicoes.html
       - text: "---"
       - text: "Pipeline quantitativo"
       - text: Analise de frequencias e keyness
         href: articles/quantitativo.html
-      - text: Analise de proposicoes com qwen3.6
-        href: articles/analise-proposicoes.html
       - text: Analise de sentimento
         href: articles/sentimento.html
       - text: Modelagem de topicos (LDA)
         href: articles/lda.html
+
+articles:
+  - title: "Introducao"
+    contents:
+      - introducao-acR
+  - title: "Pipeline qualitativo"
+    contents:
+      - qualitativo-llm
+      - analise-proposicoes
+  - title: "Pipeline quantitativo"
+    contents:
+      - quantitativo
+      - sentimento
+      - lda
 
 reference:
 - title: "Coleta de dados"
@@ -69,7 +86,6 @@ reference:
 - title: "Analise quantitativa"
   desc: >
     Frequencias, associacoes e modelagem estatistica de textos.
-    Funcoes principais do pipeline quantitativo.
   contents:
   - ac_count
   - ac_top_terms
@@ -82,9 +98,7 @@ reference:
 
 - title: "Codificacao qualitativa via LLM"
   desc: >
-    Pipeline de analise de conteudo qualitativa assistida por modelos de
-    linguagem. Suporta Anthropic, OpenAI, Google, Groq, Ollama e qualquer
-    provedor OpenAI-compativel (incluindo LLMs institucionais).
+    Pipeline de analise de conteudo qualitativa assistida por LLMs.
   contents:
   - ac_qual_codebook
   - ac_qual_search_literature
@@ -94,8 +108,7 @@ reference:
 
 - title: "Validacao e confiabilidade"
   desc: >
-    Amostragem para validacao humana, metricas de concordancia inter-codificador
-    e importacao/exportacao de codificacoes humanas.
+    Amostragem, concordancia inter-codificador e importacao/exportacao.
   contents:
   - ac_qual_irr
   - ac_qual_reliability
@@ -105,14 +118,13 @@ reference:
 
 - title: "Selecao de modelos LLM"
   desc: >
-    Listagem e recomendacao de modelos LLM para analise de conteudo qualitativa,
-    com informacoes de custo, contexto e suporte ao portugues.
+    Listagem e recomendacao de modelos LLM.
   contents:
   - ac_qual_list_models
   - ac_qual_recommend_model
 
 - title: "Visualizacao"
-  desc: "Graficos modernos baseados em ggplot2 para todos os modulos."
+  desc: "Graficos modernos baseados em ggplot2."
   contents:
   - starts_with("ac_plot_")
   - ac_wordcloud
@@ -126,7 +138,3 @@ footer:
   structure:
     left: developed_by
     right: built_with
-    
-  env:
-  OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
-
