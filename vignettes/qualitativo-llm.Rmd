@@ -19,43 +19,39 @@ em quatro etapas: (1) definicao do codebook, (2) busca de literatura de
 apoio, (3) codificacao automatica e (4) validacao humana com calculo de
 concordancia inter-codificador (IRR).
 
-O pacote suporta multiplos provedores de LLM via argumento `provider`.
 A chave de API **nunca deve aparecer no codigo**. Armazene-a no `.Renviron`:
 
 ```
 # No console R:
-usethis::edit_r_environ()
-
-# Adicione as linhas do provedor que for usar e salve:
-OLLAMA_API_KEY=sua_chave_ollama
-OPENAI_API_KEY=sua_chave_openai
-ANTHROPIC_API_KEY=sua_chave_anthropic
-GROQ_API_KEY=sua_chave_groq
+# usethis::edit_r_environ()
+#
+# Adicione e salve:
+# OLLAMA_API_KEY=sua_chave_aqui
 ```
 
 ## Provedores suportados
 
 O `acR` e compativel com qualquer provedor que siga o padrao OpenAI-compativel.
-A tabela abaixo resume as opcoes disponíveis:
 
-| Provedor   | `provider`    | Modelos recomendados              | Custo       | Portugues |
-|------------|---------------|-----------------------------------|-------------|-----------|
-| Ollama     | `"ollama"`    | `llama3.1:8b`, `mistral`          | Gratis/nuvem| Bom       |
-| OpenAI     | `"openai"`    | `gpt-4o-mini`, `gpt-4o`           | Pago        | Excelente |
-| Anthropic  | `"anthropic"` | `claude-3-haiku`, `claude-3-sonnet`| Pago       | Excelente |
-| Groq       | `"groq"`      | `llama3-8b-8192`, `mixtral-8x7b`  | Gratis/pago | Bom       |
-| OpenAI-like| `"openai"`    | Qualquer modelo compativel        | Variavel    | Variavel  |
+| Provedor      | `provider`    | Modelo recomendado              | Custo        | Portugues |
+|---------------|---------------|---------------------------------|--------------|-----------|
+| Ollama nuvem  | `"ollama"`    | `qwen3.6:latest`                | Variavel     | Excelente |
+| OpenAI        | `"openai"`    | `gpt-4o-mini`, `gpt-4o`         | Pago         | Excelente |
+| Anthropic     | `"anthropic"` | `claude-3-haiku`, `claude-3-5-sonnet` | Pago   | Excelente |
+| Groq          | `"groq"`      | `llama3-8b-8192`, `mixtral-8x7b`| Gratis/pago  | Bom       |
+| Together AI   | `"openai"`    | `Qwen/Qwen3-235B-A22B`          | Pago         | Excelente |
+| OpenAI-like   | `"openai"`    | Qualquer modelo compativel      | Variavel     | Variavel  |
 
 ## 1. Listar e escolher o modelo
 
 ```{r modelos}
 library(acR)
 
-# Ver todos os modelos catalogados
+# Ver modelos catalogados e recomendacao automatica
 modelos <- ac_qual_list_models()
 print(modelos)
 
-# Recomendacao automatica por criterio
+# Recomendacao por criterio
 ac_qual_recommend_model(lingua = "pt", prioridade = "custo")
 ac_qual_recommend_model(lingua = "pt", prioridade = "qualidade")
 ac_qual_recommend_model(lingua = "pt", prioridade = "velocidade")
@@ -64,6 +60,7 @@ ac_qual_recommend_model(lingua = "pt", prioridade = "velocidade")
 ## 2. Construir o codebook
 
 ```{r codebook}
+# Codebook para analise de discurso legislativo
 codebook <- ac_qual_codebook(
   categories = c(
     "Favoravel",
@@ -81,7 +78,7 @@ codebook <- ac_qual_codebook(
     "A reforma e necessaria e vai beneficiar os cidadaos.",
     "Esta proposta e prejudicial e deve ser rejeitada.",
     "O artigo 3o estabelece os prazos para implementacao.",
-    "Apoiamos partes do texto, mas temos reservas em outros pontos."
+    "Apoiamos partes do texto, mas o artigo 5o preocupa."
   )
 )
 
@@ -92,10 +89,8 @@ literatura <- ac_qual_search_literature(
 )
 print(literatura)
 
-# Salvar para reuso
+# Salvar e recarregar o codebook
 ac_qual_save_codebook(codebook, "codebook_legislativo.json")
-
-# Carregar em sessoes futuras
 codebook <- ac_qual_load_codebook("codebook_legislativo.json")
 ```
 
@@ -114,60 +109,73 @@ textos <- c(
 corpus <- ac_corpus(
   textos,
   id    = paste0("doc_", seq_along(textos)),
-  grupo = c("favoravel","contrario","tecnico",
-            "ambiguo","favoravel","contrario")
+  grupo = c("favoravel", "contrario", "tecnico",
+            "ambiguo",  "favoravel", "contrario")
 )
 print(corpus)
+summary(corpus)
 ```
 
-## 4. Codificar: Ollama via API remota (padrao)
+## 4. Codificar com Ollama na nuvem (qwen3.6)
 
-```{r ollama}
-# Chave lida do .Renviron — nunca exposta no codigo
+```{r ollama-nuvem}
+# Configuracao principal: Ollama via API remota com qwen3.6
+# A chave e lida do .Renviron — nunca exposta no codigo
 resultado <- ac_qual_code(
   corpus      = corpus,
   codebook    = codebook,
   provider    = "ollama",
-  model       = "llama3.1:8b",
+  model       = "qwen3.6:latest",
   api_key     = Sys.getenv("OLLAMA_API_KEY"),
   base_url    = "https://sua-instancia-ollama.com/v1",
-  temperature = 0,
-  batch_size  = 10
+  temperature = 0,        # 0 = maxima consistencia na codificacao
+  batch_size  = 10,       # documentos por requisicao
+  think       = FALSE     # desativar modo de raciocinio (mais rapido)
 )
+
 print(resultado)
+summary(resultado)
 ```
 
-## 5. Alternativa: OpenAI
+> **Nota sobre o modo `think`:** O `qwen3.6` suporta raciocinio em cadeia
+> (`think = TRUE`), util para categorias ambiguas ou codebooks complexos.
+> Para codificacoes diretas com categorias bem definidas, use `think = FALSE`
+> para reduzir custo e latencia.
+
+## 5. Alternativas de provedor
+
+Os exemplos abaixo usam a mesma interface — basta trocar `provider`,
+`model`, `api_key` e, quando necessario, `base_url`.
+
+### OpenAI
 
 ```{r openai}
-# Para usar OpenAI, basta trocar provider, model e api_key
 resultado_oai <- ac_qual_code(
   corpus      = corpus,
   codebook    = codebook,
   provider    = "openai",
-  model       = "gpt-4o-mini",   # rapido e economico
+  model       = "gpt-4o-mini",
   api_key     = Sys.getenv("OPENAI_API_KEY"),
   temperature = 0
 )
 ```
 
-## 6. Alternativa: Anthropic (Claude)
+### Anthropic (Claude)
 
 ```{r anthropic}
 resultado_claude <- ac_qual_code(
   corpus      = corpus,
   codebook    = codebook,
   provider    = "anthropic",
-  model       = "claude-3-haiku-20240307",  # mais economico
+  model       = "claude-3-haiku-20240307",
   api_key     = Sys.getenv("ANTHROPIC_API_KEY"),
   temperature = 0
 )
 ```
 
-## 7. Alternativa: Groq (rapido e gratuito)
+### Groq (rapido e com camada gratuita)
 
 ```{r groq}
-# Groq oferece inferencia rapida com modelos open-source
 resultado_groq <- ac_qual_code(
   corpus      = corpus,
   codebook    = codebook,
@@ -178,10 +186,25 @@ resultado_groq <- ac_qual_code(
 )
 ```
 
-## 8. Alternativa: qualquer API OpenAI-compativel
+### Together AI (Qwen via API OpenAI-compativel)
+
+```{r together}
+# Together AI hospeda modelos Qwen com API OpenAI-compativel
+resultado_together <- ac_qual_code(
+  corpus      = corpus,
+  codebook    = codebook,
+  provider    = "openai",
+  model       = "Qwen/Qwen3-235B-A22B",
+  api_key     = Sys.getenv("TOGETHER_API_KEY"),
+  base_url    = "https://api.together.xyz/v1",
+  temperature = 0
+)
+```
+
+### Qualquer API OpenAI-compativel
 
 ```{r openai-like}
-# Funciona com LM Studio, Together AI, Perplexity, DeepSeek, etc.
+# Funciona com DeepSeek, LM Studio, OpenRouter, etc.
 resultado_custom <- ac_qual_code(
   corpus      = corpus,
   codebook    = codebook,
@@ -193,13 +216,13 @@ resultado_custom <- ac_qual_code(
 )
 ```
 
-## 9. Validacao humana
+## 6. Validacao humana
 
 ```{r validacao}
 # Amostrar 20% para revisao (minimo recomendado na literatura)
 amostra <- ac_qual_sample(resultado, prop = 0.20, seed = 42)
 
-# Exportar planilha para codificador humano
+# Exportar planilha para o codificador humano
 ac_qual_export_for_review(
   amostra,
   arquivo               = "revisao_humana.xlsx",
@@ -207,7 +230,7 @@ ac_qual_export_for_review(
 )
 ```
 
-## 10. Concordancia inter-codificador (IRR)
+## 7. Concordancia inter-codificador (IRR)
 
 ```{r irr}
 # Apos preenchimento humano, importar de volta
@@ -217,17 +240,17 @@ humano <- ac_qual_import_human("revisao_humana.xlsx")
 irr <- ac_qual_irr(resultado, humano)
 print(irr)
 
-# Interpretacao do Kappa (Landis & Koch, 1977):
-# >= 0.80  -> concordancia quase perfeita
-# 0.61-0.79 -> concordancia substancial
-# 0.41-0.60 -> concordancia moderada
-# < 0.40   -> concordancia fraca — revisar codebook
+# Interpretacao (Landis & Koch, 1977):
+# kappa >= 0.80  -> concordancia quase perfeita
+# kappa 0.61-0.79 -> concordancia substancial
+# kappa 0.41-0.60 -> concordancia moderada
+# kappa < 0.40   -> concordancia fraca: revisar codebook
 
-# Validar se pipeline atinge threshold minimo
+# Validar threshold minimo de confiabilidade
 ac_qual_reliability(irr, threshold = 0.75)
 ```
 
-## 11. Exportar resultados
+## 8. Exportar resultados
 
 ```{r exportar}
 ac_export(resultado, formato = "csv",   arquivo = "codificacao_llm.csv")
