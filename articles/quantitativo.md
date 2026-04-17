@@ -168,3 +168,72 @@ ac_export(tfidf,    formato = "csv",  arquivo = "tfidf.csv")
 ac_export(contagem, formato = "xlsx", arquivo = "frequencias.xlsx")
 ac_export(kn,       formato = "csv",  arquivo = "keyness.csv")
 ```
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## Referencias
+
+**Pacote**
+
+Henrique, A. (2025). *acR: Analise de Conteudo em R*. R package version
+0.1.0. Centro de Estudos da Metropole (CEM-Cepid) — Universidade de Sao
+Paulo. Disponivel em: <https://andersonheri.github.io/acR/>
+
+**Pacotes utilizados**
+
+Santos, V. (2026). *senatebR: Collect Data from the Brazilian Federal
+Senate Open Data API*. R package version 0.1.0.
+<https://CRAN.R-project.org/package=senatebR>
+
+Ferreira, P., Jorge, P., Lima, D., Coelho, G., Pereira, R. H. M., &
+Mation, L. (2026). *ipeaplot: Add Ipea Editorial Standards to ggplot2
+Graphics*. R package version 0.5.1. Instituto de Pesquisa Economica
+Aplicada (Ipea). <doi:10.32614/CRAN.package.ipeaplot>
+
+**Inspiracao e dialogo**
+
+Maerz, S., & Benoit, K. (2025). *quallmer: Qualitative and LLM-Assisted
+Text Analysis in R*. — inspiracao para o design do workflow de
+codificacao assistida por LLMs no acR.
+
+Benoit, K., Watanabe, K., Wang, H., Nulty, P., Obeng, A., Muller, S., &
+Matsuo, A. (2018). quanteda: An R package for the quantitative analysis
+of textual data. *Journal of Open Source Software*, 3(30), 774.
+<doi:10.21105/joss.00774> — infraestrutura de analise textual
+quantitativa.
+
+Wickham, H., et al. (Posit). *ellmer: A unified interface to large
+language models in R*. <https://ellmer.tidyverse.org/> — backend
+unificado de LLMs.
+
+Souza, M., & Vieira, R. (2012). Sentiment Analysis on Twitter with
+Portuguese Language. In *4th Workshop on Computational Approaches to
+Subjectivity, Sentiment and Social Media Analysis*. PUCRS. — OpLexicon:
+lexico de sentimento para portugues brasileiro.
+
+**Fundamentacao teorica**
+
+Bardin, L. (2011). *Analise de conteudo*. Edicoes 70.
+
+Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet
+Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
+
+Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
+Methodology* (4a ed.). SAGE.
+
+Landis, J. R., & Koch, G. G. (1977). The measurement of observer
+agreement for categorical data. *Biometrics*, 33(1), 159-174.
+
+Laver, M., Benoit, K., & Garry, J. (2003). Extracting policy positions
+from political texts using words as data. *American Political Science
+Review*, 97(2), 311-331.
+
+Sampaio, R. C., & Lycariao, D. (2021). *Analise de conteudo categorial:
+manual de aplicacao*. Enap. Disponivel em:
+<https://repositorio.enap.gov.br>
+
+R Core Team. (2024). *R: A language and environment for statistical
+computing*. R Foundation for Statistical Computing.
+<https://www.R-project.org/>
