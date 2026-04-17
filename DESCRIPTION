@@ -36,10 +36,8 @@ Suggests:
     ellmer,
     geobr,
     ggraph,
-    knitr,
     quanteda,
     quanteda.textstats,
-    rmarkdown,
     sf,
     testthat (>= 3.0.0),
     topicmodels,
@@ -50,7 +48,7 @@ Suggests:
     igraph,
     slam,
     openxlsx,
-    irr
+    rmarkdown
 Imports: 
     cli,
     dplyr,
@@ -67,4 +65,7 @@ Imports:
     tidytext,
     jsonlite,
     yaml,
-    httr2
+    httr2,
+    irr,
+    writexl,
+    knitr,
