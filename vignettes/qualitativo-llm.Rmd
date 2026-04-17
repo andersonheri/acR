@@ -97,7 +97,7 @@ ac_qual_recommend_model(lingua = "pt", prioridade = "velocidade")
 
 ### `ac_qual_codebook()` — construir o codebook
 
-```{r codebook, eval=TRUE}
+```{r codebook, eval=FALSE}
 codebook <- ac_qual_codebook(
   categories = c("Favoravel", "Contrario", "Neutro/Tecnico", "Ambiguo"),
   descriptions = c(
@@ -184,7 +184,7 @@ codebook <- ac_qual_load_codebook("codebook_legislativo.json")
 
 ### `ac_corpus()` — construir o corpus
 
-```{r corpus, eval=TRUE}
+```{r corpus, eval=FALSE}
 textos <- c(
   "Votar favoravel a esta PEC e defender o futuro do pais.",
   "O substitutivo apresentado nao atende aos anseios da populacao.",

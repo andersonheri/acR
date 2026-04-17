@@ -58,7 +58,7 @@ print(props)
 
 ## 2. Corpus manual (substituto para execucao local)
 
-```{r corpus-manual, eval=TRUE}
+```{r corpus-manual, eval=FALSE}
 library(acR)
 
 # Ementa oficial + contexto de cada proposicao
@@ -154,7 +154,7 @@ summary(corpus)
 
 ## 3. Construir o codebook
 
-```{r codebook, eval=TRUE}
+```{r codebook, eval=FALSE}
 codebook <- ac_qual_codebook(
   categories = c(
     "Favoravel",
@@ -262,7 +262,7 @@ ac_qual_reliability(irr, threshold = 0.75)
 
 ## 6. Analise quantitativa complementar
 
-```{r quantitativo, eval=TRUE}
+```{r quantitativo, eval=FALSE}
 # Tokenizar para analise de frequencias por tema
 tokens <- ac_tokenize(
   ac_clean(corpus, lowercase = TRUE),
