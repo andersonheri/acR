@@ -18,3 +18,4 @@ Invisibly returns \code{x}.
 Prints a formatted summary of inter-rater reliability metrics,
 including a metrics table and confusion matrix.
 }
+\keyword{internal}

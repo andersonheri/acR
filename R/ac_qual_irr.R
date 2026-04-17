@@ -247,6 +247,7 @@ ac_qual_irr <- function(
 #'
 #' @return Invisibly returns \code{x}.
 #'
+#' @keywords internal
 #' @export
 print.ac_irr <- function(x, ...) {
   cli::cli_h2("Confiabilidade inter-anotador (acR)")
