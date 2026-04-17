@@ -44,6 +44,8 @@ navbar:
       - text: "Pipeline quantitativo"
       - text: Analise de frequencias e keyness
         href: articles/quantitativo.html
+      - text: Analise de proposicoes com qwen3.6
+        href: articles/analise-proposicoes.html
       - text: Analise de sentimento
         href: articles/sentimento.html
       - text: Modelagem de topicos (LDA)
@@ -124,4 +126,7 @@ footer:
   structure:
     left: developed_by
     right: built_with
+    
+  env:
+  OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
 
