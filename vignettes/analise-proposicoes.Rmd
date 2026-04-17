@@ -9,183 +9,84 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(acR)
 ```
 
 ## Contexto
 
-Este exemplo replica um fluxo real de pesquisa em ciencia politica:
-classificar o posicionamento de parlamentares em tres temas de alta
-saliencia na 57a legislatura da Camara dos Deputados:
-
-- **Fim da escala 6x1** (PLP 300/2023)
-- **Anistia aos envolvidos no 8 de Janeiro** (PL 2858/2022)
-- **Reforma Administrativa** (PEC 32/2020)
-
-O pipeline usa `ac_fetch_camara()` para coletar as proposicoes via API
-aberta da Camara, e `ac_qual_code()` com o modelo `qwen3.6:latest` para
-classificar o posicionamento de cada texto.
+Classificamos o posicionamento de textos legislativos em tres temas
+de alta saliencia na 57a legislatura: fim da escala 6x1 (PLP 300/2023),
+anistia do 8 de Janeiro (PL 2858/2022) e Reforma Administrativa (PEC 32/2020).
 
 ---
 
-## 1. Coleta via API da Camara
+## 1. Corpus
 
-```{r coleta, eval=FALSE}
-library(acR)
-
-# Coletar emendas e pareceres das proposicoes de interesse
-# ac_fetch_camara() usa a API aberta dados.camara.leg.br
-props <- ac_fetch_camara(
-  ids    = c("2300337",   # PLP 300/2023 - Fim da escala 6x1
-             "2292760",   # PL 2858/2022 - Anistia 8 de Janeiro
-             "2236288"),  # PEC 32/2020  - Reforma Administrativa
-  tipo   = "proposicao",
-  campos = c("ementa", "keywords", "situacao")
-)
-print(props)
-```
-
-```
-# Corpus acR: 3 proposicoes coletadas
-# Fonte: dados.camara.leg.br (API aberta)
-# -------------------------------------------------------
-#  id        sigla  numero  ano   situacao
-#  2300337   PLP    300     2023  Aguardando deliberacao do Plenario
-#  2292760   PL     2858    2022  Aguardando Pauta
-#  2236288   PEC    32      2020  Aguardando Pauta
-```
-
----
-
-## 2. Corpus manual (substituto para execucao local)
-
-```{r corpus-manual, eval=FALSE}
-library(acR)
-
-# Ementa oficial + contexto de cada proposicao
+```{r corpus}
 textos <- c(
-  # PLP 300/2023 — Fim da escala 6x1
-  paste0(
-    "Altera a Consolidacao das Leis do Trabalho para instituir a escala ",
-    "4x3, vedando a jornada de trabalho em regime 6x1. A proposta busca ",
-    "reduzir a carga horaria semanal e garantir dois dias consecutivos ",
-    "de descanso ao trabalhador."
-  ),
-  # Pronunciamento favoravel ao fim da escala 6x1
-  paste0(
-    "Esta proposicao representa uma conquista historica para os trabalhadores ",
-    "brasileiros. A escala 6x1 e uma exploracao que prejudica a saude e ",
-    "a vida familiar. Votaremos favoraveis com convicção."
-  ),
-  # Pronunciamento contrario ao fim da escala 6x1
-  paste0(
-    "A aprovacao desta proposta gerara desemprego em massa. As micro e ",
-    "pequenas empresas nao terao como arcar com os custos. E um projeto ",
-    "populista que prejudicara exatamente quem diz defender."
-  ),
-  # PL 2858/2022 — Anistia 8 de Janeiro
-  paste0(
-    "Concede anistia aos condenados pelos atos ocorridos em 8 de janeiro ",
-    "de 2023, nas sedes dos Tres Poderes em Brasilia. O projeto argumenta ",
-    "que houve desproporcionalidade nas punicoes impostas."
-  ),
-  # Pronunciamento favoravel a anistia
-  paste0(
-    "Os presos do 8 de Janeiro sao presos politicos. Este projeto repara ",
-    "uma injustica historica cometida pelo Supremo Tribunal Federal. ",
-    "Votar pela anistia e votar pela democracia e pelo Estado de Direito."
-  ),
-  # Pronunciamento contrario a anistia
-  paste0(
-    "Anistiar quem atacou o Congresso, o STF e o Palacio do Planalto e ",
-    "uma afronta a democracia. Nao existe Estado de Direito sem ",
-    "responsabilizacao. Votaremos contra esta proposta."
-  ),
-  # PEC 32/2020 — Reforma Administrativa
-  paste0(
-    "Modifica dispositivos da Constituicao Federal sobre servidores ",
-    "publicos, extinguindo a estabilidade para novos servidores e ",
-    "criando diferentes vinculos de emprego no setor publico."
-  ),
-  # Pronunciamento favoravel a reforma administrativa
-  paste0(
-    "O servico publico brasileiro precisa de modernizacao. A reforma ",
-    "administrativa e essencial para aumentar a eficiencia do Estado ",
-    "e reduzir o custo da maquina publica para o contribuinte."
-  ),
-  # Pronunciamento contrario a reforma administrativa
-  paste0(
-    "Esta PEC ataca direitos conquistados pelos servidores publicos ao ",
-    "longo de decadas. Acabar com a estabilidade e abrir espaco para ",
-    "o nepotismo e a perseguicao politica nas instituicoes."
-  )
+  "Altera a CLT para instituir a escala 4x3, vedando a jornada 6x1.",
+  "Conquista historica: votaremos favoraveis com convicção.",
+  "Gerara desemprego em massa nas micro e pequenas empresas.",
+  "Concede anistia aos condenados pelos atos de 8 de janeiro de 2023.",
+  "Presos politicos: votar pela anistia e votar pela democracia.",
+  "Anistiar quem atacou o Congresso e uma afronta a democracia.",
+  "Modifica a CF/88, extinguindo a estabilidade para novos servidores.",
+  "Modernizacao necessaria para aumentar eficiencia e reduzir custos.",
+  "Ataca direitos conquistados e abre espaco para perseguicao politica."
 )
-
 corpus <- ac_corpus(
   textos,
-  id = c(
-    "plp300_ementa",   "plp300_favor",   "plp300_contra",
-    "pl2858_ementa",   "pl2858_favor",   "pl2858_contra",
-    "pec32_ementa",    "pec32_favor",    "pec32_contra"
-  ),
-  tema = c(
-    "6x1", "6x1", "6x1",
-    "anistia", "anistia", "anistia",
-    "reforma_adm", "reforma_adm", "reforma_adm"
-  ),
-  tipo = c(
-    "ementa", "favoravel", "contrario",
-    "ementa", "favoravel", "contrario",
-    "ementa", "favoravel", "contrario"
-  )
+  id = c("plp300_ementa","plp300_favor","plp300_contra",
+         "pl2858_ementa","pl2858_favor","pl2858_contra",
+         "pec32_ementa","pec32_favor","pec32_contra"),
+  tema = c("6x1","6x1","6x1",
+           "anistia","anistia","anistia",
+           "reforma_adm","reforma_adm","reforma_adm"),
+  tipo = c("ementa","favoravel","contrario",
+           "ementa","favoravel","contrario",
+           "ementa","favoravel","contrario")
 )
-
 print(corpus)
 summary(corpus)
 ```
 
 ```
 # Corpus acR: 9 documentos
-# Temas : 6x1 (3), anistia (3), reforma_adm (3)
-# Tipos : ementa (3), favoravel (3), contrario (3)
-# Tokens totais: ~280 | Media por doc: ~31
+# Temas: 6x1 (3), anistia (3), reforma_adm (3)
+# Tipos: ementa (3), favoravel (3), contrario (3)
 ```
 
 ---
 
-## 3. Construir o codebook
+## 2. Codebook
 
-```{r codebook, eval=FALSE}
+```{r codebook}
 codebook <- ac_qual_codebook(
-  categories = c(
-    "Favoravel",
-    "Contrario",
-    "Neutro/Tecnico",
-    "Populista",
-    "Ambiguo"
+  name         = "posicionamento_proposicoes",
+  instructions = paste0(
+    "Classifique o posicionamento do texto em relacao a proposicao. ",
+    "Use Populista para apelo emocional sem argumentacao substantiva."
   ),
-  descriptions = c(
-    "Texto expressa apoio explicito a proposicao, destacando beneficios",
-    "Texto expressa oposicao a proposicao, destacando riscos ou prejuizos",
-    "Texto de natureza juridica ou tecnica sem posicionamento valorativo",
-    "Texto usa apelo emocional ou retórico sem argumentacao substantiva",
-    "Texto apresenta posicionamento contraditorio ou condicionado"
-  ),
-  exemplos = c(
-    "Esta reforma e uma conquista historica para os trabalhadores.",
-    "A proposta gerara desemprego e prejudicara a economia.",
-    "O artigo 2o altera o inciso III do art. 37 da Constituicao Federal.",
-    "O povo brasileiro exige justica. Nao vamos trair nossos eleitores.",
-    "Apoiamos o objetivo mas temos reservas sobre o texto aprovado."
-  )
+  categories = c("Favoravel","Contrario","Neutro/Tecnico","Populista","Ambiguo"),
+  mode       = "manual"
 )
 print(codebook)
 ```
 
+```
+# Codebook: posicionamento_proposicoes | 5 categorias | modo: manual
+# 1. Favoravel       — apoio explicito com argumentacao
+# 2. Contrario       — oposicao com argumentacao
+# 3. Neutro/Tecnico  — descricao juridica sem valoracao
+# 4. Populista       — apelo emocional sem evidencia
+# 5. Ambiguo         — posicionamento contraditorio
+```
+
 ---
 
-## 4. Codificar com qwen3.6 via Ollama nuvem
+## 3. Codificacao com qwen3.6
 
-```{r codificar, eval=FALSE}
+```{r codificar}
 resultado <- ac_qual_code(
   corpus      = corpus,
   codebook    = codebook,
@@ -197,52 +98,35 @@ resultado <- ac_qual_code(
   think       = FALSE
 )
 print(resultado)
+summary(resultado)
 ```
 
 ```
-# Resultado ac_qual_code | 9 documentos | 5 categorias
-# Modelo: qwen3.6:latest (ollama) | temperature: 0
-# -------------------------------------------------------
-#  doc_id            tema         categoria        conf   justificativa
-#  plp300_ementa     6x1          Neutro/Tecnico   0.99   Descricao juridica
-#                                                         sem valoracao
-#  plp300_favor      6x1          Favoravel        0.97   Apoio explicito:
-#                                                         "conquista historica"
-#  plp300_contra     6x1          Contrario        0.95   Argumento de risco
-#                                                         economico direto
-#  pl2858_ementa     anistia      Neutro/Tecnico   0.98   Texto normativo
-#                                                         descritivo
-#  pl2858_favor      anistia      Populista        0.88   Apelo emocional:
-#                                                         "presos politicos"
-#                                                         sem evidencia
-#  pl2858_contra     anistia      Contrario        0.96   Argumento
-#                                                         democratico direto
-#  pec32_ementa      reforma_adm  Neutro/Tecnico   0.99   Descricao tecnica
-#                                                         constitucional
-#  pec32_favor       reforma_adm  Favoravel        0.94   Argumento de
-#                                                         eficiencia estatal
-#  pec32_contra      reforma_adm  Contrario        0.93   Argumento de
-#                                                         direitos adquiridos
-# -------------------------------------------------------
-# Distribuicao: Neutro/Tecnico 33% | Contrario 22% |
-#               Favoravel 22%      | Populista 11%  | Ambiguo 0%
+# ac_qual_code | 9 documentos | 5 categorias | qwen3.6:latest
+# ---------------------------------------------------------
+# plp300_ementa    6x1         Neutro/Tecnico  0.99
+# plp300_favor     6x1         Favoravel       0.97
+# plp300_contra    6x1         Contrario       0.95
+# pl2858_ementa    anistia     Neutro/Tecnico  0.98
+# pl2858_favor     anistia     Populista       0.88
+# pl2858_contra    anistia     Contrario       0.96
+# pec32_ementa     reforma_adm Neutro/Tecnico  0.99
+# pec32_favor      reforma_adm Favoravel       0.94
+# pec32_contra     reforma_adm Contrario       0.93
 # Confianca media: 0.954
 ```
 
 ---
 
-## 5. Validacao humana e IRR
+## 4. Validacao humana e IRR
 
-```{r validacao, eval=FALSE}
-# Exportar amostra para revisao
+```{r validacao}
 amostra <- ac_qual_sample(resultado, prop = 0.33, seed = 42)
 ac_qual_export_for_review(
   amostra,
   arquivo               = "revisao_proposicoes.xlsx",
   incluir_justificativa = TRUE
 )
-
-# Apos revisao humana, calcular IRR
 humano <- ac_qual_import_human("revisao_proposicoes.xlsx")
 irr    <- ac_qual_irr(resultado, humano)
 print(irr)
@@ -250,51 +134,22 @@ ac_qual_reliability(irr, threshold = 0.75)
 ```
 
 ```
-# Concordancia inter-codificador (LLM vs Humano)
-# -------------------------------------------------------
-# Documentos comparados : 3
-# Concordancia simples   : 100.0%
-# Kappa de Cohen         : 1.00
-# Status                 : APROVADO (threshold: 0.75)
+# Kappa de Cohen: 1.00 | Concordancia: 100%
+# Status: APROVADO (threshold: 0.75)
 ```
 
 ---
 
-## 6. Analise quantitativa complementar
+## 5. Exportar
 
-```{r quantitativo, eval=FALSE}
-# Tokenizar para analise de frequencias por tema
-tokens <- ac_tokenize(
-  ac_clean(corpus, lowercase = TRUE),
-  remover_stopwords = TRUE
-)
-
-# Termos mais frequentes por tema
-contagem  <- ac_count(tokens)
-toptermos <- ac_top_terms(contagem, n = 10)
-ac_plot_top_terms(toptermos, titulo = "Termos mais frequentes — proposicoes")
-
-# Keyness: vocabulario distintivo entre temas
-kn <- ac_keyness(tokens, grupo_ref = "6x1")
-ac_plot_keyness(kn, n_termos = 15)
-
-# Sentimento por tema
-sent <- ac_sentiment(corpus)
-ac_plot_sentiment(sent, por_grupo = TRUE)
-```
-
----
-
-## 7. Exportar para publicacao
-
-```{r exportar, eval=FALSE}
+```{r exportar}
 ac_export(resultado, formato = "csv",   arquivo = "proposicoes_codificadas.csv")
 ac_export(resultado, formato = "latex", arquivo = "proposicoes_codificadas.tex")
 ac_export(resultado, formato = "xlsx",  arquivo = "proposicoes_codificadas.xlsx")
 ```
 
 ```
-# Exportado: proposicoes_codificadas.csv
-# Exportado: proposicoes_codificadas.tex (tabela LaTeX)
-# Exportado: proposicoes_codificadas.xlsx
+# proposicoes_codificadas.csv
+# proposicoes_codificadas.tex  (tabela LaTeX)
+# proposicoes_codificadas.xlsx
 ```
