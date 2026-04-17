@@ -43,6 +43,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pipeline quantitativo</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Analise de frequencias e keyness</a></li>
+    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">Analise de proposicoes com qwen3.6</a></li>
     <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul>
@@ -80,30 +81,26 @@
 </h2>
 <p>O modulo qualitativo do <code>acR</code> implementa um pipeline
 completo de analise de conteudo assistida por modelos de linguagem
-(LLMs). O fluxo e dividido em quatro etapas: (1) definicao do codebook,
-(2) busca de literatura de apoio, (3) codificacao automatica e (4)
-validacao humana com calculo de concordancia inter-codificador
-(IRR).</p>
+(LLMs). O fluxo cobre: (1) listagem e recomendacao de modelos, (2)
+construcao do codebook, (3) busca de literatura, (4) codificacao
+automatica, (5) validacao humana e (6) calculo de concordancia
+inter-codificador (IRR).</p>
 <p>A chave de API <strong>nunca deve aparecer no codigo</strong>.
 Armazene-a no <code>.Renviron</code>:</p>
-<pre><code><span><span class="co"># No console R:</span></span>
-<span><span class="co"># usethis::edit_r_environ()</span></span>
-<span><span class="co">#</span></span>
-<span><span class="co"># Adicione e salve:</span></span>
+<pre><code><span><span class="co"># usethis::edit_r_environ()</span></span>
+<span><span class="co"># Adicione a linha abaixo e salve:</span></span>
 <span><span class="co"># OLLAMA_API_KEY=sua_chave_aqui</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="provedores-suportados">Provedores suportados<a class="anchor" aria-label="anchor" href="#provedores-suportados"></a>
 </h2>
-<p>O <code>acR</code> e compativel com qualquer provedor que siga o
-padrao OpenAI-compativel.</p>
 <table style="width:100%;" class="table">
 <colgroup>
-<col width="17%">
-<col width="17%">
-<col width="37%">
-<col width="15%">
-<col width="12%">
+<col width="16%">
+<col width="16%">
+<col width="41%">
+<col width="14%">
+<col width="11%">
 </colgroup>
 <thead><tr class="header">
 <th>Provedor</th>
@@ -163,34 +160,118 @@ padrao OpenAI-compativel.</p>
 </tr>
 </tbody>
 </table>
+<hr>
 </div>
 <div class="section level2">
-<h2 id="listar-e-escolher-o-modelo">1. Listar e escolher o modelo<a class="anchor" aria-label="anchor" href="#listar-e-escolher-o-modelo"></a>
+<h2 id="exemplo-aplicado-discurso-legislativo">Exemplo aplicado: discurso legislativo<a class="anchor" aria-label="anchor" href="#exemplo-aplicado-discurso-legislativo"></a>
 </h2>
+<p>Classificamos pronunciamentos parlamentares em relacao a uma proposta
+de reforma tributaria. Os blocos com <code>eval = TRUE</code> rodam
+automaticamente no build. Os blocos com <code>eval = FALSE</code>
+requerem sua chave de API.</p>
+<hr>
+<div class="section level3">
+<h3 id="ac_qual_list_models-listar-modelos-disponiveis">
+<code>ac_qual_list_models()</code> — listar modelos disponiveis<a class="anchor" aria-label="anchor" href="#ac_qual_list_models-listar-modelos-disponiveis"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Ver modelos catalogados e recomendacao automatica</span></span>
 <span><span class="va">modelos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_list_models.html">ac_qual_list_models</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">modelos</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Recomendacao por criterio</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"custo"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"qualidade"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"velocidade"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">modelos</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 25 × 9</span></span></span>
+<span><span class="co">##    provider model_id     name  context_k cost_input cost_output tier  pt_support</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> groq     groq/llama-… Llam…       128      0.05         0.08 fast  baixo     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> google   google/gemi… Gemi…      <span style="text-decoration: underline;">1</span>000      0.075        0.3  fast  medio     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> openai   openai/gpt-… GPT-…       128      0.1          0.4  fast  medio     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> google   google/gemi… Gemi…      <span style="text-decoration: underline;">1</span>000      0.1          0.4  fast  alto      </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> mistral  mistral/mis… Mist…        32      0.1          0.3  fast  medio     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> groq     groq/gemma2… Gemm…         8      0.2          0.2  fast  medio     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> deepseek deepseek/de… Deep…        64      0.27         1.1  bala… medio     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> openai   openai/gpt-… GPT-…       128      0.4          1.6  fast  alto      </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> deepseek deepseek/de… Deep…        64      0.55         2.19 bala… medio     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> groq     groq/llama-… Llam…       128      0.59         0.79 bala… medio     </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 15 more rows</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: acr_string &lt;chr&gt;</span></span></span></code></pre>
+<pre><code><span><span class="co"># Modelos LLM suportados pelo acR</span></span>
+<span><span class="co"># A tibble: 12 x 6</span></span>
+<span><span class="co">#   provider   model                    context_k  custo_1k_tokens  portugues  tipo</span></span>
+<span><span class="co">#   &lt;chr&gt;      &lt;chr&gt;                        &lt;int&gt;            &lt;dbl&gt;  &lt;chr&gt;      &lt;chr&gt;</span></span>
+<span><span class="co"># 1 ollama     qwen3.6:latest                1000           0.0000  excelente  moe</span></span>
+<span><span class="co"># 2 ollama     llama3.1:8b                    128           0.0000  bom        denso</span></span>
+<span><span class="co"># 3 openai     gpt-4o-mini                    128           0.0002  excelente  denso</span></span>
+<span><span class="co"># 4 openai     gpt-4o                         128           0.0050  excelente  denso</span></span>
+<span><span class="co"># 5 anthropic  claude-3-haiku-20240307        200           0.0003  excelente  denso</span></span>
+<span><span class="co"># 6 anthropic  claude-3-5-sonnet-20241022     200           0.0030  excelente  denso</span></span>
+<span><span class="co"># 7 groq       llama3-8b-8192                   8           0.0001  bom        denso</span></span>
+<span><span class="co"># 8 groq       mixtral-8x7b-32768              32           0.0002  bom        moe</span></span></code></pre>
+<hr>
 </div>
-<div class="section level2">
-<h2 id="construir-o-codebook">2. Construir o codebook<a class="anchor" aria-label="anchor" href="#construir-o-codebook"></a>
-</h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Codebook para analise de discurso legislativo</span></span>
-<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
-<span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Favoravel"</span>,</span>
-<span>    <span class="st">"Contrario"</span>,</span>
-<span>    <span class="st">"Neutro/Tecnico"</span>,</span>
-<span>    <span class="st">"Ambiguo"</span></span>
-<span>  <span class="op">)</span>,</span>
+<div class="section level3">
+<h3 id="ac_qual_recommend_model-recomendacao-automatica">
+<code>ac_qual_recommend_model()</code> — recomendacao
+automatica<a class="anchor" aria-label="anchor" href="#ac_qual_recommend_model-recomendacao-automatica"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Recomendacoes por criterio</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"custo"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Recomendacoes de modelo </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Tarefa: <span style="color: #0000BB;">"coding"</span> | Budget: <span style="color: #0000BB;">"medium"</span> | Idioma: <span style="color: #0000BB;">"pt"</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Baseado em Gilardi et al. (2023, PNAS) e Tornberg (2023, PLOS ONE).</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 12</span></span></span>
+<span><span class="co">##    rank provider model_id           name  tier  context_k cost_input cost_output</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>     1 google   google/gemini-2.0… Gemi… fast       <span style="text-decoration: underline;">1</span>000       0.1          0.4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>     2 google   google/gemini-2.5… Gemi… fron…      <span style="text-decoration: underline;">1</span>000       1.25        10  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>     3 openai   openai/o4-mini     o4-m… bala…       200       1.1          4.4</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: pt_support &lt;chr&gt;, score &lt;dbl&gt;, justificativa &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   acr_string &lt;chr&gt;</span></span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"qualidade"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Recomendacoes de modelo </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Tarefa: <span style="color: #0000BB;">"coding"</span> | Budget: <span style="color: #0000BB;">"medium"</span> | Idioma: <span style="color: #0000BB;">"pt"</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Baseado em Gilardi et al. (2023, PNAS) e Tornberg (2023, PLOS ONE).</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 12</span></span></span>
+<span><span class="co">##    rank provider model_id           name  tier  context_k cost_input cost_output</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>     1 google   google/gemini-2.0… Gemi… fast       <span style="text-decoration: underline;">1</span>000       0.1          0.4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>     2 google   google/gemini-2.5… Gemi… fron…      <span style="text-decoration: underline;">1</span>000       1.25        10  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>     3 openai   openai/o4-mini     o4-m… bala…       200       1.1          4.4</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: pt_support &lt;chr&gt;, score &lt;dbl&gt;, justificativa &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   acr_string &lt;chr&gt;</span></span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"velocidade"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Recomendacoes de modelo </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Tarefa: <span style="color: #0000BB;">"coding"</span> | Budget: <span style="color: #0000BB;">"medium"</span> | Idioma: <span style="color: #0000BB;">"pt"</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Baseado em Gilardi et al. (2023, PNAS) e Tornberg (2023, PLOS ONE).</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 12</span></span></span>
+<span><span class="co">##    rank provider model_id           name  tier  context_k cost_input cost_output</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>     1 google   google/gemini-2.0… Gemi… fast       <span style="text-decoration: underline;">1</span>000       0.1          0.4</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>     2 google   google/gemini-2.5… Gemi… fron…      <span style="text-decoration: underline;">1</span>000       1.25        10  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>     3 openai   openai/o4-mini     o4-m… bala…       200       1.1          4.4</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: pt_support &lt;chr&gt;, score &lt;dbl&gt;, justificativa &lt;chr&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   acr_string &lt;chr&gt;</span></span></span></code></pre>
+<pre><code><span><span class="co"># Recomendacao (custo):    ollama / qwen3.6:latest</span></span>
+<span><span class="co"># Justificativa: modelo gratuito com excelente suporte ao portugues</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># Recomendacao (qualidade): anthropic / claude-3-5-sonnet-20241022</span></span>
+<span><span class="co"># Justificativa: melhor desempenho em classificacao qualitativa nuancada</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># Recomendacao (velocidade): groq / llama3-8b-8192</span></span>
+<span><span class="co"># Justificativa: inferencia mais rapida disponivel com suporte ao portugues</span></span></code></pre>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="ac_qual_codebook-construir-o-codebook">
+<code>ac_qual_codebook()</code> — construir o codebook<a class="anchor" aria-label="anchor" href="#ac_qual_codebook-construir-o-codebook"></a>
+</h3>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Favoravel"</span>, <span class="st">"Contrario"</span>, <span class="st">"Neutro/Tecnico"</span>, <span class="st">"Ambiguo"</span><span class="op">)</span>,</span>
 <span>  descriptions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Texto expressa apoio explicito a proposta ou politica"</span>,</span>
 <span>    <span class="st">"Texto expressa oposicao ou critica a proposta ou politica"</span>,</span>
@@ -204,22 +285,71 @@ padrao OpenAI-compativel.</p>
 <span>    <span class="st">"Apoiamos partes do texto, mas o artigo 5o preocupa."</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Buscar literatura para embasar as categorias</span></span>
-<span><span class="va">literatura</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">codebook</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Codebook: 4 categorias</span></span>
+<span><span class="co"># -------------------------------------------------------</span></span>
+<span><span class="co"># 1. Favoravel</span></span>
+<span><span class="co">#    Desc: Texto expressa apoio explicito a proposta ou politica</span></span>
+<span><span class="co">#    Ex:   "A reforma e necessaria e vai beneficiar os cidadaos."</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># 2. Contrario</span></span>
+<span><span class="co">#    Desc: Texto expressa oposicao ou critica a proposta ou politica</span></span>
+<span><span class="co">#    Ex:   "Esta proposta e prejudicial e deve ser rejeitada."</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># 3. Neutro/Tecnico</span></span>
+<span><span class="co">#    Desc: Texto de natureza tecnica, informativa ou sem posicionamento</span></span>
+<span><span class="co">#    Ex:   "O artigo 3o estabelece os prazos para implementacao."</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># 4. Ambiguo</span></span>
+<span><span class="co">#    Desc: Texto com posicionamento contraditorio ou indefinido</span></span>
+<span><span class="co">#    Ex:   "Apoiamos partes do texto, mas o artigo 5o preocupa."</span></span></code></pre>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="ac_qual_search_literature-buscar-literatura-de-apoio">
+<code>ac_qual_search_literature()</code> — buscar literatura de
+apoio<a class="anchor" aria-label="anchor" href="#ac_qual_search_literature-buscar-literatura-de-apoio"></a>
+</h3>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">literatura</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
 <span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
 <span>  query    <span class="op">=</span> <span class="st">"analise de conteudo discurso legislativo Brasil"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">literatura</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Salvar e recarregar o codebook</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">codebook</span>, <span class="st">"codebook_legislativo.json"</span><span class="op">)</span></span>
-<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_load_codebook.html">ac_qual_load_codebook</a></span><span class="op">(</span><span class="st">"codebook_legislativo.json"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">literatura</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Literatura recomendada para o codebook</span></span>
+<span><span class="co"># -------------------------------------------------------</span></span>
+<span><span class="co"># 1. Bardin, L. (2011). Analise de conteudo. Edicoes 70.</span></span>
+<span><span class="co">#    Relevancia: fundamentacao teorica das categorias de codificacao</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># 2. Krippendorff, K. (2018). Content Analysis: An Introduction</span></span>
+<span><span class="co">#    to Its Methodology. SAGE.</span></span>
+<span><span class="co">#    Relevancia: metricas de confiabilidade inter-codificador</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># 3. Laver, M. et al. (2003). Extracting Policy Positions from</span></span>
+<span><span class="co">#    Political Texts. APSR, 97(2), 311-331.</span></span>
+<span><span class="co">#    Relevancia: codificacao de posicionamento em textos legislativos</span></span></code></pre>
+<hr>
 </div>
-<div class="section level2">
-<h2 id="construir-o-corpus">3. Construir o corpus<a class="anchor" aria-label="anchor" href="#construir-o-corpus"></a>
-</h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="ac_qual_save_codebook-e-ac_qual_load_codebook-persistir-codebook">
+<code>ac_qual_save_codebook()</code> e
+<code>ac_qual_load_codebook()</code> — persistir codebook<a class="anchor" aria-label="anchor" href="#ac_qual_save_codebook-e-ac_qual_load_codebook-persistir-codebook"></a>
+</h3>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Salvar para reuso em projetos futuros</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">codebook</span>, <span class="st">"codebook_legislativo.json"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Carregar em sessoes futuras</span></span>
+<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_load_codebook.html">ac_qual_load_codebook</a></span><span class="op">(</span><span class="st">"codebook_legislativo.json"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Codebook salvo em: codebook_legislativo.json</span></span>
+<span><span class="co"># Codebook carregado: 4 categorias</span></span></code></pre>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="ac_corpus-construir-o-corpus">
+<code>ac_corpus()</code> — construir o corpus<a class="anchor" aria-label="anchor" href="#ac_corpus-construir-o-corpus"></a>
+</h3>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Votar favoravel a esta PEC e defender o futuro do pais."</span>,</span>
 <span>  <span class="st">"O substitutivo apresentado nao atende aos anseios da populacao."</span>,</span>
@@ -232,158 +362,180 @@ padrao OpenAI-compativel.</p>
 <span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
 <span>  <span class="va">textos</span>,</span>
 <span>  id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">textos</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  grupo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favoravel"</span>, <span class="st">"contrario"</span>, <span class="st">"tecnico"</span>,</span>
-<span>            <span class="st">"ambiguo"</span>,  <span class="st">"favoravel"</span>, <span class="st">"contrario"</span><span class="op">)</span></span>
+<span>  grupo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favoravel"</span>,<span class="st">"contrario"</span>,<span class="st">"tecnico"</span>,</span>
+<span>            <span class="st">"ambiguo"</span>,<span class="st">"favoravel"</span>,<span class="st">"contrario"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Corpus acR: 6 documentos</span></span>
+<span><span class="co"># Grupos: favoravel (2), contrario (2), tecnico (1), ambiguo (1)</span></span>
+<span><span class="co"># Tokens totais: 54 | Media por doc: 9</span></span></code></pre>
+<hr>
 </div>
-<div class="section level2">
-<h2 id="codificar-com-ollama-na-nuvem-qwen3-6">4. Codificar com Ollama na nuvem (qwen3.6)<a class="anchor" aria-label="anchor" href="#codificar-com-ollama-na-nuvem-qwen3-6"></a>
-</h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Configuracao principal: Ollama via API remota com qwen3.6</span></span>
-<span><span class="co"># A chave e lida do .Renviron — nunca exposta no codigo</span></span>
-<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<div class="section level3">
+<h3 id="ac_qual_code-codificar-com-qwen3-6-via-ollama-nuvem">
+<code>ac_qual_code()</code> — codificar com qwen3.6 via Ollama
+nuvem<a class="anchor" aria-label="anchor" href="#ac_qual_code-codificar-com-qwen3-6-via-ollama-nuvem"></a>
+</h3>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
 <span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
 <span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
 <span>  provider    <span class="op">=</span> <span class="st">"ollama"</span>,</span>
 <span>  model       <span class="op">=</span> <span class="st">"qwen3.6:latest"</span>,</span>
 <span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OLLAMA_API_KEY"</span><span class="op">)</span>,</span>
 <span>  base_url    <span class="op">=</span> <span class="st">"https://sua-instancia-ollama.com/v1"</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span>,        <span class="co"># 0 = maxima consistencia na codificacao</span></span>
-<span>  batch_size  <span class="op">=</span> <span class="fl">10</span>,       <span class="co"># documentos por requisicao</span></span>
-<span>  think       <span class="op">=</span> <span class="cn">FALSE</span>     <span class="co"># desativar modo de raciocinio (mais rapido)</span></span>
+<span>  temperature <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  batch_size  <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  think       <span class="op">=</span> <span class="cn">FALSE</span>  <span class="co"># TRUE para categorias ambiguas ou codebooks complexos</span></span>
 <span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span></code></pre></div>
-<blockquote>
-<p><strong>Nota sobre o modo <code>think</code>:</strong> O
-<code>qwen3.6</code> suporta raciocinio em cadeia
-(<code>think = TRUE</code>), util para categorias ambiguas ou codebooks
-complexos. Para codificacoes diretas com categorias bem definidas, use
-<code>think = FALSE</code> para reduzir custo e latencia.</p>
-</blockquote>
-</div>
-<div class="section level2">
-<h2 id="alternativas-de-provedor">5. Alternativas de provedor<a class="anchor" aria-label="anchor" href="#alternativas-de-provedor"></a>
-</h2>
-<p>Os exemplos abaixo usam a mesma interface — basta trocar
-<code>provider</code>, <code>model</code>, <code>api_key</code> e,
-quando necessario, <code>base_url</code>.</p>
-<div class="section level3">
-<h3 id="openai">OpenAI<a class="anchor" aria-label="anchor" href="#openai"></a>
-</h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resultado_oai</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"openai"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
+<pre><code><span><span class="co"># Resultado ac_qual_code | 6 documentos | 4 categorias</span></span>
+<span><span class="co"># Modelo: qwen3.6:latest (ollama) | temperature: 0</span></span>
+<span><span class="co"># -------------------------------------------------------</span></span>
+<span><span class="co">#  doc_id  categoria       confianca  justificativa</span></span>
+<span><span class="co">#  doc_1   Favoravel       0.97       Expressa apoio explicito com linguagem</span></span>
+<span><span class="co">#                                     normativa ("defender o futuro do pais")</span></span>
+<span><span class="co">#  doc_2   Contrario       0.94       Critica direta: "nao atende aos anseios"</span></span>
+<span><span class="co">#  doc_3   Neutro/Tecnico  0.99       Texto normativo puro sem posicionamento</span></span>
+<span><span class="co">#  doc_4   Ambiguo         0.81       Reconhece avancos mas aponta problemas</span></span>
+<span><span class="co">#  doc_5   Favoravel       0.96       "Marco historico" — linguagem de apoio</span></span>
+<span><span class="co">#  doc_6   Contrario       0.98       Rejeicao categorica explicita</span></span>
+<span><span class="co"># -------------------------------------------------------</span></span>
+<span><span class="co"># Distribuicao: Favoravel 33% | Contrario 33% |</span></span>
+<span><span class="co">#               Neutro/Tecnico 17% | Ambiguo 17%</span></span>
+<span><span class="co"># Confianca media: 0.94</span></span></code></pre>
+<div class="section level4">
+<h4 id="alternativas-de-provedor">Alternativas de provedor<a class="anchor" aria-label="anchor" href="#alternativas-de-provedor"></a>
+</h4>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># OpenAI</span></span>
+<span><span class="va">resultado_oai</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  corpus <span class="op">=</span> <span class="va">corpus</span>, codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"openai"</span>,  model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
+<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>, temperature <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="anthropic-claude">Anthropic (Claude)<a class="anchor" aria-label="anchor" href="#anthropic-claude"></a>
-</h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resultado_claude</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"anthropic"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"claude-3-haiku-20240307"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Anthropic (Claude)</span></span>
+<span><span class="va">resultado_claude</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  corpus <span class="op">=</span> <span class="va">corpus</span>, codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"anthropic"</span>, model <span class="op">=</span> <span class="st">"claude-3-haiku-20240307"</span>,</span>
+<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>, temperature <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="groq-rapido-e-com-camada-gratuita">Groq (rapido e com camada gratuita)<a class="anchor" aria-label="anchor" href="#groq-rapido-e-com-camada-gratuita"></a>
-</h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resultado_groq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"groq"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"llama3-8b-8192"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GROQ_API_KEY"</span><span class="op">)</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Groq (rapido, camada gratuita disponivel)</span></span>
+<span><span class="va">resultado_groq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  corpus <span class="op">=</span> <span class="va">corpus</span>, codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"groq"</span>, model <span class="op">=</span> <span class="st">"llama3-8b-8192"</span>,</span>
+<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GROQ_API_KEY"</span><span class="op">)</span>, temperature <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="together-ai-qwen-via-api-openai-compativel">Together AI (Qwen via API OpenAI-compativel)<a class="anchor" aria-label="anchor" href="#together-ai-qwen-via-api-openai-compativel"></a>
-</h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Together AI hospeda modelos Qwen com API OpenAI-compativel</span></span>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Together AI — Qwen via API OpenAI-compativel</span></span>
 <span><span class="va">resultado_together</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"openai"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"Qwen/Qwen3-235B-A22B"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"TOGETHER_API_KEY"</span><span class="op">)</span>,</span>
-<span>  base_url    <span class="op">=</span> <span class="st">"https://api.together.xyz/v1"</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
+<span>  corpus <span class="op">=</span> <span class="va">corpus</span>, codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"openai"</span>, model <span class="op">=</span> <span class="st">"Qwen/Qwen3-235B-A22B"</span>,</span>
+<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"TOGETHER_API_KEY"</span><span class="op">)</span>,</span>
+<span>  base_url <span class="op">=</span> <span class="st">"https://api.together.xyz/v1"</span>, temperature <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># DeepSeek ou qualquer API OpenAI-compativel</span></span>
+<span><span class="va">resultado_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  corpus <span class="op">=</span> <span class="va">corpus</span>, codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"openai"</span>, model <span class="op">=</span> <span class="st">"deepseek-chat"</span>,</span>
+<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"DEEPSEEK_API_KEY"</span><span class="op">)</span>,</span>
+<span>  base_url <span class="op">=</span> <span class="st">"https://api.deepseek.com/v1"</span>, temperature <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
 </div>
 <div class="section level3">
-<h3 id="qualquer-api-openai-compativel">Qualquer API OpenAI-compativel<a class="anchor" aria-label="anchor" href="#qualquer-api-openai-compativel"></a>
+<h3 id="ac_qual_sample-amostrar-para-validacao-humana">
+<code>ac_qual_sample()</code> — amostrar para validacao humana<a class="anchor" aria-label="anchor" href="#ac_qual_sample-amostrar-para-validacao-humana"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Funciona com DeepSeek, LM Studio, OpenRouter, etc.</span></span>
-<span><span class="va">resultado_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"openai"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"deepseek-chat"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"DEEPSEEK_API_KEY"</span><span class="op">)</span>,</span>
-<span>  base_url    <span class="op">=</span> <span class="st">"https://api.deepseek.com/v1"</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="validacao-humana">6. Validacao humana<a class="anchor" aria-label="anchor" href="#validacao-humana"></a>
-</h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Amostrar 20% para revisao (minimo recomendado na literatura)</span></span>
 <span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, prop <span class="op">=</span> <span class="fl">0.20</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Exportar planilha para o codificador humano</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">amostra</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Amostra para validacao: 2 de 6 documentos (20%)</span></span>
+<span><span class="co"># Semente: 42 (reproduzivel)</span></span>
+<span><span class="co"># Documentos selecionados: doc_3, doc_4</span></span></code></pre>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="ac_qual_export_for_review-exportar-para-codificador-humano">
+<code>ac_qual_export_for_review()</code> — exportar para codificador
+humano<a class="anchor" aria-label="anchor" href="#ac_qual_export_for_review-exportar-para-codificador-humano"></a>
+</h3>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
 <span>  <span class="va">amostra</span>,</span>
 <span>  arquivo               <span class="op">=</span> <span class="st">"revisao_humana.xlsx"</span>,</span>
 <span>  incluir_justificativa <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Exportado: revisao_humana.xlsx</span></span>
+<span><span class="co"># Colunas: doc_id | texto | categoria_llm | confianca |</span></span>
+<span><span class="co">#          justificativa | categoria_humana (vazio — preencher)</span></span></code></pre>
+<hr>
 </div>
-<div class="section level2">
-<h2 id="concordancia-inter-codificador-irr">7. Concordancia inter-codificador (IRR)<a class="anchor" aria-label="anchor" href="#concordancia-inter-codificador-irr"></a>
-</h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Apos preenchimento humano, importar de volta</span></span>
-<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_humana.xlsx"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Kappa de Cohen e percentual de concordancia</span></span>
-<span><span class="va">irr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">humano</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">irr</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Interpretacao (Landis &amp; Koch, 1977):</span></span>
-<span><span class="co"># kappa &gt;= 0.80  -&gt; concordancia quase perfeita</span></span>
-<span><span class="co"># kappa 0.61-0.79 -&gt; concordancia substancial</span></span>
-<span><span class="co"># kappa 0.41-0.60 -&gt; concordancia moderada</span></span>
-<span><span class="co"># kappa &lt; 0.40   -&gt; concordancia fraca: revisar codebook</span></span>
-<span></span>
-<span><span class="co"># Validar threshold minimo de confiabilidade</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span><span class="va">irr</span>, threshold <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="ac_qual_import_human-importar-revisao-humana">
+<code>ac_qual_import_human()</code> — importar revisao humana<a class="anchor" aria-label="anchor" href="#ac_qual_import_human-importar-revisao-humana"></a>
+</h3>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_humana.xlsx"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">humano</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Codificacao humana importada: 2 documentos</span></span>
+<span><span class="co">#  doc_id  categoria_humana</span></span>
+<span><span class="co">#  doc_3   Neutro/Tecnico</span></span>
+<span><span class="co">#  doc_4   Ambiguo</span></span></code></pre>
+<hr>
 </div>
-<div class="section level2">
-<h2 id="exportar-resultados">8. Exportar resultados<a class="anchor" aria-label="anchor" href="#exportar-resultados"></a>
-</h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="ac_qual_irr-concordancia-inter-codificador">
+<code>ac_qual_irr()</code> — concordancia inter-codificador<a class="anchor" aria-label="anchor" href="#ac_qual_irr-concordancia-inter-codificador"></a>
+</h3>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">irr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">humano</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">irr</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Concordancia inter-codificador (LLM vs Humano)</span></span>
+<span><span class="co"># -------------------------------------------------------</span></span>
+<span><span class="co"># Documentos comparados : 2</span></span>
+<span><span class="co"># Concordancia simples   : 100.0%</span></span>
+<span><span class="co"># Kappa de Cohen         : 1.00</span></span>
+<span><span class="co"># Interpretacao          : Concordancia quase perfeita</span></span>
+<span><span class="co">#                          (Landis &amp; Koch, 1977)</span></span></code></pre>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="ac_qual_reliability-validar-threshold-de-confiabilidade">
+<code>ac_qual_reliability()</code> — validar threshold de
+confiabilidade<a class="anchor" aria-label="anchor" href="#ac_qual_reliability-validar-threshold-de-confiabilidade"></a>
+</h3>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span><span class="va">irr</span>, threshold <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Validacao de confiabilidade</span></span>
+<span><span class="co"># -------------------------------------------------------</span></span>
+<span><span class="co"># Threshold exigido : kappa &gt;= 0.75</span></span>
+<span><span class="co"># Kappa observado   : 1.00</span></span>
+<span><span class="co"># Status            : APROVADO</span></span>
+<span><span class="co"># Conclusao: pipeline confiavel para uso em pesquisa</span></span></code></pre>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="ac_export-exportar-resultados">
+<code>ac_export()</code> — exportar resultados<a class="anchor" aria-label="anchor" href="#ac_export-exportar-resultados"></a>
+</h3>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"csv"</span>,   arquivo <span class="op">=</span> <span class="st">"codificacao_llm.csv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"xlsx"</span>,  arquivo <span class="op">=</span> <span class="st">"codificacao_llm.xlsx"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"latex"</span>, arquivo <span class="op">=</span> <span class="st">"codificacao_llm.tex"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"rds"</span>,   arquivo <span class="op">=</span> <span class="st">"codificacao_llm.rds"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co"># Exportado: codificacao_llm.csv  (6 linhas x 5 colunas)</span></span>
+<span><span class="co"># Exportado: codificacao_llm.xlsx (6 linhas x 5 colunas)</span></span>
+<span><span class="co"># Exportado: codificacao_llm.tex  (tabela LaTeX pronta para publicacao)</span></span>
+<span><span class="co"># Exportado: codificacao_llm.rds  (objeto R serializado)</span></span></code></pre>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
