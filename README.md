@@ -1,87 +1,205 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# acR <a href="https://andersonheri.github.io/acR/"><img src="man/figures/logo.png" align="right" height="139" alt="acR logo" />
+# acR <img src="man/figures/logo.png" align="right" height="139" alt="acR logo" />
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/andersonheri/acR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/andersonheri/acR/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/andersonheri/acR?branch=main)
+[![pkgdown](https://github.com/andersonheri/acR/actions/workflows/pkgdown.yaml/badge.svg)](https://andersonheri.github.io/acR/)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-> **Análise de Conteúdo em R**: pipeline integrado qualitativo (LLMs) e quantitativo, com visualizações modernas e foco em corpora brasileiros.
+> **Analise de Conteudo em R**: pipeline integrado qualitativo (LLMs) e
+> quantitativo, com visualizacoes modernas e foco em corpora brasileiros.
 
-## Visão geral
+## Visao geral
 
-O `acR` oferece um pipeline integrado para análise de conteúdo, combinando:
+O `acR` oferece um pipeline completo de analise de conteudo textual para
+pesquisadores em ciencias sociais. O pacote integra dois modulos principais:
+um **modulo qualitativo** baseado em LLMs (qwen3.6, GPT-4o, Claude, Groq)
+para codificacao automatica com validacao humana, e um **modulo quantitativo**
+para frequencias, TF-IDF, keyness, sentimento e modelagem de topicos (LDA).
+Todas as funcoes foram projetadas para corpora em portugues e seguem as
+convencoes metodologicas de Bardin (2011) e Krippendorff (2018).
 
-- **Análise qualitativa assistida por LLMs**: codificação automatizada com codebooks versionados, métricas de confiabilidade entre codificador humano e LLM (Krippendorff α, Gwet AC1), calibração de incerteza e auditoria reproducível.
-- **Análise quantitativa clássica**: estatísticas descritivas, *keyness*, co-ocorrência, nuvens de palavras (incluindo comparativa e *X-ray*), análise de sentimento (OpLexicon), e *Latent Dirichlet Allocation* (LDA).
-- **Visualizações modernas**: tema próprio em `ggplot2`, paletas acessíveis, gráficos publicáveis.
-- **Foco em PT-BR**: stopwords expandidas, codebooks validados para o contexto político-institucional brasileiro, integração com `geobr`.
+## Instalacao
 
-## Instalação
-
-A versão em desenvolvimento pode ser instalada diretamente do GitHub:
-
-``` r
-# install.packages("pak")
-pak::pak("andersonheri/acR")
+```r
+# Versao de desenvolvimento (GitHub)
+# install.packages("remotes")
+remotes::install_github("andersonheri/acR")
 ```
 
-## Exemplo mínimo
+## Exemplo minimo
 
-> O pacote está em fase inicial de desenvolvimento. Funções abaixo são ilustrativas da API planejada.
+### Modulo qualitativo — codificacao com LLM
 
-``` r
+```r
 library(acR)
 
-# Construir corpus a partir de um data.frame
+# 1. Corpus
 corpus <- ac_corpus(
-  data = discursos_camara,
-  text = texto,
-  docid = id_discurso
+  c("Esta reforma beneficia os trabalhadores.",
+    "O projeto gerara desemprego em massa.",
+    "O artigo 3o estabelece prazo de 180 dias."),
+  id = c("doc_1", "doc_2", "doc_3")
 )
 
-# Pipeline quantitativo
-corpus |>
-  ac_clean(remove_stopwords = "pt-br-extended") |>
-  ac_quant_keyness(target = partido == "PT", reference = partido == "PL") |>
-  ac_plot_keyness(n = 20)
+# 2. Codebook
+codebook <- ac_qual_codebook(
+  name         = "posicionamento",
+  instructions = "Classifique o posicionamento do texto.",
+  categories   = c("Favoravel", "Contrario", "Neutro/Tecnico"),
+  mode         = "manual"
+)
 
-# Pipeline qualitativo (LLM)
-cb <- ac_qual_codebook("iliberalismo_br")
-coded <- ac_qual_code(corpus, codebook = cb, model = "anthropic/claude-sonnet-4-5")
+# 3. Codificar com qwen3.6 via Ollama
+resultado <- ac_qual_code(
+  corpus      = corpus,
+  codebook    = codebook,
+  provider    = "ollama",
+  model       = "qwen3.6:latest",
+  api_key     = Sys.getenv("OLLAMA_API_KEY"),
+  temperature = 0
+)
+
+# 4. Exportar
+ac_export(resultado, formato = "csv", arquivo = "codificacao.csv")
 ```
 
-## Documentação
+### Modulo quantitativo — frequencias e sentimento
 
-- Site do pacote: [andersonheri.github.io/acR](https://andersonheri.github.io/acR/)
-- Vignettes (em desenvolvimento)
-- Decisões arquiteturais: [`inst/docs/adr/`](inst/docs/adr/)
+```r
+# Tokenizar e calcular frequencias
+tokens   <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
+contagem <- ac_count(tokens)
+ac_plot_top_terms(ac_top_terms(contagem, n = 10))
 
-## Citação
+# Sentimento
+sent <- ac_sentiment(corpus, lexico = "oplexicon")
+ac_plot_sentiment(sent)
+```
 
-Se você usa o `acR` em pesquisa, por favor cite:
+## Funcoes por modulo
 
-``` r
+### Corpus e pre-processamento
+
+| Funcao | Descricao |
+|--------|-----------|
+| `ac_corpus()` | Criar objeto corpus |
+| `ac_clean()` | Limpar texto (lowercase, pontuacao, numeros) |
+| `ac_tokenize()` | Tokenizar com remocao de stopwords |
+| `ac_dfm()` | Criar Document-Feature Matrix |
+
+### Analise quantitativa
+
+| Funcao | Descricao |
+|--------|-----------|
+| `ac_count()` | Frequencia de termos |
+| `ac_top_terms()` | Top N termos |
+| `ac_tfidf()` | TF-IDF por documento |
+| `ac_keyness()` | Vocabulario distintivo entre grupos |
+| `ac_cooccurrence()` | Rede de co-ocorrencia |
+| `ac_sentiment()` | Sentimento (OpLexicon / SentiLex-PT) |
+| `ac_lda()` | Modelagem de topicos LDA |
+| `ac_lda_tune()` | Selecao otima de K topicos |
+
+### Analise qualitativa com LLMs
+
+| Funcao | Descricao |
+|--------|-----------|
+| `ac_qual_codebook()` | Construir codebook estruturado |
+| `ac_qual_code()` | Codificar corpus via LLM |
+| `ac_qual_list_models()` | Listar modelos disponiveis |
+| `ac_qual_recommend_model()` | Recomendacao automatica de modelo |
+| `ac_qual_sample()` | Amostrar para validacao humana |
+| `ac_qual_export_for_review()` | Exportar para revisao em .xlsx |
+| `ac_qual_import_human()` | Importar revisao humana |
+| `ac_qual_irr()` | Concordancia inter-codificador (kappa) |
+| `ac_qual_reliability()` | Validar threshold de confiabilidade |
+| `ac_qual_search_literature()` | Buscar literatura de apoio |
+| `ac_qual_save_codebook()` | Salvar codebook em JSON |
+| `ac_qual_load_codebook()` | Carregar codebook salvo |
+
+### Visualizacao
+
+| Funcao | Descricao |
+|--------|-----------|
+| `ac_plot_top_terms()` | Barras de frequencia |
+| `ac_plot_tfidf()` | TF-IDF por grupo |
+| `ac_plot_keyness()` | Keyness por grupo de referencia |
+| `ac_plot_sentiment()` | Distribuicao de sentimento |
+| `ac_plot_xray()` | Evolucao de sentimento no texto |
+| `ac_plot_lda_topics()` | Termos por topico LDA |
+| `ac_plot_lda_tune()` | Curva de selecao de K |
+| `ac_plot_cooccurrence()` | Rede de co-ocorrencia |
+| `ac_plot_wordcloud()` | Nuvem de palavras |
+| `ac_plot_wordcloud_comparative()` | Nuvem comparativa por topico |
+
+### Exportacao
+
+| Funcao | Formatos |
+|--------|---------|
+| `ac_export()` | `csv`, `xlsx`, `latex`, `rds` |
+| `ac_fetch_camara()` | Coleta via API da Camara dos Deputados |
+
+## Provedores LLM suportados
+
+| Provedor | `provider` | Modelo recomendado | Portugues |
+|----------|------------|--------------------|-----------|
+| Ollama nuvem | `"ollama"` | `qwen3.6:latest` | Excelente |
+| OpenAI | `"openai"` | `gpt-4o-mini` | Excelente |
+| Anthropic | `"anthropic"` | `claude-3-5-sonnet` | Excelente |
+| Groq | `"groq"` | `llama3-8b-8192` | Bom |
+| Together AI | `"openai"` | `Qwen/Qwen3-235B-A22B` | Excelente |
+| Qualquer API OpenAI-compativel | `"openai"` + `base_url` | — | Variavel |
+
+## Documentacao
+
+- **Site completo**: <https://andersonheri.github.io/acR/>
+- **Vignettes**:
+  - [Introducao ao acR](https://andersonheri.github.io/acR/articles/introducao-acR.html)
+  - [Codificacao qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html)
+  - [Analise de proposicoes legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html)
+  - [Analise quantitativa](https://andersonheri.github.io/acR/articles/quantitativo.html)
+  - [Analise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html)
+  - [Modelagem de topicos LDA](https://andersonheri.github.io/acR/articles/lda.html)
+
+## Como citar
+
+```r
 citation("acR")
 ```
 
-## Inspiração e diálogo
+```
+Henrique, A. (2025). acR: Analise de Conteudo em R.
+R package version 0.1.0.
+Centro de Estudos da Metropole (CEM-Cepid) — Universidade de Sao Paulo.
+https://andersonheri.github.io/acR/
+```
 
-O `acR` reconhece dívida intelectual com:
+## Referencias
 
-- [`quallmer`](https://quallmer.github.io/quallmer/) (Maerz & Benoit, 2025) — pelo design do workflow de codificação assistida por LLMs.
-- [`quanteda`](https://quanteda.io/) (Benoit et al.) — pela infraestrutura de análise textual quantitativa.
-- [`ellmer`](https://ellmer.tidyverse.org/) (Wickham et al., Posit) — pelo backend unificado de LLMs.
-- OpLexicon (Souza & Vieira, 2012; PUCRS) — léxico de sentimento para PT-BR.
+Bardin, L. (2011). *Analise de conteudo*. Edicoes 70.
 
-## Como contribuir
+Benoit, K., et al. (2018). quanteda. *JOSS*, 3(30), 774. doi:10.21105/joss.00774
 
-Contribuições são bem-vindas. Veja [CONTRIBUTING.md](CONTRIBUTING.md) e o [Código de Conduta](CODE_OF_CONDUCT.md).
+Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet Allocation.
+*JMLR*, 3, 993-1022.
 
-## Licença
+Krippendorff, K. (2018). *Content Analysis* (4a ed.). SAGE.
 
-MIT © 2026 Anderson Henrique
+Landis, J. R., & Koch, G. G. (1977). *Biometrics*, 33(1), 159-174.
+
+Laver, M., Benoit, K., & Garry, J. (2003). *APSR*, 97(2), 311-331.
+
+Maerz, S., & Benoit, K. (2025). *quallmer*. — inspiracao para o workflow LLM.
+
+Sampaio, R. C., & Lycariao, D. (2021). *Analise de conteudo categorial*. Enap.
+
+Souza, M., & Vieira, R. (2012). OpLexicon. *WASSA*. PUCRS.
+
+Wickham, H., et al. (2025). *ellmer*. Posit. <https://ellmer.tidyverse.org/>
+
+## Licenca
+
+MIT © Anderson Henrique — Centro de Estudos da Metropole (CEM-Cepid),
+Universidade de Sao Paulo.
