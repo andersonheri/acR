@@ -1,4 +1,4 @@
-# acR [![acR website](reference/figures/logo.png)](https://andersonheri.github.io/acR/)
+# acR
 
 > **Análise de Conteúdo em R**: pipeline integrado qualitativo (LLMs) e
 > quantitativo, com visualizações modernas e foco em corpora
