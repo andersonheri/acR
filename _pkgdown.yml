@@ -54,6 +54,7 @@ reference:
   desc: "Importacao de textos de fontes abertas brasileiras."
   contents:
   - ac_fetch_camara
+  - ac_fetch_senado
 
 - title: "Corpus e pre-processamento"
   desc: "Criacao, limpeza e tokenizacao de corpus em portugues."
