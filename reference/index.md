@@ -1,5 +1,13 @@
 # Package index
 
+## Coleta de dados
+
+Importacao de textos de fontes abertas brasileiras.
+
+- [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md)
+  : Busca discursos de deputados federais via API da C^amara dos
+  Deputados
+
 ## Corpus e pre-processamento
 
 Criacao, limpeza e tokenizacao de corpus em portugues.
@@ -62,6 +70,8 @@ provedor OpenAI-compativel (incluindo LLMs institucionais).
 Amostragem para validacao humana, metricas de concordancia
 inter-codificador e importacao/exportacao de codificacoes humanas.
 
+- [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md)
+  : Calcula metricas de confiabilidade inter-anotador
 - [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
   : Calcular confiabilidade entre codificação LLM e humana
 - [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
@@ -105,3 +115,10 @@ Graficos modernos baseados em ggplot2 para todos os modulos.
   : Gráfico X-ray — dispersão lexical de termos no corpus
 - [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
   : Criar nuvem de palavras
+
+## Exportacao
+
+Exporta resultados para CSV, LaTeX, Excel e RDS.
+
+- [`ac_export()`](https://andersonheri.github.io/acR/reference/ac_export.md)
+  : Exporta resultados de analise de conteudo em multiplos formatos
