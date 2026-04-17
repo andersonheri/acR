@@ -30,8 +30,7 @@ Criacao, limpeza e tokenizacao de corpus em portugues.
 
 ## Analise quantitativa
 
-Frequencias, associacoes e modelagem estatistica de textos. Funcoes
-principais do pipeline quantitativo.
+Frequencias, associacoes e modelagem estatistica de textos.
 
 - [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
   : Contar frequencias de tokens ou n-gramas em um corpus
@@ -52,9 +51,7 @@ principais do pipeline quantitativo.
 
 ## Codificacao qualitativa via LLM
 
-Pipeline de analise de conteudo qualitativa assistida por modelos de
-linguagem. Suporta Anthropic, OpenAI, Google, Groq, Ollama e qualquer
-provedor OpenAI-compativel (incluindo LLMs institucionais).
+Pipeline de analise de conteudo qualitativa assistida por LLMs.
 
 - [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
   : Criar um codebook para análise de conteúdo qualitativa
@@ -69,8 +66,7 @@ provedor OpenAI-compativel (incluindo LLMs institucionais).
 
 ## Validacao e confiabilidade
 
-Amostragem para validacao humana, metricas de concordancia
-inter-codificador e importacao/exportacao de codificacoes humanas.
+Amostragem, concordancia inter-codificador e importacao/exportacao.
 
 - [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md)
   : Calcula metricas de confiabilidade inter-anotador
@@ -85,8 +81,7 @@ inter-codificador e importacao/exportacao de codificacoes humanas.
 
 ## Selecao de modelos LLM
 
-Listagem e recomendacao de modelos LLM para analise de conteudo
-qualitativa, com informacoes de custo, contexto e suporte ao portugues.
+Listagem e recomendacao de modelos LLM.
 
 - [`ac_qual_list_models()`](https://andersonheri.github.io/acR/reference/ac_qual_list_models.md)
   : Listar modelos LLM disponíveis para análise de conteúdo
@@ -95,7 +90,7 @@ qualitativa, com informacoes de custo, contexto e suporte ao portugues.
 
 ## Visualizacao
 
-Graficos modernos baseados em ggplot2 para todos os modulos.
+Graficos modernos baseados em ggplot2.
 
 - [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
   : Visualizar rede de co-ocorrência de termos
