@@ -206,3 +206,8 @@ Graficos modernos baseados em ggplot2 para todos os modulos.
 - [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
   : Criar nuvem de palavras
 
+# Articles
+
+### All vignettes
+
+- [introducao-acR](https://andersonheri.github.io/acR/articles/introducao-acR.md):
