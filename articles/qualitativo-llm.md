@@ -1,0 +1,225 @@
+# Codificacao qualitativa com LLMs
+
+## Visao geral
+
+O modulo qualitativo do `acR` implementa um pipeline completo de analise
+de conteudo assistida por modelos de linguagem (LLMs). O fluxo e
+dividido em quatro etapas: (1) definicao do codebook, (2) busca de
+literatura de apoio, (3) codificacao automatica e (4) validacao humana
+com calculo de concordancia inter-codificador (IRR).
+
+O pacote suporta multiplos provedores de LLM via argumento `provider`. A
+chave de API **nunca deve aparecer no codigo**. Armazene-a no
+`.Renviron`:
+
+    # No console R:
+    usethis::edit_r_environ()
+
+    # Adicione as linhas do provedor que for usar e salve:
+    OLLAMA_API_KEY=sua_chave_ollama
+    OPENAI_API_KEY=sua_chave_openai
+    ANTHROPIC_API_KEY=sua_chave_anthropic
+    GROQ_API_KEY=sua_chave_groq
+
+## Provedores suportados
+
+O `acR` e compativel com qualquer provedor que siga o padrao
+OpenAI-compativel. A tabela abaixo resume as opcoes disponíveis:
+
+| Provedor    | `provider`    | Modelos recomendados                | Custo        | Portugues |
+|-------------|---------------|-------------------------------------|--------------|-----------|
+| Ollama      | `"ollama"`    | `llama3.1:8b`, `mistral`            | Gratis/nuvem | Bom       |
+| OpenAI      | `"openai"`    | `gpt-4o-mini`, `gpt-4o`             | Pago         | Excelente |
+| Anthropic   | `"anthropic"` | `claude-3-haiku`, `claude-3-sonnet` | Pago         | Excelente |
+| Groq        | `"groq"`      | `llama3-8b-8192`, `mixtral-8x7b`    | Gratis/pago  | Bom       |
+| OpenAI-like | `"openai"`    | Qualquer modelo compativel          | Variavel     | Variavel  |
+
+## 1. Listar e escolher o modelo
+
+``` r
+library(acR)
+
+# Ver todos os modelos catalogados
+modelos <- ac_qual_list_models()
+print(modelos)
+
+# Recomendacao automatica por criterio
+ac_qual_recommend_model(lingua = "pt", prioridade = "custo")
+ac_qual_recommend_model(lingua = "pt", prioridade = "qualidade")
+ac_qual_recommend_model(lingua = "pt", prioridade = "velocidade")
+```
+
+## 2. Construir o codebook
+
+``` r
+codebook <- ac_qual_codebook(
+  categories = c(
+    "Favoravel",
+    "Contrario",
+    "Neutro/Tecnico",
+    "Ambiguo"
+  ),
+  descriptions = c(
+    "Texto expressa apoio explicito a proposta ou politica",
+    "Texto expressa oposicao ou critica a proposta ou politica",
+    "Texto de natureza tecnica, informativa ou sem posicionamento",
+    "Texto com posicionamento contraditorio ou indefinido"
+  ),
+  exemplos = c(
+    "A reforma e necessaria e vai beneficiar os cidadaos.",
+    "Esta proposta e prejudicial e deve ser rejeitada.",
+    "O artigo 3o estabelece os prazos para implementacao.",
+    "Apoiamos partes do texto, mas temos reservas em outros pontos."
+  )
+)
+
+# Buscar literatura para embasar as categorias
+literatura <- ac_qual_search_literature(
+  codebook = codebook,
+  query    = "analise de conteudo discurso legislativo Brasil"
+)
+print(literatura)
+
+# Salvar para reuso
+ac_qual_save_codebook(codebook, "codebook_legislativo.json")
+
+# Carregar em sessoes futuras
+codebook <- ac_qual_load_codebook("codebook_legislativo.json")
+```
+
+## 3. Construir o corpus
+
+``` r
+textos <- c(
+  "Votar favoravel a esta PEC e defender o futuro do pais.",
+  "O substitutivo apresentado nao atende aos anseios da populacao.",
+  "O prazo para adequacao e de 180 dias contados da promulgacao.",
+  "Reconhecemos avancos no texto, mas o artigo 5o preocupa.",
+  "Esta proposta representa um marco historico para a educacao.",
+  "Rejeitamos categoricamente este retrocesso legislativo."
+)
+
+corpus <- ac_corpus(
+  textos,
+  id    = paste0("doc_", seq_along(textos)),
+  grupo = c("favoravel","contrario","tecnico",
+            "ambiguo","favoravel","contrario")
+)
+print(corpus)
+```
+
+## 4. Codificar: Ollama via API remota (padrao)
+
+``` r
+# Chave lida do .Renviron — nunca exposta no codigo
+resultado <- ac_qual_code(
+  corpus      = corpus,
+  codebook    = codebook,
+  provider    = "ollama",
+  model       = "llama3.1:8b",
+  api_key     = Sys.getenv("OLLAMA_API_KEY"),
+  base_url    = "https://sua-instancia-ollama.com/v1",
+  temperature = 0,
+  batch_size  = 10
+)
+print(resultado)
+```
+
+## 5. Alternativa: OpenAI
+
+``` r
+# Para usar OpenAI, basta trocar provider, model e api_key
+resultado_oai <- ac_qual_code(
+  corpus      = corpus,
+  codebook    = codebook,
+  provider    = "openai",
+  model       = "gpt-4o-mini",   # rapido e economico
+  api_key     = Sys.getenv("OPENAI_API_KEY"),
+  temperature = 0
+)
+```
+
+## 6. Alternativa: Anthropic (Claude)
+
+``` r
+resultado_claude <- ac_qual_code(
+  corpus      = corpus,
+  codebook    = codebook,
+  provider    = "anthropic",
+  model       = "claude-3-haiku-20240307",  # mais economico
+  api_key     = Sys.getenv("ANTHROPIC_API_KEY"),
+  temperature = 0
+)
+```
+
+## 7. Alternativa: Groq (rapido e gratuito)
+
+``` r
+# Groq oferece inferencia rapida com modelos open-source
+resultado_groq <- ac_qual_code(
+  corpus      = corpus,
+  codebook    = codebook,
+  provider    = "groq",
+  model       = "llama3-8b-8192",
+  api_key     = Sys.getenv("GROQ_API_KEY"),
+  temperature = 0
+)
+```
+
+## 8. Alternativa: qualquer API OpenAI-compativel
+
+``` r
+# Funciona com LM Studio, Together AI, Perplexity, DeepSeek, etc.
+resultado_custom <- ac_qual_code(
+  corpus      = corpus,
+  codebook    = codebook,
+  provider    = "openai",
+  model       = "deepseek-chat",
+  api_key     = Sys.getenv("DEEPSEEK_API_KEY"),
+  base_url    = "https://api.deepseek.com/v1",
+  temperature = 0
+)
+```
+
+## 9. Validacao humana
+
+``` r
+# Amostrar 20% para revisao (minimo recomendado na literatura)
+amostra <- ac_qual_sample(resultado, prop = 0.20, seed = 42)
+
+# Exportar planilha para codificador humano
+ac_qual_export_for_review(
+  amostra,
+  arquivo               = "revisao_humana.xlsx",
+  incluir_justificativa = TRUE
+)
+```
+
+## 10. Concordancia inter-codificador (IRR)
+
+``` r
+# Apos preenchimento humano, importar de volta
+humano <- ac_qual_import_human("revisao_humana.xlsx")
+
+# Kappa de Cohen e percentual de concordancia
+irr <- ac_qual_irr(resultado, humano)
+print(irr)
+
+# Interpretacao do Kappa (Landis & Koch, 1977):
+# >= 0.80  -> concordancia quase perfeita
+# 0.61-0.79 -> concordancia substancial
+# 0.41-0.60 -> concordancia moderada
+# < 0.40   -> concordancia fraca — revisar codebook
+
+# Validar se pipeline atinge threshold minimo
+ac_qual_reliability(irr, threshold = 0.75)
+```
+
+## 11. Exportar resultados
+
+``` r
+ac_export(resultado, formato = "csv",   arquivo = "codificacao_llm.csv")
+ac_export(resultado, formato = "xlsx",  arquivo = "codificacao_llm.xlsx")
+ac_export(resultado, formato = "latex", arquivo = "codificacao_llm.tex")
+ac_export(resultado, formato = "rds",   arquivo = "codificacao_llm.rds")
+```
