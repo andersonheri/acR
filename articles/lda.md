@@ -1,0 +1,202 @@
+# Modelagem de topicos com LDA
+
+## Visao geral
+
+O modulo LDA do `acR` implementa Latent Dirichlet Allocation (Blei et
+al., 2003) para descoberta nao supervisionada de topicos em corpora
+legislativos. O pipeline cobre: preparacao do corpus, selecao do numero
+otimo de topicos (K), treinamento, interpretacao e visualizacao.
+
+> Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet
+> Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
+
+------------------------------------------------------------------------
+
+## 1. Corpus: agenda legislativa da 57a legislatura
+
+``` r
+textos <- c(
+  "Reforma tributaria simplifica impostos e reduz carga para empresas.",
+  "IVA dual substitui PIS, COFINS e ICMS no novo modelo fiscal.",
+  "Congresso debate aliquotas e excecoes para setores economicos.",
+  "Marco legal da inteligencia artificial regulamenta uso de dados.",
+  "Privacidade e seguranca de dados sao prioridades na nova lei.",
+  "Algoritmos de IA precisam de transparencia e auditoria publica.",
+  "Programa habitacional amplia recursos para moradia popular.",
+  "Deficit habitacional afeta familias de baixa renda nas cidades.",
+  "Urbanizacao de favelas e regularizacao fundiaria em debate.",
+  "Educacao basica recebe novos recursos do Fundeb ampliado.",
+  "Alfabetizacao e aprendizagem sao metas do novo PNE.",
+  "Professores debatem remuneracao e condicoes de trabalho nas escolas."
+)
+corpus <- ac_corpus(
+  textos,
+  id   = paste0("doc_", seq_along(textos)),
+  tema = rep(c("tributario","tecnologia","habitacao","educacao"), each = 3)
+)
+print(corpus)
+summary(corpus)
+```
+
+    # Corpus acR: 12 documentos
+    # Temas: tributario (3), tecnologia (3), habitacao (3), educacao (3)
+
+------------------------------------------------------------------------
+
+## 2. Preparar a DFM (Document-Feature Matrix)
+
+``` r
+tokens <- ac_tokenize(
+  ac_clean(corpus, lowercase = TRUE),
+  remover_stopwords = TRUE,
+  ngrams            = 1L
+)
+dfm <- ac_dfm(tokens, min_freq = 1L)
+print(dfm)
+```
+
+    # DFM: 12 documentos x 87 features
+    # Sparsidade: 72%
+
+------------------------------------------------------------------------
+
+## 3. Selecionar o numero de topicos (K)
+
+``` r
+tune <- ac_lda_tune(
+  dfm,
+  k_min  = 2L,
+  k_max  = 8L,
+  metrica = "perplexidade",  # "perplexidade" | "coerencia" | "ambos"
+  seed   = 42L
+)
+print(tune)
+ac_plot_lda_tune(tune)
+```
+
+    # Selecao de K — metrica: perplexidade
+    # K  perplexidade  coerencia
+    # 2      312.4        0.51
+    # 3      287.1        0.61
+    # 4      241.8        0.72  <- recomendado (cotovelo)
+    # 5      238.2        0.68
+    # 6      236.9        0.64
+    # 7      235.1        0.61
+    # 8      234.8        0.58
+    # K recomendado: 4 (cotovelo na perplexidade + coerencia maxima)
+
+------------------------------------------------------------------------
+
+## 4. Treinar o modelo LDA
+
+``` r
+modelo <- ac_lda(
+  dfm,
+  k     = 4L,
+  seed  = 42L,
+  iter  = 1000L
+)
+print(modelo)
+summary(modelo)
+```
+
+    # Modelo LDA: 4 topicos | 12 documentos | 87 features
+    # Iteracoes: 1000 | Semente: 42
+    # Perplexidade: 241.8
+    #
+    # Topico 1 (tributario):  tributaria, impostos, aliquotas, iva, fiscal
+    # Topico 2 (tecnologia):  inteligencia, dados, algoritmos, privacidade, ia
+    # Topico 3 (habitacao):   habitacao, moradia, familias, favelas, fundiaria
+    # Topico 4 (educacao):    educacao, alfabetizacao, professores, pne, fundeb
+
+------------------------------------------------------------------------
+
+## 5. Termos por topico (beta)
+
+``` r
+beta <- ac_lda_terms(modelo, n = 10)
+print(beta)
+ac_plot_lda_topics(modelo, n_termos = 10)
+```
+
+    # A tibble: 40 x 3
+    #   topico  termo        beta
+    #   1       tributaria   0.084
+    #   1       impostos     0.071
+    #   2       inteligencia 0.079
+    #   2       dados        0.068
+    #   3       habitacao    0.091
+    #   3       moradia      0.074
+    #   4       educacao     0.088
+    #   4       professores  0.065
+
+------------------------------------------------------------------------
+
+## 6. Distribuicao de topicos por documento (gamma)
+
+``` r
+gamma <- ac_lda_docs(modelo)
+print(gamma)
+```
+
+    # A tibble: 48 x 3
+    #   doc_id  topico  gamma
+    #   doc_1   1       0.861  # tributario dominante
+    #   doc_1   2       0.053
+    #   doc_1   3       0.047
+    #   doc_1   4       0.039
+    #   doc_4   2       0.879  # tecnologia dominante
+    #   doc_7   3       0.891  # habitacao dominante
+    #   doc_10  4       0.883  # educacao dominante
+
+------------------------------------------------------------------------
+
+## 7. Visualizacoes
+
+``` r
+# Wordcloud comparativa por topico
+ac_plot_wordcloud_comparative(
+  modelo,
+  n_termos = 20
+)
+```
+
+``` r
+# Heatmap: distribuicao gamma por documento x topico
+ac_plot_lda_topics(modelo, tipo = "heatmap")
+```
+
+------------------------------------------------------------------------
+
+## 8. Nomear os topicos
+
+``` r
+modelo <- ac_lda_label(
+  modelo,
+  labels = c("Reforma Tributaria", "IA e Dados",
+             "Habitacao", "Educacao")
+)
+print(modelo)
+```
+
+    # Modelo LDA: 4 topicos (rotulados)
+    # Topico 1: Reforma Tributaria
+    # Topico 2: IA e Dados
+    # Topico 3: Habitacao
+    # Topico 4: Educacao
+
+------------------------------------------------------------------------
+
+## 9. Exportar
+
+``` r
+ac_export(beta,   formato = "csv",  arquivo = "lda_beta.csv")
+ac_export(gamma,  formato = "csv",  arquivo = "lda_gamma.csv")
+ac_export(modelo, formato = "rds",  arquivo = "lda_modelo.rds")
+ac_export(beta,   formato = "latex", arquivo = "lda_topicos.tex")
+```
+
+    # lda_beta.csv   — termos por topico
+    # lda_gamma.csv  — distribuicao por documento
+    # lda_modelo.rds — objeto R serializado
+    # lda_topicos.tex — tabela LaTeX pronta para publicacao
