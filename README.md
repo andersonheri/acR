@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# acR <a href="https://andersonheri.github.io/acR/"><img src="man/figures/logo.png" align="right" height="120" alt="acR website" /></a>
+# acR <a href="https://andersonheri.github.io/acR/"><img src="man/figures/logo.png" align="right" height="139" alt="acR logo" />
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
