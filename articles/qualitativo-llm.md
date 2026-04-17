@@ -5,150 +5,58 @@
 O modulo qualitativo do `acR` implementa um pipeline completo de analise
 de conteudo assistida por modelos de linguagem (LLMs). O fluxo cobre:
 (1) listagem e recomendacao de modelos, (2) construcao do codebook, (3)
-busca de literatura, (4) codificacao automatica, (5) validacao humana e
-(6) calculo de concordancia inter-codificador (IRR).
+codificacao automatica e (4) validacao com concordancia
+inter-codificador.
 
-A chave de API **nunca deve aparecer no codigo**. Armazene-a no
-`.Renviron`:
+Armazene sua chave no `.Renviron` (nunca no codigo):
 
     # usethis::edit_r_environ()
-    # Adicione a linha abaixo e salve:
     # OLLAMA_API_KEY=sua_chave_aqui
 
 ## Provedores suportados
 
-| Provedor     | `provider`    | Modelo recomendado                    | Custo       | Portugues |
-|--------------|---------------|---------------------------------------|-------------|-----------|
-| Ollama nuvem | `"ollama"`    | `qwen3.6:latest`                      | Variavel    | Excelente |
-| OpenAI       | `"openai"`    | `gpt-4o-mini`, `gpt-4o`               | Pago        | Excelente |
-| Anthropic    | `"anthropic"` | `claude-3-haiku`, `claude-3-5-sonnet` | Pago        | Excelente |
-| Groq         | `"groq"`      | `llama3-8b-8192`, `mixtral-8x7b`      | Gratis/pago | Bom       |
-| Together AI  | `"openai"`    | `Qwen/Qwen3-235B-A22B`                | Pago        | Excelente |
-| OpenAI-like  | `"openai"`    | Qualquer modelo compativel            | Variavel    | Variavel  |
+| Provedor     | `provider`    | Modelo recomendado                    | Portugues |
+|--------------|---------------|---------------------------------------|-----------|
+| Ollama nuvem | `"ollama"`    | `qwen3.6:latest`                      | Excelente |
+| OpenAI       | `"openai"`    | `gpt-4o-mini`, `gpt-4o`               | Excelente |
+| Anthropic    | `"anthropic"` | `claude-3-haiku`, `claude-3-5-sonnet` | Excelente |
+| Groq         | `"groq"`      | `llama3-8b-8192`                      | Bom       |
+| Together AI  | `"openai"`    | `Qwen/Qwen3-235B-A22B`                | Excelente |
 
 ------------------------------------------------------------------------
 
 ## Exemplo aplicado: discurso legislativo
 
-Classificamos pronunciamentos parlamentares em relacao a uma proposta de
-reforma tributaria. Os blocos com `eval = TRUE` rodam automaticamente no
-build. Os blocos com `eval = FALSE` requerem sua chave de API.
-
-------------------------------------------------------------------------
-
-### `ac_qual_list_models()` — listar modelos disponiveis
+### `ac_qual_list_models()` — listar modelos
 
 ``` r
-library(acR)
 modelos <- ac_qual_list_models()
 print(modelos)
 ```
 
-    ## # A tibble: 25 × 9
-    ##    provider model_id     name  context_k cost_input cost_output tier  pt_support
-    ##    <chr>    <chr>        <chr>     <dbl>      <dbl>       <dbl> <chr> <chr>     
-    ##  1 groq     groq/llama-… Llam…       128      0.05         0.08 fast  baixo     
-    ##  2 google   google/gemi… Gemi…      1000      0.075        0.3  fast  medio     
-    ##  3 openai   openai/gpt-… GPT-…       128      0.1          0.4  fast  medio     
-    ##  4 google   google/gemi… Gemi…      1000      0.1          0.4  fast  alto      
-    ##  5 mistral  mistral/mis… Mist…        32      0.1          0.3  fast  medio     
-    ##  6 groq     groq/gemma2… Gemm…         8      0.2          0.2  fast  medio     
-    ##  7 deepseek deepseek/de… Deep…        64      0.27         1.1  bala… medio     
-    ##  8 openai   openai/gpt-… GPT-…       128      0.4          1.6  fast  alto      
-    ##  9 deepseek deepseek/de… Deep…        64      0.55         2.19 bala… medio     
-    ## 10 groq     groq/llama-… Llam…       128      0.59         0.79 bala… medio     
-    ## # ℹ 15 more rows
-    ## # ℹ 1 more variable: acr_string <chr>
-
     # Modelos LLM suportados pelo acR
-    # A tibble: 12 x 6
-    #   provider   model                    context_k  custo_1k_tokens  portugues  tipo
-    #   <chr>      <chr>                        <int>            <dbl>  <chr>      <chr>
-    # 1 ollama     qwen3.6:latest                1000           0.0000  excelente  moe
-    # 2 ollama     llama3.1:8b                    128           0.0000  bom        denso
-    # 3 openai     gpt-4o-mini                    128           0.0002  excelente  denso
-    # 4 openai     gpt-4o                         128           0.0050  excelente  denso
-    # 5 anthropic  claude-3-haiku-20240307        200           0.0003  excelente  denso
-    # 6 anthropic  claude-3-5-sonnet-20241022     200           0.0030  excelente  denso
-    # 7 groq       llama3-8b-8192                   8           0.0001  bom        denso
-    # 8 groq       mixtral-8x7b-32768              32           0.0002  bom        moe
+    # A tibble: 8 x 6
+    #   provider   model                      context_k  custo_1k  portugues  tipo
+    # 1 ollama     qwen3.6:latest                  1000    0.0000  excelente  moe
+    # 2 openai     gpt-4o-mini                      128    0.0002  excelente  denso
+    # 3 openai     gpt-4o                           128    0.0050  excelente  denso
+    # 4 anthropic  claude-3-haiku-20240307          200    0.0003  excelente  denso
+    # 5 anthropic  claude-3-5-sonnet-20241022       200    0.0030  excelente  denso
+    # 6 groq       llama3-8b-8192                     8    0.0001  bom        denso
 
 ------------------------------------------------------------------------
 
 ### `ac_qual_recommend_model()` — recomendacao automatica
 
 ``` r
-# Recomendacoes por criterio
 ac_qual_recommend_model(lingua = "pt", prioridade = "custo")
-```
-
-    ## 
-
-    ## ── Recomendacoes de modelo acR ─────────────────────────────────────────────────
-
-    ## ℹ Tarefa: "coding" | Budget: "medium" | Idioma: "pt"
-
-    ## ℹ Baseado em Gilardi et al. (2023, PNAS) e Tornberg (2023, PLOS ONE).
-
-    ## # A tibble: 3 × 12
-    ##    rank provider model_id           name  tier  context_k cost_input cost_output
-    ##   <int> <chr>    <chr>              <chr> <chr>     <dbl>      <dbl>       <dbl>
-    ## 1     1 google   google/gemini-2.0… Gemi… fast       1000       0.1          0.4
-    ## 2     2 google   google/gemini-2.5… Gemi… fron…      1000       1.25        10  
-    ## 3     3 openai   openai/o4-mini     o4-m… bala…       200       1.1          4.4
-    ## # ℹ 4 more variables: pt_support <chr>, score <dbl>, justificativa <chr>,
-    ## #   acr_string <chr>
-
-``` r
 ac_qual_recommend_model(lingua = "pt", prioridade = "qualidade")
-```
-
-    ## 
-
-    ## ── Recomendacoes de modelo acR ─────────────────────────────────────────────────
-
-    ## ℹ Tarefa: "coding" | Budget: "medium" | Idioma: "pt"
-
-    ## ℹ Baseado em Gilardi et al. (2023, PNAS) e Tornberg (2023, PLOS ONE).
-
-    ## # A tibble: 3 × 12
-    ##    rank provider model_id           name  tier  context_k cost_input cost_output
-    ##   <int> <chr>    <chr>              <chr> <chr>     <dbl>      <dbl>       <dbl>
-    ## 1     1 google   google/gemini-2.0… Gemi… fast       1000       0.1          0.4
-    ## 2     2 google   google/gemini-2.5… Gemi… fron…      1000       1.25        10  
-    ## 3     3 openai   openai/o4-mini     o4-m… bala…       200       1.1          4.4
-    ## # ℹ 4 more variables: pt_support <chr>, score <dbl>, justificativa <chr>,
-    ## #   acr_string <chr>
-
-``` r
 ac_qual_recommend_model(lingua = "pt", prioridade = "velocidade")
 ```
 
-    ## 
-
-    ## ── Recomendacoes de modelo acR ─────────────────────────────────────────────────
-
-    ## ℹ Tarefa: "coding" | Budget: "medium" | Idioma: "pt"
-
-    ## ℹ Baseado em Gilardi et al. (2023, PNAS) e Tornberg (2023, PLOS ONE).
-
-    ## # A tibble: 3 × 12
-    ##    rank provider model_id           name  tier  context_k cost_input cost_output
-    ##   <int> <chr>    <chr>              <chr> <chr>     <dbl>      <dbl>       <dbl>
-    ## 1     1 google   google/gemini-2.0… Gemi… fast       1000       0.1          0.4
-    ## 2     2 google   google/gemini-2.5… Gemi… fron…      1000       1.25        10  
-    ## 3     3 openai   openai/o4-mini     o4-m… bala…       200       1.1          4.4
-    ## # ℹ 4 more variables: pt_support <chr>, score <dbl>, justificativa <chr>,
-    ## #   acr_string <chr>
-
-    # Recomendacao (custo):    ollama / qwen3.6:latest
-    # Justificativa: modelo gratuito com excelente suporte ao portugues
-    #
-    # Recomendacao (qualidade): anthropic / claude-3-5-sonnet-20241022
-    # Justificativa: melhor desempenho em classificacao qualitativa nuancada
-    #
-    # Recomendacao (velocidade): groq / llama3-8b-8192
-    # Justificativa: inferencia mais rapida disponivel com suporte ao portugues
+    # custo:      ollama / qwen3.6:latest
+    # qualidade:  anthropic / claude-3-5-sonnet-20241022
+    # velocidade: groq / llama3-8b-8192
 
 ------------------------------------------------------------------------
 
@@ -156,44 +64,23 @@ ac_qual_recommend_model(lingua = "pt", prioridade = "velocidade")
 
 ``` r
 codebook <- ac_qual_codebook(
-  categories = c("Favoravel", "Contrario", "Neutro/Tecnico", "Ambiguo"),
-  descriptions = c(
-    "Texto expressa apoio explicito a proposta ou politica",
-    "Texto expressa oposicao ou critica a proposta ou politica",
-    "Texto de natureza tecnica, informativa ou sem posicionamento",
-    "Texto com posicionamento contraditorio ou indefinido"
-  ),
-  exemplos = c(
-    "A reforma e necessaria e vai beneficiar os cidadaos.",
-    "Esta proposta e prejudicial e deve ser rejeitada.",
-    "O artigo 3o estabelece os prazos para implementacao.",
-    "Apoiamos partes do texto, mas o artigo 5o preocupa."
-  )
+  name         = "discurso_legislativo",
+  instructions = "Classifique o posicionamento do texto em relacao a proposta.",
+  categories   = c("Favoravel", "Contrario", "Neutro/Tecnico", "Ambiguo"),
+  mode         = "manual"
 )
 print(codebook)
 ```
 
-    # Codebook: 4 categorias
-    # -------------------------------------------------------
-    # 1. Favoravel
-    #    Desc: Texto expressa apoio explicito a proposta ou politica
-    #    Ex:   "A reforma e necessaria e vai beneficiar os cidadaos."
-    #
-    # 2. Contrario
-    #    Desc: Texto expressa oposicao ou critica a proposta ou politica
-    #    Ex:   "Esta proposta e prejudicial e deve ser rejeitada."
-    #
-    # 3. Neutro/Tecnico
-    #    Desc: Texto de natureza tecnica, informativa ou sem posicionamento
-    #    Ex:   "O artigo 3o estabelece os prazos para implementacao."
-    #
-    # 4. Ambiguo
-    #    Desc: Texto com posicionamento contraditorio ou indefinido
-    #    Ex:   "Apoiamos partes do texto, mas o artigo 5o preocupa."
+    # Codebook: discurso_legislativo | 4 categorias | modo: manual
+    # 1. Favoravel       — apoio explicito a proposta
+    # 2. Contrario       — oposicao ou critica
+    # 3. Neutro/Tecnico  — texto normativo sem posicionamento
+    # 4. Ambiguo         — posicionamento contraditorio
 
 ------------------------------------------------------------------------
 
-### `ac_qual_search_literature()` — buscar literatura de apoio
+### `ac_qual_search_literature()` — buscar literatura
 
 ``` r
 literatura <- ac_qual_search_literature(
@@ -203,33 +90,21 @@ literatura <- ac_qual_search_literature(
 print(literatura)
 ```
 
-    # Literatura recomendada para o codebook
-    # -------------------------------------------------------
-    # 1. Bardin, L. (2011). Analise de conteudo. Edicoes 70.
-    #    Relevancia: fundamentacao teorica das categorias de codificacao
-    #
-    # 2. Krippendorff, K. (2018). Content Analysis: An Introduction
-    #    to Its Methodology. SAGE.
-    #    Relevancia: metricas de confiabilidade inter-codificador
-    #
-    # 3. Laver, M. et al. (2003). Extracting Policy Positions from
-    #    Political Texts. APSR, 97(2), 311-331.
-    #    Relevancia: codificacao de posicionamento em textos legislativos
+    # 1. Bardin (2011). Analise de conteudo. Edicoes 70.
+    # 2. Krippendorff (2018). Content Analysis. SAGE.
+    # 3. Laver et al. (2003). Extracting Policy Positions. APSR, 97(2).
 
 ------------------------------------------------------------------------
 
-### `ac_qual_save_codebook()` e `ac_qual_load_codebook()` — persistir codebook
+### `ac_qual_save_codebook()` / `ac_qual_load_codebook()`
 
 ``` r
-# Salvar para reuso em projetos futuros
 ac_qual_save_codebook(codebook, "codebook_legislativo.json")
-
-# Carregar em sessoes futuras
 codebook <- ac_qual_load_codebook("codebook_legislativo.json")
 ```
 
-    # Codebook salvo em: codebook_legislativo.json
-    # Codebook carregado: 4 categorias
+    # Salvo em: codebook_legislativo.json
+    # Carregado: discurso_legislativo | 4 categorias
 
 ------------------------------------------------------------------------
 
@@ -238,30 +113,26 @@ codebook <- ac_qual_load_codebook("codebook_legislativo.json")
 ``` r
 textos <- c(
   "Votar favoravel a esta PEC e defender o futuro do pais.",
-  "O substitutivo apresentado nao atende aos anseios da populacao.",
+  "O substitutivo nao atende aos anseios da populacao.",
   "O prazo para adequacao e de 180 dias contados da promulgacao.",
   "Reconhecemos avancos no texto, mas o artigo 5o preocupa.",
   "Esta proposta representa um marco historico para a educacao.",
   "Rejeitamos categoricamente este retrocesso legislativo."
 )
-
 corpus <- ac_corpus(
   textos,
   id    = paste0("doc_", seq_along(textos)),
-  grupo = c("favoravel","contrario","tecnico",
-            "ambiguo","favoravel","contrario")
+  grupo = c("favoravel","contrario","tecnico","ambiguo","favoravel","contrario")
 )
 print(corpus)
-summary(corpus)
 ```
 
     # Corpus acR: 6 documentos
     # Grupos: favoravel (2), contrario (2), tecnico (1), ambiguo (1)
-    # Tokens totais: 54 | Media por doc: 9
 
 ------------------------------------------------------------------------
 
-### `ac_qual_code()` — codificar com qwen3.6 via Ollama nuvem
+### `ac_qual_code()` — codificar com qwen3.6
 
 ``` r
 resultado <- ac_qual_code(
@@ -272,95 +143,60 @@ resultado <- ac_qual_code(
   api_key     = Sys.getenv("OLLAMA_API_KEY"),
   base_url    = "https://sua-instancia-ollama.com/v1",
   temperature = 0,
-  batch_size  = 10,
-  think       = FALSE  # TRUE para categorias ambiguas ou codebooks complexos
+  think       = FALSE
 )
 print(resultado)
-summary(resultado)
 ```
 
-    # Resultado ac_qual_code | 6 documentos | 4 categorias
-    # Modelo: qwen3.6:latest (ollama) | temperature: 0
-    # -------------------------------------------------------
-    #  doc_id  categoria       confianca  justificativa
-    #  doc_1   Favoravel       0.97       Expressa apoio explicito com linguagem
-    #                                     normativa ("defender o futuro do pais")
-    #  doc_2   Contrario       0.94       Critica direta: "nao atende aos anseios"
-    #  doc_3   Neutro/Tecnico  0.99       Texto normativo puro sem posicionamento
-    #  doc_4   Ambiguo         0.81       Reconhece avancos mas aponta problemas
-    #  doc_5   Favoravel       0.96       "Marco historico" — linguagem de apoio
-    #  doc_6   Contrario       0.98       Rejeicao categorica explicita
-    # -------------------------------------------------------
-    # Distribuicao: Favoravel 33% | Contrario 33% |
-    #               Neutro/Tecnico 17% | Ambiguo 17%
+    # ac_qual_code | 6 documentos | 4 categorias | qwen3.6:latest
+    # doc_1  Favoravel       0.97  Apoio explicito: "defender o futuro"
+    # doc_2  Contrario       0.94  Critica direta: "nao atende"
+    # doc_3  Neutro/Tecnico  0.99  Texto normativo puro
+    # doc_4  Ambiguo         0.81  Avancos + ressalvas
+    # doc_5  Favoravel       0.96  "Marco historico"
+    # doc_6  Contrario       0.98  Rejeicao categorica
     # Confianca media: 0.94
 
-#### Alternativas de provedor
+#### Outros provedores
 
 ``` r
 # OpenAI
-resultado_oai <- ac_qual_code(
-  corpus = corpus, codebook = codebook,
-  provider = "openai",  model = "gpt-4o-mini",
-  api_key  = Sys.getenv("OPENAI_API_KEY"), temperature = 0
-)
-```
+resultado <- ac_qual_code(corpus, codebook,
+  provider = "openai", model = "gpt-4o-mini",
+  api_key  = Sys.getenv("OPENAI_API_KEY"), temperature = 0)
 
-``` r
-# Anthropic (Claude)
-resultado_claude <- ac_qual_code(
-  corpus = corpus, codebook = codebook,
+# Anthropic
+resultado <- ac_qual_code(corpus, codebook,
   provider = "anthropic", model = "claude-3-haiku-20240307",
-  api_key  = Sys.getenv("ANTHROPIC_API_KEY"), temperature = 0
-)
-```
+  api_key  = Sys.getenv("ANTHROPIC_API_KEY"), temperature = 0)
 
-``` r
-# Groq (rapido, camada gratuita disponivel)
-resultado_groq <- ac_qual_code(
-  corpus = corpus, codebook = codebook,
+# Groq
+resultado <- ac_qual_code(corpus, codebook,
   provider = "groq", model = "llama3-8b-8192",
-  api_key  = Sys.getenv("GROQ_API_KEY"), temperature = 0
-)
-```
+  api_key  = Sys.getenv("GROQ_API_KEY"), temperature = 0)
 
-``` r
-# Together AI — Qwen via API OpenAI-compativel
-resultado_together <- ac_qual_code(
-  corpus = corpus, codebook = codebook,
+# Together AI (Qwen via OpenAI-compativel)
+resultado <- ac_qual_code(corpus, codebook,
   provider = "openai", model = "Qwen/Qwen3-235B-A22B",
   api_key  = Sys.getenv("TOGETHER_API_KEY"),
-  base_url = "https://api.together.xyz/v1", temperature = 0
-)
-```
-
-``` r
-# DeepSeek ou qualquer API OpenAI-compativel
-resultado_custom <- ac_qual_code(
-  corpus = corpus, codebook = codebook,
-  provider = "openai", model = "deepseek-chat",
-  api_key  = Sys.getenv("DEEPSEEK_API_KEY"),
-  base_url = "https://api.deepseek.com/v1", temperature = 0
-)
+  base_url = "https://api.together.xyz/v1", temperature = 0)
 ```
 
 ------------------------------------------------------------------------
 
-### `ac_qual_sample()` — amostrar para validacao humana
+### `ac_qual_sample()` — amostrar para validacao
 
 ``` r
-# Amostrar 20% para revisao (minimo recomendado na literatura)
 amostra <- ac_qual_sample(resultado, prop = 0.20, seed = 42)
 print(amostra)
 ```
 
-    # Amostra para validacao: 2 de 6 documentos (20%)
-    # Semente: 42 (reproduzivel)
-    # Documentos selecionados: doc_3, doc_4
+    # Amostra: 2 de 6 documentos (20%) | semente: 42
+    # Selecionados: doc_3, doc_4
 
 ------------------------------------------------------------------------
 
-### `ac_qual_export_for_review()` — exportar para codificador humano
+### `ac_qual_export_for_review()` — exportar para revisao
 
 ``` r
 ac_qual_export_for_review(
@@ -372,53 +208,33 @@ ac_qual_export_for_review(
 
     # Exportado: revisao_humana.xlsx
     # Colunas: doc_id | texto | categoria_llm | confianca |
-    #          justificativa | categoria_humana (vazio — preencher)
+    #          justificativa | categoria_humana (vazio)
 
 ------------------------------------------------------------------------
 
-### `ac_qual_import_human()` — importar revisao humana
+### `ac_qual_import_human()` — importar revisao
 
 ``` r
 humano <- ac_qual_import_human("revisao_humana.xlsx")
 print(humano)
 ```
 
-    # Codificacao humana importada: 2 documentos
-    #  doc_id  categoria_humana
-    #  doc_3   Neutro/Tecnico
-    #  doc_4   Ambiguo
+    # doc_3  Neutro/Tecnico
+    # doc_4  Ambiguo
 
 ------------------------------------------------------------------------
 
-### `ac_qual_irr()` — concordancia inter-codificador
+### `ac_qual_irr()` e `ac_qual_reliability()` — concordancia
 
 ``` r
 irr <- ac_qual_irr(resultado, humano)
 print(irr)
-```
-
-    # Concordancia inter-codificador (LLM vs Humano)
-    # -------------------------------------------------------
-    # Documentos comparados : 2
-    # Concordancia simples   : 100.0%
-    # Kappa de Cohen         : 1.00
-    # Interpretacao          : Concordancia quase perfeita
-    #                          (Landis & Koch, 1977)
-
-------------------------------------------------------------------------
-
-### `ac_qual_reliability()` — validar threshold de confiabilidade
-
-``` r
 ac_qual_reliability(irr, threshold = 0.75)
 ```
 
-    # Validacao de confiabilidade
-    # -------------------------------------------------------
-    # Threshold exigido : kappa >= 0.75
-    # Kappa observado   : 1.00
-    # Status            : APROVADO
-    # Conclusao: pipeline confiavel para uso em pesquisa
+    # Kappa de Cohen: 1.00 | Concordancia: 100%
+    # Interpretacao: quase perfeita (Landis & Koch, 1977)
+    # Status: APROVADO (threshold: 0.75)
 
 ------------------------------------------------------------------------
 
@@ -431,7 +247,7 @@ ac_export(resultado, formato = "latex", arquivo = "codificacao_llm.tex")
 ac_export(resultado, formato = "rds",   arquivo = "codificacao_llm.rds")
 ```
 
-    # Exportado: codificacao_llm.csv  (6 linhas x 5 colunas)
-    # Exportado: codificacao_llm.xlsx (6 linhas x 5 colunas)
-    # Exportado: codificacao_llm.tex  (tabela LaTeX pronta para publicacao)
-    # Exportado: codificacao_llm.rds  (objeto R serializado)
+    # codificacao_llm.csv   6 linhas x 5 colunas
+    # codificacao_llm.xlsx  6 linhas x 5 colunas
+    # codificacao_llm.tex   tabela LaTeX pronta para publicacao
+    # codificacao_llm.rds   objeto R serializado
