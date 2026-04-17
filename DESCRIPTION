@@ -66,4 +66,5 @@ Imports:
     scales,
     tidytext,
     jsonlite,
-    yaml
+    yaml,
+    httr2
