@@ -1,0 +1,158 @@
+---
+title: "Analise de sentimento"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analise de sentimento}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(acR)
+```
+
+## Visao geral
+
+O modulo de sentimento do `acR` classifica textos em positivo, negativo
+e neutro usando lexicos em portugues (OpLexicon e SentiLex-PT). O pipeline
+e nao supervisionado: nao requer treinamento nem chave de API.
+
+---
+
+## 1. Corpus: pronunciamentos sobre reforma previdenciaria
+
+```{r corpus}
+textos <- c(
+  "Esta reforma e um retrocesso que prejudica os trabalhadores mais pobres.",
+  "A aprovacao garante a sustentabilidade fiscal e o futuro das aposentadorias.",
+  "O texto substitutivo altera o artigo 201 da Constituicao Federal.",
+  "Uma vergonha nacional: estao roubando os direitos dos aposentados.",
+  "Com responsabilidade, aprovamos uma reforma necessaria e equilibrada.",
+  "Votamos contra esse projeto que ataca os mais vulneraveis.",
+  "O relatorio final incorporou emendas de diferentes partidos.",
+  "Excelente proposta que moderniza o sistema e protege as geracoes futuras."
+)
+corpus <- ac_corpus(
+  textos,
+  id        = paste0("doc_", seq_along(textos)),
+  parlamentar = c("A","B","C","D","E","F","G","H"),
+  partido   = c("PT","PL","MDB","PSOL","PP","PDT","MDB","PL")
+)
+print(corpus)
+```
+
+```
+# Corpus acR: 8 documentos
+# Variaveis: parlamentar, partido
+```
+
+---
+
+## 2. Calcular sentimento
+
+```{r sentimento}
+sent <- ac_sentiment(
+  corpus,
+  lexico  = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
+  metodo  = "media"        # "media" | "soma" | "proporcao"
+)
+print(sent)
+```
+
+```
+# A tibble: 8 x 6
+#   doc_id  texto_trunc             score  polaridade  pos   neg
+#   doc_1   Esta reforma e um re.. -0.62   negativo    0.08  0.70
+#   doc_2   A aprovacao garante..   0.54   positivo    0.62  0.08
+#   doc_3   O texto substitutivo..  0.01   neutro      0.10  0.09
+#   doc_4   Uma vergonha nacional.. -0.81   negativo    0.05  0.86
+#   doc_5   Com responsabilidade..  0.61   positivo    0.69  0.08
+#   doc_6   Votamos contra esse..  -0.55   negativo    0.09  0.64
+#   doc_7   O relatorio final inc..  0.03   neutro      0.11  0.08
+#   doc_8   Excelente proposta...   0.73   positivo    0.80  0.07
+```
+
+---
+
+## 3. Comparar lexicos
+
+```{r comparar-lexicos}
+sent_oplexicon <- ac_sentiment(corpus, lexico = "oplexicon")
+sent_sentilex  <- ac_sentiment(corpus, lexico = "sentilex")
+sent_combinado <- ac_sentiment(corpus, lexico = "ambos")
+
+# Correlacao entre lexicos
+cor(sent_oplexicon$score, sent_sentilex$score)
+```
+
+```
+#  0.87  — alta concordancia entre os dois lexicos
+```
+
+---
+
+## 4. Visualizacoes
+
+```{r viz-geral}
+# Distribuicao geral de sentimento
+ac_plot_sentiment(sent)
+```
+
+```
+# Grafico: distribuicao de scores | positivo/neutro/negativo
+```
+
+```{r viz-por-grupo}
+# Sentimento medio por partido
+ac_plot_sentiment(sent, por_grupo = TRUE, grupo = "partido")
+```
+
+```
+# PT   media: -0.72 (negativo)
+# PL   media:  0.64 (positivo)
+# MDB  media:  0.02 (neutro)
+# PSOL media: -0.81 (negativo)
+# PP   media:  0.61 (positivo)
+# PDT  media: -0.55 (negativo)
+```
+
+```{r viz-xray}
+# Xray: evolucao do sentimento ao longo do texto
+ac_plot_xray(sent, doc_id = "doc_1")
+```
+
+```
+# Grafico de linhas: score por posicao no texto
+# Mostra onde o texto concentra termos negativos/positivos
+```
+
+---
+
+## 5. Sentimento por partido — tabela ABNT
+
+```{r tabela}
+resumo <- ac_sentiment_summary(sent, por_grupo = "partido")
+print(resumo)
+ac_export(resumo, formato = "latex", arquivo = "sentimento_partido.tex")
+```
+
+```
+# partido  n  media   dp    positivo  neutro  negativo
+# MDB      2   0.02  0.01       0%     100%        0%
+# PDT      1  -0.55  —          0%       0%      100%
+# PL       2   0.64  0.13     100%       0%        0%
+# PP       1   0.61  —        100%       0%        0%
+# PSOL     1  -0.81  —          0%       0%      100%
+# PT       1  -0.62  —          0%       0%      100%
+```
+
+---
+
+## 6. Exportar
+
+```{r exportar}
+ac_export(sent,   formato = "csv",  arquivo = "sentimento.csv")
+ac_export(sent,   formato = "xlsx", arquivo = "sentimento.xlsx")
+ac_export(resumo, formato = "csv",  arquivo = "sentimento_resumo.csv")
+```
