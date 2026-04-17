@@ -11,9 +11,7 @@ template:
 development:
   mode: auto
 
-home:title: acR — Análise de Conteúdo em R
-  sidebar:
-    structure: [links, license, community, citation, authors, dev]
+home:
   title: acR — Análise de Conteúdo em R
   description: >
     Pipeline integrado de análise de conteúdo em R, combinando codificação
