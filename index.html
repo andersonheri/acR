@@ -69,105 +69,395 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="acr-">acR 
-<a class="anchor" aria-label="anchor" href="#acr-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="acr-">acR <a class="anchor" aria-label="anchor" href="#acr-"></a>
 </h1>
 </div>
 <!-- badges: start -->
 
 <blockquote>
-<p><strong>Análise de Conteúdo em R</strong>: pipeline integrado qualitativo (LLMs) e quantitativo, com visualizações modernas e foco em corpora brasileiros.</p>
+<p><strong>Analise de Conteudo em R</strong>: pipeline integrado qualitativo (LLMs) e quantitativo, com visualizacoes modernas e foco em corpora brasileiros.</p>
 </blockquote>
 <div class="section level2">
-<h2 id="visão-geral">Visão geral<a class="anchor" aria-label="anchor" href="#vis%C3%A3o-geral"></a>
+<h2 id="visao-geral">Visao geral<a class="anchor" aria-label="anchor" href="#visao-geral"></a>
 </h2>
-<p>O <code>acR</code> oferece um pipeline integrado para análise de conteúdo, combinando:</p>
-<ul>
-<li>
-<strong>Análise qualitativa assistida por LLMs</strong>: codificação automatizada com codebooks versionados, métricas de confiabilidade entre codificador humano e LLM (Krippendorff α, Gwet AC1), calibração de incerteza e auditoria reproducível.</li>
-<li>
-<strong>Análise quantitativa clássica</strong>: estatísticas descritivas, <em>keyness</em>, co-ocorrência, nuvens de palavras (incluindo comparativa e <em>X-ray</em>), análise de sentimento (OpLexicon), e <em>Latent Dirichlet Allocation</em> (LDA).</li>
-<li>
-<strong>Visualizações modernas</strong>: tema próprio em <code>ggplot2</code>, paletas acessíveis, gráficos publicáveis.</li>
-<li>
-<strong>Foco em PT-BR</strong>: stopwords expandidas, codebooks validados para o contexto político-institucional brasileiro, integração com <code>geobr</code>.</li>
-</ul>
+<p>O <code>acR</code> oferece um pipeline completo de analise de conteudo textual para pesquisadores em ciencias sociais. O pacote integra dois modulos principais: um <strong>modulo qualitativo</strong> baseado em LLMs (qwen3.6, GPT-4o, Claude, Groq) para codificacao automatica com validacao humana, e um <strong>modulo quantitativo</strong> para frequencias, TF-IDF, keyness, sentimento e modelagem de topicos (LDA). Todas as funcoes foram projetadas para corpora em portugues e seguem as convencoes metodologicas de Bardin (2011) e Krippendorff (2018).</p>
 </div>
 <div class="section level2">
-<h2 id="instalação">Instalação<a class="anchor" aria-label="anchor" href="#instala%C3%A7%C3%A3o"></a>
+<h2 id="instalacao">Instalacao<a class="anchor" aria-label="anchor" href="#instalacao"></a>
 </h2>
-<p>A versão em desenvolvimento pode ser instalada diretamente do GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Versao de desenvolvimento (GitHub)</span></span>
+<span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="exemplo-mínimo">Exemplo mínimo<a class="anchor" aria-label="anchor" href="#exemplo-m%C3%ADnimo"></a>
+<h2 id="exemplo-minimo">Exemplo minimo<a class="anchor" aria-label="anchor" href="#exemplo-minimo"></a>
 </h2>
-<blockquote>
-<p>O pacote está em fase inicial de desenvolvimento. Funções abaixo são ilustrativas da API planejada.</p>
-</blockquote>
+<div class="section level3">
+<h3 id="modulo-qualitativo--codificacao-com-llm">Modulo qualitativo — codificacao com LLM<a class="anchor" aria-label="anchor" href="#modulo-qualitativo--codificacao-com-llm"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Construir corpus a partir de um data.frame</span></span>
+<span><span class="co"># 1. Corpus</span></span>
 <span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">discursos_camara</span>,</span>
-<span>  text <span class="op">=</span> <span class="va">texto</span>,</span>
-<span>  docid <span class="op">=</span> <span class="va">id_discurso</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta reforma beneficia os trabalhadores."</span>,</span>
+<span>    <span class="st">"O projeto gerara desemprego em massa."</span>,</span>
+<span>    <span class="st">"O artigo 3o estabelece prazo de 180 dias."</span><span class="op">)</span>,</span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"doc_1"</span>, <span class="st">"doc_2"</span>, <span class="st">"doc_3"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Pipeline quantitativo</span></span>
-<span><span class="va">corpus</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/ac_clean.html">ac_clean</a></span><span class="op">(</span>remove_stopwords <span class="op">=</span> <span class="st">"pt-br-extended"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ac_quant_keyness</span><span class="op">(</span>target <span class="op">=</span> <span class="va">partido</span> <span class="op">==</span> <span class="st">"PT"</span>, reference <span class="op">=</span> <span class="va">partido</span> <span class="op">==</span> <span class="st">"PL"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/ac_plot_keyness.html">ac_plot_keyness</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="co"># 2. Codebook</span></span>
+<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  name         <span class="op">=</span> <span class="st">"posicionamento"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Classifique o posicionamento do texto."</span>,</span>
+<span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Favoravel"</span>, <span class="st">"Contrario"</span>, <span class="st">"Neutro/Tecnico"</span><span class="op">)</span>,</span>
+<span>  mode         <span class="op">=</span> <span class="st">"manual"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Pipeline qualitativo (LLM)</span></span>
-<span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span><span class="st">"iliberalismo_br"</span><span class="op">)</span></span>
-<span><span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span><span class="va">corpus</span>, codebook <span class="op">=</span> <span class="va">cb</span>, model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># 3. Codificar com qwen3.6 via Ollama</span></span>
+<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  provider    <span class="op">=</span> <span class="st">"ollama"</span>,</span>
+<span>  model       <span class="op">=</span> <span class="st">"qwen3.6:latest"</span>,</span>
+<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OLLAMA_API_KEY"</span><span class="op">)</span>,</span>
+<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 4. Exportar</span></span>
+<span><span class="fu"><a href="reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"csv"</span>, arquivo <span class="op">=</span> <span class="st">"codificacao.csv"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="documentação">Documentação<a class="anchor" aria-label="anchor" href="#documenta%C3%A7%C3%A3o"></a>
-</h2>
-<ul>
-<li>Site do pacote: <a href="https://andersonheri.github.io/acR/">andersonheri.github.io/acR</a>
-</li>
-<li>Vignettes (em desenvolvimento)</li>
-<li>Decisões arquiteturais: <a href="inst/docs/adr/"><code>inst/docs/adr/</code></a>
-</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="citação">Citação<a class="anchor" aria-label="anchor" href="#cita%C3%A7%C3%A3o"></a>
-</h2>
-<p>Se você usa o <code>acR</code> em pesquisa, por favor cite:</p>
+<div class="section level3">
+<h3 id="modulo-quantitativo--frequencias-e-sentimento">Modulo quantitativo — frequencias e sentimento<a class="anchor" aria-label="anchor" href="#modulo-quantitativo--frequencias-e-sentimento"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Tokenizar e calcular frequencias</span></span>
+<span><span class="va">tokens</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span>, remover_stopwords <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">contagem</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">contagem</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Sentimento</span></span>
+<span><span class="va">sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, lexico <span class="op">=</span> <span class="st">"oplexicon"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="inspiração-e-diálogo">Inspiração e diálogo<a class="anchor" aria-label="anchor" href="#inspira%C3%A7%C3%A3o-e-di%C3%A1logo"></a>
+<h2 id="funcoes-por-modulo">Funcoes por modulo<a class="anchor" aria-label="anchor" href="#funcoes-por-modulo"></a>
 </h2>
-<p>O <code>acR</code> reconhece dívida intelectual com:</p>
+<div class="section level3">
+<h3 id="corpus-e-pre-processamento">Corpus e pre-processamento<a class="anchor" aria-label="anchor" href="#corpus-e-pre-processamento"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>Funcao</th>
+<th>Descricao</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="reference/ac_corpus.html">ac_corpus()</a></code></td>
+<td>Criar objeto corpus</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_clean.html">ac_clean()</a></code></td>
+<td>Limpar texto (lowercase, pontuacao, numeros)</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_tokenize.html">ac_tokenize()</a></code></td>
+<td>Tokenizar com remocao de stopwords</td>
+</tr>
+<tr class="even">
+<td><code>ac_dfm()</code></td>
+<td>Criar Document-Feature Matrix</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="analise-quantitativa">Analise quantitativa<a class="anchor" aria-label="anchor" href="#analise-quantitativa"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>Funcao</th>
+<th>Descricao</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="reference/ac_count.html">ac_count()</a></code></td>
+<td>Frequencia de termos</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_top_terms.html">ac_top_terms()</a></code></td>
+<td>Top N termos</td>
+</tr>
+<tr class="odd">
+<td><code>ac_tfidf()</code></td>
+<td>TF-IDF por documento</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_keyness.html">ac_keyness()</a></code></td>
+<td>Vocabulario distintivo entre grupos</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_cooccurrence.html">ac_cooccurrence()</a></code></td>
+<td>Rede de co-ocorrencia</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_sentiment.html">ac_sentiment()</a></code></td>
+<td>Sentimento (OpLexicon / SentiLex-PT)</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_lda.html">ac_lda()</a></code></td>
+<td>Modelagem de topicos LDA</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_lda_tune.html">ac_lda_tune()</a></code></td>
+<td>Selecao otima de K topicos</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="analise-qualitativa-com-llms">Analise qualitativa com LLMs<a class="anchor" aria-label="anchor" href="#analise-qualitativa-com-llms"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>Funcao</th>
+<th>Descricao</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="reference/ac_qual_codebook.html">ac_qual_codebook()</a></code></td>
+<td>Construir codebook estruturado</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_qual_code.html">ac_qual_code()</a></code></td>
+<td>Codificar corpus via LLM</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_qual_list_models.html">ac_qual_list_models()</a></code></td>
+<td>Listar modelos disponiveis</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code></td>
+<td>Recomendacao automatica de modelo</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_qual_sample.html">ac_qual_sample()</a></code></td>
+<td>Amostrar para validacao humana</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code></td>
+<td>Exportar para revisao em .xlsx</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_qual_import_human.html">ac_qual_import_human()</a></code></td>
+<td>Importar revisao humana</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_qual_irr.html">ac_qual_irr()</a></code></td>
+<td>Concordancia inter-codificador (kappa)</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code></td>
+<td>Validar threshold de confiabilidade</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code></td>
+<td>Buscar literatura de apoio</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code></td>
+<td>Salvar codebook em JSON</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_qual_load_codebook.html">ac_qual_load_codebook()</a></code></td>
+<td>Carregar codebook salvo</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="visualizacao">Visualizacao<a class="anchor" aria-label="anchor" href="#visualizacao"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>Funcao</th>
+<th>Descricao</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms()</a></code></td>
+<td>Barras de frequencia</td>
+</tr>
+<tr class="even">
+<td><code>ac_plot_tfidf()</code></td>
+<td>TF-IDF por grupo</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_plot_keyness.html">ac_plot_keyness()</a></code></td>
+<td>Keyness por grupo de referencia</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment()</a></code></td>
+<td>Distribuicao de sentimento</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_plot_xray.html">ac_plot_xray()</a></code></td>
+<td>Evolucao de sentimento no texto</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code></td>
+<td>Termos por topico LDA</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ac_plot_lda_tune.html">ac_plot_lda_tune()</a></code></td>
+<td>Curva de selecao de K</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code></td>
+<td>Rede de co-ocorrencia</td>
+</tr>
+<tr class="odd">
+<td><code>ac_plot_wordcloud()</code></td>
+<td>Nuvem de palavras</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code></td>
+<td>Nuvem comparativa por topico</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="exportacao">Exportacao<a class="anchor" aria-label="anchor" href="#exportacao"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>Funcao</th>
+<th>Formatos</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="reference/ac_export.html">ac_export()</a></code></td>
+<td>
+<code>csv</code>, <code>xlsx</code>, <code>latex</code>, <code>rds</code>
+</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ac_fetch_camara.html">ac_fetch_camara()</a></code></td>
+<td>Coleta via API da Camara dos Deputados</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section level2">
+<h2 id="provedores-llm-suportados">Provedores LLM suportados<a class="anchor" aria-label="anchor" href="#provedores-llm-suportados"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="18%">
+<col width="22%">
+<col width="37%">
+<col width="20%">
+</colgroup>
+<thead><tr class="header">
+<th>Provedor</th>
+<th><code>provider</code></th>
+<th>Modelo recomendado</th>
+<th>Portugues</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Ollama nuvem</td>
+<td><code>"ollama"</code></td>
+<td><code>qwen3.6:latest</code></td>
+<td>Excelente</td>
+</tr>
+<tr class="even">
+<td>OpenAI</td>
+<td><code>"openai"</code></td>
+<td><code>gpt-4o-mini</code></td>
+<td>Excelente</td>
+</tr>
+<tr class="odd">
+<td>Anthropic</td>
+<td><code>"anthropic"</code></td>
+<td><code>claude-3-5-sonnet</code></td>
+<td>Excelente</td>
+</tr>
+<tr class="even">
+<td>Groq</td>
+<td><code>"groq"</code></td>
+<td><code>llama3-8b-8192</code></td>
+<td>Bom</td>
+</tr>
+<tr class="odd">
+<td>Together AI</td>
+<td><code>"openai"</code></td>
+<td><code>Qwen/Qwen3-235B-A22B</code></td>
+<td>Excelente</td>
+</tr>
+<tr class="even">
+<td>Qualquer API OpenAI-compativel</td>
+<td>
+<code>"openai"</code> + <code>base_url</code>
+</td>
+<td>—</td>
+<td>Variavel</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="documentacao">Documentacao<a class="anchor" aria-label="anchor" href="#documentacao"></a>
+</h2>
 <ul>
 <li>
-<a href="https://quallmer.github.io/quallmer/" class="external-link"><code>quallmer</code></a> (Maerz &amp; Benoit, 2025) — pelo design do workflow de codificação assistida por LLMs.</li>
+<strong>Site completo</strong>: <a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a>
+</li>
 <li>
-<a href="https://quanteda.io/" class="external-link"><code>quanteda</code></a> (Benoit et al.) — pela infraestrutura de análise textual quantitativa.</li>
-<li>
-<a href="https://ellmer.tidyverse.org/" class="external-link"><code>ellmer</code></a> (Wickham et al., Posit) — pelo backend unificado de LLMs.</li>
-<li>OpLexicon (Souza &amp; Vieira, 2012; PUCRS) — léxico de sentimento para PT-BR.</li>
+<strong>Vignettes</strong>:
+<ul>
+<li><a href="https://andersonheri.github.io/acR/articles/introducao-acR.html">Introducao ao acR</a></li>
+<li><a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Codificacao qualitativa com LLMs</a></li>
+<li><a href="https://andersonheri.github.io/acR/articles/analise-proposicoes.html">Analise de proposicoes legislativas</a></li>
+<li><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Analise quantitativa</a></li>
+<li><a href="https://andersonheri.github.io/acR/articles/sentimento.html">Analise de sentimento</a></li>
+<li><a href="https://andersonheri.github.io/acR/articles/lda.html">Modelagem de topicos LDA</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="como-contribuir">Como contribuir<a class="anchor" aria-label="anchor" href="#como-contribuir"></a>
+<h2 id="como-citar">Como citar<a class="anchor" aria-label="anchor" href="#como-citar"></a>
 </h2>
-<p>Contribuições são bem-vindas. Veja <a href="CONTRIBUTING.html">CONTRIBUTING.md</a> e o <a href="CODE_OF_CONDUCT.html">Código de Conduta</a>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
+<pre><code>Henrique, A. (2025). acR: Analise de Conteudo em R.
+R package version 0.1.0.
+Centro de Estudos da Metropole (CEM-Cepid) — Universidade de Sao Paulo.
+https://andersonheri.github.io/acR/</code></pre>
 </div>
 <div class="section level2">
-<h2 id="licença">Licença<a class="anchor" aria-label="anchor" href="#licen%C3%A7a"></a>
+<h2 id="referencias">Referencias<a class="anchor" aria-label="anchor" href="#referencias"></a>
 </h2>
-<p>MIT © 2026 Anderson Henrique</p>
+<p>Bardin, L. (2011). <em>Analise de conteudo</em>. Edicoes 70.</p>
+<p>Benoit, K., et al. (2018). quanteda. <em>JOSS</em>, 3(30), 774. <a href="doi:10.21105/joss.00774" class="uri">doi:10.21105/joss.00774</a></p>
+<p>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet Allocation. <em>JMLR</em>, 3, 993-1022.</p>
+<p>Krippendorff, K. (2018). <em>Content Analysis</em> (4a ed.). SAGE.</p>
+<p>Landis, J. R., &amp; Koch, G. G. (1977). <em>Biometrics</em>, 33(1), 159-174.</p>
+<p>Laver, M., Benoit, K., &amp; Garry, J. (2003). <em>APSR</em>, 97(2), 311-331.</p>
+<p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer</em>. — inspiracao para o workflow LLM.</p>
+<p>Sampaio, R. C., &amp; Lycariao, D. (2021). <em>Analise de conteudo categorial</em>. Enap.</p>
+<p>Souza, M., &amp; Vieira, R. (2012). OpLexicon. <em>WASSA</em>. PUCRS.</p>
+<p>Wickham, H., et al. (2025). <em>ellmer</em>. Posit. <a href="https://ellmer.tidyverse.org/" class="external-link uri">https://ellmer.tidyverse.org/</a></p>
+</div>
+<div class="section level2">
+<h2 id="licenca">Licenca<a class="anchor" aria-label="anchor" href="#licenca"></a>
+</h2>
+<p>MIT © Anderson Henrique — Centro de Estudos da Metropole (CEM-Cepid), Universidade de Sao Paulo.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
