@@ -1,5 +1,4 @@
 #' Busca discursos de senadores federais via senatebR
-#' @importFrom senatebR extrair_discursos
 #'
 #' @description
 #' Coleta discursos parlamentares do Senado Federal usando o pacote

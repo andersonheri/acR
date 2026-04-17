@@ -31,7 +31,9 @@ Depends:
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: pt-BR
+Additional_repositories: https://github.com/vsntos/senatebR
 Suggests:
+    senatebR,
     cachem,
     ellmer,
     geobr,
@@ -68,4 +70,4 @@ Imports:
     httr2,
     irr,
     writexl,
-    knitr,
+    knitr
