@@ -5,6 +5,7 @@
 [![pkgdown](https://github.com/andersonheri/acR/actions/workflows/pkgdown.yaml/badge.svg)](https://andersonheri.github.io/acR/)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Codecov](https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg)](https://codecov.io/gh/andersonheri/acR)
 <!-- badges: end -->
 
 > **Análise de Conteúdo em R** — pipeline integrado qualitativo (LLMs) e
@@ -37,9 +38,9 @@ humana e a concordância intercodificadores é calculada automaticamente.
 
 **Módulo quantitativo** — oferece as ferramentas estatísticas clássicas de
 análise de conteúdo: frequência de termos, TF-IDF, keyness, análise de
-sentimento (OpLexicon / SentiLex-PT), co-ocorrência e modelagem de tópicos
-via LDA. Todas as funções de visualização seguem o estilo do `ggplot2` e
-são compatíveis com o `ipeaplot`.
+sentimento (OpLexicon), co-ocorrência e modelagem de tópicos via LDA.
+Todas as funções de visualização seguem o estilo do `ggplot2` e são
+compatíveis com o `ipeaplot`.
 
 ---
 
@@ -143,7 +144,6 @@ entre as rodadas. Isso permite identificar automaticamente os documentos
 mais ambíguos para revisão humana prioritária.
 
 ```r
-# Instanciar o provedor — a chave é lida do .Renviron automaticamente
 chat_obj <- chat_groq(
   model = "llama-3.3-70b-versatile",
   echo  = "none"
@@ -220,7 +220,6 @@ chat_obj <- chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
 chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
 
 # Ollama — modelos locais, sem envio de dados para servidores externos
-# Ideal para textos sensíveis (entrevistas, documentos internos)
 chat_obj <- chat_ollama(model = "llama3.2", echo = "none")
 
 # OpenAI, Anthropic, Mistral, DeepSeek e OpenRouter também são suportados
@@ -253,27 +252,22 @@ lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
   n_refs        = 5,
   journals      = "default",   # lista curada de periódicos de CP/CS/AP
-  min_citations = 50,          # apenas trabalhos consolidados
+  min_citations = 50,
   chat          = chat_obj
 )
 
-# Resultado com autor, ano, revista, n_citacoes, trecho_original,
-# definicao_pt, abstract_original e link (DOI)
 print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
 
 #> # A tibble: 3 × 5
-#>   autor                       ano revista                              n_citacoes
-#>   <chr>                     <int> <chr>                                     <int>
-#> 1 Nancy Bermeo               2016 Journal of democracy                       2015
-#> 3 David Waldner; Ellen Lust  2018 Annual Review of Political Science          782
+#>   autor                       ano revista                          n_citacoes
+#>   <chr>                     <int> <chr>                                 <int>
+#> 1 Nancy Bermeo               2016 Journal of democracy                   2015
+#> 2 David Waldner; Ellen Lust  2018 Annual Review of Political Science       782
 ```
 
 ---
 
 ## Pipeline quantitativo
-
-O módulo quantitativo oferece as ferramentas estatísticas clássicas de
-análise de conteúdo, todas integradas ao mesmo objeto `ac_corpus`.
 
 ```r
 # Tokenizar e remover stopwords em português
@@ -283,7 +277,7 @@ tokens <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
 contagem <- ac_count(tokens)
 ac_plot_top_terms(ac_top_terms(contagem, n = 15))
 
-# TF-IDF para identificar termos característicos por partido
+# TF-IDF por partido
 freq  <- ac_count(tokens, by = "partido")
 tfidf <- ac_tf_idf(freq, by = "partido")
 ac_plot_tf_idf(tfidf, by = "partido", n = 10)
@@ -293,8 +287,12 @@ keyness <- ac_keyness(tokens, target = "PT", ref = "PL")
 ac_plot_keyness(keyness)
 
 # Análise de sentimento (OpLexicon)
-sent <- ac_sentiment(corpus, lexico = "oplexicon")
+sent <- ac_sentiment(corpus)
 ac_plot_sentiment(sent)
+
+# Co-ocorrência e rede de termos
+cooc <- ac_cooccurrence(tokens, window = 5, min_count = 2)
+ac_plot_cooccurrence(cooc, top_n = 30)
 
 # Modelagem de tópicos LDA
 lda  <- ac_lda(tokens, k = 5)
@@ -314,10 +312,11 @@ Deputados, com filtros por período, partido, UF e tipo de discurso.
 ### Corpus e pré-processamento
 
 `ac_corpus()` cria o objeto corpus a partir de um `data.frame` ou vetor de
-textos. `ac_import()` importa de arquivos externos (`.txt`, `.docx`, `.pdf`).
-`ac_clean()` padroniza o texto removendo pontuação, números e caracteres
-especiais. `ac_tokenize()` tokeniza com remoção automática de stopwords em
-português.
+textos. `ac_import()` importa de arquivos externos (`.txt`, `.csv`, `.docx`,
+`.pdf`) com detecção automática de formato, suporte a glob e OCR via
+`tesseract`. `ac_clean()` padroniza o texto removendo pontuação, números e
+caracteres especiais. `ac_tokenize()` tokeniza com remoção automática de
+stopwords em português.
 
 ### Análise qualitativa com LLMs
 
@@ -328,17 +327,19 @@ com LLM. `ac_qual_sample()` amostra documentos para validação humana,
 priorizando casos incertos. `ac_qual_export_for_review()` exporta a amostra
 para `.xlsx`. `ac_qual_import_human()` importa a revisão preenchida.
 `ac_qual_irr()` calcula kappa de Cohen, Fleiss e alpha de Krippendorff.
-`ac_qual_save_codebook()` e `ac_qual_load_codebook()` salvam e carregam
-codebooks em YAML para reuso.
+`ac_qual_reliability()` calcula confiabilidade entre codificação LLM e
+humana com intervalos de confiança via bootstrap (Krippendorff alpha, Gwet
+AC1, F1-macro e percentual de concordância). `ac_qual_save_codebook()` e
+`ac_qual_load_codebook()` salvam e carregam codebooks em YAML.
 
 ### Análise quantitativa
 
 `ac_count()` conta frequência de termos. `ac_top_terms()` retorna os N
 termos mais frequentes. `ac_tf_idf()` calcula TF-IDF por grupo.
-`ac_keyness()` identifica vocabulário distintivo entre grupos de referência.
-`ac_cooccurrence()` monta rede de co-ocorrência. `ac_sentiment()` calcula
-sentimento por documento usando léxicos em português. `ac_lda()` ajusta
-modelo LDA. `ac_lda_tune()` seleciona o K ótimo de tópicos.
+`ac_keyness()` identifica vocabulário distintivo entre grupos.
+`ac_cooccurrence()` monta rede de co-ocorrência com PMI e coeficiente Dice.
+`ac_sentiment()` calcula sentimento por documento usando OpLexicon.
+`ac_lda()` ajusta modelo LDA. `ac_lda_tune()` seleciona o K ótimo.
 
 ### Visualização
 
@@ -346,6 +347,23 @@ modelo LDA. `ac_lda_tune()` seleciona o K ótimo de tópicos.
 `ac_plot_sentiment()`, `ac_plot_xray()`, `ac_plot_lda_topics()`,
 `ac_plot_lda_tune()`, `ac_plot_cooccurrence()`, `ac_wordcloud()` e
 `ac_plot_wordcloud_comparative()`.
+
+---
+
+## Cobertura de testes
+
+A suite de testes cobre **56%** do código com 541 testes unitários e de
+integração, incluindo testes para todas as funções centrais do pipeline.
+Testes de integração com APIs externas (OpenAlex, LLMs) usam `skip_on_cran()`
+e verificação prévia de disponibilidade para evitar falhas em CI.
+
+```
+ac_clean.R               95%   ac_cooccurrence.R        97%
+ac_corpus.R              89%   ac_qual_irr.R            97%
+ac_lda.R                 90%   ac_plot_wordcloud*.R    100%
+ac_tokenize.R            86%   is_ac_corpus.R          100%
+ac_qual_reliability.R    72%   ac_sentiment.R           65%
+```
 
 ---
 
@@ -357,10 +375,10 @@ O site completo com vignettes interativas está em
 As vignettes cobrem:
 
 - [Introdução ao acR](https://andersonheri.github.io/acR/articles/introducao-acR.html) — visão geral do pipeline com exemplos reproduzíveis
-- [Codificação qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) — pipeline completo com dados reais da Câmara, outputs validados e cálculo de confiabilidade intercodificadores
+- [Codificação qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) — pipeline completo com dados reais da Câmara
 - [Análise de proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) — aplicação com dados do Senado
 - [Análise quantitativa](https://andersonheri.github.io/acR/articles/quantitativo.html) — TF-IDF, keyness, co-ocorrência e nuvem de palavras
-- [Análise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html) — OpLexicon e SentiLex-PT
+- [Análise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html) — OpLexicon
 - [Modelagem de tópicos LDA](https://andersonheri.github.io/acR/articles/lda.html) — ajuste, seleção de K e visualização
 
 ---
@@ -373,7 +391,7 @@ citation("acR")
 
 ```
 Henrique, A. (2025). acR: Análise de Conteúdo em R.
-R package version 0.1.0.
+R package version 0.2.0. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/
 ```
@@ -387,6 +405,9 @@ Bardin, L. (2011). *Análise de conteúdo*. Edições 70.
 Gilardi, F., Alizadeh, M., & Kubli, M. (2023). ChatGPT outperforms crowd
 workers for text-annotation tasks. *PNAS*, 120(30).
 
+Gwet, K. L. (2014). *Handbook of Inter-Rater Reliability*. 4. ed. Advanced
+Analytics.
+
 Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
 Methodology*. 4. ed. SAGE.
 
@@ -395,6 +416,9 @@ for categorical data. *Biometrics*, 33(1), 159–174.
 
 Priem, J. et al. (2022). OpenAlex: A fully-open index of the global research
 system. *arXiv*, 2205.01833.
+
+Souza, M., & Vieira, R. (2012). Sentiment analysis on Twitter data for
+Portuguese language. *PROPOR*.
 
 Wang, X. et al. (2023). Self-consistency improves chain of thought reasoning
 in language models. *EMNLP*.
@@ -406,5 +430,5 @@ Wickham, H. et al. (2025). *ellmer: Chat with Large Language Models*. Posit.
 
 ## Licença
 
-MIT © Anderson Henrique — Centro de Estudos da Metrópole (CEM-Cepid),
-Universidade de São Paulo.
+MIT © Anderson Henrique ([ORCID: 0000-0002-1842-2725](https://orcid.org/0000-0002-1842-2725)) —
+Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.

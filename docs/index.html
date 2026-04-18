@@ -90,7 +90,7 @@
 <p>O <code>acR</code> integra essas etapas em um único pipeline coerente, seguindo as diretrizes de Bardin (2011) e Krippendorff (2018), e aproveitando os avanços recentes em modelos de linguagem (LLMs) para automatizar a codificação qualitativa com validação humana.</p>
 <p>O pacote tem dois módulos principais:</p>
 <p><strong>Módulo qualitativo</strong> — usa LLMs para classificar textos em categorias definidas por um codebook. O pesquisador define as categorias e suas definições; o modelo aplica o codebook a cada documento, reportando a categoria, o nível de certeza (via <em>self-consistency</em>) e um raciocínio justificando a classificação. Uma amostra pode ser exportada para validação humana e a concordância intercodificadores é calculada automaticamente.</p>
-<p><strong>Módulo quantitativo</strong> — oferece as ferramentas estatísticas clássicas de análise de conteúdo: frequência de termos, TF-IDF, keyness, análise de sentimento (OpLexicon / SentiLex-PT), co-ocorrência e modelagem de tópicos via LDA. Todas as funções de visualização seguem o estilo do <code>ggplot2</code> e são compatíveis com o <code>ipeaplot</code>.</p>
+<p><strong>Módulo quantitativo</strong> — oferece as ferramentas estatísticas clássicas de análise de conteúdo: frequência de termos, TF-IDF, keyness, análise de sentimento (OpLexicon), co-ocorrência e modelagem de tópicos via LDA. Todas as funções de visualização seguem o estilo do <code>ggplot2</code> e são compatíveis com o <code>ipeaplot</code>.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -173,8 +173,7 @@
 <p>A função <code><a href="reference/ac_qual_code.html">ac_qual_code()</a></code> recebe o corpus, o codebook e um objeto <code>Chat</code> do pacote <strong>ellmer</strong>. O argumento <code>chat =</code> permite usar qualquer provedor suportado pelo ellmer sem alterar o restante do código.</p>
 <p>O parâmetro <code>k_consistency = 3</code> ativa o cálculo de certeza via <em>self-consistency</em> (Wang et al., 2023): o modelo classifica cada documento três vezes com temperatura &gt; 0 e a confiança é a proporção de concordância entre as rodadas. Isso permite identificar automaticamente os documentos mais ambíguos para revisão humana prioritária.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Instanciar o provedor — a chave é lida do .Renviron automaticamente</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
 <span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
 <span><span class="op">)</span></span>
@@ -232,7 +231,6 @@
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Ollama — modelos locais, sem envio de dados para servidores externos</span></span>
-<span><span class="co"># Ideal para textos sensíveis (entrevistas, documentos internos)</span></span>
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama3.2"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># OpenAI, Anthropic, Mistral, DeepSeek e OpenRouter também são suportados</span></span>
@@ -254,25 +252,22 @@
 <span>  concept       <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span>
 <span>  n_refs        <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  journals      <span class="op">=</span> <span class="st">"default"</span>,   <span class="co"># lista curada de periódicos de CP/CS/AP</span></span>
-<span>  min_citations <span class="op">=</span> <span class="fl">50</span>,          <span class="co"># apenas trabalhos consolidados</span></span>
+<span>  min_citations <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  chat          <span class="op">=</span> <span class="va">chat_obj</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Resultado com autor, ano, revista, n_citacoes, trecho_original,</span></span>
-<span><span class="co"># definicao_pt, abstract_original e link (DOI)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lit</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"autor"</span>, <span class="st">"ano"</span>, <span class="st">"revista"</span>, <span class="st">"n_citacoes"</span>, <span class="st">"definicao_pt"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#&gt; # A tibble: 3 × 5</span></span>
-<span><span class="co">#&gt;   autor                       ano revista                              n_citacoes</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                                     &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 Nancy Bermeo               2016 Journal of democracy                       2015</span></span>
-<span><span class="co">#&gt; 3 David Waldner; Ellen Lust  2018 Annual Review of Political Science          782</span></span></code></pre></div>
+<span><span class="co">#&gt;   autor                       ano revista                          n_citacoes</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                                 &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1 Nancy Bermeo               2016 Journal of democracy                   2015</span></span>
+<span><span class="co">#&gt; 2 David Waldner; Ellen Lust  2018 Annual Review of Political Science       782</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="pipeline-quantitativo">Pipeline quantitativo<a class="anchor" aria-label="anchor" href="#pipeline-quantitativo"></a>
 </h2>
-<p>O módulo quantitativo oferece as ferramentas estatísticas clássicas de análise de conteúdo, todas integradas ao mesmo objeto <code>ac_corpus</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Tokenizar e remover stopwords em português</span></span>
 <span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span>, remover_stopwords <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -281,7 +276,7 @@
 <span><span class="va">contagem</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">contagem</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># TF-IDF para identificar termos característicos por partido</span></span>
+<span><span class="co"># TF-IDF por partido</span></span>
 <span><span class="va">freq</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
 <span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">freq</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, by <span class="op">=</span> <span class="st">"partido"</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -291,8 +286,12 @@
 <span><span class="fu"><a href="reference/ac_plot_keyness.html">ac_plot_keyness</a></span><span class="op">(</span><span class="va">keyness</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Análise de sentimento (OpLexicon)</span></span>
-<span><span class="va">sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, lexico <span class="op">=</span> <span class="st">"oplexicon"</span><span class="op">)</span></span>
+<span><span class="va">sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Co-ocorrência e rede de termos</span></span>
+<span><span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_cooccurrence.html">ac_cooccurrence</a></span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">5</span>, min_count <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Modelagem de tópicos LDA</span></span>
 <span><span class="va">lda</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">tokens</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
@@ -310,17 +309,17 @@
 <div class="section level3">
 <h3 id="corpus-e-pré-processamento">Corpus e pré-processamento<a class="anchor" aria-label="anchor" href="#corpus-e-pr%C3%A9-processamento"></a>
 </h3>
-<p><code><a href="reference/ac_corpus.html">ac_corpus()</a></code> cria o objeto corpus a partir de um <code>data.frame</code> ou vetor de textos. <code><a href="reference/ac_import.html">ac_import()</a></code> importa de arquivos externos (<code>.txt</code>, <code>.docx</code>, <code>.pdf</code>). <code><a href="reference/ac_clean.html">ac_clean()</a></code> padroniza o texto removendo pontuação, números e caracteres especiais. <code><a href="reference/ac_tokenize.html">ac_tokenize()</a></code> tokeniza com remoção automática de stopwords em português.</p>
+<p><code><a href="reference/ac_corpus.html">ac_corpus()</a></code> cria o objeto corpus a partir de um <code>data.frame</code> ou vetor de textos. <code><a href="reference/ac_import.html">ac_import()</a></code> importa de arquivos externos (<code>.txt</code>, <code>.csv</code>, <code>.docx</code>, <code>.pdf</code>) com detecção automática de formato, suporte a glob e OCR via <code>tesseract</code>. <code><a href="reference/ac_clean.html">ac_clean()</a></code> padroniza o texto removendo pontuação, números e caracteres especiais. <code><a href="reference/ac_tokenize.html">ac_tokenize()</a></code> tokeniza com remoção automática de stopwords em português.</p>
 </div>
 <div class="section level3">
 <h3 id="análise-qualitativa-com-llms">Análise qualitativa com LLMs<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-qualitativa-com-llms"></a>
 </h3>
-<p><code><a href="reference/ac_qual_codebook.html">ac_qual_codebook()</a></code> cria o codebook com categorias e definições. <code><a href="reference/ac_qual_code.html">ac_qual_code()</a></code> classifica o corpus via LLM com self-consistency. <code><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code> busca referências reais no OpenAlex e sintetiza com LLM. <code><a href="reference/ac_qual_sample.html">ac_qual_sample()</a></code> amostra documentos para validação humana, priorizando casos incertos. <code><a href="reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code> exporta a amostra para <code>.xlsx</code>. <code><a href="reference/ac_qual_import_human.html">ac_qual_import_human()</a></code> importa a revisão preenchida. <code><a href="reference/ac_qual_irr.html">ac_qual_irr()</a></code> calcula kappa de Cohen, Fleiss e alpha de Krippendorff. <code><a href="reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code> e <code><a href="reference/ac_qual_load_codebook.html">ac_qual_load_codebook()</a></code> salvam e carregam codebooks em YAML para reuso.</p>
+<p><code><a href="reference/ac_qual_codebook.html">ac_qual_codebook()</a></code> cria o codebook com categorias e definições. <code><a href="reference/ac_qual_code.html">ac_qual_code()</a></code> classifica o corpus via LLM com self-consistency. <code><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code> busca referências reais no OpenAlex e sintetiza com LLM. <code><a href="reference/ac_qual_sample.html">ac_qual_sample()</a></code> amostra documentos para validação humana, priorizando casos incertos. <code><a href="reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code> exporta a amostra para <code>.xlsx</code>. <code><a href="reference/ac_qual_import_human.html">ac_qual_import_human()</a></code> importa a revisão preenchida. <code><a href="reference/ac_qual_irr.html">ac_qual_irr()</a></code> calcula kappa de Cohen, Fleiss e alpha de Krippendorff. <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> calcula confiabilidade entre codificação LLM e humana com intervalos de confiança via bootstrap (Krippendorff alpha, Gwet AC1, F1-macro e percentual de concordância). <code><a href="reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code> e <code><a href="reference/ac_qual_load_codebook.html">ac_qual_load_codebook()</a></code> salvam e carregam codebooks em YAML.</p>
 </div>
 <div class="section level3">
 <h3 id="análise-quantitativa">Análise quantitativa<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-quantitativa"></a>
 </h3>
-<p><code><a href="reference/ac_count.html">ac_count()</a></code> conta frequência de termos. <code><a href="reference/ac_top_terms.html">ac_top_terms()</a></code> retorna os N termos mais frequentes. <code><a href="reference/ac_tf_idf.html">ac_tf_idf()</a></code> calcula TF-IDF por grupo. <code><a href="reference/ac_keyness.html">ac_keyness()</a></code> identifica vocabulário distintivo entre grupos de referência. <code><a href="reference/ac_cooccurrence.html">ac_cooccurrence()</a></code> monta rede de co-ocorrência. <code><a href="reference/ac_sentiment.html">ac_sentiment()</a></code> calcula sentimento por documento usando léxicos em português. <code><a href="reference/ac_lda.html">ac_lda()</a></code> ajusta modelo LDA. <code><a href="reference/ac_lda_tune.html">ac_lda_tune()</a></code> seleciona o K ótimo de tópicos.</p>
+<p><code><a href="reference/ac_count.html">ac_count()</a></code> conta frequência de termos. <code><a href="reference/ac_top_terms.html">ac_top_terms()</a></code> retorna os N termos mais frequentes. <code><a href="reference/ac_tf_idf.html">ac_tf_idf()</a></code> calcula TF-IDF por grupo. <code><a href="reference/ac_keyness.html">ac_keyness()</a></code> identifica vocabulário distintivo entre grupos. <code><a href="reference/ac_cooccurrence.html">ac_cooccurrence()</a></code> monta rede de co-ocorrência com PMI e coeficiente Dice. <code><a href="reference/ac_sentiment.html">ac_sentiment()</a></code> calcula sentimento por documento usando OpLexicon. <code><a href="reference/ac_lda.html">ac_lda()</a></code> ajusta modelo LDA. <code><a href="reference/ac_lda_tune.html">ac_lda_tune()</a></code> seleciona o K ótimo.</p>
 </div>
 <div class="section level3">
 <h3 id="visualização">Visualização<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o"></a>
@@ -328,6 +327,17 @@
 <p><code><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms()</a></code>, <code><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>, <code><a href="reference/ac_plot_keyness.html">ac_plot_keyness()</a></code>, <code><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment()</a></code>, <code><a href="reference/ac_plot_xray.html">ac_plot_xray()</a></code>, <code><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code>, <code><a href="reference/ac_plot_lda_tune.html">ac_plot_lda_tune()</a></code>, <code><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code>, <code><a href="reference/ac_wordcloud.html">ac_wordcloud()</a></code> e <code><a href="reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code>.</p>
 <hr>
 </div>
+</div>
+<div class="section level2">
+<h2 id="cobertura-de-testes">Cobertura de testes<a class="anchor" aria-label="anchor" href="#cobertura-de-testes"></a>
+</h2>
+<p>A suite de testes cobre <strong>56%</strong> do código com 541 testes unitários e de integração, incluindo testes para todas as funções centrais do pipeline. Testes de integração com APIs externas (OpenAlex, LLMs) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade para evitar falhas em CI.</p>
+<pre><code>ac_clean.R               95%   ac_cooccurrence.R        97%
+ac_corpus.R              89%   ac_qual_irr.R            97%
+ac_lda.R                 90%   ac_plot_wordcloud*.R    100%
+ac_tokenize.R            86%   is_ac_corpus.R          100%
+ac_qual_reliability.R    72%   ac_sentiment.R           65%</code></pre>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="documentação">Documentação<a class="anchor" aria-label="anchor" href="#documenta%C3%A7%C3%A3o"></a>
@@ -338,13 +348,13 @@
 <li>
 <a href="https://andersonheri.github.io/acR/articles/introducao-acR.html">Introdução ao acR</a> — visão geral do pipeline com exemplos reproduzíveis</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Codificação qualitativa com LLMs</a> — pipeline completo com dados reais da Câmara, outputs validados e cálculo de confiabilidade intercodificadores</li>
+<a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Codificação qualitativa com LLMs</a> — pipeline completo com dados reais da Câmara</li>
 <li>
 <a href="https://andersonheri.github.io/acR/articles/analise-proposicoes.html">Análise de proposições legislativas</a> — aplicação com dados do Senado</li>
 <li>
 <a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Análise quantitativa</a> — TF-IDF, keyness, co-ocorrência e nuvem de palavras</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/sentimento.html">Análise de sentimento</a> — OpLexicon e SentiLex-PT</li>
+<a href="https://andersonheri.github.io/acR/articles/sentimento.html">Análise de sentimento</a> — OpLexicon</li>
 <li>
 <a href="https://andersonheri.github.io/acR/articles/lda.html">Modelagem de tópicos LDA</a> — ajuste, seleção de K e visualização</li>
 </ul>
@@ -353,10 +363,10 @@
 <div class="section level2">
 <h2 id="como-citar">Como citar<a class="anchor" aria-label="anchor" href="#como-citar"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2025). acR: Análise de Conteúdo em R.
-R package version 0.1.0.
+R package version 0.2.0. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/</code></pre>
 <hr>
@@ -366,9 +376,11 @@ https://andersonheri.github.io/acR/</code></pre>
 </h2>
 <p>Bardin, L. (2011). <em>Análise de conteúdo</em>. Edições 70.</p>
 <p>Gilardi, F., Alizadeh, M., &amp; Kubli, M. (2023). ChatGPT outperforms crowd workers for text-annotation tasks. <em>PNAS</em>, 120(30).</p>
+<p>Gwet, K. L. (2014). <em>Handbook of Inter-Rater Reliability</em>. 4. ed. Advanced Analytics.</p>
 <p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its Methodology</em>. 4. ed. SAGE.</p>
 <p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer agreement for categorical data. <em>Biometrics</em>, 33(1), 159–174.</p>
 <p>Priem, J. et al. (2022). OpenAlex: A fully-open index of the global research system. <em>arXiv</em>, 2205.01833.</p>
+<p>Souza, M., &amp; Vieira, R. (2012). Sentiment analysis on Twitter data for Portuguese language. <em>PROPOR</em>.</p>
 <p>Wang, X. et al. (2023). Self-consistency improves chain of thought reasoning in language models. <em>EMNLP</em>.</p>
 <p>Wickham, H. et al. (2025). <em>ellmer: Chat with Large Language Models</em>. Posit. <a href="https://ellmer.tidyverse.org" class="external-link uri">https://ellmer.tidyverse.org</a></p>
 <hr>
@@ -376,7 +388,7 @@ https://andersonheri.github.io/acR/</code></pre>
 <div class="section level2">
 <h2 id="licença">Licença<a class="anchor" aria-label="anchor" href="#licen%C3%A7a"></a>
 </h2>
-<p>MIT © Anderson Henrique — Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.</p>
+<p>MIT © Anderson Henrique (<a href="https://orcid.org/0000-0002-1842-2725" class="external-link">ORCID: 0000-0002-1842-2725</a>) — Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -415,7 +427,7 @@ https://andersonheri.github.io/acR/</code></pre>
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Anderson Henrique <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0000-0000-0000" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Anderson Henrique <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-1842-2725" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
