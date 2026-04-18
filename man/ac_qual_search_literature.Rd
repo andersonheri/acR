@@ -23,8 +23,8 @@ ac_qual_search_literature(
 \code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
 \code{model}.}
 
-\item{model}{String no formato \code{"provedor/modelo"} (ex:
-\code{"anthropic/claude-sonnet-4-5"}). Ignorado quando \code{chat} e fornecido.}
+\item{model}{String no formato \code{"provedor/modelo"}. Ignorado quando \code{chat}
+e fornecido.}
 
 \item{n_refs}{Inteiro. Numero de referencias a retornar. Padrao: \code{5}.}
 
@@ -35,28 +35,16 @@ ac_qual_search_literature(
 \item Vetor de strings: lista customizada (ex: \code{c("default", "RBCS")}).
 }}
 
-\item{lang}{Idioma das definicoes sintetizadas. Padrao: \code{"pt"} (portugues).
-Use \code{"en"} para ingles.}
+\item{lang}{Idioma das definicoes sintetizadas. Padrao: \code{"pt"}.}
 
-\item{min_citations}{Inteiro. Numero minimo de citacoes para incluir uma
-referencia. Padrao: \code{0} (sem filtro). Util para focar em trabalhos
-consolidados (ex: \code{min_citations = 50}).}
+\item{min_citations}{Inteiro. Numero minimo de citacoes. Padrao: \code{0}.}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.}
 }
 \value{
-Tibble com colunas:
-\itemize{
-\item \code{conceito}: conceito buscado;
-\item \code{autor}: autores da referencia (formato "Sobrenome, N.; ...");
-\item \code{ano}: ano de publicacao;
-\item \code{revista}: nome do periodico;
-\item \code{n_citacoes}: numero de citacoes no OpenAlex;
-\item \code{trecho_original}: trecho mais relevante do abstract em ingles;
-\item \code{definicao_pt}: definicao sintetizada pela LLM em portugues;
-\item \code{abstract_original}: abstract completo em ingles;
-\item \code{link}: DOI ou URL da referencia.
-}
+Tibble com colunas: \code{conceito}, \code{autor}, \code{ano}, \code{revista},
+\code{n_citacoes}, \code{trecho_original}, \code{definicao_pt}, \code{abstract_original},
+\code{link}.
 }
 \description{
 \code{ac_qual_search_literature()} busca referencias academicas reais na API do
@@ -71,32 +59,15 @@ bibliograficas comuns quando a LLM opera sem fonte externa.
 }
 \examples{
 \dontrun{
-# Busca basica com modelo padrao
-lit <- ac_qual_search_literature(
-  concept = "democratic backsliding",
-  n_refs  = 5,
-  model   = "anthropic/claude-sonnet-4-5"
-)
+chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
 
-# Com objeto Chat do ellmer (recomendado)
-chat_obj <- ellmer::chat_google_gemini(
-  model = "gemini-2.5-flash",
-  echo  = "none"
-)
 lit <- ac_qual_search_literature(
-  concept = "state capacity",
-  n_refs  = 10,
-  chat    = chat_obj
-)
-
-# Focar em trabalhos consolidados de periodicos brasileiros
-lit <- ac_qual_search_literature(
-  concept       = "capacidade estatal",
+  concept       = "democratic backsliding",
   n_refs        = 5,
-  journals      = c("default", "RBCS", "DADOS"),
-  min_citations = 20,
+  min_citations = 50,
   chat          = chat_obj
 )
+print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
 }
 
 }

@@ -59,3 +59,20 @@ módulo qualitativo via LLM implementados e testados.
 - Site pkgdown em https://andersonheri.github.io/acR/
 - ADR documentado em `inst/docs/adr/`
 
+
+# acR 0.2.0
+
+## Correções
+- `ac_qual_search_literature()`: removidas aspas literais da query OpenAlex
+  (API não suporta phrase search via aspas no parâmetro `search`)
+- `ac_qual_search_literature()`: adicionado fallback automático sem filtro de
+  venue quando busca com periódicos selecionados retorna zero resultados
+
+## Testes
+- Testes de integração com OpenAlex + LLM agora usam `skip_on_cran()`,
+  verificação prévia da API e `skip_if(!api_ok)` para evitar falhas em
+  ambientes sem conectividade ou com API instável
+- `test-ac_qual_codebook.R`: adicionado `skip_if(GROQ_API_KEY == 0)` e
+  `chat_obj` explícito no teste de integração
+
+

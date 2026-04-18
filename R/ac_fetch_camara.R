@@ -171,6 +171,16 @@ ac_fetch_camara <- function(
     itens      = 100
   )
 
+  # Tipo comissao nao e suportado pela API — redirecionar para todos
+  if (tipo_discurso == "comissao") {
+    cli::cli_warn(c(
+      "!" = "O tipo {.val comissao} nao e suportado pela API da Camara.",
+      "i" = "O endpoint retorna apenas discursos do plenario.",
+      "i" = "Retornando todos os tipos disponiveis."
+    ))
+    tipo_discurso <- "todos"
+  }
+
   # Filtro por tipoDiscurso (campo string plano da API)
   # Valores observados via inspecao da API em marco/2024
   cod_tipo <- switch(
@@ -178,7 +188,7 @@ ac_fetch_camara <- function(
     "plenario" = c("DISCURSO", "DISCURSO ENCAMINHADO",
                    "BREVE COMUNICACAO", "PELA ORDEM",
                    "COMUNICACAO PARLAMENTAR"),
-    "comissao" = c("COMISSAO"),
+    "comissao" = c("DISCURSO", "DISCURSO ENCAMINHADO",                   "BREVES COMUNICACOES", "PELA ORDEM",                   "COMUNICACAO PARLAMENTAR"),
     "todos"    = NULL
   )
 

@@ -140,13 +140,38 @@ test_that("ac_qual_load_codebook() falha para arquivo inexistente", {
 # ============================================================
 
 test_that("ac_qual_search_literature() retorna tibble com colunas esperadas", {
+  skip_on_cran()
   skip_if_offline()
   skip_if_not_installed("ellmer")
   skip_if_not_installed("jsonlite")
+  skip_if(
+    nchar(Sys.getenv("GROQ_API_KEY")) == 0,
+    "GROQ_API_KEY nao configurada"
+  )
+
+  # Verificar se OpenAlex retorna algo antes de rodar o teste completo
+  api_ok <- tryCatch({
+    r    <- httr2::request("https://api.openalex.org/works") |>
+      httr2::req_url_query(search = "democratic backsliding", `per-page` = 1L,
+                           filter = "type:article") |>
+      httr2::req_timeout(10L) |>
+      httr2::req_perform()
+    body <- httr2::resp_body_json(r, simplifyVector = FALSE)
+    length(body$results) > 0L
+  }, error = function(e) FALSE)
+  skip_if(!api_ok, "OpenAlex nao retornou resultados para o conceito de teste")
+
+  chat_obj <- ellmer::chat_groq(
+    model = "llama-3.3-70b-versatile",
+    echo  = "none"
+  )
 
   lit <- ac_qual_search_literature(
-    concept = "democratic backsliding",
-    n_refs  = 2
+    concept       = "democratic backsliding",
+    n_refs        = 2,
+    journals      = "all",
+    min_citations = 50L,
+    chat          = chat_obj
   )
 
   expect_s3_class(lit, "tbl_df")
