@@ -77,12 +77,13 @@ ac_plot_sentiment(sent)
 
 ### Corpus e pre-processamento
 
-| Funcao                                                                         | Descricao                                    |
-|--------------------------------------------------------------------------------|----------------------------------------------|
-| [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)     | Criar objeto corpus                          |
-| [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)       | Limpar texto (lowercase, pontuacao, numeros) |
-| [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md) | Tokenizar com remocao de stopwords           |
-| `ac_dfm()`                                                                     | Criar Document-Feature Matrix                |
+| Funcao                                                                           | Descricao                                    |
+|----------------------------------------------------------------------------------|----------------------------------------------|
+| [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)       | Criar objeto corpus                          |
+| `ac_import()`                                                                    | Importar corpus de arquivo externo           |
+| [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)         | Limpar texto (lowercase, pontuacao, numeros) |
+| [`is_ac_corpus()`](https://andersonheri.github.io/acR/reference/is_ac_corpus.md) | Verificar se objeto e um corpus acR          |
+| [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)   | Tokenizar com remocao de stopwords           |
 
 ### Analise quantitativa
 
@@ -90,7 +91,7 @@ ac_plot_sentiment(sent)
 |----------------------------------------------------------------------------------------|--------------------------------------|
 | [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)               | Frequencia de termos                 |
 | [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)       | Top N termos                         |
-| `ac_tfidf()`                                                                           | TF-IDF por documento                 |
+| [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)             | TF-IDF por documento                 |
 | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)           | Vocabulario distintivo entre grupos  |
 | [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md) | Rede de co-ocorrencia                |
 | [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)       | Sentimento (OpLexicon / SentiLex-PT) |
@@ -119,14 +120,14 @@ ac_plot_sentiment(sent)
 | Funcao                                                                                                             | Descricao                       |
 |--------------------------------------------------------------------------------------------------------------------|---------------------------------|
 | [`ac_plot_top_terms()`](https://andersonheri.github.io/acR/reference/ac_plot_top_terms.md)                         | Barras de frequencia            |
-| `ac_plot_tfidf()`                                                                                                  | TF-IDF por grupo                |
+| [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md)                               | TF-IDF por grupo                |
 | [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md)                             | Keyness por grupo de referencia |
 | [`ac_plot_sentiment()`](https://andersonheri.github.io/acR/reference/ac_plot_sentiment.md)                         | Distribuicao de sentimento      |
 | [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)                                   | Evolucao de sentimento no texto |
 | [`ac_plot_lda_topics()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.md)                       | Termos por topico LDA           |
 | [`ac_plot_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_tune.md)                           | Curva de selecao de K           |
 | [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)                   | Rede de co-ocorrencia           |
-| `ac_plot_wordcloud()`                                                                                              | Nuvem de palavras               |
+| [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)                                   | Nuvem de palavras               |
 | [`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md) | Nuvem comparativa por topico    |
 
 ### Exportacao
@@ -135,6 +136,7 @@ ac_plot_sentiment(sent)
 |----------------------------------------------------------------------------------------|----------------------------------------|
 | [`ac_export()`](https://andersonheri.github.io/acR/reference/ac_export.md)             | `csv`, `xlsx`, `latex`, `rds`          |
 | [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md) | Coleta via API da Camara dos Deputados |
+| [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md) | Coleta via API do Senado Federal       |
 
 ## Provedores LLM suportados
 
