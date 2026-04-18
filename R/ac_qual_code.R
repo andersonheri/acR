@@ -27,6 +27,9 @@
 #'
 #' @param corpus Objeto `ac_corpus`.
 #' @param codebook Objeto `ac_codebook`, saída de [ac_qual_codebook()].
+#' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
+#'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
+#'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
 #' @param model Modelo LLM a usar. Aceita:
 #'   * **String** no formato `"provedor/modelo"` (ex: `"anthropic/claude-sonnet-4-5"`, `"openai/gpt-4.1"`). Argumentos adicionais como `base_url` e `api_key` podem ser passados via `...`;
 #'   * **Objeto `Chat`** do pacote `ellmer` pre-configurado (ex: `ellmer::chat_openai_compatible(base_url = ...)`), para provedores institucionais, Ollama, Azure, OAuth, etc.

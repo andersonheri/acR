@@ -11,6 +11,7 @@ ac_qual_codebook(
   mode = c("manual", "literature"),
   multilabel = FALSE,
   lang = "pt",
+  chat = NULL,
   model = "anthropic/claude-sonnet-4-5",
   journals = "default",
   n_refs = 5L,
@@ -35,6 +36,10 @@ o texto). Ex: \code{"Classifique o discurso quanto ao conteúdo iliberal."}.}
 uma categoria. Padrão: \code{FALSE}.}
 
 \item{lang}{Idioma do corpus: \code{"pt"} (padrão) ou \code{"en"}.}
+
+\item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
+\code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
+\code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
 
 \item{model}{Modelo LLM a usar no modo \code{"literature"}. Padrão:
 \code{"anthropic/claude-sonnet-4-5"}.}

@@ -49,6 +49,10 @@ com justificativa da classificação.}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.
 Permite uso de APIs OpenAI-compatible self-hosted via \code{base_url}.}
+
+\item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
+\code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
+\code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
 }
 \value{
 Tibble com colunas:

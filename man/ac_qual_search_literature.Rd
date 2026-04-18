@@ -25,6 +25,10 @@ ac_qual_search_literature(
 \item{lang}{Idioma da tradução. Padrão: \code{"pt"}.}
 
 \item{...}{Ignorado.}
+
+\item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
+\code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
+\code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
 }
 \value{
 Tibble com colunas: \code{conceito}, \code{autor}, \code{ano}, \code{trecho_original},

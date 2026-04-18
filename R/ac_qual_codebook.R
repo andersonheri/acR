@@ -21,6 +21,9 @@
 #' @param multilabel Lógico. Se `TRUE`, um documento pode pertencer a mais de
 #'   uma categoria. Padrão: `FALSE`.
 #' @param lang Idioma do corpus: `"pt"` (padrão) ou `"en"`.
+#' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
+#'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
+#'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
 #' @param model Modelo LLM a usar no modo `"literature"`. Padrão:
 #'   `"anthropic/claude-sonnet-4-5"`.
 #' @param journals Periódicos a incluir na busca de literatura. Pode ser:
@@ -61,16 +64,15 @@
 #'
 #' @concept qualitative
 #' @export
-ac_qual_codebook <- function(name,
-                              instructions,
-                              categories,
-                              mode       = c("manual", "literature"),
-                              multilabel = FALSE,
-                              lang       = "pt",
-                              model      = "anthropic/claude-sonnet-4-5",
-                              journals   = "default",
-                              n_refs     = 5L,
-                              ...) {
+ac_qual_codebook <- function(name, instructions, categories,
+    mode       = c("manual", "literature"),
+    multilabel = FALSE,
+    lang       = "pt",
+    chat       = NULL,
+    model      = "anthropic/claude-sonnet-4-5",
+    journals   = "default",
+    n_refs     = 5L,
+    ...) {
 
   mode <- match.arg(mode)
 
@@ -112,6 +114,13 @@ ac_qual_codebook <- function(name,
   }
 
   # === Modo literatura ========================================================
+  # Resolver provedor: chat= tem prioridade sobre model=
+  if (!is.null(chat)) {
+    if (!inherits(chat, "Chat")) {
+      cli::cli_abort("{.arg chat} deve ser um objeto {.cls Chat} do {.pkg ellmer}.")
+    }
+    model <- chat
+  }
   if (mode == "literature") {
     if (!requireNamespace("ellmer", quietly = TRUE)) {
       cli::cli_abort(c(
@@ -338,6 +347,9 @@ ac_qual_load_codebook <- function(path, ...) {
 #' trecho original, tradução, autor, ano, revista e link.
 #'
 #' @param concept String com o conceito a buscar (preferencialmente em inglês).
+#' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
+#'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
+#'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
 #' @param model Modelo LLM. Padrão: `"anthropic/claude-sonnet-4-5"`.
 #' @param journals Periódicos a incluir. Padrão: `"default"`.
 #' @param n_refs Número de referências. Padrão: `5`.
