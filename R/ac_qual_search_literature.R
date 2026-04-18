@@ -320,7 +320,11 @@ ac_qual_search_literature <- function(concept,
     link <- if (!is.na(doi)) doi else
       paste0("https://openalex.org/", work$id)
 
+    # Titulo
+    titulo <- work$title %||% ""
+
     tibble::tibble(
+      titulo            = titulo,
       autor             = autor_str,
       ano               = work$publication_year %||% NA_integer_,
       revista           = revista,
@@ -330,7 +334,27 @@ ac_qual_search_literature <- function(concept,
     )
   })
 
-  dplyr::bind_rows(rows)
+  df_results <- dplyr::bind_rows(rows)
+
+  # Filtro de relevancia: descartar resultados onde o conceito nao aparece
+  # no titulo nem no abstract (evita falsos positivos da busca semantica)
+  if (nrow(df_results) > 0L) {
+    conceito_regex <- paste(
+      strsplit(concept, "\\s+")[[1]],
+      collapse = "|"
+    )
+    relevante <- grepl(
+      conceito_regex,
+      paste(df_results$titulo, df_results$abstract_original),
+      ignore.case = TRUE
+    )
+    df_results <- df_results[relevante, , drop = FALSE]
+  }
+
+  # Remover coluna auxiliar titulo do output (fica em abstract_original)
+  if ("titulo" %in% names(df_results)) df_results$titulo <- NULL
+
+  df_results
 }
 
 
@@ -358,16 +382,18 @@ ac_qual_search_literature <- function(concept,
   if (is.null(inverted_index) || length(inverted_index) == 0L) {
     return(NA_character_)
   }
-  # inverted_index: lista onde cada elemento e palavra -> vetor de posicoes
-  positions <- unlist(
-    purrr::imap(inverted_index, function(positions, word) {
-      stats::setNames(rep(word, length(positions)), as.character(positions))
-    })
-  )
-  if (length(positions) == 0L) return(NA_character_)
-  idx  <- as.integer(names(positions))
-  ord  <- order(idx)
-  paste(positions[ord], collapse = " ")
+  # inverted_index: lista nome=palavra, valor=lista de posicoes
+  # Cada posicao e uma lista de um inteiro: list(list(0L), list(5L), ...)
+  pos_word <- purrr::imap(inverted_index, function(pos_list, word) {
+    posicoes <- as.integer(unlist(pos_list))
+    data.frame(pos = posicoes, word = word, stringsAsFactors = FALSE)
+  })
+
+  df <- do.call(rbind, pos_word)
+  if (is.null(df) || nrow(df) == 0L) return(NA_character_)
+
+  df <- df[order(df$pos), ]
+  paste(df$word, collapse = " ")
 }
 
 
