@@ -85,9 +85,10 @@ ac_plot_sentiment(sent)
 | Funcao | Descricao |
 |--------|-----------|
 | `ac_corpus()` | Criar objeto corpus |
+| `ac_import()` | Importar corpus de arquivo externo |
 | `ac_clean()` | Limpar texto (lowercase, pontuacao, numeros) |
+| `is_ac_corpus()` | Verificar se objeto e um corpus acR |
 | `ac_tokenize()` | Tokenizar com remocao de stopwords |
-| `ac_dfm()` | Criar Document-Feature Matrix |
 
 ### Analise quantitativa
 
@@ -95,7 +96,7 @@ ac_plot_sentiment(sent)
 |--------|-----------|
 | `ac_count()` | Frequencia de termos |
 | `ac_top_terms()` | Top N termos |
-| `ac_tfidf()` | TF-IDF por documento |
+| `ac_tf_idf()` | TF-IDF por documento |
 | `ac_keyness()` | Vocabulario distintivo entre grupos |
 | `ac_cooccurrence()` | Rede de co-ocorrencia |
 | `ac_sentiment()` | Sentimento (OpLexicon / SentiLex-PT) |
@@ -124,14 +125,14 @@ ac_plot_sentiment(sent)
 | Funcao | Descricao |
 |--------|-----------|
 | `ac_plot_top_terms()` | Barras de frequencia |
-| `ac_plot_tfidf()` | TF-IDF por grupo |
+| `ac_plot_tf_idf()` | TF-IDF por grupo |
 | `ac_plot_keyness()` | Keyness por grupo de referencia |
 | `ac_plot_sentiment()` | Distribuicao de sentimento |
 | `ac_plot_xray()` | Evolucao de sentimento no texto |
 | `ac_plot_lda_topics()` | Termos por topico LDA |
 | `ac_plot_lda_tune()` | Curva de selecao de K |
 | `ac_plot_cooccurrence()` | Rede de co-ocorrencia |
-| `ac_plot_wordcloud()` | Nuvem de palavras |
+| `ac_wordcloud()` | Nuvem de palavras |
 | `ac_plot_wordcloud_comparative()` | Nuvem comparativa por topico |
 
 ### Exportacao
@@ -140,6 +141,7 @@ ac_plot_sentiment(sent)
 |--------|---------|
 | `ac_export()` | `csv`, `xlsx`, `latex`, `rds` |
 | `ac_fetch_camara()` | Coleta via API da Camara dos Deputados |
+| `ac_fetch_senado()` | Coleta via API do Senado Federal |
 
 ## Provedores LLM suportados
 
