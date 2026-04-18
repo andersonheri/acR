@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,22 @@
 </li>
 <li>ADR documentado em <code>inst/docs/adr/</code>
 </li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="acr-020">acR 0.2.0<a class="anchor" aria-label="anchor" href="#acr-020"></a></h2>
+<div class="section level3">
+<h3 id="correções-0-2-0">Correções<a class="anchor" aria-label="anchor" href="#corre%C3%A7%C3%B5es-0-2-0"></a></h3>
+<ul><li>
+<code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code>: removidas aspas literais da query OpenAlex (API não suporta phrase search via aspas no parâmetro <code>search</code>)</li>
+<li>
+<code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code>: adicionado fallback automático sem filtro de venue quando busca com periódicos selecionados retorna zero resultados</li>
+</ul></div>
+<div class="section level3">
+<h3 id="testes-0-2-0">Testes<a class="anchor" aria-label="anchor" href="#testes-0-2-0"></a></h3>
+<ul><li>Testes de integração com OpenAlex + LLM agora usam <code>skip_on_cran()</code>, verificação prévia da API e <code>skip_if(!api_ok)</code> para evitar falhas em ambientes sem conectividade ou com API instável</li>
+<li>
+<code>test-ac_qual_codebook.R</code>: adicionado <code>skip_if(GROQ_API_KEY == 0)</code> e <code>chat_obj</code> explícito no teste de integração</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

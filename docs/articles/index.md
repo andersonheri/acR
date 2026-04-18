@@ -8,8 +8,8 @@
 
 - [Análise de Conteúdo Qualitativa com
   LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md):
-- [Analise de proposicoes legislativas com
-  qwen3.6](https://andersonheri.github.io/acR/articles/analise-proposicoes.md):
+- [Análise de proposições
+  legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.md):
 
 ### Pipeline quantitativo
 

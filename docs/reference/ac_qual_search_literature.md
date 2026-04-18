@@ -1,8 +1,4 @@
-# Buscar literatura acadêmica para um conceito
-
-`ac_qual_search_literature()` usa uma LLM para buscar definições de um
-conceito na literatura acadêmica, retornando um tibble estruturado com
-trecho original, tradução, autor, ano, revista e link.
+# Buscar referencias bibliograficas sobre um conceito via OpenAlex e LLM
 
 `ac_qual_search_literature()` busca referencias academicas reais na API
 do OpenAlex e usa um modelo de linguagem via `ellmer` para sintetizar os
@@ -17,17 +13,6 @@ bibliograficas comuns quando a LLM opera sem fonte externa.
 ## Usage
 
 ``` r
-ac_qual_search_literature(
-  concept,
-  chat = NULL,
-  model = "anthropic/claude-sonnet-4-5",
-  n_refs = 5L,
-  journals = "default",
-  lang = "pt",
-  min_citations = 0L,
-  ...
-)
-
 ac_qual_search_literature(
   concept,
   chat = NULL,
@@ -57,8 +42,8 @@ ac_qual_search_literature(
 
 - model:
 
-  String no formato `"provedor/modelo"` (ex:
-  `"anthropic/claude-sonnet-4-5"`). Ignorado quando `chat` e fornecido.
+  String no formato `"provedor/modelo"`. Ignorado quando `chat` e
+  fornecido.
 
 - n_refs:
 
@@ -76,14 +61,11 @@ ac_qual_search_literature(
 
 - lang:
 
-  Idioma das definicoes sintetizadas. Padrao: `"pt"` (portugues). Use
-  `"en"` para ingles.
+  Idioma das definicoes sintetizadas. Padrao: `"pt"`.
 
 - min_citations:
 
-  Inteiro. Numero minimo de citacoes para incluir uma referencia.
-  Padrao: `0` (sem filtro). Util para focar em trabalhos consolidados
-  (ex: `min_citations = 50`).
+  Inteiro. Numero minimo de citacoes. Padrao: `0`.
 
 - ...:
 
@@ -92,35 +74,8 @@ ac_qual_search_literature(
 
 ## Value
 
-Tibble com colunas: `conceito`, `autor`, `ano`, `trecho_original`,
-`definicao_pt`, `revista`, `link`.
-
-Tibble com colunas:
-
-- `conceito`: conceito buscado;
-
-- `autor`: autores da referencia (formato "Sobrenome, N.; ...");
-
-- `ano`: ano de publicacao;
-
-- `revista`: nome do periodico;
-
-- `n_citacoes`: numero de citacoes no OpenAlex;
-
-- `trecho_original`: trecho mais relevante do abstract em ingles;
-
-- `definicao_pt`: definicao sintetizada pela LLM em portugues;
-
-- `abstract_original`: abstract completo em ingles;
-
-- `link`: DOI ou URL da referencia.
-
-## Note
-
-ATENCAO: as referencias sao geradas por LLM com base no conhecimento de
-treinamento. Verifique todas as referencias antes de citar. Use
-`ac_qual_verify_references()` (disponivel em versao futura) para
-checagem automatica.
+Tibble com colunas: `conceito`, `autor`, `ano`, `revista`, `n_citacoes`,
+`trecho_original`, `definicao_pt`, `abstract_original`, `link`.
 
 ## References
 
@@ -134,31 +89,14 @@ Workers for Text-Annotation Tasks. *PNAS*, 120(30).
 
 ``` r
 if (FALSE) { # \dontrun{
-# Busca basica com modelo padrao
-lit <- ac_qual_search_literature(
-  concept = "democratic backsliding",
-  n_refs  = 5,
-  model   = "anthropic/claude-sonnet-4-5"
-)
+chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
 
-# Com objeto Chat do ellmer (recomendado)
-chat_obj <- ellmer::chat_google_gemini(
-  model = "gemini-2.5-flash",
-  echo  = "none"
-)
 lit <- ac_qual_search_literature(
-  concept = "state capacity",
-  n_refs  = 10,
-  chat    = chat_obj
-)
-
-# Focar em trabalhos consolidados de periodicos brasileiros
-lit <- ac_qual_search_literature(
-  concept       = "capacidade estatal",
+  concept       = "democratic backsliding",
   n_refs        = 5,
-  journals      = c("default", "RBCS", "DADOS"),
-  min_citations = 20,
+  min_citations = 50,
   chat          = chat_obj
 )
+print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
 } # }
 ```
