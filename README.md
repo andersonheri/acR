@@ -78,6 +78,43 @@ sent <- ac_sentiment(corpus, lexico = "oplexicon")
 ac_plot_sentiment(sent)
 ```
 
+
+### TF-IDF — termos característicos por grupo
+
+```r
+library(acR)
+
+# Corpus com proposicoes legislativas de tres partidos
+df <- data.frame(
+  id      = paste0("prop_", 1:6),
+  texto   = c(
+    "Esta proposta amplia direitos trabalhistas e protecao social.",
+    "O projeto garante seguro-desemprego para trabalhadores informais.",
+    "Propomos reducao de impostos para estimular o mercado.",
+    "A desburocratizacao e essencial para a competitividade.",
+    "O texto fortalece o SUS e o acesso a saude publica.",
+    "Defendemos a expansao de politicas de assistencia social."
+  ),
+  partido = c("PT", "PT", "PL", "PL", "PSOL", "PSOL"),
+  stringsAsFactors = FALSE
+)
+
+# Pipeline completo
+corpus <- ac_corpus(df, text = texto, docid = id, meta = partido)
+tokens  <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
+freq    <- ac_count(tokens, by = "partido")
+tfidf   <- ac_tf_idf(freq, by = "partido")
+
+# Top 5 termos mais caracteristicos por partido
+tfidf |>
+  dplyr::group_by(partido) |>
+  dplyr::slice_max(tf_idf, n = 5) |>
+  dplyr::select(partido, token, tf_idf)
+
+# Visualizar
+ac_plot_tf_idf(tfidf, by = "partido", n = 5)
+```
+
 ## Funcoes por modulo
 
 ### Corpus e pre-processamento
