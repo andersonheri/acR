@@ -21,7 +21,7 @@ bibliograficas comuns quando a LLM opera sem fonte externa."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,8 +101,8 @@ bibliograficas comuns quando a LLM opera sem fonte externa.</p>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>String no formato <code>"provedor/modelo"</code> (ex:
-<code>"anthropic/claude-sonnet-4-5"</code>). Ignorado quando <code>chat</code> e fornecido.</p></dd>
+<dd><p>String no formato <code>"provedor/modelo"</code>. Ignorado quando <code>chat</code>
+e fornecido.</p></dd>
 
 
 <dt id="arg-n-refs">n_refs<a class="anchor" aria-label="anchor" href="#arg-n-refs"></a></dt>
@@ -117,14 +117,11 @@ bibliograficas comuns quando a LLM opera sem fonte externa.</p>
 
 
 <dt id="arg-lang">lang<a class="anchor" aria-label="anchor" href="#arg-lang"></a></dt>
-<dd><p>Idioma das definicoes sintetizadas. Padrao: <code>"pt"</code> (portugues).
-Use <code>"en"</code> para ingles.</p></dd>
+<dd><p>Idioma das definicoes sintetizadas. Padrao: <code>"pt"</code>.</p></dd>
 
 
 <dt id="arg-min-citations">min_citations<a class="anchor" aria-label="anchor" href="#arg-min-citations"></a></dt>
-<dd><p>Inteiro. Numero minimo de citacoes para incluir uma
-referencia. Padrao: <code>0</code> (sem filtro). Util para focar em trabalhos
-consolidados (ex: <code>min_citations = 50</code>).</p></dd>
+<dd><p>Inteiro. Numero minimo de citacoes. Padrao: <code>0</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -133,16 +130,10 @@ consolidados (ex: <code>min_citations = 50</code>).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Tibble com colunas:</p><ul><li><p><code>conceito</code>: conceito buscado;</p></li>
-<li><p><code>autor</code>: autores da referencia (formato "Sobrenome, N.; ...");</p></li>
-<li><p><code>ano</code>: ano de publicacao;</p></li>
-<li><p><code>revista</code>: nome do periodico;</p></li>
-<li><p><code>n_citacoes</code>: numero de citacoes no OpenAlex;</p></li>
-<li><p><code>trecho_original</code>: trecho mais relevante do abstract em ingles;</p></li>
-<li><p><code>definicao_pt</code>: definicao sintetizada pela LLM em portugues;</p></li>
-<li><p><code>abstract_original</code>: abstract completo em ingles;</p></li>
-<li><p><code>link</code>: DOI ou URL da referencia.</p></li>
-</ul></div>
+    <p>Tibble com colunas: <code>conceito</code>, <code>autor</code>, <code>ano</code>, <code>revista</code>,
+<code>n_citacoes</code>, <code>trecho_original</code>, <code>definicao_pt</code>, <code>abstract_original</code>,
+<code>link</code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Priem, J. et al. (2022). OpenAlex: A fully-open index of the global
@@ -154,32 +145,15 @@ Workers for Text-Annotation Tasks. <em>PNAS</em>, 120(30).</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Busca basica com modelo padrao</span></span></span>
-<span class="r-in"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_search_literature</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  concept <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span></span>
-<span class="r-in"><span>  n_refs  <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>  model   <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Com objeto Chat do ellmer (recomendado)</span></span></span>
-<span class="r-in"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>,</span></span>
-<span class="r-in"><span>  echo  <span class="op">=</span> <span class="st">"none"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_search_literature</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  concept <span class="op">=</span> <span class="st">"state capacity"</span>,</span></span>
-<span class="r-in"><span>  n_refs  <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>  chat    <span class="op">=</span> <span class="va">chat_obj</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Focar em trabalhos consolidados de periodicos brasileiros</span></span></span>
-<span class="r-in"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_search_literature</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  concept       <span class="op">=</span> <span class="st">"capacidade estatal"</span>,</span></span>
+<span class="r-in"><span>  concept       <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span></span>
 <span class="r-in"><span>  n_refs        <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>  journals      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"RBCS"</span>, <span class="st">"DADOS"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  min_citations <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>  min_citations <span class="op">=</span> <span class="fl">50</span>,</span></span>
 <span class="r-in"><span>  chat          <span class="op">=</span> <span class="va">chat_obj</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lit</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"autor"</span>, <span class="st">"ano"</span>, <span class="st">"revista"</span>, <span class="st">"n_citacoes"</span>, <span class="st">"definicao_pt"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
