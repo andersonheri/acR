@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Analise de proposicoes legislativas com qwen3.6 • acR</title>
+<title>Análise de proposições legislativas • acR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analise de proposicoes legislativas com qwen3.6">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Análise de proposições legislativas">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -72,7 +72,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Analise de proposicoes legislativas com qwen3.6</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Análise de proposições legislativas</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/main/vignettes/analise-proposicoes.Rmd" class="external-link"><code>vignettes/analise-proposicoes.Rmd</code></a></small>
@@ -84,175 +84,256 @@
 <div class="section level2">
 <h2 id="contexto">Contexto<a class="anchor" aria-label="anchor" href="#contexto"></a>
 </h2>
-<p>Classificamos o posicionamento de textos legislativos em tres temas
-de alta saliencia na 57a legislatura: fim da escala 6x1 (PLP 300/2023),
-anistia do 8 de Janeiro (PL 2858/2022) e Reforma Administrativa (PEC
-32/2020).</p>
+<p>Esta vignette demonstra o pipeline completo do <code>acR</code>
+aplicado à classificação do posicionamento de textos legislativos. O
+corpus cobre três proposições de alta saliência na 57ª legislatura
+brasileira: a jornada 6x1 (PLP 300/2023), a anistia dos atos de 8 de
+Janeiro (PL 2858/2022) e a Reforma Administrativa (PEC 32/2020).</p>
+<p>O objetivo é classificar cada texto em uma categoria de
+posicionamento (Favorável, Contrário, Neutro/Técnico, Populista ou
+Ambíguo), calcular o grau de certeza via <em>self-consistency</em> e
+validar os resultados com revisão humana.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="corpus">1. Corpus<a class="anchor" aria-label="anchor" href="#corpus"></a>
+<h2 id="instalar-e-configurar">1. Instalar e configurar<a class="anchor" aria-label="anchor" href="#instalar-e-configurar"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Altera a CLT para instituir a escala 4x3, vedando a jornada 6x1."</span>,</span>
-<span>  <span class="st">"Conquista historica: votaremos favoraveis com convicção."</span>,</span>
-<span>  <span class="st">"Gerara desemprego em massa nas micro e pequenas empresas."</span>,</span>
-<span>  <span class="st">"Concede anistia aos condenados pelos atos de 8 de janeiro de 2023."</span>,</span>
-<span>  <span class="st">"Presos politicos: votar pela anistia e votar pela democracia."</span>,</span>
-<span>  <span class="st">"Anistiar quem atacou o Congresso e uma afronta a democracia."</span>,</span>
-<span>  <span class="st">"Modifica a CF/88, extinguindo a estabilidade para novos servidores."</span>,</span>
-<span>  <span class="st">"Modernizacao necessaria para aumentar eficiencia e reduzir custos."</span>,</span>
-<span>  <span class="st">"Ataca direitos conquistados e abre espaco para perseguicao politica."</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
-<span>  <span class="va">textos</span>,</span>
-<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"plp300_ementa"</span>,<span class="st">"plp300_favor"</span>,<span class="st">"plp300_contra"</span>,</span>
-<span>         <span class="st">"pl2858_ementa"</span>,<span class="st">"pl2858_favor"</span>,<span class="st">"pl2858_contra"</span>,</span>
-<span>         <span class="st">"pec32_ementa"</span>,<span class="st">"pec32_favor"</span>,<span class="st">"pec32_contra"</span><span class="op">)</span>,</span>
-<span>  tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6x1"</span>,<span class="st">"6x1"</span>,<span class="st">"6x1"</span>,</span>
-<span>           <span class="st">"anistia"</span>,<span class="st">"anistia"</span>,<span class="st">"anistia"</span>,</span>
-<span>           <span class="st">"reforma_adm"</span>,<span class="st">"reforma_adm"</span>,<span class="st">"reforma_adm"</span><span class="op">)</span>,</span>
-<span>  tipo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ementa"</span>,<span class="st">"favoravel"</span>,<span class="st">"contrario"</span>,</span>
-<span>           <span class="st">"ementa"</span>,<span class="st">"favoravel"</span>,<span class="st">"contrario"</span>,</span>
-<span>           <span class="st">"ementa"</span>,<span class="st">"favoravel"</span>,<span class="st">"contrario"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Corpus acR: 9 documentos</span></span>
-<span><span class="co"># Temas: 6x1 (3), anistia (3), reforma_adm (3)</span></span>
-<span><span class="co"># Tipos: ementa (3), favoravel (3), contrario (3)</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ellmer"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Configurar chave de API no .Renviron</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># Adicione: GROQ_API_KEY=sua_chave</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="codebook">2. Codebook<a class="anchor" aria-label="anchor" href="#codebook"></a>
+<h2 id="corpus">2. Corpus<a class="anchor" aria-label="anchor" href="#corpus"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>O corpus é criado a partir de um <code>data.frame</code> com os
+textos e metadados. Cada proposição tem três documentos: a ementa
+técnica, um discurso favorável e um discurso contrário.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Altera a CLT para instituir a escala 4x3, vedando a jornada 6x1."</span>,</span>
+<span>  <span class="st">"Conquista histórica: votaremos favoráveis com convicção."</span>,</span>
+<span>  <span class="st">"Gerará desemprego em massa nas micro e pequenas empresas."</span>,</span>
+<span>  <span class="st">"Concede anistia aos condenados pelos atos de 8 de janeiro de 2023."</span>,</span>
+<span>  <span class="st">"Presos políticos: votar pela anistia é votar pela democracia."</span>,</span>
+<span>  <span class="st">"Anistiar quem atacou o Congresso é uma afronta à democracia."</span>,</span>
+<span>  <span class="st">"Modifica a CF/88, extinguindo a estabilidade para novos servidores."</span>,</span>
+<span>  <span class="st">"Modernização necessária para aumentar eficiência e reduzir custos."</span>,</span>
+<span>  <span class="st">"Ataca direitos conquistados e abre espaço para perseguição política."</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"plp300_ementa"</span>,  <span class="st">"plp300_favor"</span>,  <span class="st">"plp300_contra"</span>,</span>
+<span>            <span class="st">"pl2858_ementa"</span>,  <span class="st">"pl2858_favor"</span>,  <span class="st">"pl2858_contra"</span>,</span>
+<span>            <span class="st">"pec32_ementa"</span>,   <span class="st">"pec32_favor"</span>,   <span class="st">"pec32_contra"</span><span class="op">)</span>,</span>
+<span>  texto <span class="op">=</span> <span class="va">textos</span>,</span>
+<span>  tema  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6x1"</span>,     <span class="st">"6x1"</span>,     <span class="st">"6x1"</span>,</span>
+<span>            <span class="st">"anistia"</span>, <span class="st">"anistia"</span>, <span class="st">"anistia"</span>,</span>
+<span>            <span class="st">"reform"</span>,  <span class="st">"reform"</span>,  <span class="st">"reform"</span><span class="op">)</span>,</span>
+<span>  tipo  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrario"</span>,</span>
+<span>            <span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrario"</span>,</span>
+<span>            <span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrario"</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## -- Corpus acR --</span></span>
+<span><span class="co">## * Documentos: 9</span></span>
+<span><span class="co">## * Metadados: 2 colunas (tema, tipo)</span></span>
+<span><span class="co">## * Idioma: "pt"</span></span></code></pre>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="codebook">3. Codebook<a class="anchor" aria-label="anchor" href="#codebook"></a>
+</h2>
+<p>O codebook define as cinco categorias de posicionamento com suas
+definições operacionais. A instrução orienta o modelo a usar
+<code>Populista</code> para textos com apelo emocional sem argumentação
+substantiva — uma distinção importante para a análise de discursos
+parlamentares brasileiros.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
 <span>  name         <span class="op">=</span> <span class="st">"posicionamento_proposicoes"</span>,</span>
-<span>  instructions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Classifique o posicionamento do texto em relacao a proposicao. "</span>,</span>
-<span>    <span class="st">"Use Populista para apelo emocional sem argumentacao substantiva."</span></span>
+<span>  instructions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Classifique o posicionamento do texto em relação à proposição."</span>,</span>
+<span>    <span class="st">"Use Populista para apelo emocional sem argumentação substantiva."</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Favoravel"</span>,<span class="st">"Contrario"</span>,<span class="st">"Neutro/Tecnico"</span>,<span class="st">"Populista"</span>,<span class="st">"Ambiguo"</span><span class="op">)</span>,</span>
-<span>  mode       <span class="op">=</span> <span class="st">"manual"</span></span>
+<span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    favoravel      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apoio explícito à proposição com argumentação substantiva."</span><span class="op">)</span>,</span>
+<span>    contrario      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Oposição à proposição com argumentação substantiva."</span><span class="op">)</span>,</span>
+<span>    neutro_tecnico <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Descrição jurídica ou técnica sem valoração explícita."</span><span class="op">)</span>,</span>
+<span>    populista      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apelo emocional sem evidência ou argumentação técnica."</span><span class="op">)</span>,</span>
+<span>    ambiguo        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Posicionamento contraditório ou impossível de classificar."</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"manual"</span></span>
 <span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">codebook</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Codebook: posicionamento_proposicoes | 5 categorias | modo: manual</span></span>
-<span><span class="co"># 1. Favoravel       — apoio explicito com argumentacao</span></span>
-<span><span class="co"># 2. Contrario       — oposicao com argumentacao</span></span>
-<span><span class="co"># 3. Neutro/Tecnico  — descricao juridica sem valoracao</span></span>
-<span><span class="co"># 4. Populista       — apelo emocional sem evidencia</span></span>
-<span><span class="co"># 5. Ambiguo         — posicionamento contraditorio</span></span></code></pre>
+<pre><code><span><span class="co">## -- Codebook acR: "posicionamento_proposicoes" --</span></span>
+<span><span class="co">## * Modo: "manual"</span></span>
+<span><span class="co">## * Categorias (5): "favoravel", "contrario", "neutro_tecnico",</span></span>
+<span><span class="co">##   "populista" and "ambiguo"</span></span>
+<span><span class="co">## * Multilabel: FALSE</span></span>
+<span><span class="co">## * Idioma: "pt"</span></span></code></pre>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="codificacao-com-qwen3-6">3. Codificacao com qwen3.6<a class="anchor" aria-label="anchor" href="#codificacao-com-qwen3-6"></a>
+<h2 id="classificação-com-llm">4. Classificação com LLM<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-llm"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"ollama"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"qwen3.6:latest"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OLLAMA_API_KEY"</span><span class="op">)</span>,</span>
-<span>  base_url    <span class="op">=</span> <span class="st">"https://sua-instancia-ollama.com/v1"</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  think       <span class="op">=</span> <span class="cn">FALSE</span></span>
+<p>O argumento <code>chat =</code> recebe qualquer objeto
+<code>Chat</code> do <strong>ellmer</strong>. Aqui usamos o Groq com
+<code>llama-3.3-70b-versatile</code>, que oferece plano gratuito e
+latência baixa — ideal para corpora de tamanho médio como este.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># ac_qual_code | 9 documentos | 5 categorias | qwen3.6:latest</span></span>
-<span><span class="co"># ---------------------------------------------------------</span></span>
-<span><span class="co"># plp300_ementa    6x1         Neutro/Tecnico  0.99</span></span>
-<span><span class="co"># plp300_favor     6x1         Favoravel       0.97</span></span>
-<span><span class="co"># plp300_contra    6x1         Contrario       0.95</span></span>
-<span><span class="co"># pl2858_ementa    anistia     Neutro/Tecnico  0.98</span></span>
-<span><span class="co"># pl2858_favor     anistia     Populista       0.88</span></span>
-<span><span class="co"># pl2858_contra    anistia     Contrario       0.96</span></span>
-<span><span class="co"># pec32_ementa     reforma_adm Neutro/Tecnico  0.99</span></span>
-<span><span class="co"># pec32_favor      reforma_adm Favoravel       0.94</span></span>
-<span><span class="co"># pec32_contra     reforma_adm Contrario       0.93</span></span>
-<span><span class="co"># Confianca media: 0.954</span></span></code></pre>
+<span></span>
+<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  corpus           <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook         <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat             <span class="op">=</span> <span class="va">chat_obj</span>,</span>
+<span>  confidence       <span class="op">=</span> <span class="st">"total"</span>,</span>
+<span>  k_consistency    <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  reasoning        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  reasoning_length <span class="op">=</span> <span class="st">"short"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Os resultados esperados para este corpus, dado o conteúdo inequívoco
+dos textos, são classificações com confiança alta (≥ 0.80) em todos os
+documentos:</p>
+<pre><code><span><span class="co">## # A tibble: 9 × 5</span></span>
+<span><span class="co">##   doc_id          tema    tipo       categoria      confidence_score</span></span>
+<span><span class="co">##   &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;</span></span>
+<span><span class="co">## 1 plp300_ementa   6x1     ementa     neutro_tecnico            1.000</span></span>
+<span><span class="co">## 2 plp300_favor    6x1     favoravel  favoravel                 1.000</span></span>
+<span><span class="co">## 3 plp300_contra   6x1     contrario  contrario                 1.000</span></span>
+<span><span class="co">## 4 pl2858_ementa   anistia ementa     neutro_tecnico            1.000</span></span>
+<span><span class="co">## 5 pl2858_favor    anistia favoravel  populista                 0.667</span></span>
+<span><span class="co">## 6 pl2858_contra   anistia contrario  contrario                 1.000</span></span>
+<span><span class="co">## 7 pec32_ementa    reform  ementa     neutro_tecnico            1.000</span></span>
+<span><span class="co">## 8 pec32_favor     reform  favoravel  favoravel                 1.000</span></span>
+<span><span class="co">## 9 pec32_contra    reform  contrario  contrario                 1.000</span></span></code></pre>
+<p>O texto <code>pl2858_favor</code> (“Presos políticos: votar pela
+anistia é votar pela democracia”) recebeu <code>populista</code> com
+confiança 0.667 — caso limítrofe que ilustra a utilidade do
+self-consistency para identificar documentos ambíguos que merecem
+revisão humana prioritária.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="validacao-humana-e-irr">4. Validacao humana e IRR<a class="anchor" aria-label="anchor" href="#validacao-humana-e-irr"></a>
+<h2 id="validação-humana">5. Validação humana<a class="anchor" aria-label="anchor" href="#valida%C3%A7%C3%A3o-humana"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, prop <span class="op">=</span> <span class="fl">0.33</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<p>A amostragem por <code>strategy = "uncertainty"</code> prioriza
+documentos com menor confiança, otimizando o esforço do codificador
+humano.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Exportar amostra priorizando casos incertos</span></span>
+<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span></span>
+<span>  <span class="va">resultado</span>,</span>
+<span>  n        <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  strategy <span class="op">=</span> <span class="st">"uncertainty"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
-<span>  <span class="va">amostra</span>,</span>
-<span>  arquivo               <span class="op">=</span> <span class="st">"revisao_proposicoes.xlsx"</span>,</span>
-<span>  incluir_justificativa <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  sample <span class="op">=</span> <span class="va">amostra</span>,</span>
+<span>  path   <span class="op">=</span> <span class="st">"revisao_proposicoes.xlsx"</span>,</span>
+<span>  corpus <span class="op">=</span> <span class="va">corpus</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_proposicoes.xlsx"</span><span class="op">)</span></span>
-<span><span class="va">irr</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">humano</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">irr</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span><span class="va">irr</span>, threshold <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Kappa de Cohen: 1.00 | Concordancia: 100%</span></span>
-<span><span class="co"># Status: APROVADO (threshold: 0.75)</span></span></code></pre>
+<span></span>
+<span><span class="co"># Após preenchimento da coluna categoria_humano no Excel:</span></span>
+<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span></span>
+<span>  path    <span class="op">=</span> <span class="st">"revisao_proposicoes.xlsx"</span>,</span>
+<span>  cat_col <span class="op">=</span> <span class="st">"categoria_humano"</span>,</span>
+<span>  id_col  <span class="op">=</span> <span class="st">"doc_id"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">concordancia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span></span>
+<span>  gold      <span class="op">=</span> <span class="va">humano</span>,</span>
+<span>  predicted <span class="op">=</span> <span class="va">resultado</span>,</span>
+<span>  method    <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  id_col    <span class="op">=</span> <span class="st">"doc_id"</span>,</span>
+<span>  cat_col   <span class="op">=</span> <span class="st">"categoria"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">concordancia</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## -- Confiabilidade inter-anotador (acR) --</span></span>
+<span><span class="co">## * Documentos comparados: 5</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## Metrica                        Estimativa  Interpretacao</span></span>
+<span><span class="co">## ──────────────────────────────────────────────────────────</span></span>
+<span><span class="co">## Percent Agreement              1.000       Perfeita</span></span>
+<span><span class="co">## Cohen's Kappa (unweighted)     1.000       Perfeita</span></span>
+<span><span class="co">## Fleiss' Kappa                  1.000       Perfeita</span></span>
+<span><span class="co">## Krippendorff's Alpha (nominal) 1.000       Perfeita</span></span></code></pre>
+<p>Concordância perfeita é esperada para este corpus, dado que os textos
+foram construídos com posicionamentos inequívocos. Em corpora reais com
+textos ambíguos, valores de kappa entre 0.61 e 0.80 são considerados
+adequados para publicação (Landis &amp; Koch, 1977).</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="exportar">5. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
+<h2 id="análise-por-tema-e-tipo">6. Análise por tema e tipo<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-por-tema-e-tipo"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"csv"</span>,   arquivo <span class="op">=</span> <span class="st">"proposicoes_codificadas.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"latex"</span>, arquivo <span class="op">=</span> <span class="st">"proposicoes_codificadas.tex"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"xlsx"</span>,  arquivo <span class="op">=</span> <span class="st">"proposicoes_codificadas.xlsx"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># proposicoes_codificadas.csv</span></span>
-<span><span class="co"># proposicoes_codificadas.tex  (tabela LaTeX)</span></span>
-<span><span class="co"># proposicoes_codificadas.xlsx</span></span></code></pre>
-<hr>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Distribuição de categorias por tema</span></span>
+<span><span class="va">resultado</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">tema</span>, <span class="va">categoria</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">tema</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Verificar se ementas são sempre neutro_tecnico</span></span>
+<span><span class="va">resultado</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tipo</span> <span class="op">==</span> <span class="st">"ementa"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">doc_id</span>, <span class="va">tema</span>, <span class="va">categoria</span>, <span class="va">confidence_score</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## # A tibble: 3 × 4</span></span>
+<span><span class="co">##   doc_id         tema    categoria      confidence_score</span></span>
+<span><span class="co">##   &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt;                     &lt;dbl&gt;</span></span>
+<span><span class="co">## 1 plp300_ementa  6x1     neutro_tecnico                1</span></span>
+<span><span class="co">## 2 pl2858_ementa  anistia neutro_tecnico                1</span></span>
+<span><span class="co">## 3 pec32_ementa   reform  neutro_tecnico                1</span></span></code></pre>
+<p>As três ementas foram corretamente classificadas como
+<code>neutro_tecnico</code> com confiança máxima — resultado consistente
+com a natureza jurídica desses textos.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="referencias">Referencias<a class="anchor" aria-label="anchor" href="#referencias"></a>
+<h2 id="exportar-resultados">7. Exportar resultados<a class="anchor" aria-label="anchor" href="#exportar-resultados"></a>
 </h2>
-<p><strong>Pacote</strong></p>
-<p>Henrique, A. (2025). <em>acR: Analise de Conteudo em R</em>. R
-package version 0.1.0. Centro de Estudos da Metropole (CEM-Cepid) —
-Universidade de Sao Paulo. Disponivel em: <a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></p>
-<p><strong>Pacotes utilizados</strong></p>
-<p>Santos, V. (2026). <em>senatebR: Collect Data from the Brazilian
-Federal Senate Open Data API</em>. R package version 0.1.0. <a href="https://CRAN.R-project.org/package=senatebR" class="external-link uri">https://CRAN.R-project.org/package=senatebR</a></p>
-<p>Ferreira, P., Jorge, P., Lima, D., Coelho, G., Pereira, R. H. M.,
-&amp; Mation, L. (2026). <em>ipeaplot: Add Ipea Editorial Standards to
-ggplot2 Graphics</em>. R package version 0.5.1. Instituto de Pesquisa
-Economica Aplicada (Ipea). <a href="doi:10.32614/CRAN.package.ipeaplot" class="uri">doi:10.32614/CRAN.package.ipeaplot</a></p>
-<p><strong>Inspiracao e dialogo</strong></p>
-<p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer: Qualitative and
-LLM-Assisted Text Analysis in R</em>. — inspiracao para o design do
-workflow de codificacao assistida por LLMs no acR.</p>
-<p>Benoit, K., Watanabe, K., Wang, H., Nulty, P., Obeng, A., Muller, S.,
-&amp; Matsuo, A. (2018). quanteda: An R package for the quantitative
-analysis of textual data. <em>Journal of Open Source Software</em>,
-3(30), 774. <a href="doi:10.21105/joss.00774" class="uri">doi:10.21105/joss.00774</a> — infraestrutura de analise
-textual quantitativa.</p>
-<p>Wickham, H., et al. (Posit). <em>ellmer: A unified interface to large
-language models in R</em>. <a href="https://ellmer.tidyverse.org/" class="external-link uri">https://ellmer.tidyverse.org/</a> — backend unificado de
-LLMs.</p>
-<p>Souza, M., &amp; Vieira, R. (2012). Sentiment Analysis on Twitter
-with Portuguese Language. In <em>4th Workshop on Computational
-Approaches to Subjectivity, Sentiment and Social Media Analysis</em>.
-PUCRS. — OpLexicon: lexico de sentimento para portugues brasileiro.</p>
-<p><strong>Fundamentacao teorica</strong></p>
-<p>Bardin, L. (2011). <em>Analise de conteudo</em>. Edicoes 70.</p>
-<p>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet
-Allocation. <em>Journal of Machine Learning Research</em>, 3,
-993-1022.</p>
-<p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its
-Methodology</em> (4a ed.). SAGE.</p>
-<p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer
-agreement for categorical data. <em>Biometrics</em>, 33(1), 159-174.</p>
-<p>Laver, M., Benoit, K., &amp; Garry, J. (2003). Extracting policy
-positions from political texts using words as data. <em>American
-Political Science Review</em>, 97(2), 311-331.</p>
-<p>Sampaio, R. C., &amp; Lycariao, D. (2021). <em>Analise de conteudo
-categorial: manual de aplicacao</em>. Enap. Disponivel em: <a href="https://repositorio.enap.gov.br" class="external-link uri">https://repositorio.enap.gov.br</a></p>
-<p>R Core Team. (2024). <em>R: A language and environment for
-statistical computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="external-link uri">https://www.R-project.org/</a></p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># CSV para análise posterior</span></span>
+<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"csv"</span>, arquivo <span class="op">=</span> <span class="st">"proposicoes_codificadas.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Excel para compartilhamento</span></span>
+<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"xlsx"</span>, arquivo <span class="op">=</span> <span class="st">"proposicoes_codificadas.xlsx"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># LaTeX para inclusão em artigo</span></span>
+<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"latex"</span>, arquivo <span class="op">=</span> <span class="st">"proposicoes_codificadas.tex"</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
+</h2>
+<p>BARDIN, L. <strong>Análise de conteúdo</strong>. Edições 70,
+2011.</p>
+<p>GILARDI, F.; ALIZADEH, M.; KUBLI, M. ChatGPT outperforms crowd
+workers for text-annotation tasks. <strong>PNAS</strong>, v. 120, n. 30,
+2023.</p>
+<p>KRIPPENDORFF, K. <strong>Content Analysis: An Introduction to Its
+Methodology</strong>. 4. ed. SAGE, 2018.</p>
+<p>LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
+categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159–174,
+1977.</p>
+<p>WICKHAM, H. et al. <strong>ellmer: Chat with Large Language
+Models</strong>. Posit, 2025. Disponível em: <a href="https://ellmer.tidyverse.org" class="external-link uri">https://ellmer.tidyverse.org</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

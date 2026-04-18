@@ -5,7 +5,7 @@
 Importacao de textos de fontes abertas brasileiras.
 
 - [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md)
-  : Busca discursos de deputados federais via API da C^amara dos
+  : Busca discursos de deputados federais via API da Camara dos
   Deputados
 - [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md)
   : Busca discursos de senadores federais via senatebR
@@ -59,7 +59,8 @@ Pipeline de analise de conteudo qualitativa assistida por LLMs.
 - [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
   : Criar um codebook para análise de conteúdo qualitativa
 - [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
-  : Buscar literatura acadêmica para um conceito
+  : Buscar referencias bibliograficas sobre um conceito via OpenAlex e
+  LLM
 - [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
   : Classificar textos com LLM usando um codebook
 - [`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)

@@ -1,8 +1,4 @@
-# Buscar literatura acadêmica para um conceito
-
-`ac_qual_search_literature()` usa uma LLM para buscar definições de um
-conceito na literatura acadêmica, retornando um tibble estruturado com
-trecho original, tradução, autor, ano, revista e link.
+# Buscar referencias bibliograficas sobre um conceito via OpenAlex e LLM
 
 `ac_qual_search_literature()` busca referencias academicas reais na API
 do OpenAlex e usa um modelo de linguagem via `ellmer` para sintetizar os
@@ -17,17 +13,6 @@ bibliograficas comuns quando a LLM opera sem fonte externa.
 ## Usage
 
 ``` r
-ac_qual_search_literature(
-  concept,
-  chat = NULL,
-  model = "anthropic/claude-sonnet-4-5",
-  n_refs = 5L,
-  journals = "default",
-  lang = "pt",
-  min_citations = 0L,
-  ...
-)
-
 ac_qual_search_literature(
   concept,
   chat = NULL,
@@ -92,9 +77,6 @@ ac_qual_search_literature(
 
 ## Value
 
-Tibble com colunas: `conceito`, `autor`, `ano`, `trecho_original`,
-`definicao_pt`, `revista`, `link`.
-
 Tibble com colunas:
 
 - `conceito`: conceito buscado;
@@ -114,13 +96,6 @@ Tibble com colunas:
 - `abstract_original`: abstract completo em ingles;
 
 - `link`: DOI ou URL da referencia.
-
-## Note
-
-ATENCAO: as referencias sao geradas por LLM com base no conhecimento de
-treinamento. Verifique todas as referencias antes de citar. Use
-`ac_qual_verify_references()` (disponivel em versao futura) para
-checagem automatica.
 
 ## References
 
