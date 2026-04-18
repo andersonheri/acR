@@ -1,71 +1,101 @@
-#' Buscar referencias bibliograficas sobre um conceito via LLM
+#' Buscar referencias bibliograficas sobre um conceito via OpenAlex e LLM
 #'
 #' @description
-#' `ac_qual_search_literature()` usa um modelo de linguagem via `ellmer` para
-#' buscar e sintetizar referencias bibliograficas sobre um conceito teorico,
-#' retornando um tibble com autores, ano, trechos originais, definicoes em
-#' portugues, revista e link.
+#' `ac_qual_search_literature()` busca referencias academicas reais na API do
+#' OpenAlex e usa um modelo de linguagem via `ellmer` para sintetizar os
+#' abstracts em portugues. Retorna um tibble com metadados bibliograficos
+#' verificados e definicoes sintetizadas pela LLM.
+#'
+#' A arquitetura e: OpenAlex recupera registros reais (autor, ano, DOI,
+#' abstract, revista, numero de citacoes); a LLM sintetiza o abstract em
+#' portugues e extrai o trecho mais relevante. Isso evita alucinacoes
+#' bibliograficas comuns quando a LLM opera sem fonte externa.
 #'
 #' @param concept String. Conceito ou termo teorico a buscar
 #'   (ex: `"democratic backsliding"`, `"state capacity"`).
 #' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
 #'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
-#'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
+#'   `model`.
 #' @param model String no formato `"provedor/modelo"` (ex:
 #'   `"anthropic/claude-sonnet-4-5"`). Ignorado quando `chat` e fornecido.
 #' @param n_refs Inteiro. Numero de referencias a retornar. Padrao: `5`.
-#' @param journals Periódicos a considerar. Opcoes:
-#'   * `"default"`: lista curada de periodicos de referencia em CP/CS;
-#'   * `"all"`: sem restricao de periodico (NULL interno);
+#' @param journals Periodicos a considerar. Opcoes:
+#'   * `"default"`: lista curada de periodicos de referencia em CP/CS/AP;
+#'   * `"all"`: sem restricao de periodico;
 #'   * Vetor de strings: lista customizada (ex: `c("default", "RBCS")`).
-#' @param lang Idioma das definicoes retornadas. Padrao: `"pt"` (portugues).
+#' @param lang Idioma das definicoes sintetizadas. Padrao: `"pt"` (portugues).
 #'   Use `"en"` para ingles.
+#' @param min_citations Inteiro. Numero minimo de citacoes para incluir uma
+#'   referencia. Padrao: `0` (sem filtro). Util para focar em trabalhos
+#'   consolidados (ex: `min_citations = 50`).
 #' @param ... Argumentos adicionais passados a `ellmer::chat()`.
 #'
 #' @return Tibble com colunas:
 #'   * `conceito`: conceito buscado;
-#'   * `autor`: autores da referencia;
+#'   * `autor`: autores da referencia (formato "Sobrenome, N.; ...");
 #'   * `ano`: ano de publicacao;
-#'   * `trecho_original`: trecho relevante em ingles;
-#'   * `definicao_pt`: definicao sintetizada em portugues;
 #'   * `revista`: nome do periodico;
+#'   * `n_citacoes`: numero de citacoes no OpenAlex;
+#'   * `trecho_original`: trecho mais relevante do abstract em ingles;
+#'   * `definicao_pt`: definicao sintetizada pela LLM em portugues;
+#'   * `abstract_original`: abstract completo em ingles;
 #'   * `link`: DOI ou URL da referencia.
 #'
 #' @references
+#' Priem, J. et al. (2022). OpenAlex: A fully-open index of the global
+#' research system. *arXiv*, 2205.01833.
+#'
 #' Gilardi, F.; Alizadeh, M.; Kubli, M. (2023). ChatGPT Outperforms Crowd
 #' Workers for Text-Annotation Tasks. *PNAS*, 120(30).
 #'
 #' @examples
 #' \dontrun{
-#' # Usando string de modelo
+#' # Busca basica com modelo padrao
 #' lit <- ac_qual_search_literature(
 #'   concept = "democratic backsliding",
-#'   n_refs  = 3,
+#'   n_refs  = 5,
 #'   model   = "anthropic/claude-sonnet-4-5"
 #' )
 #'
-#' # Usando objeto Chat do ellmer
-#' chat_obj <- ellmer::chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+#' # Com objeto Chat do ellmer (recomendado)
+#' chat_obj <- ellmer::chat_google_gemini(
+#'   model = "gemini-2.5-flash",
+#'   echo  = "none"
+#' )
 #' lit <- ac_qual_search_literature(
 #'   concept = "state capacity",
-#'   n_refs  = 5,
+#'   n_refs  = 10,
 #'   chat    = chat_obj
+#' )
+#'
+#' # Focar em trabalhos consolidados de periodicos brasileiros
+#' lit <- ac_qual_search_literature(
+#'   concept       = "capacidade estatal",
+#'   n_refs        = 5,
+#'   journals      = c("default", "RBCS", "DADOS"),
+#'   min_citations = 20,
+#'   chat          = chat_obj
 #' )
 #' }
 #'
 #' @concept qualitative
 #' @export
 ac_qual_search_literature <- function(concept,
-                                       chat     = NULL,
-                                       model    = "anthropic/claude-sonnet-4-5",
-                                       n_refs   = 5L,
-                                       journals = "default",
-                                       lang     = "pt",
+                                       chat          = NULL,
+                                       model         = "anthropic/claude-sonnet-4-5",
+                                       n_refs        = 5L,
+                                       journals      = "default",
+                                       lang          = "pt",
+                                       min_citations = 0L,
                                        ...) {
 
   # === Validacoes =============================================================
-  if (!is.character(concept) || length(concept) != 1L || nchar(trimws(concept)) == 0L) {
+  if (!is.character(concept) || length(concept) != 1L ||
+      nchar(trimws(concept)) == 0L) {
     cli::cli_abort("{.arg concept} deve ser uma string nao vazia.")
+  }
+  if (!requireNamespace("httr2", quietly = TRUE)) {
+    cli::cli_abort("O pacote {.pkg httr2} e necessario.")
   }
   if (!requireNamespace("ellmer", quietly = TRUE)) {
     cli::cli_abort("O pacote {.pkg ellmer} e necessario.")
@@ -79,53 +109,52 @@ ac_qual_search_literature <- function(concept,
     )
   }
 
-  n_refs         <- as.integer(n_refs)
-  effective_model <- if (!is.null(chat)) chat else model
-  journal_list   <- .ac_get_journals(journals)
+  n_refs        <- as.integer(n_refs)
+  min_citations <- as.integer(min_citations)
+  journal_list  <- .ac_get_journals(journals)
 
-  # === Montar system prompt ===================================================
-  journal_instruction <- if (is.null(journal_list)) {
-    "Nao ha restricao de periodico."
-  } else {
-    paste0(
-      "Priorize referencias publicadas nos seguintes periodicos: ",
-      paste(journal_list, collapse = ", "), "."
-    )
+  # === Etapa 1: buscar no OpenAlex ============================================
+  cli::cli_inform(c("i" = "Buscando no OpenAlex: {.val {concept}}..."))
+
+  raw_results <- .ac_openalex_search(
+    concept      = concept,
+    n_refs       = n_refs * 3L,   # busca mais para ter margem apos filtros
+    journal_list = journal_list,
+    min_citations = min_citations
+  )
+
+  if (nrow(raw_results) == 0L) {
+    cli::cli_warn(c(
+      "Nenhum resultado encontrado no OpenAlex para {.val {concept}}.",
+      "i" = "Tente ampliar o escopo com {.code journals = 'all'} ou reduzir {.arg min_citations}."
+    ))
+    return(.ac_empty_lit_tibble())
   }
 
+  # Limitar ao n_refs solicitado
+  raw_results <- utils::head(raw_results, n_refs)
+
+  # === Etapa 2: sintetizar com LLM ============================================
+  effective_model <- if (!is.null(chat)) chat else model
+  model_label     <- if (!is.null(chat)) class(chat)[1] else model
+
+  cli::cli_inform(c("i" = "Sintetizando {nrow(raw_results)} abstract{?s} com {.val {model_label}}..."))
+
   lang_instruction <- if (lang == "pt") {
-    "O campo 'definicao_pt' deve estar em portugues claro e academico."
+    "em portugues claro e academico"
   } else {
-    "O campo 'definicao_pt' deve estar em ingles academico."
+    "in clear academic English"
   }
 
   system_prompt <- paste0(
     "Voce e um assistente especializado em ciencia politica e ciencias sociais. ",
-    "Sua tarefa e identificar referencias academicas reais e relevantes sobre ",
-    "conceitos teoricos, com foco em trabalhos indexados e citados. ",
-    "Retorne APENAS JSON valido, sem markdown, sem texto adicional. ",
-    lang_instruction
+    "Dado um abstract academico em ingles, sua tarefa e: ",
+    "(1) extrair o trecho de 1-2 frases mais relevante para a definicao do conceito; ",
+    "(2) sintetizar o argumento principal do abstract ",
+    lang_instruction, " em 2-3 frases. ",
+    "Responda APENAS com JSON valido, sem markdown."
   )
 
-  user_msg <- paste0(
-    "Retorne exatamente ", n_refs, " referencias academicas sobre o conceito: '",
-    concept, "'.\n\n",
-    journal_instruction, "\n\n",
-    "Responda APENAS com um array JSON valido, sem markdown:\n",
-    "[\n",
-    "  {\n",
-    "    \"conceito\": \"", concept, "\",\n",
-    "    \"autor\": \"Sobrenome, N.\",\n",
-    "    \"ano\": 2020,\n",
-    "    \"trecho_original\": \"trecho relevante em ingles\",\n",
-    "    \"definicao_pt\": \"definicao sintetizada em portugues\",\n",
-    "    \"revista\": \"Nome do Periodico\",\n",
-    "    \"link\": \"https://doi.org/...\"\n",
-    "  }\n",
-    "]"
-  )
-
-  # === Inicializar chat =======================================================
   if (inherits(effective_model, "Chat")) {
     chat_obj <- effective_model$clone()
     chat_obj$set_system_prompt(system_prompt)
@@ -146,66 +175,225 @@ ac_qual_search_literature <- function(concept,
     )
   }
 
-  # === Chamar LLM =============================================================
-  model_label <- if (!is.null(chat)) class(chat)[1] else model
-  cli::cli_inform(c(
-    "i" = "Buscando {n_refs} referencia{?s} sobre {.val {concept}} com {.val {model_label}}..."
-  ))
+  # Sintetizar cada abstract
+  syntheses <- purrr::map(seq_len(nrow(raw_results)), function(i) {
+    row     <- raw_results[i, ]
+    abstract <- row$abstract_original
 
-  resposta <- tryCatch(
-    chat_obj$chat(user_msg),
-    error = function(e) {
-      cli::cli_abort(c(
-        "Erro ao consultar o modelo.",
-        "x" = conditionMessage(e)
+    if (is.na(abstract) || nchar(trimws(abstract)) == 0L) {
+      return(list(
+        trecho_original = NA_character_,
+        definicao_pt    = NA_character_
       ))
     }
-  )
 
-  # === Parsear JSON ===========================================================
-  # Extrair array JSON da resposta
-  json_str <- stringr::str_extract(resposta, "\\[.*\\]")
-  if (is.na(json_str)) json_str <- resposta
+    user_msg <- paste0(
+      "Conceito buscado: '", concept, "'\n\n",
+      "Abstract:\n", abstract, "\n\n",
+      "Responda com:\n",
+      "{\n",
+      "  \"trecho_original\": \"trecho de 1-2 frases mais relevante do abstract\",\n",
+      "  \"definicao_pt\": \"sintese do argumento ", lang_instruction, "\"\n",
+      "}"
+    )
 
-  parsed <- tryCatch(
-    jsonlite::fromJSON(json_str, simplifyDataFrame = TRUE),
-    error = function(e) {
-      cli::cli_abort(c(
-        "Nao foi possivel parsear a resposta do modelo como JSON.",
-        "x" = conditionMessage(e)
-      ))
+    resposta <- tryCatch(
+      chat_obj$chat(user_msg),
+      error = function(e) {
+        cli::cli_warn("Erro ao sintetizar referencia {i}: {conditionMessage(e)}")
+        return(NULL)
+      }
+    )
+
+    if (is.null(resposta)) {
+      return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
     }
-  )
 
-  # === Garantir colunas esperadas =============================================
-  expected_cols <- c("conceito", "autor", "ano", "trecho_original",
-                     "definicao_pt", "revista", "link")
+    json_str <- stringr::str_extract(resposta, "\\{[^\\{\\}]*\\}")
+    if (is.na(json_str)) json_str <- resposta
 
-  result <- tibble::as_tibble(parsed)
+    parsed <- tryCatch(
+      jsonlite::fromJSON(json_str),
+      error = function(e) NULL
+    )
 
-  # Adicionar colunas ausentes como NA
-  for (col in expected_cols) {
-    if (!col %in% names(result)) {
-      result[[col]] <- NA_character_
+    if (is.null(parsed)) {
+      return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
     }
-  }
 
-  # Garantir que conceito esta preenchido
-  result$conceito <- concept
+    list(
+      trecho_original = parsed$trecho_original %||% NA_character_,
+      definicao_pt    = parsed$definicao_pt    %||% NA_character_
+    )
+  })
 
-  result[, expected_cols]
+  # === Montar tibble final ====================================================
+  result <- raw_results |>
+    dplyr::mutate(
+      conceito        = concept,
+      trecho_original = purrr::map_chr(syntheses, "trecho_original"),
+      definicao_pt    = purrr::map_chr(syntheses, "definicao_pt")
+    ) |>
+    dplyr::select(
+      "conceito", "autor", "ano", "revista", "n_citacoes",
+      "trecho_original", "definicao_pt", "abstract_original", "link"
+    )
+
+  cli::cli_inform(c("v" = "{nrow(result)} referencia{?s} encontrada{?s} e sintetizada{?s}."))
+
+  result
 }
 
 
 # ============================================================================
-# Funcao auxiliar interna
+# Funcoes auxiliares internas
 # ============================================================================
 
 #' @keywords internal
 #' @noRd
+.ac_openalex_search <- function(concept, n_refs, journal_list, min_citations) {
+
+  # Montar query base
+  base_url <- "https://api.openalex.org/works"
+
+  req <- httr2::request(base_url) |>
+    httr2::req_url_query(
+      search         = concept,
+      `per-page`     = min(n_refs, 50L),
+      sort           = "cited_by_count:desc",
+      filter         = .ac_openalex_filter(journal_list, min_citations),
+      select         = paste(
+        "id", "title", "authorships", "publication_year",
+        "primary_location", "cited_by_count", "abstract_inverted_index", "doi",
+        sep = ","
+      ),
+      mailto         = "acR-package@r-pkg"
+    ) |>
+    httr2::req_headers(
+      "User-Agent" = "acR R package (https://github.com/andersonheri/acR)"
+    ) |>
+    httr2::req_retry(max_tries = 3L, backoff = ~ 2) |>
+    httr2::req_timeout(30L)
+
+  resp <- tryCatch(
+    httr2::req_perform(req),
+    error = function(e) {
+      cli::cli_warn(c(
+        "Erro ao acessar a API do OpenAlex.",
+        "x" = conditionMessage(e)
+      ))
+      return(NULL)
+    }
+  )
+
+  if (is.null(resp)) return(.ac_empty_lit_tibble())
+
+  body <- tryCatch(
+    httr2::resp_body_json(resp, simplifyVector = FALSE),
+    error = function(e) NULL
+  )
+
+  if (is.null(body) || length(body$results) == 0L) {
+    return(.ac_empty_lit_tibble())
+  }
+
+  # Parsear resultados
+  rows <- purrr::map(body$results, function(work) {
+
+    # Autores
+    autores <- purrr::map_chr(
+      work$authorships %||% list(),
+      function(a) a$author$display_name %||% NA_character_
+    )
+    autor_str <- if (length(autores) == 0L) NA_character_
+    else if (length(autores) <= 3L) paste(autores, collapse = "; ")
+    else paste0(autores[1], " et al.")
+
+    # Revista
+    revista <- work$primary_location$source$display_name %||% NA_character_
+
+    # Abstract: reconstruir do inverted index
+    abstract <- .ac_reconstruct_abstract(work$abstract_inverted_index)
+
+    # DOI
+    doi <- work$doi %||% NA_character_
+    link <- if (!is.na(doi)) doi else
+      paste0("https://openalex.org/", work$id)
+
+    tibble::tibble(
+      autor             = autor_str,
+      ano               = work$publication_year %||% NA_integer_,
+      revista           = revista,
+      n_citacoes        = work$cited_by_count %||% 0L,
+      abstract_original = abstract,
+      link              = link
+    )
+  })
+
+  dplyr::bind_rows(rows)
+}
+
+
+#' @keywords internal
+#' @noRd
+.ac_openalex_filter <- function(journal_list, min_citations) {
+  filters <- character(0)
+
+  # Filtro de citacoes minimas
+  if (min_citations > 0L) {
+    filters <- c(filters, paste0("cited_by_count:>", min_citations))
+  }
+
+  # Filtro de tipo: apenas artigos
+  filters <- c(filters, "type:article")
+
+  if (length(filters) == 0L) return(NULL)
+  paste(filters, collapse = ",")
+}
+
+
+#' @keywords internal
+#' @noRd
+.ac_reconstruct_abstract <- function(inverted_index) {
+  if (is.null(inverted_index) || length(inverted_index) == 0L) {
+    return(NA_character_)
+  }
+  # inverted_index: lista onde cada elemento e palavra -> vetor de posicoes
+  positions <- unlist(
+    purrr::imap(inverted_index, function(positions, word) {
+      stats::setNames(rep(word, length(positions)), as.character(positions))
+    })
+  )
+  if (length(positions) == 0L) return(NA_character_)
+  idx  <- as.integer(names(positions))
+  ord  <- order(idx)
+  paste(positions[ord], collapse = " ")
+}
+
+
+#' @keywords internal
+#' @noRd
+.ac_empty_lit_tibble <- function() {
+  tibble::tibble(
+    conceito          = character(0),
+    autor             = character(0),
+    ano               = integer(0),
+    revista           = character(0),
+    n_citacoes        = integer(0),
+    trecho_original   = character(0),
+    definicao_pt      = character(0),
+    abstract_original = character(0),
+    link              = character(0)
+  )
+}
+
+
+#' @keywords internal
+#' @noRd
 .ac_get_journals <- function(journals) {
+
   default_journals <- c(
-    # Ciencia Politica - internacional
+    # Ciencia Politica - top internacional
     "American Political Science Review",
     "American Journal of Political Science",
     "Journal of Politics",
@@ -216,35 +404,53 @@ ac_qual_search_literature <- function(concept,
     "Political Research Quarterly",
     "Legislative Studies Quarterly",
     "Governance",
-    # Administracao Publica
+    "Political Behavior",
+    "Electoral Studies",
+    "European Journal of Political Research",
+    "West European Politics",
+    "Journal of Democracy",
+    "Democratization",
+    "Latin American Politics and Society",
+    "Latin American Research Review",
+    "Journal of Latin American Studies",
+    # Administracao Publica e Politicas Publicas
     "Public Administration Review",
     "Journal of Public Administration Research and Theory",
     "Publius",
-    # Ciencias Sociais - Brasil
+    "Policy Sciences",
+    "Journal of Policy Analysis and Management",
+    "Governance",
+    "Public Management Review",
+    "Journal of European Public Policy",
+    # Sociologia e Ciencias Sociais
+    "American Sociological Review",
+    "American Journal of Sociology",
+    "Annual Review of Sociology",
+    # Multidisciplinar relevante
+    "Science",
+    "Nature Human Behaviour",
+    "PNAS",
+    "PLOS ONE",
+    # Brasil - CP e CS
     "DADOS",
     "RBCS",
     "Lua Nova",
     "Opiniao Publica",
     "Revista de Sociologia e Politica",
     "Brazilian Political Science Review",
-    "Revista Brasileira de Ciencia Politica"
+    "Revista Brasileira de Ciencia Politica",
+    "Cadernos CEDES",
+    "Novos Estudos CEBRAP",
+    "Revista de Administracao Publica",
+    "Cadernos de Saude Publica"
   )
 
-  if (identical(journals, "all")) {
-    return(NULL)
-  }
+  if (identical(journals, "all")) return(NULL)
+  if (identical(journals, "default")) return(default_journals)
 
-  if (identical(journals, "default")) {
-    return(default_journals)
-  }
-
-  # Vetor customizado: inclui default se solicitado + extras
+  # Vetor customizado
   result <- character(0)
-  if ("default" %in% journals) {
-    result <- c(result, default_journals)
-  }
+  if ("default" %in% journals) result <- c(result, default_journals)
   extras <- setdiff(journals, "default")
-  result <- unique(c(result, extras))
-
-  result
+  unique(c(result, extras))
 }

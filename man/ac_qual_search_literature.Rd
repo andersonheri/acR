@@ -12,6 +12,7 @@ ac_qual_search_literature(
   n_refs = 5L,
   journals = "default",
   lang = "pt",
+  min_citations = 0L,
   ...
 )
 
@@ -22,6 +23,7 @@ ac_qual_search_literature(
   n_refs = 5L,
   journals = "default",
   lang = "pt",
+  min_citations = 0L,
   ...
 )
 }
@@ -31,22 +33,26 @@ ac_qual_search_literature(
 
 \item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
 \code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
-\code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
+\code{model}.}
 
 \item{model}{String no formato \code{"provedor/modelo"} (ex:
 \code{"anthropic/claude-sonnet-4-5"}). Ignorado quando \code{chat} e fornecido.}
 
 \item{n_refs}{Inteiro. Numero de referencias a retornar. Padrao: \code{5}.}
 
-\item{journals}{Periódicos a considerar. Opcoes:
+\item{journals}{Periodicos a considerar. Opcoes:
 \itemize{
-\item \code{"default"}: lista curada de periodicos de referencia em CP/CS;
-\item \code{"all"}: sem restricao de periodico (NULL interno);
+\item \code{"default"}: lista curada de periodicos de referencia em CP/CS/AP;
+\item \code{"all"}: sem restricao de periodico;
 \item Vetor de strings: lista customizada (ex: \code{c("default", "RBCS")}).
 }}
 
-\item{lang}{Idioma das definicoes retornadas. Padrao: \code{"pt"} (portugues).
+\item{lang}{Idioma das definicoes sintetizadas. Padrao: \code{"pt"} (portugues).
 Use \code{"en"} para ingles.}
+
+\item{min_citations}{Inteiro. Numero minimo de citacoes para incluir uma
+referencia. Padrao: \code{0} (sem filtro). Util para focar em trabalhos
+consolidados (ex: \code{min_citations = 50}).}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.}
 }
@@ -57,11 +63,13 @@ Tibble com colunas: \code{conceito}, \code{autor}, \code{ano}, \code{trecho_orig
 Tibble com colunas:
 \itemize{
 \item \code{conceito}: conceito buscado;
-\item \code{autor}: autores da referencia;
+\item \code{autor}: autores da referencia (formato "Sobrenome, N.; ...");
 \item \code{ano}: ano de publicacao;
-\item \code{trecho_original}: trecho relevante em ingles;
-\item \code{definicao_pt}: definicao sintetizada em portugues;
 \item \code{revista}: nome do periodico;
+\item \code{n_citacoes}: numero de citacoes no OpenAlex;
+\item \code{trecho_original}: trecho mais relevante do abstract em ingles;
+\item \code{definicao_pt}: definicao sintetizada pela LLM em portugues;
+\item \code{abstract_original}: abstract completo em ingles;
 \item \code{link}: DOI ou URL da referencia.
 }
 }
@@ -70,10 +78,15 @@ Tibble com colunas:
 conceito na literatura acadêmica, retornando um tibble estruturado com
 trecho original, tradução, autor, ano, revista e link.
 
-\code{ac_qual_search_literature()} usa um modelo de linguagem via \code{ellmer} para
-buscar e sintetizar referencias bibliograficas sobre um conceito teorico,
-retornando um tibble com autores, ano, trechos originais, definicoes em
-portugues, revista e link.
+\code{ac_qual_search_literature()} busca referencias academicas reais na API do
+OpenAlex e usa um modelo de linguagem via \code{ellmer} para sintetizar os
+abstracts em portugues. Retorna um tibble com metadados bibliograficos
+verificados e definicoes sintetizadas pela LLM.
+
+A arquitetura e: OpenAlex recupera registros reais (autor, ano, DOI,
+abstract, revista, numero de citacoes); a LLM sintetiza o abstract em
+portugues e extrai o trecho mais relevante. Isso evita alucinacoes
+bibliograficas comuns quando a LLM opera sem fonte externa.
 }
 \note{
 ATENCAO: as referencias sao geradas por LLM com base no
@@ -83,24 +96,39 @@ checagem automatica.
 }
 \examples{
 \dontrun{
-# Usando string de modelo
+# Busca basica com modelo padrao
 lit <- ac_qual_search_literature(
   concept = "democratic backsliding",
-  n_refs  = 3,
+  n_refs  = 5,
   model   = "anthropic/claude-sonnet-4-5"
 )
 
-# Usando objeto Chat do ellmer
-chat_obj <- ellmer::chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+# Com objeto Chat do ellmer (recomendado)
+chat_obj <- ellmer::chat_google_gemini(
+  model = "gemini-2.5-flash",
+  echo  = "none"
+)
 lit <- ac_qual_search_literature(
   concept = "state capacity",
-  n_refs  = 5,
+  n_refs  = 10,
   chat    = chat_obj
+)
+
+# Focar em trabalhos consolidados de periodicos brasileiros
+lit <- ac_qual_search_literature(
+  concept       = "capacidade estatal",
+  n_refs        = 5,
+  journals      = c("default", "RBCS", "DADOS"),
+  min_citations = 20,
+  chat          = chat_obj
 )
 }
 
 }
 \references{
+Priem, J. et al. (2022). OpenAlex: A fully-open index of the global
+research system. \emph{arXiv}, 2205.01833.
+
 Gilardi, F.; Alizadeh, M.; Kubli, M. (2023). ChatGPT Outperforms Crowd
 Workers for Text-Annotation Tasks. \emph{PNAS}, 120(30).
 }
