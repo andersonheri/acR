@@ -4,10 +4,15 @@
 conceito na literatura acadêmica, retornando um tibble estruturado com
 trecho original, tradução, autor, ano, revista e link.
 
-`ac_qual_search_literature()` usa um modelo de linguagem via `ellmer`
-para buscar e sintetizar referencias bibliograficas sobre um conceito
-teorico, retornando um tibble com autores, ano, trechos originais,
-definicoes em portugues, revista e link.
+`ac_qual_search_literature()` busca referencias academicas reais na API
+do OpenAlex e usa um modelo de linguagem via `ellmer` para sintetizar os
+abstracts em portugues. Retorna um tibble com metadados bibliograficos
+verificados e definicoes sintetizadas pela LLM.
+
+A arquitetura e: OpenAlex recupera registros reais (autor, ano, DOI,
+abstract, revista, numero de citacoes); a LLM sintetiza o abstract em
+portugues e extrai o trecho mais relevante. Isso evita alucinacoes
+bibliograficas comuns quando a LLM opera sem fonte externa.
 
 ## Usage
 
@@ -19,6 +24,7 @@ ac_qual_search_literature(
   n_refs = 5L,
   journals = "default",
   lang = "pt",
+  min_citations = 0L,
   ...
 )
 
@@ -29,6 +35,7 @@ ac_qual_search_literature(
   n_refs = 5L,
   journals = "default",
   lang = "pt",
+  min_citations = 0L,
   ...
 )
 ```
@@ -44,7 +51,7 @@ ac_qual_search_literature(
 
   Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
-  sobre `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
+  sobre `model`.
 
 - model:
 
@@ -57,18 +64,24 @@ ac_qual_search_literature(
 
 - journals:
 
-  Periódicos a considerar. Opcoes:
+  Periodicos a considerar. Opcoes:
 
-  - `"default"`: lista curada de periodicos de referencia em CP/CS;
+  - `"default"`: lista curada de periodicos de referencia em CP/CS/AP;
 
-  - `"all"`: sem restricao de periodico (NULL interno);
+  - `"all"`: sem restricao de periodico;
 
   - Vetor de strings: lista customizada (ex: `c("default", "RBCS")`).
 
 - lang:
 
-  Idioma das definicoes retornadas. Padrao: `"pt"` (portugues). Use
+  Idioma das definicoes sintetizadas. Padrao: `"pt"` (portugues). Use
   `"en"` para ingles.
+
+- min_citations:
+
+  Inteiro. Numero minimo de citacoes para incluir uma referencia.
+  Padrao: `0` (sem filtro). Util para focar em trabalhos consolidados
+  (ex: `min_citations = 50`).
 
 - ...:
 
@@ -84,15 +97,19 @@ Tibble com colunas:
 
 - `conceito`: conceito buscado;
 
-- `autor`: autores da referencia;
+- `autor`: autores da referencia (formato "Sobrenome, N.; ...");
 
 - `ano`: ano de publicacao;
 
-- `trecho_original`: trecho relevante em ingles;
-
-- `definicao_pt`: definicao sintetizada em portugues;
-
 - `revista`: nome do periodico;
+
+- `n_citacoes`: numero de citacoes no OpenAlex;
+
+- `trecho_original`: trecho mais relevante do abstract em ingles;
+
+- `definicao_pt`: definicao sintetizada pela LLM em portugues;
+
+- `abstract_original`: abstract completo em ingles;
 
 - `link`: DOI ou URL da referencia.
 
@@ -105,6 +122,9 @@ checagem automatica.
 
 ## References
 
+Priem, J. et al. (2022). OpenAlex: A fully-open index of the global
+research system. *arXiv*, 2205.01833.
+
 Gilardi, F.; Alizadeh, M.; Kubli, M. (2023). ChatGPT Outperforms Crowd
 Workers for Text-Annotation Tasks. *PNAS*, 120(30).
 
@@ -112,19 +132,31 @@ Workers for Text-Annotation Tasks. *PNAS*, 120(30).
 
 ``` r
 if (FALSE) { # \dontrun{
-# Usando string de modelo
+# Busca basica com modelo padrao
 lit <- ac_qual_search_literature(
   concept = "democratic backsliding",
-  n_refs  = 3,
+  n_refs  = 5,
   model   = "anthropic/claude-sonnet-4-5"
 )
 
-# Usando objeto Chat do ellmer
-chat_obj <- ellmer::chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+# Com objeto Chat do ellmer (recomendado)
+chat_obj <- ellmer::chat_google_gemini(
+  model = "gemini-2.5-flash",
+  echo  = "none"
+)
 lit <- ac_qual_search_literature(
   concept = "state capacity",
-  n_refs  = 5,
+  n_refs  = 10,
   chat    = chat_obj
+)
+
+# Focar em trabalhos consolidados de periodicos brasileiros
+lit <- ac_qual_search_literature(
+  concept       = "capacidade estatal",
+  n_refs        = 5,
+  journals      = c("default", "RBCS", "DADOS"),
+  min_citations = 20,
+  chat          = chat_obj
 )
 } # }
 ```
