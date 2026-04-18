@@ -1,73 +1,68 @@
-Package: acR
 Type: Package
-Title: Análise de Conteúdo em R: Pipeline Integrado Qualitativo (LLMs) e Quantitativo
+Package: acR
+Title: Content Analysis in R: Integrated Qualitative (LLMs) and Quantitative Pipeline
+    Quantitativo
 Version: 0.1.0
-Authors@R: c(
-    person("Anderson", "Henrique",
-           email = "anderson.henrique@usp.br",
-           role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-1842-2725"))
-    )
-Description: Oferece um pipeline integrado para análise de conteúdo em R,
-    combinando codificação qualitativa assistida por modelos de linguagem
-    (LLMs) com análise quantitativa clássica de textos. Inclui módulos para
-    pré-processamento (tokenização, lematização, stopwords PT-BR),
-    estatísticas descritivas, keyness, co-ocorrência, nuvens de palavras
-    (incluindo comparativa e X-ray), análise de sentimento (OpLexicon),
-    Latent Dirichlet Allocation (LDA), métricas de confiabilidade entre
-    codificadores (Krippendorff, Gwet), e visualizações modernas baseadas
-    em ggplot2. Foco especial em corpora brasileiros, com codebooks
-    validados para o contexto político-institucional nacional. Inspirado
-    em Maerz e Benoit (2025) <https://quallmer.github.io/quallmer/>.
+Authors@R: 
+    person("Anderson", "Henrique", , "anderson.henrique@usp.br", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0000-0000-0000", affiliation = "Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao Paulo"))
+Description: Provides an integrated pipeline for content analysis in R,
+    combining qualitative coding assisted by large language models ('LLMs')
+    with classical quantitative text analysis. Includes modules for
+    pre-processing (tokenization, stopwords for Brazilian Portuguese),
+    descriptive statistics, keyness, co-occurrence networks, word clouds
+    (including comparative and X-ray variants), sentiment analysis
+    ('OpLexicon'), Latent Dirichlet Allocation ('LDA'), inter-coder
+    reliability metrics (Krippendorff, Gwet), and modern visualizations
+    based on 'ggplot2'. Special focus on Brazilian corpora and
+    political-institutional codebooks. Inspired by Maerz and Benoit (2025)
+    <https://quallmer.github.io/quallmer/>.
 License: MIT + file LICENSE
-URL: https://github.com/andersonheri/acR, https://andersonheri.github.io/acR/
+URL: https://github.com/andersonheri/acR,
+    https://andersonheri.github.io/acR/
 BugReports: https://github.com/andersonheri/acR/issues
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-Depends:
-    R (>= 4.3)
-VignetteBuilder: knitr
-Config/testthat/edition: 3
-Language: pt-BR
-Additional_repositories: https://github.com/vsntos/senatebR
-Suggests:
-    senatebR,
-    cachem,
-    ellmer,
-    geobr,
-    ggraph,
-    quanteda,
-    quanteda.textstats,
-    sf,
-    testthat (>= 3.0.0),
-    topicmodels,
-    udpipe,
-    wordcloud2,
-    ipeaplot,
-    wordcloud,
-    igraph,
-    slam,
-    openxlsx,
-    rmarkdown
 Imports: 
     cli,
     dplyr,
+    ellmer,
+    ggplot2,
+    ggraph,
+    httr2,
+    igraph,
+    ipeaplot,
+    irr,
+    jsonlite,
+    openxlsx,
+    purrr,
+    quanteda,
     rlang,
+    scales,
+    senatebR,
     stopwords,
     stringi,
     stringr,
     tibble,
-    tidyselect,
-    ggplot2,
-    purrr,
     tidyr,
-    scales,
+    tidyselect,
     tidytext,
-    jsonlite,
-    yaml,
-    httr2,
-    irr,
+    topicmodels,
+    wordcloud,
     writexl,
-    knitr
+    yaml
+Suggests:
+    covr,
+    knitr,
+    pkgdown,
+    readtext,
+    rmarkdown,
+    spelling,
+    tesseract,
+    testthat,
+    withr
+VignetteBuilder: knitr
+Additional_repositories: https://github.com/vsntos/senatebR
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: pt-BR
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
