@@ -49,9 +49,11 @@ ac_qual_search_literature(
 
 - chat:
 
-  Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
-  `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
-  sobre `model`.
+  Objeto `Chat` do pacote `ellmer` (ex:
+  [`chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html),
+  [`chat_openai()`](https://ellmer.tidyverse.org/reference/chat_openai.html),
+  [`chat_ollama()`](https://ellmer.tidyverse.org/reference/chat_ollama.html)).
+  Quando fornecido, tem prioridade sobre `model`.
 
 - model:
 

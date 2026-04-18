@@ -85,7 +85,8 @@
 <div class="section level2">
 <h2 id="visao-geral">Visao geral<a class="anchor" aria-label="anchor" href="#visao-geral"></a>
 </h2>
-<p>O <code>acR</code> oferece um pipeline completo de analise de conteudo textual para pesquisadores em ciencias sociais. O pacote integra dois modulos principais: um <strong>modulo qualitativo</strong> baseado em LLMs (qwen3.6, GPT-4o, Claude, Groq) para codificacao automatica com validacao humana, e um <strong>modulo quantitativo</strong> para frequencias, TF-IDF, keyness, sentimento e modelagem de topicos (LDA). Todas as funcoes foram projetadas para corpora em portugues e seguem as convencoes metodologicas de Bardin (2011) e Krippendorff (2018).</p>
+<p>O <code>acR</code> oferece um pipeline completo de analise de conteudo textual para pesquisadores em ciencias sociais. O pacote integra dois modulos principais: um <strong>modulo qualitativo</strong> baseado em LLMs para codificacao automatica com validacao humana, e um <strong>modulo quantitativo</strong> para frequencias, TF-IDF, keyness, sentimento e modelagem de topicos (LDA). Todas as funcoes foram projetadas para corpora em portugues e seguem as convencoes metodologicas de Bardin (2011) e Krippendorff (2018).</p>
+<p>A partir da versao 0.1.0, o modulo qualitativo usa o pacote <a href="https://ellmer.tidyverse.org/" class="external-link">ellmer</a> como backend unificado, permitindo usar qualquer provedor de LLM — OpenAI, Google Gemini, Groq, Anthropic, Ollama, Mistral, DeepSeek, OpenRouter e outros — via o argumento <code>chat=</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="instalacao">Instalacao<a class="anchor" aria-label="anchor" href="#instalacao"></a>
@@ -103,6 +104,7 @@
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 1. Corpus</span></span>
 <span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
@@ -120,17 +122,19 @@
 <span>  mode         <span class="op">=</span> <span class="st">"manual"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 3. Codificar com qwen3.6 via Ollama</span></span>
+<span><span class="co"># 3. Instanciar provedor via ellmer (qualquer um suportado)</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="co"># ou: chat_obj &lt;- chat_groq(model = "llama-3.3-70b-versatile", echo = "none")</span></span>
+<span><span class="co"># ou: chat_obj &lt;- chat_ollama(model = "llama3.2", echo = "none")</span></span>
+<span></span>
+<span><span class="co"># 4. Codificar</span></span>
 <span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"ollama"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"qwen3.6:latest"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OLLAMA_API_KEY"</span><span class="op">)</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span></span>
+<span>  corpus   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_obj</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 4. Exportar</span></span>
+<span><span class="co"># 5. Exportar</span></span>
 <span><span class="fu"><a href="reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"csv"</span>, arquivo <span class="op">=</span> <span class="st">"codificacao.csv"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -147,12 +151,11 @@
 <span><span class="fu"><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="tf-idf--termos-característicos-por-grupo">TF-IDF — termos característicos por grupo<a class="anchor" aria-label="anchor" href="#tf-idf--termos-caracter%C3%ADsticos-por-grupo"></a>
+<h3 id="tf-idf--termos-caracteristicos-por-grupo">TF-IDF — termos caracteristicos por grupo<a class="anchor" aria-label="anchor" href="#tf-idf--termos-caracteristicos-por-grupo"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Corpus com proposicoes legislativas de tres partidos</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"prop_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -167,19 +170,16 @@
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Pipeline completo</span></span>
 <span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">partido</span><span class="op">)</span></span>
 <span><span class="va">tokens</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span>, remover_stopwords <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">freq</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
 <span><span class="va">tfidf</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">freq</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Top 5 termos mais caracteristicos por partido</span></span>
 <span><span class="va">tfidf</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">partido</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">tf_idf</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">partido</span>, <span class="va">token</span>, <span class="va">tf_idf</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Visualizar</span></span>
 <span><span class="fu"><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, by <span class="op">=</span> <span class="st">"partido"</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -263,48 +263,6 @@
 </table>
 </div>
 <div class="section level3">
-<h3 id="tf-idf--termos-característicos-por-partido">TF-IDF — termos característicos por partido<a class="anchor" aria-label="anchor" href="#tf-idf--termos-caracter%C3%ADsticos-por-partido"></a>
-</h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Corpus com proposicoes de deputados de diferentes partidos</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  id      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"prop_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
-<span>  texto   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Esta proposta garante direitos trabalhistas e protecao social."</span>,</span>
-<span>    <span class="st">"O projeto amplia o seguro-desemprego para trabalhadores informais."</span>,</span>
-<span>    <span class="st">"Propomos reducao de impostos para estimular o crescimento economico."</span>,</span>
-<span>    <span class="st">"A desburocratizacao e essencial para a competitividade do Brasil."</span>,</span>
-<span>    <span class="st">"O texto fortalece o SUS e o acesso universal a saude publica."</span>,</span>
-<span>    <span class="st">"Defendemos a expansao de politicas de assistencia social."</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>, <span class="st">"PT"</span>, <span class="st">"PL"</span>, <span class="st">"PL"</span>, <span class="st">"PSOL"</span>, <span class="st">"PSOL"</span><span class="op">)</span>,</span>
-<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 1. Criar corpus</span></span>
-<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">partido</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 2. Tokenizar (remove stopwords PT-BR automaticamente)</span></span>
-<span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span>, remover_stopwords <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 3. Contar frequencias por partido</span></span>
-<span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 4. Calcular TF-IDF (cada partido como documento)</span></span>
-<span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">freq</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 5. Top 5 termos mais caracteristicos por partido</span></span>
-<span><span class="va">tfidf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">partido</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">tf_idf</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">partido</span>, <span class="va">token</span>, <span class="va">tf_idf</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 6. Visualizar</span></span>
-<span><span class="fu"><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, by <span class="op">=</span> <span class="st">"partido"</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
 <h3 id="analise-qualitativa-com-llms">Analise qualitativa com LLMs<a class="anchor" aria-label="anchor" href="#analise-qualitativa-com-llms"></a>
 </h3>
 <table class="table">
@@ -322,40 +280,40 @@
 <td>Codificar corpus via LLM</td>
 </tr>
 <tr class="odd">
+<td><code><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code></td>
+<td>Buscar literatura via OpenAlex + LLM</td>
+</tr>
+<tr class="even">
 <td><code><a href="reference/ac_qual_list_models.html">ac_qual_list_models()</a></code></td>
 <td>Listar modelos disponiveis</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code></td>
 <td>Recomendacao automatica de modelo</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="reference/ac_qual_sample.html">ac_qual_sample()</a></code></td>
 <td>Amostrar para validacao humana</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code></td>
 <td>Exportar para revisao em .xlsx</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="reference/ac_qual_import_human.html">ac_qual_import_human()</a></code></td>
 <td>Importar revisao humana</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="reference/ac_qual_irr.html">ac_qual_irr()</a></code></td>
 <td>Concordancia inter-codificador (kappa)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code></td>
 <td>Validar threshold de confiabilidade</td>
 </tr>
-<tr class="even">
-<td><code><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code></td>
-<td>Buscar literatura de apoio</td>
-</tr>
 <tr class="odd">
 <td><code><a href="reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code></td>
-<td>Salvar codebook em JSON</td>
+<td>Salvar codebook em YAML</td>
 </tr>
 <tr class="even">
 <td><code><a href="reference/ac_qual_load_codebook.html">ac_qual_load_codebook()</a></code></td>
@@ -417,19 +375,17 @@
 </table>
 </div>
 <div class="section level3">
-<h3 id="exportacao">Exportacao<a class="anchor" aria-label="anchor" href="#exportacao"></a>
+<h3 id="exportacao-e-coleta">Exportacao e coleta<a class="anchor" aria-label="anchor" href="#exportacao-e-coleta"></a>
 </h3>
 <table class="table">
 <thead><tr class="header">
 <th>Funcao</th>
-<th>Formatos</th>
+<th>Descricao</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td><code><a href="reference/ac_export.html">ac_export()</a></code></td>
-<td>
-<code>csv</code>, <code>xlsx</code>, <code>latex</code>, <code>rds</code>
-</td>
+<td>Exportar resultados (<code>csv</code>, <code>xlsx</code>, <code>latex</code>, <code>rds</code>)</td>
 </tr>
 <tr class="even">
 <td><code><a href="reference/ac_fetch_camara.html">ac_fetch_camara()</a></code></td>
@@ -446,60 +402,124 @@
 <div class="section level2">
 <h2 id="provedores-llm-suportados">Provedores LLM suportados<a class="anchor" aria-label="anchor" href="#provedores-llm-suportados"></a>
 </h2>
+<p>O <code>acR</code> usa o pacote <a href="https://ellmer.tidyverse.org/" class="external-link">ellmer</a> como backend. Qualquer provedor suportado pelo ellmer funciona via o argumento <code>chat=</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Google Gemini — tier gratuito disponivel</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Groq — inferencia rapida, plano gratuito</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Ollama — modelos locais, sem envio de dados</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama3.2"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># OpenAI</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-4.1"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Anthropic Claude</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"claude-sonnet-4-20250514"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Mistral</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_mistral.html" class="external-link">chat_mistral</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"mistral-large-latest"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># DeepSeek</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_deepseek.html" class="external-link">chat_deepseek</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"deepseek-chat"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># OpenRouter (acesso a centenas de modelos com uma chave)</span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openrouter.html" class="external-link">chat_openrouter</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"google/gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
-<colgroup>
-<col width="18%">
-<col width="22%">
-<col width="37%">
-<col width="20%">
-</colgroup>
 <thead><tr class="header">
 <th>Provedor</th>
-<th><code>provider</code></th>
-<th>Modelo recomendado</th>
-<th>Portugues</th>
+<th>Funcao ellmer</th>
+<th>Variavel de ambiente</th>
+<th>Tier gratuito</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Ollama nuvem</td>
-<td><code>"ollama"</code></td>
-<td><code>qwen3.6:latest</code></td>
-<td>Excelente</td>
-</tr>
-<tr class="even">
-<td>OpenAI</td>
-<td><code>"openai"</code></td>
-<td><code>gpt-4o-mini</code></td>
-<td>Excelente</td>
-</tr>
-<tr class="odd">
-<td>Anthropic</td>
-<td><code>"anthropic"</code></td>
-<td><code>claude-3-5-sonnet</code></td>
-<td>Excelente</td>
+<td>Google Gemini</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini()</a></code></td>
+<td><code>GOOGLE_API_KEY</code></td>
+<td>Sim</td>
 </tr>
 <tr class="even">
 <td>Groq</td>
-<td><code>"groq"</code></td>
-<td><code>llama3-8b-8192</code></td>
-<td>Bom</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq()</a></code></td>
+<td><code>GROQ_API_KEY</code></td>
+<td>Sim</td>
 </tr>
 <tr class="odd">
-<td>Together AI</td>
-<td><code>"openai"</code></td>
-<td><code>Qwen/Qwen3-235B-A22B</code></td>
-<td>Excelente</td>
+<td>Ollama (local)</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama()</a></code></td>
+<td>nao necessaria</td>
+<td>Gratuito</td>
 </tr>
 <tr class="even">
-<td>Qualquer API OpenAI-compativel</td>
-<td>
-<code>"openai"</code> + <code>base_url</code>
-</td>
-<td>—</td>
-<td>Variavel</td>
+<td>OpenAI</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai()</a></code></td>
+<td><code>OPENAI_API_KEY</code></td>
+<td>Nao</td>
+</tr>
+<tr class="odd">
+<td>Anthropic</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic()</a></code></td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>Nao</td>
+</tr>
+<tr class="even">
+<td>Mistral</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_mistral.html" class="external-link">chat_mistral()</a></code></td>
+<td><code>MISTRAL_API_KEY</code></td>
+<td>Nao</td>
+</tr>
+<tr class="odd">
+<td>DeepSeek</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_deepseek.html" class="external-link">chat_deepseek()</a></code></td>
+<td><code>DEEPSEEK_API_KEY</code></td>
+<td>Limitado</td>
+</tr>
+<tr class="even">
+<td>OpenRouter</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_openrouter.html" class="external-link">chat_openrouter()</a></code></td>
+<td><code>OPENROUTER_API_KEY</code></td>
+<td>Por uso</td>
 </tr>
 </tbody>
 </table>
+<p>Configure as chaves no <code>.Renviron</code> (edite com <code>usethis::edit_r_environ()</code>):</p>
+<pre><code><span><span class="va">GOOGLE_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
+<span><span class="va">GROQ_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
+<span><span class="va">OPENAI_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
+<span><span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="busca-de-literatura-com-openalex">Busca de literatura com OpenAlex<a class="anchor" aria-label="anchor" href="#busca-de-literatura-com-openalex"></a>
+</h2>
+<p><code><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code> busca referencias academicas reais na API do <a href="https://openalex.org/" class="external-link">OpenAlex</a> (gratuita, sem chave) e usa a LLM para sintetizar os abstracts em portugues. Isso evita alucinacoes bibliograficas comuns quando a LLM opera sem fonte externa.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Buscar referencias sobre um conceito</span></span>
+<span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
+<span>  concept <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span>
+<span>  n_refs  <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  chat    <span class="op">=</span> <span class="va">chat_obj</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Com filtro de citacoes minimas (trabalhos consolidados)</span></span>
+<span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
+<span>  concept       <span class="op">=</span> <span class="st">"state capacity"</span>,</span>
+<span>  n_refs        <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  min_citations <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  chat          <span class="op">=</span> <span class="va">chat_obj</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Resultado: tibble com autor, ano, revista, n_citacoes,</span></span>
+<span><span class="co"># trecho_original, definicao_pt, abstract_original, link</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lit</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="documentacao">Documentacao<a class="anchor" aria-label="anchor" href="#documentacao"></a>
@@ -524,7 +544,7 @@
 <div class="section level2">
 <h2 id="como-citar">Como citar<a class="anchor" aria-label="anchor" href="#como-citar"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2025). acR: Analise de Conteudo em R.
 R package version 0.1.0.
@@ -537,10 +557,10 @@ https://andersonheri.github.io/acR/</code></pre>
 <p>Bardin, L. (2011). <em>Analise de conteudo</em>. Edicoes 70.</p>
 <p>Benoit, K., et al. (2018). quanteda. <em>JOSS</em>, 3(30), 774. <a href="doi:10.21105/joss.00774" class="uri">doi:10.21105/joss.00774</a></p>
 <p>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet Allocation. <em>JMLR</em>, 3, 993-1022.</p>
+<p>Gilardi, F., Alizadeh, M., &amp; Kubli, M. (2023). ChatGPT Outperforms Crowd Workers for Text-Annotation Tasks. <em>PNAS</em>, 120(30).</p>
 <p>Krippendorff, K. (2018). <em>Content Analysis</em> (4a ed.). SAGE.</p>
 <p>Landis, J. R., &amp; Koch, G. G. (1977). <em>Biometrics</em>, 33(1), 159-174.</p>
-<p>Laver, M., Benoit, K., &amp; Garry, J. (2003). <em>APSR</em>, 97(2), 311-331.</p>
-<p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer</em>. — inspiracao para o workflow LLM.</p>
+<p>Priem, J., et al. (2022). OpenAlex: A fully-open index of the global research system. <em>arXiv</em>, 2205.01833.</p>
 <p>Sampaio, R. C., &amp; Lycariao, D. (2021). <em>Analise de conteudo categorial</em>. Enap.</p>
 <p>Souza, M., &amp; Vieira, R. (2012). OpLexicon. <em>WASSA</em>. PUCRS.</p>
 <p>Wickham, H., et al. (2025). <em>ellmer</em>. Posit. <a href="https://ellmer.tidyverse.org/" class="external-link uri">https://ellmer.tidyverse.org/</a></p>

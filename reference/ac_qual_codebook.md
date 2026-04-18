@@ -65,9 +65,12 @@ ac_qual_codebook(
 
 - chat:
 
-  Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
-  `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
-  sobre `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
+  Objeto `Chat` do pacote `ellmer` (ex:
+  [`chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html),
+  [`chat_openai()`](https://ellmer.tidyverse.org/reference/chat_openai.html),
+  [`chat_ollama()`](https://ellmer.tidyverse.org/reference/chat_ollama.html)).
+  Quando fornecido, tem prioridade sobre `model`. Permite usar qualquer
+  provedor suportado pelo `ellmer`.
 
 - model:
 
@@ -131,7 +134,7 @@ cb
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 18/04/2026 16:25
+#> • Criado em: 18/04/2026 16:36
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.
