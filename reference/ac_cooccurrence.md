@@ -82,11 +82,11 @@ ac_cooccurrence(tokens, window = 3, min_count = 1)
 #> # A tibble: 7 × 5
 #>   word1        word2         cooc   pmi  dice
 #>   <chr>        <chr>        <int> <dbl> <dbl>
-#> 1 cidadania    participacao     4  2.58  1.6 
-#> 2 democracia   participacao     4  2.58  1.6 
-#> 3 cidadania    democracia       2  2.17  1   
-#> 4 cidadania    direitos         2  3.17  1.33
-#> 5 democracia   politica         2  3.17  1.33
-#> 6 direitos     participacao     2  2.58  1   
-#> 7 participacao politica         2  2.58  1   
+#> 1 cidadania    participacao     4  2.58     1
+#> 2 democracia   participacao     4  2.58     1
+#> 3 cidadania    democracia       2  2.17     1
+#> 4 cidadania    direitos         2  3.17     1
+#> 5 democracia   politica         2  3.17     1
+#> 6 direitos     participacao     2  2.58     1
+#> 7 participacao politica         2  2.58     1
 ```
