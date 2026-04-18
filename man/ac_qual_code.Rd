@@ -8,6 +8,7 @@ ac_qual_code(
   corpus,
   codebook,
   model = "anthropic/claude-sonnet-4-5",
+  chat = NULL,
   confidence = c("total", "by_variable", "both", "none"),
   k_consistency = 3L,
   temperature = 0.3,
@@ -21,18 +22,21 @@ ac_qual_code(
 
 \item{codebook}{Objeto \code{ac_codebook}, saída de \code{\link[=ac_qual_codebook]{ac_qual_codebook()}}.}
 
-\item{model}{Modelo LLM a usar. Aceita:
-\itemize{
-\item \strong{String} no formato \code{"provedor/modelo"} (ex: \code{"anthropic/claude-sonnet-4-5"}, \code{"openai/gpt-4.1"}). Argumentos adicionais como \code{base_url} e \code{api_key} podem ser passados via \code{...};
-\item \strong{Objeto \code{Chat}} do pacote \code{ellmer} pre-configurado (ex: \code{ellmer::chat_openai_compatible(base_url = ...)}), para provedores institucionais, Ollama, Azure, OAuth, etc.
-}}
+\item{model}{Modelo LLM a usar. Aceita string no formato
+\code{"provedor/modelo"} (ex: \code{"anthropic/claude-sonnet-4-5"},
+\code{"openai/gpt-4.1"}) ou objeto \code{Chat} do pacote \code{ellmer}
+pré-configurado. Quando \code{chat} é fornecido, \code{model} é ignorado.}
+
+\item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
+\code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
+\code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
 
 \item{confidence}{Como calcular certeza:
 \itemize{
 \item \code{"total"} (padrão): uma coluna \code{confidence_score} com média de todas
 as variáveis;
 \item \code{"by_variable"}: uma coluna \verb{<variavel>_confidence} por categoria;
-\item \code{"both"}: colunas por variável + coluna \code{confidence_score} (média).
+\item \code{"both"}: colunas por variável + coluna \code{confidence_score} (média);
 \item \code{"none"}: não calcula certeza (mais rápido, menor custo).
 }}
 
@@ -49,10 +53,6 @@ com justificativa da classificação.}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.
 Permite uso de APIs OpenAI-compatible self-hosted via \code{base_url}.}
-
-\item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
-\code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
-\code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
 }
 \value{
 Tibble com colunas:
@@ -71,29 +71,6 @@ Tibble com colunas:
 com a classificação, grau de certeza (via self-consistency) e raciocínio
 da LLM para cada documento.
 }
-\details{
-\subsection{Grau de certeza (self-consistency)}{
-
-A certeza é calculada rodando o modelo \code{k_consistency} vezes com
-\code{temperature > 0} e medindo a proporção de concordância entre as rodadas.
-Valores próximos de 1.0 indicam alta consistência; valores próximos de 0.5
-indicam incerteza elevada.
-
-Interpretação baseada em Landis & Koch (1977):
-\itemize{
-\item ≥ 0.80: quase perfeita (\emph{almost perfect})
-\item 0.61–0.79: substancial (\emph{substantial})
-\item 0.41–0.60: moderada (\emph{moderate})
-\item < 0.41: fraca (\emph{fair to slight})
-}
-}
-
-\subsection{Raciocínio}{
-
-Quando \code{reasoning = TRUE}, a LLM fornece uma justificativa curta (1-3 frases)
-para cada classificação, armazenada na coluna \code{raciocinio}.
-}
-}
 \examples{
 \dontrun{
 cb <- ac_qual_codebook(
@@ -110,8 +87,21 @@ df <- data.frame(
   texto = c("Proponho cooperacao.", "Este governo e um fracasso.")
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
-coded  <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5")
-coded
+
+# Usando string de modelo (comportamento padrao)
+coded <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5")
+
+# Usando objeto Chat do ellmer (recomendado para controle fino)
+chat_obj <- ellmer::chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+coded <- ac_qual_code(corpus, cb, chat = chat_obj)
+
+# Groq (inferencia rapida, plano gratuito)
+chat_groq <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+coded <- ac_qual_code(corpus, cb, chat = chat_groq)
+
+# Ollama (modelos locais, sem envio de dados externos)
+chat_local <- ellmer::chat_ollama(model = "llama3.2", echo = "none")
+coded <- ac_qual_code(corpus, cb, chat = chat_local)
 }
 
 }

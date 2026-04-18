@@ -6,38 +6,20 @@
 #' com a classificação, grau de certeza (via self-consistency) e raciocínio
 #' da LLM para cada documento.
 #'
-#' @details
-#' ## Grau de certeza (self-consistency)
-#'
-#' A certeza é calculada rodando o modelo `k_consistency` vezes com
-#' `temperature > 0` e medindo a proporção de concordância entre as rodadas.
-#' Valores próximos de 1.0 indicam alta consistência; valores próximos de 0.5
-#' indicam incerteza elevada.
-#'
-#' Interpretação baseada em Landis & Koch (1977):
-#' * ≥ 0.80: quase perfeita (*almost perfect*)
-#' * 0.61–0.79: substancial (*substantial*)
-#' * 0.41–0.60: moderada (*moderate*)
-#' * < 0.41: fraca (*fair to slight*)
-#'
-#' ## Raciocínio
-#'
-#' Quando `reasoning = TRUE`, a LLM fornece uma justificativa curta (1-3 frases)
-#' para cada classificação, armazenada na coluna `raciocinio`.
-#'
 #' @param corpus Objeto `ac_corpus`.
 #' @param codebook Objeto `ac_codebook`, saída de [ac_qual_codebook()].
+#' @param model Modelo LLM a usar. Aceita string no formato
+#'   `"provedor/modelo"` (ex: `"anthropic/claude-sonnet-4-5"`,
+#'   `"openai/gpt-4.1"`) ou objeto `Chat` do pacote `ellmer`
+#'   pré-configurado. Quando `chat` é fornecido, `model` é ignorado.
 #' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
 #'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
 #'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
-#' @param model Modelo LLM a usar. Aceita:
-#'   * **String** no formato `"provedor/modelo"` (ex: `"anthropic/claude-sonnet-4-5"`, `"openai/gpt-4.1"`). Argumentos adicionais como `base_url` e `api_key` podem ser passados via `...`;
-#'   * **Objeto `Chat`** do pacote `ellmer` pre-configurado (ex: `ellmer::chat_openai_compatible(base_url = ...)`), para provedores institucionais, Ollama, Azure, OAuth, etc.
 #' @param confidence Como calcular certeza:
 #'   * `"total"` (padrão): uma coluna `confidence_score` com média de todas
 #'     as variáveis;
 #'   * `"by_variable"`: uma coluna `<variavel>_confidence` por categoria;
-#'   * `"both"`: colunas por variável + coluna `confidence_score` (média).
+#'   * `"both"`: colunas por variável + coluna `confidence_score` (média);
 #'   * `"none"`: não calcula certeza (mais rápido, menor custo).
 #' @param k_consistency Número de rodadas para self-consistency. Padrão: `3`.
 #'   Ignorado se `confidence = "none"`.
@@ -83,8 +65,21 @@
 #'   texto = c("Proponho cooperacao.", "Este governo e um fracasso.")
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
-#' coded  <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5")
-#' coded
+#'
+#' # Usando string de modelo (comportamento padrao)
+#' coded <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5")
+#'
+#' # Usando objeto Chat do ellmer (recomendado para controle fino)
+#' chat_obj <- ellmer::chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+#' coded <- ac_qual_code(corpus, cb, chat = chat_obj)
+#'
+#' # Groq (inferencia rapida, plano gratuito)
+#' chat_groq <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+#' coded <- ac_qual_code(corpus, cb, chat = chat_groq)
+#'
+#' # Ollama (modelos locais, sem envio de dados externos)
+#' chat_local <- ellmer::chat_ollama(model = "llama3.2", echo = "none")
+#' coded <- ac_qual_code(corpus, cb, chat = chat_local)
 #' }
 #'
 #' @concept qualitative
@@ -92,6 +87,7 @@
 ac_qual_code <- function(corpus,
                           codebook,
                           model              = "anthropic/claude-sonnet-4-5",
+                          chat               = NULL,
                           confidence         = c("total", "by_variable",
                                                  "both", "none"),
                           k_consistency      = 3L,
@@ -100,7 +96,7 @@ ac_qual_code <- function(corpus,
                           reasoning_length   = c("short", "medium", "detailed"),
                           ...) {
 
-  # === Validações =============================================================
+  # === Validacoes =============================================================
   if (!is_ac_corpus(corpus)) {
     cli::cli_abort("{.arg corpus} deve ser um {.cls ac_corpus}.")
   }
@@ -113,11 +109,19 @@ ac_qual_code <- function(corpus,
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
     cli::cli_abort("O pacote {.pkg jsonlite} \u00e9 necess\u00e1rio.")
   }
+  if (!is.null(chat) && !inherits(chat, "Chat")) {
+    cli::cli_abort(
+      "{.arg chat} deve ser um objeto {.cls Chat} do pacote {.pkg ellmer}."
+    )
+  }
 
   confidence       <- match.arg(confidence)
   reasoning_length <- match.arg(reasoning_length)
   k_consistency    <- as.integer(k_consistency)
   do_confidence    <- confidence != "none"
+
+  # chat tem prioridade sobre model
+  effective_model <- if (!is.null(chat)) chat else model
 
   cat_names <- names(codebook$categories)
 
@@ -125,9 +129,11 @@ ac_qual_code <- function(corpus,
   system_prompt <- .ac_build_system_prompt(codebook, reasoning, reasoning_length)
 
   # === Classificar cada documento =============================================
-  n_docs <- nrow(corpus)
+  n_docs      <- nrow(corpus)
+  model_label <- if (!is.null(chat)) class(chat)[1] else model
+
   cli::cli_inform(c(
-    "i" = "Classificando {n_docs} documento{?s} com {.val {model}}...",
+    "i" = "Classificando {n_docs} documento{?s} com {.val {model_label}}...",
     "i" = "Categorias: {.val {cat_names}}",
     if (do_confidence) "i" = "Self-consistency: k = {k_consistency} rodadas"
   ))
@@ -138,18 +144,16 @@ ac_qual_code <- function(corpus,
     texto  <- corpus$text[i]
     doc_id <- corpus$doc_id[i]
 
-    # Classificação principal (temperature = 0 para resultado determinístico)
     main_result <- .ac_classify_one(
-      text         = texto,
-      codebook     = codebook,
-      model        = model,
+      text          = texto,
+      codebook      = codebook,
+      model         = effective_model,
       system_prompt = system_prompt,
-      temperature  = 0,
-      reasoning    = reasoning,
+      temperature   = 0,
+      reasoning     = reasoning,
       ...
     )
 
-    # Self-consistency para certeza
     if (do_confidence && k_consistency > 1L) {
       consistency_results <- purrr::map(
         seq_len(k_consistency - 1L),
@@ -157,7 +161,7 @@ ac_qual_code <- function(corpus,
           .ac_classify_one(
             text          = texto,
             codebook      = codebook,
-            model         = model,
+            model         = effective_model,
             system_prompt = system_prompt,
             temperature   = temperature,
             reasoning     = FALSE,
@@ -165,8 +169,8 @@ ac_qual_code <- function(corpus,
           )
         }
       )
-      all_results  <- c(list(main_result), consistency_results)
-      conf_scores  <- .ac_compute_confidence(
+      all_results <- c(list(main_result), consistency_results)
+      conf_scores <- .ac_compute_confidence(
         results    = all_results,
         cat_names  = cat_names,
         confidence = confidence
@@ -194,7 +198,7 @@ ac_qual_code <- function(corpus,
 
 
 # ============================================================================
-# Funções auxiliares internas
+# Funcoes auxiliares internas
 # ============================================================================
 
 #' @keywords internal
@@ -254,13 +258,10 @@ ac_qual_code <- function(corpus,
                               temperature, reasoning, ...) {
   dots <- list(...)
 
-  # Aceita string (ex: 'anthropic/claude-sonnet-4-5') ou objeto Chat do ellmer
   if (inherits(model, "Chat")) {
-    # Caso 3: objeto Chat pré-configurado — clonar para não compartilhar estado
     chat <- model$clone()
     chat$set_system_prompt(system_prompt)
   } else {
-    # Casos 1 e 2: string + argumentos extras em dots
     chat_args <- c(
       list(name = model, system_prompt = system_prompt),
       dots
@@ -276,6 +277,7 @@ ac_qual_code <- function(corpus,
       }
     )
   }
+
   user_msg <- paste0(
     "Classifique o seguinte texto:\n\n---\n", text, "\n---"
   )
@@ -290,11 +292,8 @@ ac_qual_code <- function(corpus,
 
   if (is.null(resposta)) return(NULL)
 
-  # Extrair JSON
   json_str <- stringr::str_extract(resposta, "\\{[^\\{\\}]*\\}")
-  if (is.na(json_str)) {
-    json_str <- resposta
-  }
+  if (is.na(json_str)) json_str <- resposta
 
   parsed <- tryCatch(
     jsonlite::fromJSON(json_str),
@@ -315,22 +314,15 @@ ac_qual_code <- function(corpus,
     r$categoria %||% NA_character_
   })
 
-  n    <- length(cats)
   mode_cat <- names(sort(table(cats), decreasing = TRUE))[1]
   agree    <- mean(cats == mode_cat, na.rm = TRUE)
 
   if (confidence %in% c("total", "both")) {
-    list(
-      total    = agree,
-      by_var   = NULL,
-      dominant = mode_cat
-    )
+    list(total = agree, by_var = NULL, dominant = mode_cat)
   } else {
-    list(
-      total    = NULL,
-      by_var   = stats::setNames(list(agree), mode_cat),
-      dominant = mode_cat
-    )
+    list(total = NULL,
+         by_var = stats::setNames(list(agree), mode_cat),
+         dominant = mode_cat)
   }
 }
 
@@ -351,8 +343,8 @@ ac_qual_code <- function(corpus,
 .ac_build_result_tibble <- function(results, corpus, cat_names,
                                      confidence, reasoning) {
   rows <- purrr::map(results, function(r) {
-    main  <- r$main
-    conf  <- r$conf_scores
+    main <- r$main
+    conf <- r$conf_scores
 
     cat_val <- if (!is.null(main) && !is.null(main$categoria)) {
       as.character(main$categoria)
@@ -381,7 +373,6 @@ ac_qual_code <- function(corpus,
 
   result <- dplyr::bind_rows(rows)
 
-  # Adicionar metadados do corpus
   meta_cols <- setdiff(names(corpus), c("doc_id", "text"))
   if (length(meta_cols) > 0L) {
     meta <- corpus |>
@@ -392,10 +383,9 @@ ac_qual_code <- function(corpus,
       dplyr::relocate(dplyr::all_of(meta_cols), .after = "doc_id")
   }
 
-  # Nota metodológica
   cli::cli_inform(c(
     "i" = "Certeza calculada via self-consistency (Wang et al., 2023, EMNLP).",
-    "i" = "Interpreta\u00e7\u00e3o: \u2265 0.80 = alta | 0.61-0.79 = m\u00e9dia | < 0.61 = baixa (Landis & Koch, 1977)."
+    "i" = "Interpreta\u00e7\u00e3o: >= 0.80 = alta | 0.61-0.79 = m\u00e9dia | < 0.61 = baixa (Landis & Koch, 1977)."
   ))
 
   result

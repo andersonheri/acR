@@ -5,7 +5,7 @@
 #' keyness calculadas por [`ac_keyness()`], destacando os termos mais
 #' caracteristicos do grupo alvo e do grupo de referencia.
 #'
-#' A funcao usa [`ggplot2`] como base e pode, opcionalmente, aplicar o
+#' A funcao usa [ggplot2][ggplot2::ggplot2] como base e pode, opcionalmente, aplicar o
 #' estilo editorial do pacote `ipeaplot`.
 #'
 #' @param x Um `data.frame` ou [`tibble::tibble()`] contendo, no minimo,

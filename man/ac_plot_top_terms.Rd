@@ -38,7 +38,7 @@ Um objeto \code{ggplot}.
 frequentes a partir de uma tabela de frequencias, tipicamente gerada
 por \code{\link[=ac_count]{ac_count()}} ou filtrada por \code{\link[=ac_top_terms]{ac_top_terms()}}.
 
-A funcao usa \code{\link{ggplot2}} como base e pode, opcionalmente, aplicar o
+A funcao usa \link[ggplot2:ggplot2-package]{ggplot2} como base e pode, opcionalmente, aplicar o
 estilo editorial do pacote \code{ipeaplot}.
 }
 \examples{

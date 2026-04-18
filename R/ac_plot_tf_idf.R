@@ -5,7 +5,7 @@
 #' caracteristicos a partir de uma tabela com a coluna `tf_idf`, tipicamente
 #' gerada por [`ac_tf_idf()`].
 #'
-#' A funcao usa [`ggplot2`] como base e pode, opcionalmente, aplicar o
+#' A funcao usa [ggplot2][ggplot2::ggplot2] como base e pode, opcionalmente, aplicar o
 #' estilo editorial do pacote `ipeaplot`.
 #'
 #' @param x Um `data.frame` ou [`tibble::tibble()`] contendo, no minimo,

@@ -5,7 +5,7 @@
 #' frequentes a partir de uma tabela de frequencias, tipicamente gerada
 #' por [`ac_count()`] ou filtrada por [`ac_top_terms()`].
 #'
-#' A funcao usa [`ggplot2`] como base e pode, opcionalmente, aplicar o
+#' A funcao usa [ggplot2][ggplot2::ggplot2] como base e pode, opcionalmente, aplicar o
 #' estilo editorial do pacote `ipeaplot`.
 #'
 #' @param x Um `data.frame` ou [`tibble::tibble()`] contendo, no minimo,

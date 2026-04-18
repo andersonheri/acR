@@ -38,7 +38,7 @@ Um objeto \code{ggplot}.
 keyness calculadas por \code{\link[=ac_keyness]{ac_keyness()}}, destacando os termos mais
 caracteristicos do grupo alvo e do grupo de referencia.
 
-A funcao usa \code{\link{ggplot2}} como base e pode, opcionalmente, aplicar o
+A funcao usa \link[ggplot2:ggplot2-package]{ggplot2} como base e pode, opcionalmente, aplicar o
 estilo editorial do pacote \code{ipeaplot}.
 }
 \examples{

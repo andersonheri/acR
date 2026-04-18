@@ -38,7 +38,7 @@ Um objeto \code{ggplot}.
 caracteristicos a partir de uma tabela com a coluna \code{tf_idf}, tipicamente
 gerada por \code{\link[=ac_tf_idf]{ac_tf_idf()}}.
 
-A funcao usa \code{\link{ggplot2}} como base e pode, opcionalmente, aplicar o
+A funcao usa \link[ggplot2:ggplot2-package]{ggplot2} como base e pode, opcionalmente, aplicar o
 estilo editorial do pacote \code{ipeaplot}.
 }
 \examples{
