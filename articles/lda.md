@@ -35,8 +35,60 @@ corpus <- ac_corpus(
   tema = rep(c("tributario","tecnologia","habitacao","educacao"), each = 3)
 )
 print(corpus)
+```
+
+    ## 
+
+    ## ── Corpus acR ──────────────────────────────────────────────────────────────────
+
+    ## • Documentos: 12
+
+    ## • Metadados: 0 colunas
+
+    ## • Idioma: "pt"
+
+    ## 
+
+    ## # A tibble: 12 × 2
+    ##   doc_id text                                                               
+    ##   <chr>  <chr>                                                              
+    ## 1 doc_1  Reforma tributaria simplifica impostos e reduz carga para empresas.
+    ## 2 doc_2  IVA dual substitui PIS, COFINS e ICMS no novo modelo fiscal.       
+    ## 3 doc_3  Congresso debate aliquotas e excecoes para setores economicos.     
+    ## 4 doc_4  Marco legal da inteligencia artificial regulamenta uso de dados.   
+    ## 5 doc_5  Privacidade e seguranca de dados sao prioridades na nova lei.      
+    ## 6 doc_6  Algoritmos de IA precisam de transparencia e auditoria publica.    
+    ## # ℹ 6 more rows
+
+``` r
 summary(corpus)
 ```
+
+    ## 
+
+    ## ── Resumo do corpus acR ────────────────────────────────────────────────────────
+
+    ## • Documentos: 12
+
+    ## • Idioma: "pt"
+
+    ## • Metadados (0):
+
+    ## 
+
+    ## ── Tamanho dos documentos (caracteres) ──
+
+    ## 
+
+    ## min=51 | mediana=62 | média=61.2 | max=68
+
+    ## 
+
+    ## ── Tamanho dos documentos (tokens aproximados) ──
+
+    ## 
+
+    ## min=7 | mediana=9 | média=8.8 | max=11
 
     # Corpus acR: 12 documentos
     # Temas: tributario (3), tecnologia (3), habitacao (3), educacao (3)
@@ -46,14 +98,32 @@ summary(corpus)
 ## 2. Preparar a DFM (Document-Feature Matrix)
 
 ``` r
-tokens <- ac_tokenize(
-  ac_clean(corpus, lowercase = TRUE),
-  remover_stopwords = TRUE,
-  ngrams            = 1L
-)
-dfm <- ac_dfm(tokens, min_freq = 1L)
-print(dfm)
+corpus_limpo <- ac_clean(corpus)
+print(corpus_limpo)
 ```
+
+    ## 
+
+    ## ── Corpus acR ──────────────────────────────────────────────────────────────────
+
+    ## • Documentos: 12
+
+    ## • Metadados: 0 colunas
+
+    ## • Idioma: "pt"
+
+    ## 
+
+    ## # A tibble: 12 × 2
+    ##   doc_id text                                                              
+    ##   <chr>  <chr>                                                             
+    ## 1 doc_1  reforma tributaria simplifica impostos e reduz carga para empresas
+    ## 2 doc_2  iva dual substitui pis cofins e icms no novo modelo fiscal        
+    ## 3 doc_3  congresso debate aliquotas e excecoes para setores economicos     
+    ## 4 doc_4  marco legal da inteligencia artificial regulamenta uso de dados   
+    ## 5 doc_5  privacidade e seguranca de dados sao prioridades na nova lei      
+    ## 6 doc_6  algoritmos de ia precisam de transparencia e auditoria publica    
+    ## # ℹ 6 more rows
 
     # DFM: 12 documentos x 87 features
     # Sparsidade: 72%
@@ -64,15 +134,13 @@ print(dfm)
 
 ``` r
 tune <- ac_lda_tune(
-  dfm,
-  k_min  = 2L,
-  k_max  = 8L,
-  metrica = "perplexidade",  # "perplexidade" | "coerencia" | "ambos"
-  seed   = 42L
+  corpus_limpo,
+  k_range = 2:8,
+  seed    = 42L
 )
-print(tune)
-ac_plot_lda_tune(tune)
 ```
+
+    ## Testando k = 2 a 8...
 
     # Selecao de K — metrica: perplexidade
     # K  perplexidade  coerencia
@@ -91,14 +159,36 @@ ac_plot_lda_tune(tune)
 
 ``` r
 modelo <- ac_lda(
-  dfm,
-  k     = 4L,
-  seed  = 42L,
-  iter  = 1000L
+  corpus_limpo,
+  k    = 4L,
+  seed = 42L
 )
+```
+
+    ## Ajustando LDA com k = 4 tópicos...
+
+``` r
 print(modelo)
+```
+
+    ## 
+    ## ── Modelo LDA acR ──────────────────────────────────────────────────────────────
+    ## • Tópicos (k): 4
+    ## • Método: "VEM"
+    ## • Semente: 42
+    ## • Termos únicos: 82
+    ## • Documentos: 12
+
+``` r
 summary(modelo)
 ```
+
+    ##           Length Class   Mode   
+    ## model     1      LDA_VEM S4     
+    ## terms     3      tbl_df  list   
+    ## documents 3      tbl_df  list   
+    ## k         1      -none-  numeric
+    ## params    2      -none-  list
 
     # Modelo LDA: 4 topicos | 12 documentos | 87 features
     # Iteracoes: 1000 | Semente: 42
@@ -114,10 +204,29 @@ summary(modelo)
 ## 5. Termos por topico (beta)
 
 ``` r
-beta <- ac_lda_terms(modelo, n = 10)
-print(beta)
-ac_plot_lda_topics(modelo, n_termos = 10)
+beta <- modelo$terms
+print(head(beta, 10))
 ```
+
+    ## # A tibble: 10 × 3
+    ##    topic term           beta
+    ##    <int> <chr>         <dbl>
+    ##  1     1 de         5.88e-82
+    ##  2     1 carga      5.88e- 2
+    ##  3     1 e          1.18e- 1
+    ##  4     1 empresas   5.88e- 2
+    ##  5     1 impostos   5.88e- 2
+    ##  6     1 para       1.18e- 1
+    ##  7     1 reduz      5.88e- 2
+    ##  8     1 reforma    5.88e- 2
+    ##  9     1 simplifica 5.88e- 2
+    ## 10     1 tributaria 5.88e- 2
+
+``` r
+ac_plot_lda_topics(modelo, top_n = 10L)
+```
+
+![](lda_files/figure-html/beta-1.png)
 
     # A tibble: 40 x 3
     #   topico  termo        beta
@@ -135,9 +244,23 @@ ac_plot_lda_topics(modelo, n_termos = 10)
 ## 6. Distribuicao de topicos por documento (gamma)
 
 ``` r
-gamma <- ac_lda_docs(modelo)
-print(gamma)
+gamma <- modelo$documents
+print(head(gamma, 10))
 ```
+
+    ## # A tibble: 10 × 3
+    ##    doc_id topic   gamma
+    ##    <chr>  <int>   <dbl>
+    ##  1 doc_6      1 0.00125
+    ##  2 doc_6      2 0.00125
+    ##  3 doc_6      3 0.996  
+    ##  4 doc_6      4 0.00125
+    ##  5 doc_1      1 0.996  
+    ##  6 doc_1      2 0.00125
+    ##  7 doc_1      3 0.00125
+    ##  8 doc_1      4 0.00125
+    ##  9 doc_10     1 0.00141
+    ## 10 doc_10     2 0.996
 
     # A tibble: 48 x 3
     #   doc_id  topico  gamma
@@ -154,30 +277,53 @@ print(gamma)
 ## 7. Visualizacoes
 
 ``` r
-# Wordcloud comparativa por topico
-ac_plot_wordcloud_comparative(
-  modelo,
-  n_termos = 20
-)
+beta_top <- dplyr::slice_max(dplyr::group_by(beta, topic), beta, n = 20)
+print(beta_top)
 ```
 
+    ## # A tibble: 101 × 3
+    ## # Groups:   topic [4]
+    ##    topic term         beta
+    ##    <int> <chr>       <dbl>
+    ##  1     1 e          0.118 
+    ##  2     1 para       0.118 
+    ##  3     1 carga      0.0588
+    ##  4     1 empresas   0.0588
+    ##  5     1 impostos   0.0588
+    ##  6     1 reduz      0.0588
+    ##  7     1 reforma    0.0588
+    ##  8     1 simplifica 0.0588
+    ##  9     1 tributaria 0.0588
+    ## 10     1 aliquotas  0.0588
+    ## # ℹ 91 more rows
+
 ``` r
-# Heatmap: distribuicao gamma por documento x topico
-ac_plot_lda_topics(modelo, tipo = "heatmap")
+ac_plot_lda_topics(modelo)
 ```
+
+![](lda_files/figure-html/viz-heatmap-1.png)
 
 ------------------------------------------------------------------------
 
 ## 8. Nomear os topicos
 
 ``` r
-modelo <- ac_lda_label(
-  modelo,
-  labels = c("Reforma Tributaria", "IA e Dados",
-             "Habitacao", "Educacao")
-)
 print(modelo)
 ```
+
+    ## 
+
+    ## ── Modelo LDA acR ──────────────────────────────────────────────────────────────
+
+    ## • Tópicos (k): 4
+
+    ## • Método: "VEM"
+
+    ## • Semente: 42
+
+    ## • Termos únicos: 82
+
+    ## • Documentos: 12
 
     # Modelo LDA: 4 topicos (rotulados)
     # Topico 1: Reforma Tributaria
@@ -190,11 +336,16 @@ print(modelo)
 ## 9. Exportar
 
 ``` r
-ac_export(beta,   formato = "csv",  arquivo = "lda_beta.csv")
-ac_export(gamma,  formato = "csv",  arquivo = "lda_gamma.csv")
-ac_export(modelo, formato = "rds",  arquivo = "lda_modelo.rds")
-ac_export(beta,   formato = "latex", arquivo = "lda_topicos.tex")
+ac_export(beta,  path = "lda_beta.csv",  format = "csv")
 ```
+
+    ## ✔ Exportado para lda_beta.csv (csv).
+
+``` r
+ac_export(gamma, path = "lda_gamma.csv", format = "csv")
+```
+
+    ## ✔ Exportado para lda_gamma.csv (csv).
 
     # lda_beta.csv   — termos por topico
     # lda_gamma.csv  — distribuicao por documento

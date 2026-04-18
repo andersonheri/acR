@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Modelagem de topicos com LDA • acR</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -114,8 +119,38 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <span>  id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">textos</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tributario"</span>,<span class="st">"tecnologia"</span>,<span class="st">"habitacao"</span>,<span class="st">"educacao"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">12</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Metadados: <span style="color: #0000BB;">0</span> colunas</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 12 × 2</span></span></span>
+<span><span class="co">##   doc_id text                                                               </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                              </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> doc_1  Reforma tributaria simplifica impostos e reduz carga para empresas.</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> doc_2  IVA dual substitui PIS, COFINS e ICMS no novo modelo fiscal.       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> doc_3  Congresso debate aliquotas e excecoes para setores economicos.     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> doc_4  Marco legal da inteligencia artificial regulamenta uso de dados.   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> doc_5  Privacidade e seguranca de dados sao prioridades na nova lei.      </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> doc_6  Algoritmos de IA precisam de transparencia e auditoria publica.    </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 6 more rows</span></span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Resumo do corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">12</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Metadados (0):</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">Tamanho dos documentos (caracteres)</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## min=<span style="color: #0000BB;">51</span> | mediana=<span style="color: #0000BB;">62</span> | média=<span style="color: #0000BB;">61.2</span> | max=<span style="color: #0000BB;">68</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── <span style="font-weight: bold;">Tamanho dos documentos (tokens aproximados)</span> ──</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## min=<span style="color: #0000BB;">7</span> | mediana=<span style="color: #0000BB;">9</span> | média=<span style="color: #0000BB;">8.8</span> | max=<span style="color: #0000BB;">11</span></span></span></code></pre>
 <pre><code><span><span class="co"># Corpus acR: 12 documentos</span></span>
 <span><span class="co"># Temas: tributario (3), tecnologia (3), habitacao (3), educacao (3)</span></span></code></pre>
 <hr>
@@ -123,14 +158,25 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="section level2">
 <h2 id="preparar-a-dfm-document-feature-matrix">2. Preparar a DFM (Document-Feature Matrix)<a class="anchor" aria-label="anchor" href="#preparar-a-dfm-document-feature-matrix"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span>, lowercase <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  remover_stopwords <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  ngrams            <span class="op">=</span> <span class="fl">1L</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">dfm</span> <span class="op">&lt;-</span> <span class="fu">ac_dfm</span><span class="op">(</span><span class="va">tokens</span>, min_freq <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dfm</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">corpus_limpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">12</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Metadados: <span style="color: #0000BB;">0</span> colunas</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 12 × 2</span></span></span>
+<span><span class="co">##   doc_id text                                                              </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                             </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> doc_1  reforma tributaria simplifica impostos e reduz carga para empresas</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> doc_2  iva dual substitui pis cofins e icms no novo modelo fiscal        </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> doc_3  congresso debate aliquotas e excecoes para setores economicos     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> doc_4  marco legal da inteligencia artificial regulamenta uso de dados   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> doc_5  privacidade e seguranca de dados sao prioridades na nova lei      </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> doc_6  algoritmos de ia precisam de transparencia e auditoria publica    </span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 6 more rows</span></span></span></code></pre>
 <pre><code><span><span class="co"># DFM: 12 documentos x 87 features</span></span>
 <span><span class="co"># Sparsidade: 72%</span></span></code></pre>
 <hr>
@@ -138,16 +184,13 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="section level2">
 <h2 id="selecionar-o-numero-de-topicos-k">3. Selecionar o numero de topicos (K)<a class="anchor" aria-label="anchor" href="#selecionar-o-numero-de-topicos-k"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda_tune.html">ac_lda_tune</a></span><span class="op">(</span></span>
-<span>  <span class="va">dfm</span>,</span>
-<span>  k_min  <span class="op">=</span> <span class="fl">2L</span>,</span>
-<span>  k_max  <span class="op">=</span> <span class="fl">8L</span>,</span>
-<span>  metrica <span class="op">=</span> <span class="st">"perplexidade"</span>,  <span class="co"># "perplexidade" | "coerencia" | "ambos"</span></span>
-<span>  seed   <span class="op">=</span> <span class="fl">42L</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tune</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_lda_tune.html">ac_plot_lda_tune</a></span><span class="op">(</span><span class="va">tune</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="va">corpus_limpo</span>,</span>
+<span>  k_range <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">8</span>,</span>
+<span>  seed    <span class="op">=</span> <span class="fl">42L</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Testando k = 2 a 8...</span></span></code></pre>
 <pre><code><span><span class="co"># Selecao de K — metrica: perplexidade</span></span>
 <span><span class="co"># K  perplexidade  coerencia</span></span>
 <span><span class="co"># 2      312.4        0.51</span></span>
@@ -163,15 +206,30 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="section level2">
 <h2 id="treinar-o-modelo-lda">4. Treinar o modelo LDA<a class="anchor" aria-label="anchor" href="#treinar-o-modelo-lda"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">modelo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda.html">ac_lda</a></span><span class="op">(</span></span>
-<span>  <span class="va">dfm</span>,</span>
-<span>  k     <span class="op">=</span> <span class="fl">4L</span>,</span>
-<span>  seed  <span class="op">=</span> <span class="fl">42L</span>,</span>
-<span>  iter  <span class="op">=</span> <span class="fl">1000L</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="va">corpus_limpo</span>,</span>
+<span>  k    <span class="op">=</span> <span class="fl">4L</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Ajustando LDA com k = 4 tópicos...</span></span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Modelo LDA </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">•</span> Tópicos (k): <span style="color: #0000BB;">4</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">•</span> Método: <span style="color: #0000BB;">"VEM"</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">•</span> Semente: <span style="color: #0000BB;">42</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">82</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">12</span></span></span></code></pre>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##           Length Class   Mode   </span></span>
+<span><span class="co">## model     1      LDA_VEM S4     </span></span>
+<span><span class="co">## terms     3      tbl_df  list   </span></span>
+<span><span class="co">## documents 3      tbl_df  list   </span></span>
+<span><span class="co">## k         1      -none-  numeric</span></span>
+<span><span class="co">## params    2      -none-  list</span></span></code></pre>
 <pre><code><span><span class="co"># Modelo LDA: 4 topicos | 12 documentos | 87 features</span></span>
 <span><span class="co"># Iteracoes: 1000 | Semente: 42</span></span>
 <span><span class="co"># Perplexidade: 241.8</span></span>
@@ -185,10 +243,25 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="section level2">
 <h2 id="termos-por-topico-beta">5. Termos por topico (beta)<a class="anchor" aria-label="anchor" href="#termos-por-topico-beta"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu">ac_lda_terms</span><span class="op">(</span><span class="va">modelo</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span>, n_termos <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">modelo</span><span class="op">$</span><span class="va">terms</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">beta</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
+<span><span class="co">##    topic term           beta</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 de         5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">-82</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>     1 carga      5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>     1 e          1.18<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>     1 empresas   5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>     1 impostos   5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>     1 para       1.18<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>     1 reduz      5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>     1 reforma    5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>     1 simplifica 5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>     1 tributaria 5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span></code></pre>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span>, top_n <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span></code></pre></div>
+<p><img src="lda_files/figure-html/beta-1.png" class="r-plt" alt="" width="700"></p>
 <pre><code><span><span class="co"># A tibble: 40 x 3</span></span>
 <span><span class="co">#   topico  termo        beta</span></span>
 <span><span class="co">#   1       tributaria   0.084</span></span>
@@ -204,9 +277,22 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="section level2">
 <h2 id="distribuicao-de-topicos-por-documento-gamma">6. Distribuicao de topicos por documento (gamma)<a class="anchor" aria-label="anchor" href="#distribuicao-de-topicos-por-documento-gamma"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gamma</span> <span class="op">&lt;-</span> <span class="fu">ac_lda_docs</span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gamma</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gamma</span> <span class="op">&lt;-</span> <span class="va">modelo</span><span class="op">$</span><span class="va">documents</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gamma</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
+<span><span class="co">##    doc_id topic   gamma</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> doc_6      1 0.001<span style="text-decoration: underline;">25</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> doc_6      2 0.001<span style="text-decoration: underline;">25</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> doc_6      3 0.996  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> doc_6      4 0.001<span style="text-decoration: underline;">25</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> doc_1      1 0.996  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> doc_1      2 0.001<span style="text-decoration: underline;">25</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> doc_1      3 0.001<span style="text-decoration: underline;">25</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> doc_1      4 0.001<span style="text-decoration: underline;">25</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> doc_10     1 0.001<span style="text-decoration: underline;">41</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> doc_10     2 0.996</span></span></code></pre>
 <pre><code><span><span class="co"># A tibble: 48 x 3</span></span>
 <span><span class="co">#   doc_id  topico  gamma</span></span>
 <span><span class="co">#   doc_1   1       0.861  # tributario dominante</span></span>
@@ -221,27 +307,41 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="section level2">
 <h2 id="visualizacoes">7. Visualizacoes<a class="anchor" aria-label="anchor" href="#visualizacoes"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Wordcloud comparativa por topico</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative</a></span><span class="op">(</span></span>
-<span>  <span class="va">modelo</span>,</span>
-<span>  n_termos <span class="op">=</span> <span class="fl">20</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Heatmap: distribuicao gamma por documento x topico</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span>, tipo <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">beta_top</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">beta</span>, <span class="va">topic</span><span class="op">)</span>, <span class="va">beta</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">beta_top</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 101 × 3</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># Groups:   topic [4]</span></span></span>
+<span><span class="co">##    topic term         beta</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 e          0.118 </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>     1 para       0.118 </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>     1 carga      0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>     1 empresas   0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>     1 impostos   0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>     1 reduz      0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>     1 reforma    0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>     1 simplifica 0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>     1 tributaria 0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>     1 aliquotas  0.058<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 91 more rows</span></span></span></code></pre>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
+<p><img src="lda_files/figure-html/viz-heatmap-1.png" class="r-plt" alt="" width="700"></p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="nomear-os-topicos">8. Nomear os topicos<a class="anchor" aria-label="anchor" href="#nomear-os-topicos"></a>
 </h2>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">modelo</span> <span class="op">&lt;-</span> <span class="fu">ac_lda_label</span><span class="op">(</span></span>
-<span>  <span class="va">modelo</span>,</span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Reforma Tributaria"</span>, <span class="st">"IA e Dados"</span>,</span>
-<span>             <span class="st">"Habitacao"</span>, <span class="st">"Educacao"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Modelo LDA </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Tópicos (k): <span style="color: #0000BB;">4</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Método: <span style="color: #0000BB;">"VEM"</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Semente: <span style="color: #0000BB;">42</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">82</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">12</span></span></span></code></pre>
 <pre><code><span><span class="co"># Modelo LDA: 4 topicos (rotulados)</span></span>
 <span><span class="co"># Topico 1: Reforma Tributaria</span></span>
 <span><span class="co"># Topico 2: IA e Dados</span></span>
@@ -252,11 +352,12 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="section level2">
 <h2 id="exportar">9. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
 </h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">beta</span>,   formato <span class="op">=</span> <span class="st">"csv"</span>,  arquivo <span class="op">=</span> <span class="st">"lda_beta.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">gamma</span>,  formato <span class="op">=</span> <span class="st">"csv"</span>,  arquivo <span class="op">=</span> <span class="st">"lda_gamma.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">modelo</span>, formato <span class="op">=</span> <span class="st">"rds"</span>,  arquivo <span class="op">=</span> <span class="st">"lda_modelo.rds"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">beta</span>,   formato <span class="op">=</span> <span class="st">"latex"</span>, arquivo <span class="op">=</span> <span class="st">"lda_topicos.tex"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">beta</span>,  path <span class="op">=</span> <span class="st">"lda_beta.csv"</span>,  format <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">lda_beta.csv</span> (csv).</span></span></code></pre>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">gamma</span>, path <span class="op">=</span> <span class="st">"lda_gamma.csv"</span>, format <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">lda_gamma.csv</span> (csv).</span></span></code></pre>
 <pre><code><span><span class="co"># lda_beta.csv   — termos por topico</span></span>
 <span><span class="co"># lda_gamma.csv  — distribuicao por documento</span></span>
 <span><span class="co"># lda_modelo.rds — objeto R serializado</span></span>

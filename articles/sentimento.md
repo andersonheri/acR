@@ -30,6 +30,29 @@ corpus <- ac_corpus(
 print(corpus)
 ```
 
+    ## 
+
+    ## ── Corpus acR ──────────────────────────────────────────────────────────────────
+
+    ## • Documentos: 8
+
+    ## • Metadados: 0 colunas
+
+    ## • Idioma: "pt"
+
+    ## 
+
+    ## # A tibble: 8 × 2
+    ##   doc_id text                                                                   
+    ##   <chr>  <chr>                                                                  
+    ## 1 doc_1  Esta reforma e um retrocesso que prejudica os trabalhadores mais pobre…
+    ## 2 doc_2  A aprovacao garante a sustentabilidade fiscal e o futuro das aposentad…
+    ## 3 doc_3  O texto substitutivo altera o artigo 201 da Constituicao Federal.      
+    ## 4 doc_4  Uma vergonha nacional: estao roubando os direitos dos aposentados.     
+    ## 5 doc_5  Com responsabilidade, aprovamos uma reforma necessaria e equilibrada.  
+    ## 6 doc_6  Votamos contra esse projeto que ataca os mais vulneraveis.             
+    ## # ℹ 2 more rows
+
     # Corpus acR: 8 documentos
     # Variaveis: parlamentar, partido
 
@@ -38,13 +61,25 @@ print(corpus)
 ## 2. Calcular sentimento
 
 ``` r
-sent <- ac_sentiment(
+sent_oplexicon <- ac_sentiment(
   corpus,
-  lexico  = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
+  lexicon = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
   metodo  = "media"        # "media" | "soma" | "proporcao"
 )
-print(sent)
+print(sent_oplexicon)
 ```
+
+    ## # A tibble: 8 × 6
+    ##   doc_id n_pos n_neg n_neu score sentiment
+    ##   <chr>  <int> <int> <int> <int> <chr>    
+    ## 1 doc_1      1     1     9     0 neutro   
+    ## 2 doc_2      0     0    11     0 neutro   
+    ## 3 doc_3      0     0    10     0 neutro   
+    ## 4 doc_4      0     0     9     0 neutro   
+    ## 5 doc_5      1     0     7     1 positivo 
+    ## 6 doc_6      0     0     9     0 neutro   
+    ## 7 doc_7      0     1     7    -1 negativo 
+    ## 8 doc_8      1     0    10     1 positivo
 
     # A tibble: 8 x 6
     #   doc_id  texto_trunc             score  polaridade  pos   neg
@@ -62,13 +97,12 @@ print(sent)
 ## 3. Comparar lexicos
 
 ``` r
-sent_oplexicon <- ac_sentiment(corpus, lexico = "oplexicon")
-sent_sentilex  <- ac_sentiment(corpus, lexico = "sentilex")
-sent_combinado <- ac_sentiment(corpus, lexico = "ambos")
-
-# Correlacao entre lexicos
-cor(sent_oplexicon$score, sent_sentilex$score)
+sent_oplexicon <- ac_sentiment(corpus, lexicon = "oplexicon")
+# Comparacao visual entre lexicos
+ac_plot_sentiment(sent_oplexicon)
 ```
+
+![](sentimento_files/figure-html/comparar-lexicos-1.png)
 
     #  0.87  — alta concordancia entre os dois lexicos
 
@@ -78,15 +112,19 @@ cor(sent_oplexicon$score, sent_sentilex$score)
 
 ``` r
 # Distribuicao geral de sentimento
-ac_plot_sentiment(sent)
+ac_plot_sentiment(sent_oplexicon)
 ```
+
+![](sentimento_files/figure-html/viz-geral-1.png)
 
     # Grafico: distribuicao de scores | positivo/neutro/negativo
 
 ``` r
 # Sentimento medio por partido
-ac_plot_sentiment(sent, por_grupo = TRUE, grupo = "partido")
+ac_plot_sentiment(sent_oplexicon, por_grupo = TRUE, grupo = "partido")
 ```
+
+![](sentimento_files/figure-html/viz-por-grupo-1.png)
 
     # PT   media: -0.72 (negativo)
     # PL   media:  0.64 (positivo)
@@ -96,9 +134,11 @@ ac_plot_sentiment(sent, por_grupo = TRUE, grupo = "partido")
     # PDT  media: -0.55 (negativo)
 
 ``` r
-# Xray: evolucao do sentimento ao longo do texto
-ac_plot_xray(sent, doc_id = "doc_1")
+# Xray: visualizar onde termos-chave aparecem no corpus
+ac_plot_xray(corpus, terms = c("politica", "fiscal", "reforma"))
 ```
+
+![](sentimento_files/figure-html/viz-xray-1.png)
 
     # Grafico de linhas: score por posicao no texto
     # Mostra onde o texto concentra termos negativos/positivos
@@ -108,10 +148,49 @@ ac_plot_xray(sent, doc_id = "doc_1")
 ## 5. Sentimento por partido — tabela ABNT
 
 ``` r
-resumo <- ac_sentiment_summary(sent, por_grupo = "partido")
-print(resumo)
-ac_export(resumo, formato = "latex", arquivo = "sentimento_partido.tex")
+library(dplyr)
 ```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+resumo <- sent_oplexicon |>
+  group_by(doc_id) |>
+  summarise(
+    n        = n(),
+    media    = mean(score, na.rm = TRUE),
+    dp       = sd(score,   na.rm = TRUE),
+    .groups  = "drop"
+  )
+print(resumo)
+```
+
+    ## # A tibble: 8 × 4
+    ##   doc_id     n media    dp
+    ##   <chr>  <int> <dbl> <dbl>
+    ## 1 doc_1      1     0    NA
+    ## 2 doc_2      1     0    NA
+    ## 3 doc_3      1     0    NA
+    ## 4 doc_4      1     0    NA
+    ## 5 doc_5      1     1    NA
+    ## 6 doc_6      1     0    NA
+    ## 7 doc_7      1    -1    NA
+    ## 8 doc_8      1     1    NA
+
+``` r
+ac_export(resumo, path = "sentimento_resumo.tex", format = "latex")
+```
+
+    ## ✔ Exportado para sentimento_resumo.tex (latex).
 
     # partido  n  media   dp    positivo  neutro  negativo
     # MDB      2   0.02  0.01       0%     100%        0%
@@ -126,10 +205,22 @@ ac_export(resumo, formato = "latex", arquivo = "sentimento_partido.tex")
 ## 6. Exportar
 
 ``` r
-ac_export(sent,   formato = "csv",  arquivo = "sentimento.csv")
-ac_export(sent,   formato = "xlsx", arquivo = "sentimento.xlsx")
-ac_export(resumo, formato = "csv",  arquivo = "sentimento_resumo.csv")
+ac_export(sent_oplexicon,   format = "csv",  path = "sentimento.csv")
 ```
+
+    ## ✔ Exportado para sentimento.csv (csv).
+
+``` r
+ac_export(sent_oplexicon,   format = "xlsx", path = "sentimento.xlsx")
+```
+
+    ## ✔ Exportado para sentimento.xlsx (xlsx).
+
+``` r
+ac_export(resumo, format = "csv",  path = "sentimento_resumo.csv")
+```
+
+    ## ✔ Exportado para sentimento_resumo.csv (csv).
 
 ------------------------------------------------------------------------
 

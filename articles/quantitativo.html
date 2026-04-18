@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Analise quantitativa de texto • acR</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -77,20 +82,11 @@
     
     
 <div class="section level2">
-<h2 id="visao-geral">Visao geral<a class="anchor" aria-label="anchor" href="#visao-geral"></a>
-</h2>
-<p>O modulo quantitativo do <code>acR</code> cobre as etapas classicas
-de analise textual: limpeza, tokenizacao, contagem de frequencias,
-TF-IDF, keyness e co-ocorrencia. Todas as funcoes recebem um objeto
-<code>ac_corpus</code> e retornam tibbles prontos para visualizacao ou
-modelagem.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="construir-o-corpus">1. Construir o corpus<a class="anchor" aria-label="anchor" href="#construir-o-corpus"></a>
+<h2 id="corpus">1. Corpus<a class="anchor" aria-label="anchor" href="#corpus"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
+<span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"O governo anunciou nova politica fiscal para reduzir o deficit."</span>,</span>
 <span>  <span class="st">"A oposicao critica o aumento dos gastos publicos no orcamento."</span>,</span>
 <span>  <span class="st">"Parlamentares debatem reforma tributaria e imposto de renda."</span>,</span>
@@ -100,182 +96,165 @@ modelagem.</p>
 <span>  <span class="st">"Politica monetaria do Banco Central eleva a taxa de juros."</span>,</span>
 <span>  <span class="st">"Inflacao acima da meta preocupa economistas e mercado financeiro."</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
-<span>  <span class="va">textos</span>,</span>
-<span>  id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">textos</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>,<span class="st">"fiscal"</span>,<span class="st">"tributario"</span>,<span class="st">"social"</span>,</span>
-<span>           <span class="st">"infraestrutura"</span>,<span class="st">"tributario"</span>,<span class="st">"monetario"</span>,<span class="st">"monetario"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  text <span class="op">=</span> <span class="va">textos</span>,</span>
+<span>  tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>,<span class="st">"fiscal"</span>,<span class="st">"tributario"</span>,<span class="st">"social"</span>,<span class="st">"infraestrutura"</span>,<span class="st">"tributario"</span>,<span class="st">"monetario"</span>,<span class="st">"monetario"</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Corpus acR: 8 documentos</span></span>
-<span><span class="co"># Temas: fiscal (2), tributario (2), monetario (2),</span></span>
-<span><span class="co">#        social (1), infraestrutura (1)</span></span></code></pre>
-<hr>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Metadados: <span style="color: #0000BB;">1</span> coluna</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 3</span></span></span>
+<span><span class="co">#&gt;   doc_id text                                                            tema   </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  O governo anunciou nova politica fiscal para reduzir o deficit. fiscal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  A oposicao critica o aumento dos gastos publicos no orcamento.  fiscal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  Parlamentares debatem reforma tributaria e imposto de renda.    tribut…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  O presidente vetou o projeto que ampliava beneficios sociais.   social </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  Senado aprova marco legal para investimentos em infraestrutura. infrae…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  Deputados votam pela reducao da carga tributaria para empresas. tribut…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="limpeza">2. Limpeza<a class="anchor" aria-label="anchor" href="#limpeza"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">corpus_limpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_clean.html">ac_clean</a></span><span class="op">(</span></span>
-<span>  <span class="va">corpus</span>,</span>
-<span>  lowercase        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  remover_numeros  <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  remover_pontuacao <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Corpus acR: 8 documentos (apos limpeza)</span></span>
-<span><span class="co"># Operacoes: lowercase, remover_numeros, remover_pontuacao</span></span></code></pre>
-<hr>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">corpus_limpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Metadados: <span style="color: #0000BB;">1</span> coluna</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 3</span></span></span>
+<span><span class="co">#&gt;   doc_id text                                                           tema    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  o governo anunciou nova politica fiscal para reduzir o deficit fiscal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  a oposicao critica o aumento dos gastos publicos no orcamento  fiscal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  parlamentares debatem reforma tributaria e imposto de renda    tributa…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  o presidente vetou o projeto que ampliava beneficios sociais   social  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  senado aprova marco legal para investimentos em infraestrutura infraes…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  deputados votam pela reducao da carga tributaria para empresas tributa…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="tokenizacao">3. Tokenizacao<a class="anchor" aria-label="anchor" href="#tokenizacao"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span></span>
-<span>  <span class="va">corpus_limpo</span>,</span>
-<span>  remover_stopwords <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  ngrams            <span class="op">=</span> <span class="fl">1L</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tokens</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Tokens acR: 8 documentos | ~95 tokens unicos</span></span>
-<span><span class="co"># Stopwords removidas: portugues (NLTK/stopwords-pt)</span></span></code></pre>
-<hr>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, n <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tokens</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 3</span></span></span>
+<span><span class="co">#&gt;    doc_id token_id token    </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> doc_1         1 o        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> doc_1         2 governo  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> doc_1         3 anunciou </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_1         4 nova     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_1         5 politica </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_1         6 fiscal   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_1         7 para     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_1         8 reduzir  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_1         9 o        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_1        10 deficit  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_2         1 a        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_2         2 oposicao </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> doc_2         3 critica  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> doc_2         4 o        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> doc_2         5 aumento  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> doc_2         6 dos      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> doc_2         7 gastos   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> doc_2         8 publicos </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> doc_2         9 no       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> doc_2        10 orcamento</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="frequencia-de-termos">4. Frequencia de termos<a class="anchor" aria-label="anchor" href="#frequencia-de-termos"></a>
+<h2 id="frequencia">4. Frequencia<a class="anchor" aria-label="anchor" href="#frequencia"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">contagem</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">contagem</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># A tibble: 95 x 4</span></span>
-<span><span class="co">#   termo        freq  freq_rel  doc_freq</span></span>
-<span><span class="co">#   politica        4    0.042         3</span></span>
-<span><span class="co">#   tributaria      3    0.032         2</span></span>
-<span><span class="co">#   reforma         3    0.032         2</span></span>
-<span><span class="co">#   fiscal          2    0.021         2</span></span>
-<span><span class="co">#   juros           2    0.021         2</span></span></code></pre>
-<hr>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">contagem</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">contagem</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 71 × 3</span></span></span>
+<span><span class="co">#&gt;    doc_id token        n</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> doc_1  o            2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> doc_4  o            2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> doc_1  anunciou     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_1  deficit      1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_1  fiscal       1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_1  governo      1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_1  nova         1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_1  para         1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_1  politica     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_1  reduzir      1</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 61 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="top-termos-e-wordcloud">5. Top termos e wordcloud<a class="anchor" aria-label="anchor" href="#top-termos-e-wordcloud"></a>
+<h2 id="top-termos">5. Top termos<a class="anchor" aria-label="anchor" href="#top-termos"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">contagem</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_top_terms.html">ac_plot_top_terms</a></span><span class="op">(</span><span class="va">top</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/top-termos-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="nuvem-de-palavras">6. Nuvem de palavras<a class="anchor" aria-label="anchor" href="#nuvem-de-palavras"></a>
+</h2>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_wordcloud.html">ac_wordcloud</a></span><span class="op">(</span><span class="va">contagem</span>, max_words <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; empresas could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; financeiro could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; imposto could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; inflacao could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; infraestrutura could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; investimentos could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; mercado could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; monetaria could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; oposicao could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; orcamento could not be fit on page. It will not be plotted.</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/wordcloud-1.png" class="r-plt" alt="" width="100%"></p>
+<pre><code><span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, : para</span></span>
+<span><span class="co">#&gt; could not be fit on page. It will not be plotted.</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="tf-idf">7. TF-IDF<a class="anchor" aria-label="anchor" href="#tf-idf"></a>
+</h2>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">contagem</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/tfidf-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level2">
+<h2 id="keyness">8. Keyness<a class="anchor" aria-label="anchor" href="#keyness"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">top</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">contagem</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_top_terms.html">ac_plot_top_terms</a></span><span class="op">(</span></span>
-<span>  <span class="va">top</span>,</span>
-<span>  titulo   <span class="op">=</span> <span class="st">"Termos mais frequentes — agenda economica"</span>,</span>
-<span>  por_grupo <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Grafico: barras horizontais por frequencia</span></span>
-<span><span class="co"># Top 15 termos por grupo/tema</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ac_plot_wordcloud</span><span class="op">(</span></span>
-<span>  <span class="va">contagem</span>,</span>
-<span>  max_words <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  cores     <span class="op">=</span> <span class="st">"viridis"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<hr>
+<code class="sourceCode R"><span><span class="va">freq_tema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span>
+<span><span class="va">freq_2grupos</span> <span class="op">&lt;-</span> <span class="va">freq_tema</span><span class="op">[</span><span class="va">freq_tema</span><span class="op">$</span><span class="va">tema</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>, <span class="st">"tributario"</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">kn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_keyness.html">ac_keyness</a></span><span class="op">(</span><span class="va">freq_2grupos</span>, group <span class="op">=</span> <span class="st">"tema"</span>, target <span class="op">=</span> <span class="st">"fiscal"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_keyness.html">ac_plot_keyness</a></span><span class="op">(</span><span class="va">kn</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/keyness-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 <div class="section level2">
-<h2 id="tf-idf">6. TF-IDF<a class="anchor" aria-label="anchor" href="#tf-idf"></a>
+<h2 id="coocorrencia">9. Coocorrencia<a class="anchor" aria-label="anchor" href="#coocorrencia"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu">ac_tfidf</span><span class="op">(</span><span class="va">tokens</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tfidf</span><span class="op">)</span></span>
-<span><span class="fu">ac_plot_tfidf</span><span class="op">(</span><span class="va">tfidf</span>, n <span class="op">=</span> <span class="fl">10</span>, por_grupo <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># A tibble: 95 x 5</span></span>
-<span><span class="co">#   doc_id  tema          termo       tf      idf    tf_idf</span></span>
-<span><span class="co">#   doc_1   fiscal        deficit  0.083    1.386     0.115</span></span>
-<span><span class="co">#   doc_3   tributario    imposto  0.077    1.099     0.085</span></span>
-<span><span class="co">#   doc_7   monetario     juros    0.091    1.099     0.100</span></span></code></pre>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="keyness-vocabulario-distintivo">7. Keyness — vocabulario distintivo<a class="anchor" aria-label="anchor" href="#keyness-vocabulario-distintivo"></a>
-</h2>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">kn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_keyness.html">ac_keyness</a></span><span class="op">(</span><span class="va">tokens</span>, grupo_ref <span class="op">=</span> <span class="st">"fiscal"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">kn</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_keyness.html">ac_plot_keyness</a></span><span class="op">(</span><span class="va">kn</span>, n_termos <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Keyness (chi-quadrado) — grupo focal: fiscal</span></span>
-<span><span class="co">#   termo       chi2    p_value  keyness</span></span>
-<span><span class="co">#   deficit     8.42    0.004    positivo</span></span>
-<span><span class="co">#   gastos      6.11    0.013    positivo</span></span>
-<span><span class="co">#   tributaria  5.03    0.025    negativo</span></span></code></pre>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="co-ocorrencia">8. Co-ocorrencia<a class="anchor" aria-label="anchor" href="#co-ocorrencia"></a>
-</h2>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_cooccurrence.html">ac_cooccurrence</a></span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">5L</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cooc</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span></span>
-<span>  <span class="va">cooc</span>,</span>
-<span>  min_freq  <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  n_nos     <span class="op">=</span> <span class="fl">20</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Rede de co-ocorrencia: 20 nos | 38 arestas</span></span>
-<span><span class="co"># Par mais frequente: politica -- fiscal (3)</span></span></code></pre>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="exportar">9. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
-</h2>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">tfidf</span>,    formato <span class="op">=</span> <span class="st">"csv"</span>,  arquivo <span class="op">=</span> <span class="st">"tfidf.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">contagem</span>, formato <span class="op">=</span> <span class="st">"xlsx"</span>, arquivo <span class="op">=</span> <span class="st">"frequencias.xlsx"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">kn</span>,       formato <span class="op">=</span> <span class="st">"csv"</span>,  arquivo <span class="op">=</span> <span class="st">"keyness.csv"</span><span class="op">)</span></span></code></pre></div>
-<hr>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="referencias">Referencias<a class="anchor" aria-label="anchor" href="#referencias"></a>
-</h2>
-<p><strong>Pacote</strong></p>
-<p>Henrique, A. (2025). <em>acR: Analise de Conteudo em R</em>. R
-package version 0.1.0. Centro de Estudos da Metropole (CEM-Cepid) —
-Universidade de Sao Paulo. Disponivel em: <a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></p>
-<p><strong>Pacotes utilizados</strong></p>
-<p>Santos, V. (2026). <em>senatebR: Collect Data from the Brazilian
-Federal Senate Open Data API</em>. R package version 0.1.0. <a href="https://CRAN.R-project.org/package=senatebR" class="external-link uri">https://CRAN.R-project.org/package=senatebR</a></p>
-<p>Ferreira, P., Jorge, P., Lima, D., Coelho, G., Pereira, R. H. M.,
-&amp; Mation, L. (2026). <em>ipeaplot: Add Ipea Editorial Standards to
-ggplot2 Graphics</em>. R package version 0.5.1. Instituto de Pesquisa
-Economica Aplicada (Ipea). <a href="doi:10.32614/CRAN.package.ipeaplot" class="uri">doi:10.32614/CRAN.package.ipeaplot</a></p>
-<p><strong>Inspiracao e dialogo</strong></p>
-<p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer: Qualitative and
-LLM-Assisted Text Analysis in R</em>. — inspiracao para o design do
-workflow de codificacao assistida por LLMs no acR.</p>
-<p>Benoit, K., Watanabe, K., Wang, H., Nulty, P., Obeng, A., Muller, S.,
-&amp; Matsuo, A. (2018). quanteda: An R package for the quantitative
-analysis of textual data. <em>Journal of Open Source Software</em>,
-3(30), 774. <a href="doi:10.21105/joss.00774" class="uri">doi:10.21105/joss.00774</a> — infraestrutura de analise
-textual quantitativa.</p>
-<p>Wickham, H., et al. (Posit). <em>ellmer: A unified interface to large
-language models in R</em>. <a href="https://ellmer.tidyverse.org/" class="external-link uri">https://ellmer.tidyverse.org/</a> — backend unificado de
-LLMs.</p>
-<p>Souza, M., &amp; Vieira, R. (2012). Sentiment Analysis on Twitter
-with Portuguese Language. In <em>4th Workshop on Computational
-Approaches to Subjectivity, Sentiment and Social Media Analysis</em>.
-PUCRS. — OpLexicon: lexico de sentimento para portugues brasileiro.</p>
-<p><strong>Fundamentacao teorica</strong></p>
-<p>Bardin, L. (2011). <em>Analise de conteudo</em>. Edicoes 70.</p>
-<p>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet
-Allocation. <em>Journal of Machine Learning Research</em>, 3,
-993-1022.</p>
-<p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its
-Methodology</em> (4a ed.). SAGE.</p>
-<p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer
-agreement for categorical data. <em>Biometrics</em>, 33(1), 159-174.</p>
-<p>Laver, M., Benoit, K., &amp; Garry, J. (2003). Extracting policy
-positions from political texts using words as data. <em>American
-Political Science Review</em>, 97(2), 311-331.</p>
-<p>Sampaio, R. C., &amp; Lycariao, D. (2021). <em>Analise de conteudo
-categorial: manual de aplicacao</em>. Enap. Disponivel em: <a href="https://repositorio.enap.gov.br" class="external-link uri">https://repositorio.enap.gov.br</a></p>
-<p>R Core Team. (2024). <em>R: A language and environment for
-statistical computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="external-link uri">https://www.R-project.org/</a></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_cooccurrence.html">ac_cooccurrence</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, window <span class="op">=</span> <span class="fl">5L</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/coocorrencia-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -17,6 +17,9 @@ Criacao, limpeza e tokenizacao de corpus em portugues.
 - [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
   : Construir um corpus para análise de conteúdo
 
+- [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)
+  : Importar arquivos para um corpus acR
+
 - [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
   : Limpar e normalizar texto de um corpus
 

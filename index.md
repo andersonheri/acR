@@ -116,7 +116,7 @@ ac_plot_tf_idf(tfidf, by = "partido", n = 5)
 | Funcao                                                                           | Descricao                                    |
 |----------------------------------------------------------------------------------|----------------------------------------------|
 | [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)       | Criar objeto corpus                          |
-| `ac_import()`                                                                    | Importar corpus de arquivo externo           |
+| [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)       | Importar corpus de arquivo externo           |
 | [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)         | Limpar texto (lowercase, pontuacao, numeros) |
 | [`is_ac_corpus()`](https://andersonheri.github.io/acR/reference/is_ac_corpus.md) | Verificar se objeto e um corpus acR          |
 | [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)   | Tokenizar com remocao de stopwords           |
