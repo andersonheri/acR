@@ -98,6 +98,48 @@ ac_plot_sentiment(sent)
 | [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md)                   | Modelagem de topicos LDA             |
 | [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)         | Selecao otima de K topicos           |
 
+### TF-IDF — termos característicos por partido
+
+``` r
+library(acR)
+
+# Corpus com proposicoes de deputados de diferentes partidos
+df <- data.frame(
+  id      = paste0("prop_", 1:6),
+  texto   = c(
+    "Esta proposta garante direitos trabalhistas e protecao social.",
+    "O projeto amplia o seguro-desemprego para trabalhadores informais.",
+    "Propomos reducao de impostos para estimular o crescimento economico.",
+    "A desburocratizacao e essencial para a competitividade do Brasil.",
+    "O texto fortalece o SUS e o acesso universal a saude publica.",
+    "Defendemos a expansao de politicas de assistencia social."
+  ),
+  partido = c("PT", "PT", "PL", "PL", "PSOL", "PSOL"),
+  stringsAsFactors = FALSE
+)
+
+# 1. Criar corpus
+corpus <- ac_corpus(df, text = texto, docid = id, meta = partido)
+
+# 2. Tokenizar (remove stopwords PT-BR automaticamente)
+tokens <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
+
+# 3. Contar frequencias por partido
+freq <- ac_count(tokens, by = "partido")
+
+# 4. Calcular TF-IDF (cada partido como documento)
+tfidf <- ac_tf_idf(freq, by = "partido")
+
+# 5. Top 5 termos mais caracteristicos por partido
+tfidf |>
+  dplyr::group_by(partido) |>
+  dplyr::slice_max(tf_idf, n = 5) |>
+  dplyr::select(partido, token, tf_idf)
+
+# 6. Visualizar
+ac_plot_tf_idf(tfidf, by = "partido", n = 5)
+```
+
 ### Analise qualitativa com LLMs
 
 | Funcao                                                                                                     | Descricao                              |

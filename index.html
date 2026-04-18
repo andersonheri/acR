@@ -222,6 +222,48 @@
 </table>
 </div>
 <div class="section level3">
+<h3 id="tf-idf--termos-característicos-por-partido">TF-IDF — termos característicos por partido<a class="anchor" aria-label="anchor" href="#tf-idf--termos-caracter%C3%ADsticos-por-partido"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Corpus com proposicoes de deputados de diferentes partidos</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"prop_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
+<span>  texto   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Esta proposta garante direitos trabalhistas e protecao social."</span>,</span>
+<span>    <span class="st">"O projeto amplia o seguro-desemprego para trabalhadores informais."</span>,</span>
+<span>    <span class="st">"Propomos reducao de impostos para estimular o crescimento economico."</span>,</span>
+<span>    <span class="st">"A desburocratizacao e essencial para a competitividade do Brasil."</span>,</span>
+<span>    <span class="st">"O texto fortalece o SUS e o acesso universal a saude publica."</span>,</span>
+<span>    <span class="st">"Defendemos a expansao de politicas de assistencia social."</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>, <span class="st">"PT"</span>, <span class="st">"PL"</span>, <span class="st">"PL"</span>, <span class="st">"PSOL"</span>, <span class="st">"PSOL"</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 1. Criar corpus</span></span>
+<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">partido</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2. Tokenizar (remove stopwords PT-BR automaticamente)</span></span>
+<span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span>, remover_stopwords <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 3. Contar frequencias por partido</span></span>
+<span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 4. Calcular TF-IDF (cada partido como documento)</span></span>
+<span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">freq</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 5. Top 5 termos mais caracteristicos por partido</span></span>
+<span><span class="va">tfidf</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">partido</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">tf_idf</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">partido</span>, <span class="va">token</span>, <span class="va">tf_idf</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 6. Visualizar</span></span>
+<span><span class="fu"><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, by <span class="op">=</span> <span class="st">"partido"</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="analise-qualitativa-com-llms">Analise qualitativa com LLMs<a class="anchor" aria-label="anchor" href="#analise-qualitativa-com-llms"></a>
 </h3>
 <table class="table">
@@ -441,7 +483,7 @@
 <div class="section level2">
 <h2 id="como-citar">Como citar<a class="anchor" aria-label="anchor" href="#como-citar"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2025). acR: Analise de Conteudo em R.
 R package version 0.1.0.
