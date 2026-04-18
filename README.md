@@ -14,11 +14,16 @@
 
 O `acR` oferece um pipeline completo de analise de conteudo textual para
 pesquisadores em ciencias sociais. O pacote integra dois modulos principais:
-um **modulo qualitativo** baseado em LLMs (qwen3.6, GPT-4o, Claude, Groq)
-para codificacao automatica com validacao humana, e um **modulo quantitativo**
-para frequencias, TF-IDF, keyness, sentimento e modelagem de topicos (LDA).
-Todas as funcoes foram projetadas para corpora em portugues e seguem as
-convencoes metodologicas de Bardin (2011) e Krippendorff (2018).
+um **modulo qualitativo** baseado em LLMs para codificacao automatica com
+validacao humana, e um **modulo quantitativo** para frequencias, TF-IDF,
+keyness, sentimento e modelagem de topicos (LDA). Todas as funcoes foram
+projetadas para corpora em portugues e seguem as convencoes metodologicas
+de Bardin (2011) e Krippendorff (2018).
+
+A partir da versao 0.1.0, o modulo qualitativo usa o pacote
+[ellmer](https://ellmer.tidyverse.org/) como backend unificado, permitindo
+usar qualquer provedor de LLM — OpenAI, Google Gemini, Groq, Anthropic,
+Ollama, Mistral, DeepSeek, OpenRouter e outros — via o argumento `chat=`.
 
 ## Instalacao
 
@@ -34,6 +39,7 @@ remotes::install_github("andersonheri/acR")
 
 ```r
 library(acR)
+library(ellmer)
 
 # 1. Corpus
 corpus <- ac_corpus(
@@ -51,17 +57,19 @@ codebook <- ac_qual_codebook(
   mode         = "manual"
 )
 
-# 3. Codificar com qwen3.6 via Ollama
+# 3. Instanciar provedor via ellmer (qualquer um suportado)
+chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+# ou: chat_obj <- chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+# ou: chat_obj <- chat_ollama(model = "llama3.2", echo = "none")
+
+# 4. Codificar
 resultado <- ac_qual_code(
-  corpus      = corpus,
-  codebook    = codebook,
-  provider    = "ollama",
-  model       = "qwen3.6:latest",
-  api_key     = Sys.getenv("OLLAMA_API_KEY"),
-  temperature = 0
+  corpus   = corpus,
+  codebook = codebook,
+  chat     = chat_obj
 )
 
-# 4. Exportar
+# 5. Exportar
 ac_export(resultado, formato = "csv", arquivo = "codificacao.csv")
 ```
 
@@ -78,13 +86,11 @@ sent <- ac_sentiment(corpus, lexico = "oplexicon")
 ac_plot_sentiment(sent)
 ```
 
-
-### TF-IDF — termos característicos por grupo
+### TF-IDF — termos caracteristicos por grupo
 
 ```r
 library(acR)
 
-# Corpus com proposicoes legislativas de tres partidos
 df <- data.frame(
   id      = paste0("prop_", 1:6),
   texto   = c(
@@ -99,19 +105,16 @@ df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# Pipeline completo
 corpus <- ac_corpus(df, text = texto, docid = id, meta = partido)
 tokens  <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
 freq    <- ac_count(tokens, by = "partido")
 tfidf   <- ac_tf_idf(freq, by = "partido")
 
-# Top 5 termos mais caracteristicos por partido
 tfidf |>
   dplyr::group_by(partido) |>
   dplyr::slice_max(tf_idf, n = 5) |>
   dplyr::select(partido, token, tf_idf)
 
-# Visualizar
 ac_plot_tf_idf(tfidf, by = "partido", n = 5)
 ```
 
@@ -140,55 +143,13 @@ ac_plot_tf_idf(tfidf, by = "partido", n = 5)
 | `ac_lda()` | Modelagem de topicos LDA |
 | `ac_lda_tune()` | Selecao otima de K topicos |
 
-
-### TF-IDF — termos característicos por partido
-
-```r
-library(acR)
-
-# Corpus com proposicoes de deputados de diferentes partidos
-df <- data.frame(
-  id      = paste0("prop_", 1:6),
-  texto   = c(
-    "Esta proposta garante direitos trabalhistas e protecao social.",
-    "O projeto amplia o seguro-desemprego para trabalhadores informais.",
-    "Propomos reducao de impostos para estimular o crescimento economico.",
-    "A desburocratizacao e essencial para a competitividade do Brasil.",
-    "O texto fortalece o SUS e o acesso universal a saude publica.",
-    "Defendemos a expansao de politicas de assistencia social."
-  ),
-  partido = c("PT", "PT", "PL", "PL", "PSOL", "PSOL"),
-  stringsAsFactors = FALSE
-)
-
-# 1. Criar corpus
-corpus <- ac_corpus(df, text = texto, docid = id, meta = partido)
-
-# 2. Tokenizar (remove stopwords PT-BR automaticamente)
-tokens <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
-
-# 3. Contar frequencias por partido
-freq <- ac_count(tokens, by = "partido")
-
-# 4. Calcular TF-IDF (cada partido como documento)
-tfidf <- ac_tf_idf(freq, by = "partido")
-
-# 5. Top 5 termos mais caracteristicos por partido
-tfidf |>
-  dplyr::group_by(partido) |>
-  dplyr::slice_max(tf_idf, n = 5) |>
-  dplyr::select(partido, token, tf_idf)
-
-# 6. Visualizar
-ac_plot_tf_idf(tfidf, by = "partido", n = 5)
-```
-
 ### Analise qualitativa com LLMs
 
 | Funcao | Descricao |
 |--------|-----------|
 | `ac_qual_codebook()` | Construir codebook estruturado |
 | `ac_qual_code()` | Codificar corpus via LLM |
+| `ac_qual_search_literature()` | Buscar literatura via OpenAlex + LLM |
 | `ac_qual_list_models()` | Listar modelos disponiveis |
 | `ac_qual_recommend_model()` | Recomendacao automatica de modelo |
 | `ac_qual_sample()` | Amostrar para validacao humana |
@@ -196,8 +157,7 @@ ac_plot_tf_idf(tfidf, by = "partido", n = 5)
 | `ac_qual_import_human()` | Importar revisao humana |
 | `ac_qual_irr()` | Concordancia inter-codificador (kappa) |
 | `ac_qual_reliability()` | Validar threshold de confiabilidade |
-| `ac_qual_search_literature()` | Buscar literatura de apoio |
-| `ac_qual_save_codebook()` | Salvar codebook em JSON |
+| `ac_qual_save_codebook()` | Salvar codebook em YAML |
 | `ac_qual_load_codebook()` | Carregar codebook salvo |
 
 ### Visualizacao
@@ -215,24 +175,98 @@ ac_plot_tf_idf(tfidf, by = "partido", n = 5)
 | `ac_wordcloud()` | Nuvem de palavras |
 | `ac_plot_wordcloud_comparative()` | Nuvem comparativa por topico |
 
-### Exportacao
+### Exportacao e coleta
 
-| Funcao | Formatos |
-|--------|---------|
-| `ac_export()` | `csv`, `xlsx`, `latex`, `rds` |
+| Funcao | Descricao |
+|--------|-----------|
+| `ac_export()` | Exportar resultados (`csv`, `xlsx`, `latex`, `rds`) |
 | `ac_fetch_camara()` | Coleta via API da Camara dos Deputados |
 | `ac_fetch_senado()` | Coleta via API do Senado Federal |
 
 ## Provedores LLM suportados
 
-| Provedor | `provider` | Modelo recomendado | Portugues |
-|----------|------------|--------------------|-----------|
-| Ollama nuvem | `"ollama"` | `qwen3.6:latest` | Excelente |
-| OpenAI | `"openai"` | `gpt-4o-mini` | Excelente |
-| Anthropic | `"anthropic"` | `claude-3-5-sonnet` | Excelente |
-| Groq | `"groq"` | `llama3-8b-8192` | Bom |
-| Together AI | `"openai"` | `Qwen/Qwen3-235B-A22B` | Excelente |
-| Qualquer API OpenAI-compativel | `"openai"` + `base_url` | — | Variavel |
+O `acR` usa o pacote [ellmer](https://ellmer.tidyverse.org/) como backend.
+Qualquer provedor suportado pelo ellmer funciona via o argumento `chat=`.
+
+```r
+library(ellmer)
+
+# Google Gemini — tier gratuito disponivel
+chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+
+# Groq — inferencia rapida, plano gratuito
+chat_obj <- chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+
+# Ollama — modelos locais, sem envio de dados
+chat_obj <- chat_ollama(model = "llama3.2", echo = "none")
+
+# OpenAI
+chat_obj <- chat_openai(model = "gpt-4.1", echo = "none")
+
+# Anthropic Claude
+chat_obj <- chat_anthropic(model = "claude-sonnet-4-20250514", echo = "none")
+
+# Mistral
+chat_obj <- chat_mistral(model = "mistral-large-latest", echo = "none")
+
+# DeepSeek
+chat_obj <- chat_deepseek(model = "deepseek-chat", echo = "none")
+
+# OpenRouter (acesso a centenas de modelos com uma chave)
+chat_obj <- chat_openrouter(model = "google/gemini-2.5-flash", echo = "none")
+```
+
+| Provedor | Funcao ellmer | Variavel de ambiente | Tier gratuito |
+|----------|---------------|----------------------|---------------|
+| Google Gemini | `chat_google_gemini()` | `GOOGLE_API_KEY` | Sim |
+| Groq | `chat_groq()` | `GROQ_API_KEY` | Sim |
+| Ollama (local) | `chat_ollama()` | nao necessaria | Gratuito |
+| OpenAI | `chat_openai()` | `OPENAI_API_KEY` | Nao |
+| Anthropic | `chat_anthropic()` | `ANTHROPIC_API_KEY` | Nao |
+| Mistral | `chat_mistral()` | `MISTRAL_API_KEY` | Nao |
+| DeepSeek | `chat_deepseek()` | `DEEPSEEK_API_KEY` | Limitado |
+| OpenRouter | `chat_openrouter()` | `OPENROUTER_API_KEY` | Por uso |
+
+Configure as chaves no `.Renviron` (edite com `usethis::edit_r_environ()`):
+
+```
+GOOGLE_API_KEY=sua_chave
+GROQ_API_KEY=sua_chave
+OPENAI_API_KEY=sua_chave
+ANTHROPIC_API_KEY=sua_chave
+```
+
+## Busca de literatura com OpenAlex
+
+`ac_qual_search_literature()` busca referencias academicas reais na API do
+[OpenAlex](https://openalex.org/) (gratuita, sem chave) e usa a LLM para
+sintetizar os abstracts em portugues. Isso evita alucinacoes bibliograficas
+comuns quando a LLM opera sem fonte externa.
+
+```r
+library(ellmer)
+
+chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+
+# Buscar referencias sobre um conceito
+lit <- ac_qual_search_literature(
+  concept = "democratic backsliding",
+  n_refs  = 5,
+  chat    = chat_obj
+)
+
+# Com filtro de citacoes minimas (trabalhos consolidados)
+lit <- ac_qual_search_literature(
+  concept       = "state capacity",
+  n_refs        = 10,
+  min_citations = 50,
+  chat          = chat_obj
+)
+
+# Resultado: tibble com autor, ano, revista, n_citacoes,
+# trecho_original, definicao_pt, abstract_original, link
+print(lit)
+```
 
 ## Documentacao
 
@@ -267,13 +301,15 @@ Benoit, K., et al. (2018). quanteda. *JOSS*, 3(30), 774. doi:10.21105/joss.00774
 Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet Allocation.
 *JMLR*, 3, 993-1022.
 
+Gilardi, F., Alizadeh, M., & Kubli, M. (2023). ChatGPT Outperforms Crowd
+Workers for Text-Annotation Tasks. *PNAS*, 120(30).
+
 Krippendorff, K. (2018). *Content Analysis* (4a ed.). SAGE.
 
 Landis, J. R., & Koch, G. G. (1977). *Biometrics*, 33(1), 159-174.
 
-Laver, M., Benoit, K., & Garry, J. (2003). *APSR*, 97(2), 311-331.
-
-Maerz, S., & Benoit, K. (2025). *quallmer*. — inspiracao para o workflow LLM.
+Priem, J., et al. (2022). OpenAlex: A fully-open index of the global
+research system. *arXiv*, 2205.01833.
 
 Sampaio, R. C., & Lycariao, D. (2021). *Analise de conteudo categorial*. Enap.
 
