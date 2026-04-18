@@ -7,8 +7,10 @@
 ac_qual_codebook(
   name,
   instructions,
-  categories,
-  mode = c("manual", "literature"),
+  categories = list(),
+  corpus = NULL,
+  n_categories = 5L,
+  mode = c("manual", "induced", "literature"),
   multilabel = FALSE,
   lang = "pt",
   chat = NULL,
@@ -27,10 +29,17 @@ o texto). Ex: \code{"Classifique o discurso quanto ao conteúdo iliberal."}.}
 \item{categories}{Lista nomeada de categorias. Cada elemento pode ser:
 \itemize{
 \item \strong{Modo manual}: lista com \code{definition}, \code{examples_pos}, \code{examples_neg}.
-\item \strong{Modo literatura}: lista com \code{concept} (string de busca em inglês).
+\item \strong{Modo literature}: lista com \code{concept} (string de busca em inglês).
+\item \strong{Modo induced}: ignorado — as categorias são geradas pela LLM.
 }}
 
-\item{mode}{\code{"manual"} (padrão) ou \code{"literature"}.}
+\item{corpus}{Objeto \code{ac_corpus}. Obrigatório no modo \code{"induced"}. A LLM
+analisa uma amostra de até 20 documentos para induzir as categorias.}
+
+\item{n_categories}{Inteiro. Número de categorias a induzir no modo
+\code{"induced"}. Padrão: \code{5L}. Ignorado nos modos \code{"manual"} e \code{"literature"}.}
+
+\item{mode}{\code{"manual"} (padrão), \code{"induced"} ou \code{"literature"}.}
 
 \item{multilabel}{Lógico. Se \code{TRUE}, um documento pode pertencer a mais de
 uma categoria. Padrão: \code{FALSE}.}
@@ -41,8 +50,8 @@ uma categoria. Padrão: \code{FALSE}.}
 \code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
 \code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
 
-\item{model}{Modelo LLM a usar no modo \code{"literature"}. Padrão:
-\code{"anthropic/claude-sonnet-4-5"}.}
+\item{model}{Modelo LLM a usar nos modos \code{"induced"} e \code{"literature"}.
+Padrão: \code{"anthropic/claude-sonnet-4-5"}.}
 
 \item{journals}{Periódicos a incluir na busca de literatura. Pode ser:
 \itemize{
@@ -60,10 +69,13 @@ Objeto de classe \code{ac_codebook}.
 }
 \description{
 \code{ac_qual_codebook()} cria um livro de códigos estruturado para classificação
-de textos via LLM. Suporta dois modos:
+de textos via LLM. Suporta três modos:
 \itemize{
 \item \strong{\code{"manual"}} (padrão): o pesquisador fornece definições, exemplos e
 referências diretamente.
+\item \strong{\code{"induced"}}: a LLM induz categorias automaticamente a partir de uma
+amostra do corpus, sugerindo nomes, definições e exemplos. Útil quando
+o pesquisador ainda não tem categorias pré-definidas.
 \item \strong{\code{"literature"}}: a LLM busca definições na literatura acadêmica
 (periódicos nacionais e internacionais de alto impacto), gerando um banco
 estruturado com trecho original, tradução, autor, ano, revista e link.
@@ -79,16 +91,36 @@ cb <- ac_qual_codebook(
     positivo = list(
       definition   = "Discurso com tom propositivo e colaborativo.",
       examples_pos = c("Proponho que trabalhemos juntos nesta agenda."),
-      examples_neg = c("Este governo é um desastre completo.")
+      examples_neg = c("Este governo e um desastre completo.")
     ),
     negativo = list(
-      definition   = "Discurso com tom crítico, confrontacional ou pessimista.",
-      examples_pos = c("Esta proposta vai arruinar o país."),
+      definition   = "Discurso com tom critico, confrontacional ou pessimista.",
+      examples_pos = c("Esta proposta vai arruinar o pais."),
       examples_neg = c("Apresento esta emenda para melhorar o texto.")
     )
   )
 )
 cb
+
+\dontrun{
+# Modo induced — categorias sugeridas automaticamente pela LLM
+corpus <- ac_corpus(
+  data.frame(id = c("d1","d2","d3"),
+             texto = c("Texto A", "Texto B", "Texto C")),
+  text = texto, docid = id
+)
+chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+cb_ind <- ac_qual_codebook(
+  name         = "temas_induzidos",
+  instructions = "Classifique o tema principal do discurso.",
+  categories   = list(),
+  corpus       = corpus,
+  n_categories = 5L,
+  mode         = "induced",
+  chat         = chat_obj
+)
+print(cb_ind)
+}
 
 }
 \references{

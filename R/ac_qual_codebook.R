@@ -2,10 +2,13 @@
 #'
 #' @description
 #' `ac_qual_codebook()` cria um livro de códigos estruturado para classificação
-#' de textos via LLM. Suporta dois modos:
+#' de textos via LLM. Suporta três modos:
 #'
 #' * **`"manual"`** (padrão): o pesquisador fornece definições, exemplos e
 #'   referências diretamente.
+#' * **`"induced"`**: a LLM induz categorias automaticamente a partir de uma
+#'   amostra do corpus, sugerindo nomes, definições e exemplos. Útil quando
+#'   o pesquisador ainda não tem categorias pré-definidas.
 #' * **`"literature"`**: a LLM busca definições na literatura acadêmica
 #'   (periódicos nacionais e internacionais de alto impacto), gerando um banco
 #'   estruturado com trecho original, tradução, autor, ano, revista e link.
@@ -16,16 +19,21 @@
 #'   o texto). Ex: `"Classifique o discurso quanto ao conteúdo iliberal."`.
 #' @param categories Lista nomeada de categorias. Cada elemento pode ser:
 #'   * **Modo manual**: lista com `definition`, `examples_pos`, `examples_neg`.
-#'   * **Modo literatura**: lista com `concept` (string de busca em inglês).
-#' @param mode `"manual"` (padrão) ou `"literature"`.
+#'   * **Modo literature**: lista com `concept` (string de busca em inglês).
+#'   * **Modo induced**: ignorado — as categorias são geradas pela LLM.
+#' @param corpus Objeto `ac_corpus`. Obrigatório no modo `"induced"`. A LLM
+#'   analisa uma amostra de até 20 documentos para induzir as categorias.
+#' @param n_categories Inteiro. Número de categorias a induzir no modo
+#'   `"induced"`. Padrão: `5L`. Ignorado nos modos `"manual"` e `"literature"`.
+#' @param mode `"manual"` (padrão), `"induced"` ou `"literature"`.
 #' @param multilabel Lógico. Se `TRUE`, um documento pode pertencer a mais de
 #'   uma categoria. Padrão: `FALSE`.
 #' @param lang Idioma do corpus: `"pt"` (padrão) ou `"en"`.
 #' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
 #'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
 #'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
-#' @param model Modelo LLM a usar no modo `"literature"`. Padrão:
-#'   `"anthropic/claude-sonnet-4-5"`.
+#' @param model Modelo LLM a usar nos modos `"induced"` e `"literature"`.
+#'   Padrão: `"anthropic/claude-sonnet-4-5"`.
 #' @param journals Periódicos a incluir na busca de literatura. Pode ser:
 #'   * `"default"`: lista padrão de periódicos nacionais e internacionais;
 #'   * `"all"`: sem restrição de periódico;
@@ -51,46 +59,84 @@
 #'     positivo = list(
 #'       definition   = "Discurso com tom propositivo e colaborativo.",
 #'       examples_pos = c("Proponho que trabalhemos juntos nesta agenda."),
-#'       examples_neg = c("Este governo é um desastre completo.")
+#'       examples_neg = c("Este governo e um desastre completo.")
 #'     ),
 #'     negativo = list(
-#'       definition   = "Discurso com tom crítico, confrontacional ou pessimista.",
-#'       examples_pos = c("Esta proposta vai arruinar o país."),
+#'       definition   = "Discurso com tom critico, confrontacional ou pessimista.",
+#'       examples_pos = c("Esta proposta vai arruinar o pais."),
 #'       examples_neg = c("Apresento esta emenda para melhorar o texto.")
 #'     )
 #'   )
 #' )
 #' cb
 #'
+#' \dontrun{
+#' # Modo induced — categorias sugeridas automaticamente pela LLM
+#' corpus <- ac_corpus(
+#'   data.frame(id = c("d1","d2","d3"),
+#'              texto = c("Texto A", "Texto B", "Texto C")),
+#'   text = texto, docid = id
+#' )
+#' chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+#' cb_ind <- ac_qual_codebook(
+#'   name         = "temas_induzidos",
+#'   instructions = "Classifique o tema principal do discurso.",
+#'   categories   = list(),
+#'   corpus       = corpus,
+#'   n_categories = 5L,
+#'   mode         = "induced",
+#'   chat         = chat_obj
+#' )
+#' print(cb_ind)
+#' }
+#'
 #' @concept qualitative
 #' @export
-ac_qual_codebook <- function(name, instructions, categories,
-    mode       = c("manual", "literature"),
-    multilabel = FALSE,
-    lang       = "pt",
-    chat       = NULL,
-    model      = "anthropic/claude-sonnet-4-5",
-    journals   = "default",
-    n_refs     = 5L,
+ac_qual_codebook <- function(name, instructions, categories = list(),
+    corpus       = NULL,
+    n_categories = 5L,
+    mode         = c("manual", "induced", "literature"),
+    multilabel   = FALSE,
+    lang         = "pt",
+    chat         = NULL,
+    model        = "anthropic/claude-sonnet-4-5",
+    journals     = "default",
+    n_refs       = 5L,
     ...) {
 
   mode <- match.arg(mode)
 
-  # === Validações ============================================================
+  # === Validacoes =============================================================
   if (!is.character(name) || length(name) != 1L || nchar(name) == 0L) {
     cli::cli_abort("{.arg name} deve ser uma string n\u00e3o vazia.")
   }
   if (!is.character(instructions) || length(instructions) != 1L) {
     cli::cli_abort("{.arg instructions} deve ser uma string.")
   }
-  if (!is.list(categories) || is.null(names(categories))) {
-    cli::cli_abort("{.arg categories} deve ser uma lista nomeada.")
+  if (mode != "induced") {
+    if (!is.list(categories) || is.null(names(categories))) {
+      cli::cli_abort("{.arg categories} deve ser uma lista nomeada.")
+    }
+    if (length(categories) < 2L) {
+      cli::cli_abort("{.arg categories} deve ter pelo menos 2 categorias.")
+    }
   }
-  if (length(categories) < 2L) {
-    cli::cli_abort("{.arg categories} deve ter pelo menos 2 categorias.")
+  if (mode == "induced" && (is.null(corpus) || !is_ac_corpus(corpus))) {
+    cli::cli_abort(c(
+      "{.arg corpus} e obrigatorio no modo {.val induced}.",
+      "i" = "Forneca um objeto {.cls ac_corpus} com os textos a analisar."
+    ))
   }
 
-  # === Modo manual ===========================================================
+  # Resolver provedor: chat= tem prioridade sobre model=
+  if (!is.null(chat)) {
+    if (!inherits(chat, "Chat")) {
+      cli::cli_abort("{.arg chat} deve ser um objeto {.cls Chat} do {.pkg ellmer}.")
+    }
+    model <- chat
+  }
+
+  # === Modo manual ============================================================
   if (mode == "manual") {
     cats <- purrr::map(names(categories), function(cat_name) {
       cat_def <- categories[[cat_name]]
@@ -113,14 +159,123 @@ ac_qual_codebook <- function(name, instructions, categories,
     names(cats) <- names(categories)
   }
 
-  # === Modo literatura ========================================================
-  # Resolver provedor: chat= tem prioridade sobre model=
-  if (!is.null(chat)) {
-    if (!inherits(chat, "Chat")) {
-      cli::cli_abort("{.arg chat} deve ser um objeto {.cls Chat} do {.pkg ellmer}.")
+  # === Modo induced ===========================================================
+  if (mode == "induced") {
+    if (!requireNamespace("ellmer", quietly = TRUE)) {
+      cli::cli_abort(c(
+        "O pacote {.pkg ellmer} \u00e9 necess\u00e1rio para o modo {.val induced}.",
+        "i" = "Instale com {.code install.packages(\"ellmer\")}."
+      ))
     }
-    model <- chat
+    if (!requireNamespace("jsonlite", quietly = TRUE)) {
+      cli::cli_abort("O pacote {.pkg jsonlite} \u00e9 necess\u00e1rio.")
+    }
+
+    n_categories <- as.integer(n_categories)
+
+    # Amostrar textos (max 20 para nao exceder contexto)
+    n_sample <- min(20L, nrow(corpus))
+    idx      <- sample(seq_len(nrow(corpus)), n_sample)
+    textos   <- corpus$text[idx]
+
+    cli::cli_inform(c(
+      "i" = "Induzindo codebook a partir de {n_sample} documento{?s}...",
+      "i" = "N\u00famero de categorias: {n_categories}"
+    ))
+
+    system_prompt <- paste0(
+      "Voc\u00ea \u00e9 um especialista em an\u00e1lise de conte\u00fado qualitativa. ",
+      "Sua tarefa \u00e9 induzir categorias anal\u00edticas a partir de um corpus de textos. ",
+      "Responda APENAS com JSON v\u00e1lido, sem markdown."
+    )
+
+    user_msg <- paste0(
+      "Analise os textos abaixo e sugira exatamente ", n_categories,
+      " categorias para classificar o tema ou posicionamento de cada texto.\n\n",
+      "INSTRUCAO GERAL: ", instructions, "\n\n",
+      "TEXTOS:\n",
+      paste0(seq_along(textos), ". ", textos, collapse = "\n"),
+      "\n\nRetorne APENAS este JSON (sem markdown):\n",
+      "{\n",
+      "  \"categories\": [\n",
+      "    {\n",
+      "      \"name\": \"nome_snake_case\",\n",
+      "      \"definition\": \"Definicao operacional clara em 1-2 frases.\",\n",
+      "      \"examples_pos\": [\"exemplo positivo\"],\n",
+      "      \"examples_neg\": [\"exemplo negativo\"]\n",
+      "    }\n",
+      "  ]\n",
+      "}"
+    )
+
+    # Inicializar chat
+    if (inherits(model, "Chat")) {
+      chat_obj <- model$clone()
+      chat_obj$set_system_prompt(system_prompt)
+    } else {
+      chat_obj <- tryCatch(
+        ellmer::chat(name = model, system_prompt = system_prompt),
+        error = function(e) {
+          cli::cli_abort(c(
+            "Erro ao inicializar {.pkg ellmer}.",
+            "x" = conditionMessage(e)
+          ))
+        }
+      )
+    }
+
+    resposta <- tryCatch(
+      chat_obj$chat(user_msg),
+      error = function(e) {
+        cli::cli_abort(c(
+          "Erro ao consultar o modelo.",
+          "x" = conditionMessage(e)
+        ))
+      }
+    )
+
+    json_str <- stringr::str_extract(resposta, "\\{.*\\}")
+    if (is.na(json_str)) {
+      cli::cli_abort(
+        "O modelo n\u00e3o retornou JSON v\u00e1lido. Tente novamente ou use {.val mode = 'manual'}."
+      )
+    }
+
+    parsed <- tryCatch(
+      jsonlite::fromJSON(json_str, simplifyVector = FALSE),
+      error = function(e) {
+        cli::cli_abort("Erro ao parsear JSON: {conditionMessage(e)}")
+      }
+    )
+
+    cats_raw <- parsed$categories %||% list()
+    if (length(cats_raw) == 0L) {
+      cli::cli_abort("O modelo retornou lista de categorias vazia.")
+    }
+
+    cats <- purrr::map(cats_raw, function(cat_def) {
+      structure(
+        list(
+          name         = cat_def$name         %||% "sem_nome",
+          definition   = cat_def$definition   %||% "",
+          examples_pos = unlist(cat_def$examples_pos %||% list()),
+          examples_neg = unlist(cat_def$examples_neg %||% list()),
+          references   = character(0),
+          concept      = NULL,
+          literature   = NULL
+        ),
+        class = "ac_category"
+      )
+    })
+    names(cats) <- purrr::map_chr(cats, "name")
+
+    cli::cli_inform(c(
+      "v" = "{length(cats)} categoria{?s} induzida{?s}: {.val {names(cats)}}",
+      "i" = "Revise as defini\u00e7\u00f5es com {.fn print} antes de usar em {.fn ac_qual_code}."
+    ))
   }
+
+  # === Modo literatura ========================================================
   if (mode == "literature") {
     if (!requireNamespace("ellmer", quietly = TRUE)) {
       cli::cli_abort(c(
@@ -144,7 +299,6 @@ ac_qual_codebook <- function(name, instructions, categories,
       cli::cli_h2("Categoria: {.val {cat_name}}")
       cli::cli_inform("Conceito de busca: {.val {concept}}")
 
-      # Buscar literatura
       lit <- .ac_search_literature_llm(
         concept  = concept,
         model    = model,
@@ -153,7 +307,6 @@ ac_qual_codebook <- function(name, instructions, categories,
         lang     = lang
       )
 
-      # Revisão interativa
       cat_result <- .ac_review_category(
         cat_name = cat_name,
         concept  = concept,
@@ -168,7 +321,7 @@ ac_qual_codebook <- function(name, instructions, categories,
   }
 
   # === Montar objeto ac_codebook ==============================================
-  result <- structure(
+  structure(
     list(
       name         = name,
       instructions = instructions,
@@ -176,19 +329,17 @@ ac_qual_codebook <- function(name, instructions, categories,
       multilabel   = multilabel,
       lang         = lang,
       mode         = mode,
-      model        = if (mode == "literature") model else NULL,
+      model        = if (mode %in% c("induced", "literature")) model else NULL,
       created_at   = Sys.time(),
       needs_review = FALSE
     ),
     class = "ac_codebook"
   )
-
-  result
 }
 
 
 # ============================================================================
-# Métodos S3 para ac_codebook
+# Metodos S3 para ac_codebook
 # ============================================================================
 
 #' @export
@@ -216,11 +367,11 @@ print.ac_codebook <- function(x, ...) {
 summary.ac_codebook <- function(object, ...) {
   cat_summary <- purrr::map_dfr(object$categories, function(cat) {
     tibble::tibble(
-      categoria    = cat$name,
+      categoria     = cat$name,
       tem_definicao = nchar(cat$definition) > 0,
-      n_ex_pos     = length(cat$examples_pos),
-      n_ex_neg     = length(cat$examples_neg),
-      n_refs       = length(cat$references)
+      n_ex_pos      = length(cat$examples_pos),
+      n_ex_neg      = length(cat$examples_neg),
+      n_refs        = length(cat$references)
     )
   })
   cli::cli_h1("Resumo do codebook {.val {object$name}}")
@@ -255,7 +406,6 @@ ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
     path <- paste0(gsub("[^a-zA-Z0-9_-]", "_", codebook$name), ".yaml")
   }
 
-  # Converter para lista simples (YAML-serializável)
   obj <- list(
     name         = codebook$name,
     instructions = codebook$instructions,
@@ -271,9 +421,7 @@ ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
         examples_neg = cat$examples_neg,
         references   = cat$references,
         concept      = cat$concept,
-        literature   = if (!is.null(cat$literature)) {
-          as.list(cat$literature)
-        } else NULL
+        literature   = if (!is.null(cat$literature)) as.list(cat$literature) else NULL
       )
     })
   )
@@ -298,8 +446,7 @@ ac_qual_load_codebook <- function(path, ...) {
     cli::cli_abort("Arquivo {.path {path}} n\u00e3o encontrado.")
   }
 
-  obj <- yaml::read_yaml(path)
-
+  obj  <- yaml::read_yaml(path)
   cats <- purrr::map(obj$categories, function(cat) {
     structure(
       list(
@@ -309,9 +456,7 @@ ac_qual_load_codebook <- function(path, ...) {
         examples_neg = cat$examples_neg %||% character(0),
         references   = cat$references   %||% character(0),
         concept      = cat$concept,
-        literature   = if (!is.null(cat$literature)) {
-          tibble::as_tibble(cat$literature)
-        } else NULL
+        literature   = if (!is.null(cat$literature)) tibble::as_tibble(cat$literature) else NULL
       ),
       class = "ac_category"
     )
@@ -336,61 +481,7 @@ ac_qual_load_codebook <- function(path, ...) {
 
 
 # ============================================================================
-# Busca de literatura via LLM
-# ============================================================================
-
-#' Buscar literatura acadêmica para um conceito
-#'
-#' @description
-#' `ac_qual_search_literature()` usa uma LLM para buscar definições de um
-#' conceito na literatura acadêmica, retornando um tibble estruturado com
-#' trecho original, tradução, autor, ano, revista e link.
-#'
-#' @param concept String com o conceito a buscar (preferencialmente em inglês).
-#' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
-#'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
-#'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
-#' @param model Modelo LLM. Padrão: `"anthropic/claude-sonnet-4-5"`.
-#' @param journals Periódicos a incluir. Padrão: `"default"`.
-#' @param n_refs Número de referências. Padrão: `5`.
-#' @param lang Idioma da tradução. Padrão: `"pt"`.
-#' @param ... Ignorado.
-#'
-#' @return Tibble com colunas: `conceito`, `autor`, `ano`, `trecho_original`,
-#'   `definicao_pt`, `revista`, `link`.
-#'
-#' @note
-#' ATENCAO: as referencias sao geradas por LLM com base no
-#' conhecimento de treinamento. Verifique todas as referencias antes de citar.
-#' Use \code{ac_qual_verify_references()} (disponivel em versao futura) para
-#' checagem automatica.
-#'
-#' @concept qualitative
-#' @export
-ac_qual_search_literature <- function(concept,
-                                       model    = "anthropic/claude-sonnet-4-5",
-                                       journals = "default",
-                                       n_refs   = 5L,
-                                       lang     = "pt",
-                                       ...) {
-
-  if (!requireNamespace("ellmer", quietly = TRUE)) {
-    cli::cli_abort("O pacote {.pkg ellmer} \u00e9 necess\u00e1rio.")
-  }
-
-  journals_list <- .ac_get_journals(journals)
-  .ac_search_literature_llm(
-    concept  = concept,
-    model    = model,
-    journals = journals_list,
-    n_refs   = n_refs,
-    lang     = lang
-  )
-}
-
-
-# ============================================================================
-# Funções auxiliares internas
+# Funcoes auxiliares internas
 # ============================================================================
 
 #' @keywords internal
@@ -417,17 +508,11 @@ ac_qual_search_literature <- function(concept,
   )
   default_all <- c(default_intl, default_br)
 
-  if (identical(journals, "all")) {
-    return(NULL)  # sem restrição
-  }
-  if (identical(journals, "default")) {
-    return(default_all)
-  }
-  # Vetor customizado: pode incluir "default"
+  if (identical(journals, "all"))     return(NULL)
+  if (identical(journals, "default")) return(default_all)
+
   extra <- journals[journals != "default"]
-  if ("default" %in% journals) {
-    return(unique(c(default_all, extra)))
-  }
+  if ("default" %in% journals) return(unique(c(default_all, extra)))
   unique(extra)
 }
 
@@ -446,70 +531,48 @@ ac_qual_search_literature <- function(concept,
 
   prompt <- paste0(
     "Voc\u00ea \u00e9 um especialista em Ci\u00eancia Pol\u00edtica e Ci\u00eancias Sociais.\n\n",
-    "Busque ", n_refs, " refer\u00eancias acad\u00eamicas de alto impacto que definem ou discutem o conceito de: '", concept, "'.\n\n",
-    "Priorize artigos publicados nos seguintes peri\u00f3dicos: ", journals_str, ".\n\n",
-    "Para cada refer\u00eancia, forne\u00e7a EXATAMENTE no formato JSON abaixo (sem markdown, sem texto extra):\n",
+    "Busque ", n_refs, " refer\u00eancias acad\u00eamicas de alto impacto sobre: '", concept, "'.\n\n",
+    "Priorize: ", journals_str, ".\n\n",
+    "Retorne APENAS JSON v\u00e1lido:\n",
     "[\n",
     "  {\n",
     "    \"conceito\": \"", concept, "\",\n",
-    "    \"autor\": \"Sobrenome, Iniciais. & Sobrenome, Iniciais.\",\n",
+    "    \"autor\": \"Sobrenome, Iniciais.\",\n",
     "    \"ano\": 2020,\n",
-    "    \"trecho_original\": \"Trecho exato em ingl\u00eas ou portugu\u00eas com a defini\u00e7\u00e3o do conceito (m\u00e1x 3 frases)\",\n",
-    "    \"definicao_pt\": \"Tradu\u00e7\u00e3o fiel para ", lang_str, " do trecho acima\",\n",
-    "    \"revista\": \"Nome exato da revista\",\n",
-    "    \"link\": \"DOI ou URL se dispon\u00edvel, ou null\"\n",
+    "    \"trecho_original\": \"trecho exato\",\n",
+    "    \"definicao_pt\": \"tradu\u00e7\u00e3o em ", lang_str, "\",\n",
+    "    \"revista\": \"nome da revista\",\n",
+    "    \"link\": \"DOI ou null\"\n",
     "  }\n",
-    "]\n\n",
-    "IMPORTANTE: retorne APENAS o JSON v\u00e1lido, sem nenhum texto antes ou depois."
+    "]"
   )
 
-  chat <- ellmer::chat(name = model)
-  resposta <- tryCatch(
-    chat$chat(prompt),
-    error = function(e) {
-      cli::cli_abort(c(
-        "Erro ao consultar a LLM.",
-        "x" = conditionMessage(e)
-      ))
-    }
-  )
+  chat     <- ellmer::chat(name = model)
+  resposta <- tryCatch(chat$chat(prompt), error = function(e) {
+    cli::cli_abort(c("Erro ao consultar a LLM.", "x" = conditionMessage(e)))
+  })
 
-  # Extrair JSON da resposta
   json_str <- stringr::str_extract(resposta, "\\[.*\\]")
   if (is.na(json_str)) {
-    cli::cli_warn("LLM n\u00e3o retornou JSON v\u00e1lido. Retornando tibble vazio.")
+    cli::cli_warn("LLM n\u00e3o retornou JSON v\u00e1lido.")
     return(.empty_literature_tibble())
   }
 
   parsed <- tryCatch(
     jsonlite::fromJSON(json_str, simplifyDataFrame = TRUE),
-    error = function(e) {
-      cli::cli_warn("Erro ao parsear JSON da LLM: {conditionMessage(e)}")
-      return(NULL)
-    }
+    error = function(e) { cli::cli_warn("Erro ao parsear JSON."); NULL }
   )
 
-  if (is.null(parsed) || nrow(parsed) == 0L) {
-    return(.empty_literature_tibble())
-  }
+  if (is.null(parsed) || nrow(parsed) == 0L) return(.empty_literature_tibble())
 
-  # Garantir colunas esperadas
-  expected_cols <- c("conceito", "autor", "ano", "trecho_original",
-                     "definicao_pt", "revista", "link")
-  for (col in expected_cols) {
-    if (!col %in% names(parsed)) parsed[[col]] <- NA_character_
-  }
+  expected_cols <- c("conceito","autor","ano","trecho_original","definicao_pt","revista","link")
+  for (col in expected_cols) if (!col %in% names(parsed)) parsed[[col]] <- NA_character_
 
-  result <- tibble::as_tibble(parsed[, expected_cols])
-
-  # Aviso obrigatório
   cli::cli_warn(c(
-    "!" = "Refer\u00eancias geradas por LLM com base no conhecimento de treinamento.",
-    "i" = "Verifique TODAS as refer\u00eancias antes de citar em publica\u00e7\u00f5es.",
-    "i" = "Use {.fn ac_qual_verify_references} (dispon\u00edvel em vers\u00e3o futura) para checagem autom\u00e1tica."
+    "!" = "Refer\u00eancias geradas por LLM. Verifique antes de citar."
   ))
 
-  result
+  tibble::as_tibble(parsed[, expected_cols])
 }
 
 
@@ -517,13 +580,13 @@ ac_qual_search_literature <- function(concept,
 #' @noRd
 .empty_literature_tibble <- function() {
   tibble::tibble(
-    conceito         = character(0),
-    autor            = character(0),
-    ano              = integer(0),
-    trecho_original  = character(0),
-    definicao_pt     = character(0),
-    revista          = character(0),
-    link             = character(0)
+    conceito        = character(0),
+    autor           = character(0),
+    ano             = integer(0),
+    trecho_original = character(0),
+    definicao_pt    = character(0),
+    revista         = character(0),
+    link            = character(0)
   )
 }
 
@@ -532,29 +595,16 @@ ac_qual_search_literature <- function(concept,
 #' @noRd
 .ac_review_category <- function(cat_name, concept, lit, model, lang) {
 
-  # Gerar definição consolidada a partir da literatura
   if (nrow(lit) > 0L) {
-    definicao_gerada <- .ac_generate_definition(
-      cat_name = cat_name,
-      concept  = concept,
-      lit      = lit,
-      model    = model,
-      lang     = lang
-    )
-    exemplos <- .ac_generate_examples(
-      cat_name  = cat_name,
-      definicao = definicao_gerada$definition,
-      model     = model,
-      lang      = lang
-    )
+    definicao_gerada <- .ac_generate_definition(cat_name, concept, lit, model, lang)
+    exemplos         <- .ac_generate_examples(cat_name, definicao_gerada$definition, model, lang)
   } else {
-    definicao_gerada <- list(definition = "", summary = "")
+    definicao_gerada <- list(definition = "")
     exemplos         <- list(pos = character(0), neg = character(0))
   }
 
-  # Revisão interativa (só em modo interativo)
   if (interactive()) {
-    aprovado <- FALSE
+    aprovado        <- FALSE
     definicao_atual <- definicao_gerada$definition
     ex_pos_atual    <- exemplos$pos
     ex_neg_atual    <- exemplos$neg
@@ -562,42 +612,12 @@ ac_qual_search_literature <- function(concept,
     while (!aprovado) {
       cli::cli_rule()
       cli::cli_h2("CATEGORIA: {.val {cat_name}}")
-      cli::cli_text("")
-      cli::cli_text("{.strong Defini\u00e7\u00e3o gerada}:")
-      cli::cli_text(definicao_atual)
-      cli::cli_text("")
-      cli::cli_text("{.strong Exemplos positivos}:")
-      for (i in seq_along(ex_pos_atual)) {
-        cli::cli_text("  {i}. {ex_pos_atual[i]}")
-      }
-      cli::cli_text("")
-      cli::cli_text("{.strong Exemplos negativos}:")
-      for (i in seq_along(ex_neg_atual)) {
-        cli::cli_text("  {i}. {ex_neg_atual[i]}")
-      }
-      cli::cli_text("")
-      if (nrow(lit) > 0L) {
-        cli::cli_text("{.strong Refer\u00eancias utilizadas}:")
-        for (i in seq_len(min(3L, nrow(lit)))) {
-          cli::cli_text("  \u2022 {lit$autor[i]} ({lit$ano[i]}). {lit$revista[i]}.")
-        }
-        cli::cli_text("")
-        cli::cli_warn(c(
-          "!" = "Refer\u00eancias geradas por LLM. Verifique antes de citar."
-        ))
-      }
-      cli::cli_rule()
-
-      opcao <- readline(
-        "[E]ditar defini\u00e7\u00e3o  [R]egerar  [A]provar  > "
-      )
-      opcao <- toupper(trimws(opcao))
+      cli::cli_text("{.strong Defini\u00e7\u00e3o}: {definicao_atual}")
+      opcao <- toupper(trimws(readline("[E]ditar  [R]egerar  [A]provar > ")))
 
       if (opcao == "A") {
         aprovado <- TRUE
-
       } else if (opcao == "E") {
-        cli::cli_text("Cole a nova defini\u00e7\u00e3o (pressione Enter duas vezes para finalizar):")
         linhas <- character(0)
         repeat {
           linha <- readline("")
@@ -605,32 +625,16 @@ ac_qual_search_literature <- function(concept,
           linhas <- c(linhas, linha)
         }
         definicao_atual <- paste(linhas, collapse = " ")
-
       } else if (opcao == "R") {
-        cli::cli_inform("Regerando...")
-        definicao_gerada <- .ac_generate_definition(
-          cat_name = cat_name,
-          concept  = concept,
-          lit      = lit,
-          model    = model,
-          lang     = lang
-        )
-        exemplos        <- .ac_generate_examples(
-          cat_name  = cat_name,
-          definicao = definicao_gerada$definition,
-          model     = model,
-          lang      = lang
-        )
-        definicao_atual <- definicao_gerada$definition
-        ex_pos_atual    <- exemplos$pos
-        ex_neg_atual    <- exemplos$neg
+        definicao_gerada <- .ac_generate_definition(cat_name, concept, lit, model, lang)
+        exemplos         <- .ac_generate_examples(cat_name, definicao_gerada$definition, model, lang)
+        definicao_atual  <- definicao_gerada$definition
+        ex_pos_atual     <- exemplos$pos
+        ex_neg_atual     <- exemplos$neg
       }
     }
   } else {
-    cli::cli_warn(c(
-      "!" = "Modo n\u00e3o-interativo: revis\u00e3o da categoria {.val {cat_name}} pulada.",
-      "i" = "Use {.fn ac_qual_review} para revisar o codebook ap\u00f3s a cria\u00e7\u00e3o."
-    ))
+    cli::cli_warn("Modo n\u00e3o-interativo: revis\u00e3o da categoria {.val {cat_name}} pulada.")
     definicao_atual <- definicao_gerada$definition
     ex_pos_atual    <- exemplos$pos
     ex_neg_atual    <- exemplos$neg
@@ -642,9 +646,7 @@ ac_qual_search_literature <- function(concept,
       definition   = definicao_atual,
       examples_pos = ex_pos_atual,
       examples_neg = ex_neg_atual,
-      references   = if (nrow(lit) > 0L) {
-        paste0(lit$autor, " (", lit$ano, "). ", lit$revista, ".")
-      } else character(0),
+      references   = if (nrow(lit) > 0L) paste0(lit$autor, " (", lit$ano, "). ", lit$revista, ".") else character(0),
       concept      = concept,
       literature   = lit
     ),
@@ -657,33 +659,17 @@ ac_qual_search_literature <- function(concept,
 #' @noRd
 .ac_generate_definition <- function(cat_name, concept, lit, model, lang) {
   lang_str <- if (lang == "pt") "portugu\u00eas brasileiro" else "English"
-
-  refs_str <- paste(
-    purrr::map_chr(seq_len(nrow(lit)), function(i) {
-      paste0(lit$autor[i], " (", lit$ano[i], "): \"", lit$trecho_original[i], "\"")
-    }),
-    collapse = "\n"
-  )
+  refs_str <- paste(purrr::map_chr(seq_len(nrow(lit)), function(i) {
+    paste0(lit$autor[i], " (", lit$ano[i], "): \"", lit$trecho_original[i], "\"")
+  }), collapse = "\n")
 
   prompt <- paste0(
-    "Com base nas seguintes refer\u00eancias acad\u00eamicas sobre o conceito '", concept, "':\n\n",
-    refs_str, "\n\n",
-    "Redija em ", lang_str, " uma defini\u00e7\u00e3o operacional clara e precisa ",
-    "para a categoria '", cat_name, "' que possa ser usada como crit\u00e9rio de classifica\u00e7\u00e3o ",
-    "em an\u00e1lise de conte\u00fado qualitativa de discursos pol\u00edticos.\n\n",
-    "A defini\u00e7\u00e3o deve:\n",
-    "1. Ter entre 2-4 frases\n",
-    "2. Ser operacional (especificar o que deve ser observado no texto)\n",
-    "3. Ser distinta das demais categorias\n\n",
-    "Retorne APENAS a defini\u00e7\u00e3o, sem t\u00edtulo ou explica\u00e7\u00f5es adicionais."
+    "Com base nas refer\u00eancias sobre '", concept, "':\n\n", refs_str, "\n\n",
+    "Redija em ", lang_str, " uma defini\u00e7\u00e3o operacional de 2-4 frases para '", cat_name, "'. ",
+    "Retorne APENAS a defini\u00e7\u00e3o."
   )
-
-  chat <- ellmer::chat(name = model)
-  definition <- tryCatch(
-    chat$chat(prompt),
-    error = function(e) ""
-  )
-
+  chat       <- ellmer::chat(name = model)
+  definition <- tryCatch(chat$chat(prompt), error = function(e) "")
   list(definition = trimws(definition))
 }
 
@@ -692,31 +678,13 @@ ac_qual_search_literature <- function(concept,
 #' @noRd
 .ac_generate_examples <- function(cat_name, definicao, model, lang) {
   lang_str <- if (lang == "pt") "portugu\u00eas brasileiro" else "English"
-
-  prompt <- paste0(
-    "Para a categoria '", cat_name, "' com a seguinte defini\u00e7\u00e3o:\n\n",
-    definicao, "\n\n",
-    "Gere em formato JSON:\n",
-    "{\n",
-    "  \"pos\": [\"exemplo 1\", \"exemplo 2\", \"exemplo 3\"],\n",
-    "  \"neg\": [\"exemplo 1\", \"exemplo 2\", \"exemplo 3\"]\n",
-    "}\n\n",
-    "Onde:\n",
-    "- \"pos\": 3 exemplos de trechos de discursos pol\u00edticos que S\u00c3O desta categoria\n",
-    "- \"neg\": 3 exemplos de trechos que N\u00c3O S\u00c3O desta categoria\n",
-    "Idioma: ", lang_str, ".\n",
-    "Retorne APENAS o JSON, sem markdown."
+  prompt   <- paste0(
+    "Para a categoria '", cat_name, "': ", definicao, "\n\n",
+    "Gere JSON: {\"pos\":[\"ex1\",\"ex2\",\"ex3\"],\"neg\":[\"ex1\",\"ex2\",\"ex3\"]}.\n",
+    "Idioma: ", lang_str, ". Retorne APENAS o JSON."
   )
-
   chat   <- ellmer::chat(name = model)
   resp   <- tryCatch(chat$chat(prompt), error = function(e) "")
-  parsed <- tryCatch(
-    jsonlite::fromJSON(resp),
-    error = function(e) list(pos = character(0), neg = character(0))
-  )
-
-  list(
-    pos = parsed$pos %||% character(0),
-    neg = parsed$neg %||% character(0)
-  )
+  parsed <- tryCatch(jsonlite::fromJSON(resp), error = function(e) list(pos=character(0),neg=character(0)))
+  list(pos = parsed$pos %||% character(0), neg = parsed$neg %||% character(0))
 }

@@ -1,7 +1,6 @@
 Type: Package
 Package: acR
 Title: Content Analysis in R: Integrated Qualitative (LLMs) and Quantitative Pipeline
-    Quantitativo
 Version: 0.1.0
 Authors@R: 
     person("Anderson", "Henrique", , "anderson.henrique@usp.br", role = c("aut", "cre"),
@@ -21,44 +20,44 @@ License: MIT + file LICENSE
 URL: https://github.com/andersonheri/acR,
     https://andersonheri.github.io/acR/
 BugReports: https://github.com/andersonheri/acR/issues
-Imports: 
+Imports:
     cli,
     dplyr,
     ellmer,
-    ggplot2,
-    ggraph,
     httr2,
-    igraph,
-    ipeaplot,
     irr,
     jsonlite,
-    openxlsx,
     purrr,
-    quanteda,
     rlang,
-    scales,
-    senatebR,
-    stopwords,
-    stringi,
     stringr,
     tibble,
     tidyr,
     tidyselect,
-    tidytext,
-    topicmodels,
-    wordcloud,
-    writexl,
     yaml
 Suggests:
     covr,
+    ggplot2,
+    ggraph,
+    igraph,
+    ipeaplot,
     knitr,
+    openxlsx,
     pkgdown,
+    quanteda,
     readtext,
     rmarkdown,
+    scales,
+    senatebR,
     spelling,
+    stopwords,
+    stringi,
     tesseract,
     testthat,
-    withr
+    tidytext,
+    topicmodels,
+    withr,
+    wordcloud,
+    writexl
 VignetteBuilder: knitr
 Additional_repositories: https://github.com/vsntos/senatebR
 Config/testthat/edition: 3

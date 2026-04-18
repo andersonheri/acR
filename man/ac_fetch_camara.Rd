@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_fetch_camara.R
 \name{ac_fetch_camara}
 \alias{ac_fetch_camara}
-\title{Busca discursos de deputados federais via API da C^amara dos Deputados}
+\title{Busca discursos de deputados federais via API da Camara dos Deputados}
 \usage{
 ac_fetch_camara(
   data_inicio,
@@ -17,99 +17,87 @@ ac_fetch_camara(
 )
 }
 \arguments{
-\item{data_inicio}{\code{character}. Data de in'icio no formato \code{"YYYY-MM-DD"}.}
+\item{data_inicio}{\code{character}. Data de inicio no formato \code{"YYYY-MM-DD"}.}
 
 \item{data_fim}{\code{character}. Data de fim no formato \code{"YYYY-MM-DD"}.}
 
-\item{legislatura}{\code{integer} ou \code{NULL}. N'umero da legislatura (ex.: \code{57}
+\item{legislatura}{\code{integer} ou \code{NULL}. Numero da legislatura (ex.: \code{57}
 para 2023-2027). Se \code{NULL}, usa o periodo definido por \code{data_inicio} e
 \code{data_fim} sem filtrar por legislatura.}
 
 \item{partido}{\code{character} ou \code{NULL}. Sigla do partido para filtrar
-deputados (ex.: \code{"PT"}, \code{"PL"}, \code{"MDB"}). Aceita vetor de sigllas.
+deputados (ex.: \code{"PT"}, \code{"PL"}, \code{"MDB"}). Aceita vetor de siglas.
 Se \code{NULL}, inclui todos os partidos.}
 
 \item{uf}{\code{character} ou \code{NULL}. Sigla da UF para filtrar deputados
 (ex.: \code{"SP"}, \code{"MG"}). Aceita vetor de UFs. Se \code{NULL}, inclui todas.}
 
-\item{n_max}{\code{integer}. N'umero m'aximo de discursos a retornar.
-Padr~ao: \code{100}. Use \code{Inf} para coletar todos (atenc~ao: pode ser lento).}
+\item{n_max}{\code{integer}. Numero maximo de discursos a retornar.
+Padrao: \code{100}. Use \code{Inf} para coletar todos (atencao: pode ser lento).}
 
-\item{tipo_discurso}{\code{character}. Tipo de evento parlamentar. Opc~oes
+\item{tipo_discurso}{\code{character}. Tipo de evento parlamentar. Opcoes
 principais: \code{"plenario"} (padrao), \code{"comissao"}, \code{"todos"}.}
 
 \item{verbose}{\code{logical}. Se \code{TRUE} (padrao), exibe mensagens de progresso.}
 
-\item{sleep}{\code{numeric}. Tempo de espera (em segundos) entre chamadas \verb{a API para respeitar o rate limit. Padr~ao: }0.5`.}
+\item{sleep}{\code{numeric}. Tempo de espera (em segundos) entre chamadas a API
+para respeitar o rate limit. Padrao: \code{0.5}.}
 }
 \value{
 Um \code{data.frame} com as colunas:
 \describe{
 \item{\code{id_discurso}}{\code{character}. Identificador unico do discurso.}
-\item{\code{id_deputado}}{\code{integer}. ID do deputado na API da C^amara.}
+\item{\code{id_deputado}}{\code{integer}. ID do deputado na API da Camara.}
 \item{\code{nome_deputado}}{\code{character}. Nome civil do parlamentar.}
 \item{\code{partido}}{\code{character}. Sigla do partido na data do discurso.}
 \item{\code{uf}}{\code{character}. UF da bancada do parlamentar.}
 \item{\code{data}}{\code{Date}. Data do discurso.}
-\item{\code{hora_inicio}}{\code{character}. Hora de in'icio (HH:MM).}
+\item{\code{hora_inicio}}{\code{character}. Hora de inicio (HH:MM).}
 \item{\code{tipo_discurso}}{\code{character}. Tipo de fase do evento.}
-\item{\code{sumario}}{\code{character}. Sum'ario do discurso (quando dispon'ivel).}
-\item{\code{texto}}{\code{character}. Texto integral do discurso (quando dispon'ivel).}
+\item{\code{sumario}}{\code{character}. Sumario do discurso (quando disponivel).}
+\item{\code{texto}}{\code{character}. Texto integral do discurso (quando disponivel).}
 \item{\code{uri_discurso}}{\code{character}. URI do recurso na API.}
 }
 }
 \description{
-Coleta discursos parlamentares diretamente da API p'ublica da C^amara dos
+Coleta discursos parlamentares diretamente da API publica da Camara dos
 Deputados (v2), retornando um \code{data.frame} padronizado e pronto para uso
-nas func~oes do \code{acR}. A coleta e feita em duas etapas: (1) lista deputados
+nas funcoes do \code{acR}. A coleta e feita em duas etapas: (1) lista deputados
 conforme os filtros informados; (2) para cada deputado, busca os discursos
-no periodo solicitado, com paginacao autom'atica.
+no periodo solicitado, com paginacao automatica.
 }
 \details{
-\subsection{Estrutura da API}{
-
-A API Dados Abertos da C^amara (v2) n~ao disp~oe de endpoint unico para
+A API Dados Abertos da Camara (v2) nao dispoe de endpoint unico para
 discursos por periodo. O fluxo de coleta e:
 \enumerate{
 \item \code{GET /api/v2/deputados} - lista deputados com filtros de partido/UF.
 \item \code{GET /api/v2/deputados/{id}/discursos} - discursos de cada deputado,
-com paginacao (m'ax. 100 itens por p'agina).
-}
-}
-
-\subsection{Rate limiting}{
-
-A API n~ao publica limites formais, mas respostas com HTTP 429 s~ao tratadas
-com \emph{backoff} exponencial (ate 3 tentativas). O par^ametro \code{sleep} define
-a pausa m'inima entre requisicoes.
+com paginacao (max. 100 itens por pagina).
 }
 
-\subsection{Texto integral}{
-
-Nem todos os discursos t^em texto integral dispon'ivel. Quando ausente,
-a coluna \code{texto} recebe \code{NA}. Nesses casos, apenas o \code{sumario} e retornado.
-}
+O filtro \code{tipo_discurso} atua sobre o campo \code{tipoDiscurso} retornado pela
+API. Valores observados: \code{"DISCURSO"}, \code{"DISCURSO ENCAMINHADO"},
+\code{"BREVE COMUNICACAO"}, \code{"PELA ORDEM"}, \code{"COMUNICACAO PARLAMENTAR"}.
 }
 \examples{
 \dontrun{
-# Discursos do plen'ario, primeiro semestre de 2024
+# Discursos do plenario, marco de 2024
 disc <- ac_fetch_camara(
-  data_inicio = "2024-01-01",
-  data_fim    = "2024-06-30",
+  data_inicio = "2024-03-11",
+  data_fim    = "2024-03-15",
   n_max       = 50
 )
 
-# Apenas PT e PL, legislatura 57
+# Apenas PT e PL
 disc_partidos <- ac_fetch_camara(
-  data_inicio  = "2024-01-01",
-  data_fim     = "2024-12-31",
-  legislatura  = 57,
-  partido      = c("PT", "PL"),
-  n_max        = 200
+  data_inicio = "2024-01-01",
+  data_fim    = "2024-03-31",
+  partido     = c("PT", "PL"),
+  n_max       = 100
 )
 
-# Deputados de SP, todos os tipos de discurso
-disc_sp <- ac_fetch_camara(
+# Todos os tipos de discurso
+disc_todos <- ac_fetch_camara(
   data_inicio   = "2024-03-01",
   data_fim      = "2024-03-31",
   uf            = "SP",
@@ -120,8 +108,8 @@ disc_sp <- ac_fetch_camara(
 
 }
 \references{
-C^AMARA DOS DEPUTADOS. \strong{Dados Abertos da C^amara dos Deputados - API v2}.
-Bras'ilia, 2024. Dispon'ivel em:
+CAMARA DOS DEPUTADOS. Dados Abertos da Camara dos Deputados - API v2.
+Brasilia, 2024. Disponivel em:
 \url{https://dadosabertos.camara.leg.br/swagger/api.html}. Acesso em: abr. 2026.
 }
 \seealso{
