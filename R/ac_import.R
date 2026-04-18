@@ -139,17 +139,22 @@ ac_import <- function(path,
   }
 
   # ── gerar IDs ───────────────────────────────────────────────────────────
-  ids_finais <- if (is.character(id_from) && length(id_from) > 1) {
+  ids_finais <- if (is.character(id_from) && length(id_from) != 1L) {
     if (length(id_from) != length(textos))
       stop('`id_from` deve ter o mesmo comprimento que o numero de arquivos.',
            call. = FALSE)
     id_from
-  } else if (id_from == 'rownum') {
+  } else if (identical(id_from, 'rownum')) {
     paste0('doc_', seq_along(textos))
   } else {
     ids
   }
 
   # ── retornar ac_corpus ───────────────────────────────────────────────────
-  ac_corpus(textos, id = ids_finais)
+  ac_corpus(
+    data.frame(doc_id = ids_finais, text = textos, stringsAsFactors = FALSE),
+    text  = text,
+    docid = doc_id
+  )
+
 }
