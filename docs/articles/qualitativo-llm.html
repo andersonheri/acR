@@ -376,49 +376,123 @@ para português:</p>
 <h2 id="busca-de-literatura-via-openalex">Busca de literatura via OpenAlex<a class="anchor" aria-label="anchor" href="#busca-de-literatura-via-openalex"></a>
 </h2>
 <p><code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code> busca referências reais na
-API do OpenAlex (Priem et al., 2022) e usa a LLM para sintetizar os
-abstracts em português. Isso evita alucinações bibliográficas comuns
-quando a LLM opera sem fonte externa.</p>
+API do <a href="https://openalex.org/" class="external-link">OpenAlex</a> (Priem et al., 2022)
+e usa a LLM para sintetizar os abstracts em português. Isso evita
+alucinações bibliográficas comuns quando a LLM opera sem fonte
+externa.</p>
+<p>A arquitetura é: OpenAlex recupera registros verificados (autor, ano,
+DOI, abstract, revista, número de citações); a LLM sintetiza o abstract
+e extrai o trecho mais relevante.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
 <span>  concept       <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span>
-<span>  n_refs        <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  min_citations <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  n_refs        <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  journals      <span class="op">=</span> <span class="st">"default"</span>,   <span class="co"># lista curada de periodicos de CP/CS</span></span>
+<span>  lang          <span class="op">=</span> <span class="st">"pt"</span>,        <span class="co"># definicoes sintetizadas em portugues</span></span>
+<span>  min_citations <span class="op">=</span> <span class="fl">50</span>,          <span class="co"># apenas trabalhos consolidados</span></span>
 <span>  chat          <span class="op">=</span> <span class="va">chat_obj</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Resultado: tibble com autor, ano, revista, n_citacoes,</span></span>
-<span><span class="co"># trecho_original, definicao_pt, abstract_original, link</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lit</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lit</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"autor"</span>, <span class="st">"ano"</span>, <span class="st">"revista"</span>, <span class="st">"n_citacoes"</span>, <span class="st">"definicao_pt"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## # A tibble: 3 × 5</span></span>
+<span><span class="co">##   autor                       ano revista                             n_citacoes</span></span>
+<span><span class="co">##   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                                    &lt;int&gt;</span></span>
+<span><span class="co">## 1 Nancy Bermeo               2016 Journal of democracy                      2015</span></span>
+<span><span class="co">## 2 Dean T. Jamison et al.     2013 The Lancet                                1209</span></span>
+<span><span class="co">## 3 David Waldner; Ellen Lust  2018 Annual Review of Political Science         782</span></span>
+<span><span class="co">##   definicao_pt</span></span>
+<span><span class="co">##   &lt;chr&gt;</span></span>
+<span><span class="co">## 1 O recuo democrático se refere à debilitação ou eliminação de instituições</span></span>
+<span><span class="co">##   políticas que sustentam uma democracia existente, liderada pelo Estado.</span></span>
+<span><span class="co">##   Esse conceito tem mudado significativamente desde a Guerra Fria, com formas</span></span>
+<span><span class="co">##   contemporâneas se tornando mais sutis e complexas.</span></span>
+<span><span class="co">## 2 O texto fornecido não apresenta informações relevantes sobre o conceito de</span></span>
+<span><span class="co">##   recuo democrático, pois trata de saúde pública e políticas fiscais.</span></span>
+<span><span class="co">## 3 O recuo democrático refere-se às mudanças que ocorrem dentro de um regime</span></span>
+<span><span class="co">##   político, levando à deterioração da democracia. O estudo desse fenômeno</span></span>
+<span><span class="co">##   carece de fundamentos conceituais e teóricos sólidos.</span></span></code></pre>
+<p>O resultado é um tibble com 9 colunas: <code>conceito</code>,
+<code>autor</code>, <code>ano</code>, <code>revista</code>,
+<code>n_citacoes</code>, <code>trecho_original</code>,
+<code>definicao_pt</code>, <code>abstract_original</code> e
+<code>link</code>.</p>
+<p>O argumento <code>journals = "default"</code> prioriza periódicos de
+referência em Ciência Política, Administração Pública e Ciências Sociais
+(APSR, AJPS, DADOS, RBCS, Opinião Pública, entre outros). Use
+<code>journals = "all"</code> para busca sem restrição, ou passe um
+vetor customizado como
+<code>journals = c("default", "Latin American Politics and Society")</code>.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="validação-confiabilidade-intercodificadores">Validação: confiabilidade intercodificadores<a class="anchor" aria-label="anchor" href="#valida%C3%A7%C3%A3o-confiabilidade-intercodificadores"></a>
 </h2>
 <p>Após a classificação automática, recomenda-se validar uma amostra com
-codificadores humanos usando <code><a href="../reference/ac_qual_irr.html">ac_qual_irr()</a></code>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Exportar amostra para revisão humana</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
+codificadores humanos. O fluxo é: exportar amostra → preencher
+manualmente → importar → calcular concordância.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 1. Amostrar e exportar para revisao humana</span></span>
+<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span></span>
 <span>  <span class="va">resultado</span>,</span>
-<span>  n        <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  path     <span class="op">=</span> <span class="st">"revisao_humana.xlsx"</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="st">"uncertainty"</span>   <span class="co"># prioriza documentos com menor confiança</span></span>
+<span>  n        <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  strategy <span class="op">=</span> <span class="st">"uncertainty"</span>   <span class="co"># prioriza documentos com menor confidence_score</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Após preenchimento manual, importar e calcular concordância</span></span>
-<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_humana.xlsx"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
+<span>  sample <span class="op">=</span> <span class="va">amostra</span>,</span>
+<span>  path   <span class="op">=</span> <span class="st">"revisao_humana.xlsx"</span>,</span>
+<span>  corpus <span class="op">=</span> <span class="va">corpus</span>   <span class="co"># inclui texto original para facilitar a revisao</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>O arquivo <code>.xlsx</code> exportado contém uma coluna
+<code>categoria_humano</code> vazia para preenchimento manual. Após o
+preenchimento, importe e calcule a concordância:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 2. Importar revisao humana preenchida</span></span>
+<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span></span>
+<span>  path    <span class="op">=</span> <span class="st">"revisao_humana.xlsx"</span>,</span>
+<span>  cat_col <span class="op">=</span> <span class="st">"categoria_humano"</span>,</span>
+<span>  id_col  <span class="op">=</span> <span class="st">"doc_id"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># 3. Calcular concordancia intercodificadores</span></span>
 <span><span class="va">concordancia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span></span>
-<span>  coded  <span class="op">=</span> <span class="va">resultado</span>,</span>
-<span>  human  <span class="op">=</span> <span class="va">humano</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kappa"</span>, <span class="st">"alpha"</span><span class="op">)</span></span>
+<span>  gold      <span class="op">=</span> <span class="va">humano</span>,      <span class="co"># classificacao humana (referencia)</span></span>
+<span>  predicted <span class="op">=</span> <span class="va">resultado</span>,   <span class="co"># classificacao do modelo</span></span>
+<span>  method    <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  id_col    <span class="op">=</span> <span class="st">"doc_id"</span>,</span>
+<span>  cat_col   <span class="op">=</span> <span class="st">"categoria"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">concordancia</span><span class="op">)</span></span></code></pre></div>
-<p>Interpretação do kappa de Cohen baseada em Landis e Koch (1977): ≥
-0.80 indica concordância quase perfeita; 0.61–0.79, substancial;
-0.41–0.60, moderada; &lt; 0.41, fraca.</p>
+<p>Os resultados obtidos na validação com 15 documentos (duas rodadas
+independentes do mesmo modelo, simulando dois codificadores):</p>
+<pre><code><span><span class="co">## ── Confiabilidade inter-anotador (acR) ──</span></span>
+<span><span class="co">## • Documentos comparados: 15</span></span>
+<span><span class="co">## • Categorias: economia_fiscal, orientacao_votacao, outros,</span></span>
+<span><span class="co">##   politica_social, seguranca_publica</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## Metrica                            Estimativa  IC 95%           Interpretacao</span></span>
+<span><span class="co">## ──────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">## Percent Agreement                  0.800       [, ]             Muito bom</span></span>
+<span><span class="co">## Cohen's Kappa (unweighted)         0.702       [0.403, 1.001]   Substancial</span></span>
+<span><span class="co">## Fleiss' Kappa                      0.699       [0.389, 1.009]   Substancial</span></span>
+<span><span class="co">## Krippendorff's Alpha (nominal)     0.709       [, ]             Substancial</span></span>
+<span><span class="co">##</span></span>
+<span><span class="co">## Matriz de confusao:</span></span>
+<span><span class="co">##                     Predicted</span></span>
+<span><span class="co">## Gold                 economia_fiscal orientacao_votacao outros politica_social</span></span>
+<span><span class="co">##   orientacao_votacao               0                  7      0               0</span></span>
+<span><span class="co">##   outros                           1                  0      2               0</span></span>
+<span><span class="co">##   politica_social                  0                  1      1               2</span></span>
+<span><span class="co">##   seguranca_publica                0                  0      0               0</span></span></code></pre>
+<p>Kappa de Cohen de <strong>0.70</strong> indica concordância
+substancial (Landis &amp; Koch, 1977), resultado comparável aos
+benchmarks de anotação humana relatados por Gilardi, Alizadeh e Kubli
+(2023) para tarefas de classificação política.</p>
+<p><code><a href="../reference/ac_qual_irr.html">ac_qual_irr()</a></code> calcula quatro métricas: percentual de
+concordância, kappa de Cohen, kappa de Fleiss e alpha de Krippendorff.
+Interpretação: ≥ 0.80 = quase perfeita; 0.61–0.79 = substancial;
+0.41–0.60 = moderada; &lt; 0.41 = fraca.</p>
 <hr>
 </div>
 <div class="section level2">

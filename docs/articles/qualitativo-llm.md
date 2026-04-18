@@ -266,55 +266,136 @@ chat_obj <- chat_openrouter(model = "google/gemini-2.5-flash", echo = "none")
 ## Busca de literatura via OpenAlex
 
 [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
-busca referências reais na API do OpenAlex (Priem et al., 2022) e usa a
-LLM para sintetizar os abstracts em português. Isso evita alucinações
-bibliográficas comuns quando a LLM opera sem fonte externa.
+busca referências reais na API do [OpenAlex](https://openalex.org/)
+(Priem et al., 2022) e usa a LLM para sintetizar os abstracts em
+português. Isso evita alucinações bibliográficas comuns quando a LLM
+opera sem fonte externa.
+
+A arquitetura é: OpenAlex recupera registros verificados (autor, ano,
+DOI, abstract, revista, número de citações); a LLM sintetiza o abstract
+e extrai o trecho mais relevante.
 
 ``` r
 lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
-  n_refs        = 5,
-  min_citations = 50,
+  n_refs        = 3,
+  journals      = "default",   # lista curada de periodicos de CP/CS
+  lang          = "pt",        # definicoes sintetizadas em portugues
+  min_citations = 50,          # apenas trabalhos consolidados
   chat          = chat_obj
 )
 
-# Resultado: tibble com autor, ano, revista, n_citacoes,
-# trecho_original, definicao_pt, abstract_original, link
-print(lit)
+print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
 ```
+
+    ## # A tibble: 3 × 5
+    ##   autor                       ano revista                             n_citacoes
+    ##   <chr>                     <int> <chr>                                    <int>
+    ## 1 Nancy Bermeo               2016 Journal of democracy                      2015
+    ## 2 Dean T. Jamison et al.     2013 The Lancet                                1209
+    ## 3 David Waldner; Ellen Lust  2018 Annual Review of Political Science         782
+    ##   definicao_pt
+    ##   <chr>
+    ## 1 O recuo democrático se refere à debilitação ou eliminação de instituições
+    ##   políticas que sustentam uma democracia existente, liderada pelo Estado.
+    ##   Esse conceito tem mudado significativamente desde a Guerra Fria, com formas
+    ##   contemporâneas se tornando mais sutis e complexas.
+    ## 2 O texto fornecido não apresenta informações relevantes sobre o conceito de
+    ##   recuo democrático, pois trata de saúde pública e políticas fiscais.
+    ## 3 O recuo democrático refere-se às mudanças que ocorrem dentro de um regime
+    ##   político, levando à deterioração da democracia. O estudo desse fenômeno
+    ##   carece de fundamentos conceituais e teóricos sólidos.
+
+O resultado é um tibble com 9 colunas: `conceito`, `autor`, `ano`,
+`revista`, `n_citacoes`, `trecho_original`, `definicao_pt`,
+`abstract_original` e `link`.
+
+O argumento `journals = "default"` prioriza periódicos de referência em
+Ciência Política, Administração Pública e Ciências Sociais (APSR, AJPS,
+DADOS, RBCS, Opinião Pública, entre outros). Use `journals = "all"` para
+busca sem restrição, ou passe um vetor customizado como
+`journals = c("default", "Latin American Politics and Society")`.
 
 ------------------------------------------------------------------------
 
 ## Validação: confiabilidade intercodificadores
 
 Após a classificação automática, recomenda-se validar uma amostra com
-codificadores humanos usando
-[`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md):
+codificadores humanos. O fluxo é: exportar amostra → preencher
+manualmente → importar → calcular concordância.
 
 ``` r
-# Exportar amostra para revisão humana
-ac_qual_export_for_review(
+# 1. Amostrar e exportar para revisao humana
+amostra <- ac_qual_sample(
   resultado,
-  n        = 20,
-  path     = "revisao_humana.xlsx",
-  strategy = "uncertainty"   # prioriza documentos com menor confiança
+  n        = 15,
+  strategy = "uncertainty"   # prioriza documentos com menor confidence_score
 )
 
-# Após preenchimento manual, importar e calcular concordância
-humano <- ac_qual_import_human("revisao_humana.xlsx")
+ac_qual_export_for_review(
+  sample = amostra,
+  path   = "revisao_humana.xlsx",
+  corpus = corpus   # inclui texto original para facilitar a revisao
+)
+```
 
+O arquivo `.xlsx` exportado contém uma coluna `categoria_humano` vazia
+para preenchimento manual. Após o preenchimento, importe e calcule a
+concordância:
+
+``` r
+# 2. Importar revisao humana preenchida
+humano <- ac_qual_import_human(
+  path    = "revisao_humana.xlsx",
+  cat_col = "categoria_humano",
+  id_col  = "doc_id"
+)
+
+# 3. Calcular concordancia intercodificadores
 concordancia <- ac_qual_irr(
-  coded  = resultado,
-  human  = humano,
-  method = c("kappa", "alpha")
+  gold      = humano,      # classificacao humana (referencia)
+  predicted = resultado,   # classificacao do modelo
+  method    = "all",
+  id_col    = "doc_id",
+  cat_col   = "categoria"
 )
 
 print(concordancia)
 ```
 
-Interpretação do kappa de Cohen baseada em Landis e Koch (1977): ≥ 0.80
-indica concordância quase perfeita; 0.61–0.79, substancial; 0.41–0.60,
-moderada; \< 0.41, fraca.
+Os resultados obtidos na validação com 15 documentos (duas rodadas
+independentes do mesmo modelo, simulando dois codificadores):
+
+    ## ── Confiabilidade inter-anotador (acR) ──
+    ## • Documentos comparados: 15
+    ## • Categorias: economia_fiscal, orientacao_votacao, outros,
+    ##   politica_social, seguranca_publica
+    ##
+    ## Metrica                            Estimativa  IC 95%           Interpretacao
+    ## ──────────────────────────────────────────────────────────────────────────────
+    ## Percent Agreement                  0.800       [, ]             Muito bom
+    ## Cohen's Kappa (unweighted)         0.702       [0.403, 1.001]   Substancial
+    ## Fleiss' Kappa                      0.699       [0.389, 1.009]   Substancial
+    ## Krippendorff's Alpha (nominal)     0.709       [, ]             Substancial
+    ##
+    ## Matriz de confusao:
+    ##                     Predicted
+    ## Gold                 economia_fiscal orientacao_votacao outros politica_social
+    ##   orientacao_votacao               0                  7      0               0
+    ##   outros                           1                  0      2               0
+    ##   politica_social                  0                  1      1               2
+    ##   seguranca_publica                0                  0      0               0
+
+Kappa de Cohen de **0.70** indica concordância substancial (Landis &
+Koch, 1977), resultado comparável aos benchmarks de anotação humana
+relatados por Gilardi, Alizadeh e Kubli (2023) para tarefas de
+classificação política.
+
+[`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md)
+calcula quatro métricas: percentual de concordância, kappa de Cohen,
+kappa de Fleiss e alpha de Krippendorff. Interpretação: ≥ 0.80 = quase
+perfeita; 0.61–0.79 = substancial; 0.41–0.60 = moderada; \< 0.41 =
+fraca.
 
 ------------------------------------------------------------------------
 
