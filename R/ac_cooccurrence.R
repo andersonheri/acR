@@ -116,7 +116,7 @@ ac_cooccurrence <- function(corpus,
   if ("dice" %in% measure) {
     cooc_tbl <- cooc_tbl |>
       dplyr::mutate(
-        dice = (2 * cooc) / (freq1 + freq2)
+        dice = pmin((2 * cooc) / (freq1 + freq2), 1)
       )
   }
 

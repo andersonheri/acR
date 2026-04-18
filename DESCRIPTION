@@ -2,9 +2,10 @@ Type: Package
 Package: acR
 Title: Content Analysis in R: Integrated Qualitative (LLMs) and Quantitative Pipeline
 Version: 0.2.0
-Authors@R: 
-    person("Anderson", "Henrique", , "anderson.henrique@usp.br", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0000-0000-0000", affiliation = "Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao Paulo"))
+Authors@R: person("Anderson Henrique", email = "anderson.henrique@usp.br",
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-1842-2725",
+                affiliation = "Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao Paulo"))
 Description: Provides an integrated pipeline for content analysis in R,
     combining qualitative coding assisted by large language models ('LLMs')
     with classical quantitative text analysis. Includes modules for
