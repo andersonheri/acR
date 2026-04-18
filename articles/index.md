@@ -6,8 +6,8 @@
 
 ### Pipeline qualitativo
 
-- [Codificacao qualitativa com
-  LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md):
+- [Análise de Conteúdo Qualitativa com LLMs via
+  ellmer](https://andersonheri.github.io/acR/articles/qualitativo-llm.md):
 - [Analise de proposicoes legislativas com
   qwen3.6](https://andersonheri.github.io/acR/articles/analise-proposicoes.md):
 

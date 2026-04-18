@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Codificacao qualitativa com LLMs • acR</title>
+<title>Análise de Conteúdo Qualitativa com LLMs via ellmer • acR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Codificacao qualitativa com LLMs">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Análise de Conteúdo Qualitativa com LLMs via ellmer">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -72,7 +72,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Codificacao qualitativa com LLMs</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Análise de Conteúdo Qualitativa com LLMs via ellmer</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/main/vignettes/qualitativo-llm.Rmd" class="external-link"><code>vignettes/qualitativo-llm.Rmd</code></a></small>
@@ -82,342 +82,557 @@
     
     
 <div class="section level2">
-<h2 id="visao-geral">Visao geral<a class="anchor" aria-label="anchor" href="#visao-geral"></a>
+<h2 id="visão-geral">Visão Geral<a class="anchor" aria-label="anchor" href="#vis%C3%A3o-geral"></a>
 </h2>
-<p>O modulo qualitativo do <code>acR</code> implementa um pipeline
-completo de analise de conteudo assistida por modelos de linguagem
-(LLMs). O fluxo cobre: (1) listagem e recomendacao de modelos, (2)
-construcao do codebook, (3) codificacao automatica e (4) validacao com
-concordancia inter-codificador.</p>
-<p>Armazene sua chave no <code>.Renviron</code> (nunca no codigo):</p>
-<pre><code><span><span class="co"># usethis::edit_r_environ()</span></span>
-<span><span class="co"># OLLAMA_API_KEY=sua_chave_aqui</span></span></code></pre>
-</div>
-<div class="section level2">
-<h2 id="provedores-suportados">Provedores suportados<a class="anchor" aria-label="anchor" href="#provedores-suportados"></a>
-</h2>
+<p>O pacote <strong>acR</strong> oferece duas funções para análise de
+conteúdo qualitativa assistida por modelos de linguagem de grande escala
+(LLMs):</p>
 <table class="table">
 <colgroup>
-<col width="18%">
-<col width="18%">
-<col width="48%">
-<col width="13%">
+<col width="24%">
+<col width="75%">
 </colgroup>
 <thead><tr class="header">
-<th>Provedor</th>
-<th><code>provider</code></th>
-<th>Modelo recomendado</th>
-<th>Portugues</th>
+<th>Função</th>
+<th>O que faz</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Ollama nuvem</td>
-<td><code>"ollama"</code></td>
-<td><code>qwen3.6:latest</code></td>
-<td>Excelente</td>
+<td><code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code></td>
+<td>Classifica textos em categorias de um <em>codebook</em>
+existente</td>
 </tr>
 <tr class="even">
-<td>OpenAI</td>
-<td><code>"openai"</code></td>
-<td>
-<code>gpt-4o-mini</code>, <code>gpt-4o</code>
-</td>
-<td>Excelente</td>
+<td><code><a href="../reference/ac_qual_codebook.html">ac_qual_codebook()</a></code></td>
+<td>Induz um <em>codebook</em> a partir de um corpus de textos</td>
 </tr>
+</tbody>
+</table>
+<p>A partir da versão 0.3.0, ambas as funções aceitam o argumento
+<code>chat =</code>, que recebe qualquer objeto <code>Chat</code> do
+pacote <strong>ellmer</strong>. Isso permite usar <strong>qualquer
+provedor suportado pelo ellmer</strong> — OpenAI, Google Gemini, Groq,
+Anthropic, Ollama, Mistral, DeepSeek, entre outros — sem alterar a
+lógica de análise.</p>
+<blockquote>
+<p><strong>Retrocompatibilidade:</strong> quando
+<code>chat = NULL</code> (padrão), as funções usam o comportamento
+anterior baseado em <code>provider</code> e <code>api_key</code>,
+mantendo compatibilidade total com código existente.</p>
+</blockquote>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="instalação">Instalação<a class="anchor" aria-label="anchor" href="#instala%C3%A7%C3%A3o"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Versão de desenvolvimento</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Dependências necessárias</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ellmer"</span>, <span class="st">"dplyr"</span>, <span class="st">"tibble"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="o-argumento-chat-conceito-central">O argumento <code>chat =</code>: conceito central<a class="anchor" aria-label="anchor" href="#o-argumento-chat-conceito-central"></a>
+</h2>
+<p>O <code>ellmer</code> padroniza a interface com qualquer LLM em um
+objeto <code>Chat</code> criado pelas funções <code>chat_*()</code>. O
+acR usa esse objeto diretamente, delegando ao ellmer toda a comunicação
+com a API.</p>
+<pre><code>Pesquisador
+    │
+    ▼
+ellmer::chat_*()   ←─── escolha o provedor aqui
+    │
+    ▼
+acR::ac_qual_code()   /   ac_qual_codebook()
+    │
+    ▼
+Resultado: data.frame com categorias + justificativas</code></pre>
+<p>O fluxo de trabalho padrão tem três passos:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Configurar</strong> a chave de API via variável de ambiente
+(<code>.Renviron</code>).</li>
+<li>
+<strong>Instanciar</strong> o objeto <code>Chat</code> com
+<code>ellmer::chat_*()</code>.</li>
+<li>
+<strong>Passar</strong> o objeto para <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> ou
+<code><a href="../reference/ac_qual_codebook.html">ac_qual_codebook()</a></code> via <code>chat =</code>.</li>
+</ol>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="dados-de-exemplo">Dados de exemplo<a class="anchor" aria-label="anchor" href="#dados-de-exemplo"></a>
+</h2>
+<p>Para reproduzir os exemplos abaixo, usamos um corpus de discursos
+parlamentares sobre política de saúde e um <em>codebook</em> temático
+simples.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Corpus: trechos de discursos parlamentares (vetor de caracteres)</span></span>
+<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"O governo precisa ampliar o financiamento do SUS nas regiões Norte e Nordeste."</span>,</span>
+<span>  <span class="st">"A privatização dos serviços hospitalares reduz custos e melhora a eficiência."</span>,</span>
+<span>  <span class="st">"Precisamos de mais médicos nas UBSs da periferia, especialmente pediatras."</span>,</span>
+<span>  <span class="st">"O Programa Farmácia Popular deve ser expandido para municípios menores."</span>,</span>
+<span>  <span class="st">"A subnotificação de doenças tropicais compromete as políticas de vigilância."</span>,</span>
+<span>  <span class="st">"Defendo a universalização da cobertura vacinal como prioridade orçamentária."</span>,</span>
+<span>  <span class="st">"O modelo de OSS (Organizações Sociais de Saúde) deve ser regulamentado."</span>,</span>
+<span>  <span class="st">"É preciso investir em telemedicina para alcançar populações isoladas."</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Codebook: categorias temáticas</span></span>
+<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  categoria    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Financiamento"</span>, <span class="st">"Privatização"</span>, <span class="st">"Atenção Básica"</span>,</span>
+<span>                   <span class="st">"Acesso a Medicamentos"</span>, <span class="st">"Vigilância Epidemiológica"</span>,</span>
+<span>                   <span class="st">"Imunização"</span>, <span class="st">"Gestão"</span>, <span class="st">"Tecnologia em Saúde"</span><span class="op">)</span>,</span>
+<span>  descricao    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Referências a orçamento, repasses e financiamento público da saúde"</span>,</span>
+<span>    <span class="st">"Discussões sobre privatização, concessão ou gestão privada de serviços"</span>,</span>
+<span>    <span class="st">"Menções a UBS, ESF, atenção primária e médicos de família"</span>,</span>
+<span>    <span class="st">"Acesso a medicamentos, farmácias populares e assistência farmacêutica"</span>,</span>
+<span>    <span class="st">"Vigilância sanitária, epidemiológica, subnotificação e doenças endêmicas"</span>,</span>
+<span>    <span class="st">"Vacinação, campanhas de imunização e cobertura vacinal"</span>,</span>
+<span>    <span class="st">"Modelos de gestão hospitalar, OSS, eficiência administrativa"</span>,</span>
+<span>    <span class="st">"Telemedicina, prontuário eletrônico, inovação em saúde"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="provedores-disponíveis-via-ellmer">Provedores disponíveis via ellmer<a class="anchor" aria-label="anchor" href="#provedores-dispon%C3%ADveis-via-ellmer"></a>
+</h2>
+<div class="section level3">
+<h3 id="google-gemini-tier-gratuito-disponível">1. Google Gemini (tier gratuito disponível)<a class="anchor" aria-label="anchor" href="#google-gemini-tier-gratuito-dispon%C3%ADvel"></a>
+</h3>
+<p>Recomendado para pesquisadores sem orçamento para APIs pagas. O
+modelo <code>gemini-2.5-flash</code> é rápido e preciso para
+classificação de textos em português.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 1. Configurar: adicione ao .Renviron</span></span>
+<span><span class="co"># GOOGLE_API_KEY="sua_chave_aqui"</span></span>
+<span></span>
+<span><span class="co"># 2. Instanciar</span></span>
+<span><span class="va">chat_gemini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span></span>
+<span>  model         <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>,</span>
+<span>  system_prompt <span class="op">=</span> <span class="st">"Você é um especialista em análise de conteúdo de discursos políticos brasileiros."</span>,</span>
+<span>  echo          <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 3. Classificar com codebook existente</span></span>
+<span><span class="va">resultado_gemini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_gemini</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">resultado_gemini</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 4. Ou induzir codebook a partir do corpus</span></span>
+<span><span class="va">codebook_gemini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  textos <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  n_cats <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  chat   <span class="op">=</span> <span class="va">chat_gemini</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">codebook_gemini</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="openai-gpt-4-1-gpt-4o">2. OpenAI (GPT-4.1 / GPT-4o)<a class="anchor" aria-label="anchor" href="#openai-gpt-4-1-gpt-4o"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># OPENAI_API_KEY="sua_chave_aqui"  # .Renviron</span></span>
+<span></span>
+<span><span class="va">chat_gpt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai</a></span><span class="op">(</span></span>
+<span>  model         <span class="op">=</span> <span class="st">"gpt-4.1"</span>,          <span class="co"># ou "gpt-4o", "gpt-4.1-nano"</span></span>
+<span>  system_prompt <span class="op">=</span> <span class="st">"Você é um especialista em análise de conteúdo de discursos políticos brasileiros."</span>,</span>
+<span>  echo          <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_openai</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_gpt</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Para tarefas em lote com muitos textos, prefira modelos mais baratos:</span></span>
+<span><span class="va">chat_gpt_nano</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1-nano"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_nano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_gpt_nano</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="groq-inferência-ultrarrápida-plano-gratuito">3. Groq (inferência ultrarrápida, plano gratuito)<a class="anchor" aria-label="anchor" href="#groq-infer%C3%AAncia-ultrarr%C3%A1pida-plano-gratuito"></a>
+</h3>
+<p>O Groq é especialmente útil para prototipagem rápida: latência muito
+baixa e plano gratuito generoso para modelos como
+<code>llama-3.3-70b-versatile</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># GROQ_API_KEY="sua_chave_aqui"  # .Renviron</span></span>
+<span></span>
+<span><span class="va">chat_groq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
+<span>  model         <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
+<span>  system_prompt <span class="op">=</span> <span class="st">"Você é um especialista em análise de conteúdo de discursos políticos brasileiros."</span>,</span>
+<span>  echo          <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_groq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_groq</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Para classificação mais econômica:</span></span>
+<span><span class="va">chat_groq_mini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"llama-3.1-8b-instant"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_groq_mini</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_groq_mini</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="anthropic-claude">4. Anthropic Claude<a class="anchor" aria-label="anchor" href="#anthropic-claude"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># ANTHROPIC_API_KEY="sua_chave_aqui"  # .Renviron</span></span>
+<span></span>
+<span><span class="va">chat_claude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span></span>
+<span>  model         <span class="op">=</span> <span class="st">"claude-sonnet-4-20250514"</span>,</span>
+<span>  system_prompt <span class="op">=</span> <span class="st">"Você é um especialista em análise de conteúdo de discursos políticos brasileiros."</span>,</span>
+<span>  echo          <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_claude</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_claude</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">codebook_claude</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  textos <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  n_cats <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  chat   <span class="op">=</span> <span class="va">chat_claude</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="ollama-modelos-locais-100-privado">5. Ollama (modelos locais, 100% privado)<a class="anchor" aria-label="anchor" href="#ollama-modelos-locais-100-privado"></a>
+</h3>
+<p>Ideal quando os textos contêm informações sensíveis (entrevistas,
+documentos internos de gestão pública) e não podem ser enviados a APIs
+externas. Requer <a href="https://ollama.com" class="external-link">Ollama</a> instalado
+localmente.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Sem chave de API — modelos rodam localmente</span></span>
+<span><span class="co"># Instale o modelo antes: ollama pull llama3.2</span></span>
+<span></span>
+<span><span class="va">chat_ollama_local</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span></span>
+<span>  model         <span class="op">=</span> <span class="st">"llama3.2"</span>,          <span class="co"># ou "mistral", "qwen2.5", "gemma3"</span></span>
+<span>  system_prompt <span class="op">=</span> <span class="st">"Você é um especialista em análise de conteúdo de discursos políticos brasileiros."</span>,</span>
+<span>  echo          <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_ollama</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_ollama_local</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Modelos maiores para melhor precisão (requer hardware adequado):</span></span>
+<span><span class="va">chat_ollama_grande</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"llama3.1:70b"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_ollama_grande</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_ollama_grande</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="mistral">6. Mistral<a class="anchor" aria-label="anchor" href="#mistral"></a>
+</h3>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># MISTRAL_API_KEY="sua_chave_aqui"  # .Renviron</span></span>
+<span></span>
+<span><span class="va">chat_mistral</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_mistral.html" class="external-link">chat_mistral</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"mistral-large-latest"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_mistral</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_mistral</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="deepseek">7. DeepSeek<a class="anchor" aria-label="anchor" href="#deepseek"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># DEEPSEEK_API_KEY="sua_chave_aqui"  # .Renviron</span></span>
+<span></span>
+<span><span class="va">chat_deepseek</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_deepseek.html" class="external-link">chat_deepseek</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"deepseek-chat"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_deepseek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_deepseek</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="openrouter-acesso-unificado-a-centenas-de-modelos">8. OpenRouter (acesso unificado a centenas de modelos)<a class="anchor" aria-label="anchor" href="#openrouter-acesso-unificado-a-centenas-de-modelos"></a>
+</h3>
+<p>O OpenRouter permite acessar modelos de múltiplos provedores
+(Anthropic, Google, Meta, Mistral etc.) com uma única chave de API, útil
+para comparar resultados.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># OPENROUTER_API_KEY="sua_chave_aqui"  # .Renviron</span></span>
+<span></span>
+<span><span class="va">chat_or_gemini</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openrouter.html" class="external-link">chat_openrouter</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"google/gemini-2.5-flash"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">chat_or_llama</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openrouter.html" class="external-link">chat_openrouter</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-3.3-70b-instruct"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_or</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_or_gemini</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+</div>
+<div class="section level2">
+<h2 id="retrocompatibilidade-uso-sem-chat">Retrocompatibilidade: uso sem <code>chat =</code><a class="anchor" aria-label="anchor" href="#retrocompatibilidade-uso-sem-chat"></a>
+</h2>
+<p>Código escrito com as versões anteriores do acR continua funcionando
+sem modificações. Quando <code>chat = NULL</code>, as funções usam os
+argumentos legados <code>provider</code> e <code>api_key</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Comportamento anterior — ainda funciona</span></span>
+<span><span class="va">resultado_legado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"openai"</span>,</span>
+<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
+<span>  model    <span class="op">=</span> <span class="st">"gpt-4o"</span></span>
+<span>  <span class="co"># chat = NULL  (padrão implícito)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<blockquote>
+<p><strong>Recomendação:</strong> migre gradualmente para
+<code>chat =</code> em projetos novos, pois esse padrão oferece controle
+mais fino sobre o modelo, o <code>system_prompt</code> e os parâmetros
+de geração.</p>
+</blockquote>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="comparação-entre-provedores">Comparação entre provedores<a class="anchor" aria-label="anchor" href="#compara%C3%A7%C3%A3o-entre-provedores"></a>
+</h2>
+<p>Um uso avançado é comparar a concordância entre diferentes modelos no
+mesmo corpus, uma estratégia análoga à avaliação de confiabilidade
+intercodificadores (Krippendorff, 2004).</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.r-project.org" class="external-link">irr</a></span><span class="op">)</span>  <span class="co"># install.packages("irr")</span></span>
+<span></span>
+<span><span class="co"># Instanciar múltiplos provedores</span></span>
+<span><span class="va">provedores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  gemini  <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  groq    <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,   echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  ollama  <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama3.2"</span>,                 echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Classificar com cada provedor</span></span>
+<span><span class="va">resultados</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">provedores</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">nome</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>    textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>    codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>    chat     <span class="op">=</span> <span class="va">provedores</span><span class="op">[[</span><span class="va">nome</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">res</span><span class="op">$</span><span class="va">provedor</span> <span class="op">&lt;-</span> <span class="va">nome</span></span>
+<span>  <span class="va">res</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Combinar e pivotar para matriz de concordância</span></span>
+<span><span class="va">df_comp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">resultados</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Avaliar concordância (kappa de Cohen entre pares)</span></span>
+<span><span class="va">matriz</span> <span class="op">&lt;-</span> <span class="va">df_comp</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">texto_id</span>, <span class="va">categoria</span>, <span class="va">provedor</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">provedor</span>, values_from <span class="op">=</span> <span class="va">categoria</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/irr/man/kappa2.html" class="external-link">kappa2</a></span><span class="op">(</span><span class="va">matriz</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="ajuste-fino-do-system_prompt">Ajuste fino do <code>system_prompt</code><a class="anchor" aria-label="anchor" href="#ajuste-fino-do-system_prompt"></a>
+</h2>
+<p>O <code>system_prompt</code> é o principal vetor de customização do
+comportamento do modelo. Recomendações para análise de conteúdo:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Prompt genérico (funciona para qualquer corpus)</span></span>
+<span><span class="va">prompt_generico</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Você é um assistente especializado em análise de conteúdo qualitativa."</span>,</span>
+<span>  <span class="st">"Classifique cada texto na categoria mais adequada do codebook fornecido."</span>,</span>
+<span>  <span class="st">"Responda apenas com o nome exato da categoria e uma justificativa de 1-2 frases."</span>,</span>
+<span>  <span class="st">"Nunca invente categorias que não estejam no codebook."</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Prompt especializado para ciência política brasileira</span></span>
+<span><span class="va">prompt_cp_br</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Você é um cientista político especializado em políticas públicas brasileiras."</span>,</span>
+<span>  <span class="st">"Sua tarefa é classificar trechos de discursos parlamentares nas categorias"</span>,</span>
+<span>  <span class="st">"temáticas do codebook, com base no conteúdo substantivo do texto."</span>,</span>
+<span>  <span class="st">"Priorize o tema central do trecho, não menções secundárias."</span>,</span>
+<span>  <span class="st">"Justifique com referência a conceitos e atores políticos quando pertinente."</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">chat_especializado</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span></span>
+<span>  model         <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>,</span>
+<span>  system_prompt <span class="op">=</span> <span class="va">prompt_cp_br</span>,</span>
+<span>  echo          <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado_esp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  textos   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_especializado</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="configuração-de-variáveis-de-ambiente">Configuração de variáveis de ambiente<a class="anchor" aria-label="anchor" href="#configura%C3%A7%C3%A3o-de-vari%C3%A1veis-de-ambiente"></a>
+</h2>
+<p>O método recomendado é armazenar todas as chaves no arquivo
+<code>.Renviron</code> do usuário, editável com
+<code>usethis::edit_r_environ()</code>:</p>
+<pre><code><span><span class="co"># ~/.Renviron</span></span>
+<span><span class="va">GOOGLE_API_KEY</span><span class="op">=</span><span class="va">AIza...</span></span>
+<span><span class="va">OPENAI_API_KEY</span><span class="op">=</span><span class="va">sk</span><span class="op">-</span><span class="va">...</span></span>
+<span><span class="va">GROQ_API_KEY</span><span class="op">=</span><span class="va">gsk_...</span></span>
+<span><span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span><span class="va">sk</span><span class="op">-</span><span class="va">ant</span><span class="op">-</span><span class="va">...</span></span>
+<span><span class="va">MISTRAL_API_KEY</span><span class="op">=</span><span class="va">...</span></span>
+<span><span class="va">DEEPSEEK_API_KEY</span><span class="op">=</span><span class="va">...</span></span>
+<span><span class="va">OPENROUTER_API_KEY</span><span class="op">=</span><span class="va">sk</span><span class="op">-</span><span class="va">or</span><span class="op">-</span><span class="va">...</span></span></code></pre>
+<p>Depois de salvar, reinicie o R. Verifique com
+<code>Sys.getenv("GOOGLE_API_KEY")</code>.</p>
+<p>Nunca inclua chaves diretamente no código-fonte ou em arquivos
+versionados.</p>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="tabela-de-referência-rápida">Tabela de referência rápida<a class="anchor" aria-label="anchor" href="#tabela-de-refer%C3%AAncia-r%C3%A1pida"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="21%">
+<col width="32%">
+<col width="28%">
+<col width="17%">
+</colgroup>
+<thead><tr class="header">
+<th>Provedor</th>
+<th>Função ellmer</th>
+<th>Variável de ambiente</th>
+<th>Tier gratuito</th>
+</tr></thead>
+<tbody>
 <tr class="odd">
-<td>Anthropic</td>
-<td><code>"anthropic"</code></td>
-<td>
-<code>claude-3-haiku</code>, <code>claude-3-5-sonnet</code>
-</td>
-<td>Excelente</td>
+<td>Google Gemini</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini()</a></code></td>
+<td><code>GOOGLE_API_KEY</code></td>
+<td>✅ Sim</td>
 </tr>
 <tr class="even">
 <td>Groq</td>
-<td><code>"groq"</code></td>
-<td><code>llama3-8b-8192</code></td>
-<td>Bom</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq()</a></code></td>
+<td><code>GROQ_API_KEY</code></td>
+<td>✅ Sim</td>
 </tr>
 <tr class="odd">
-<td>Together AI</td>
-<td><code>"openai"</code></td>
-<td><code>Qwen/Qwen3-235B-A22B</code></td>
-<td>Excelente</td>
+<td>Ollama (local)</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama()</a></code></td>
+<td>Não necessária</td>
+<td>✅ Gratuito</td>
+</tr>
+<tr class="even">
+<td>OpenAI</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai()</a></code></td>
+<td><code>OPENAI_API_KEY</code></td>
+<td>❌ Pago</td>
+</tr>
+<tr class="odd">
+<td>Anthropic Claude</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic()</a></code></td>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>❌ Pago</td>
+</tr>
+<tr class="even">
+<td>Mistral</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_mistral.html" class="external-link">chat_mistral()</a></code></td>
+<td><code>MISTRAL_API_KEY</code></td>
+<td>❌ Pago</td>
+</tr>
+<tr class="odd">
+<td>DeepSeek</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_deepseek.html" class="external-link">chat_deepseek()</a></code></td>
+<td><code>DEEPSEEK_API_KEY</code></td>
+<td>⚠️ Limitado</td>
+</tr>
+<tr class="even">
+<td>OpenRouter</td>
+<td><code><a href="https://ellmer.tidyverse.org/reference/chat_openrouter.html" class="external-link">chat_openrouter()</a></code></td>
+<td><code>OPENROUTER_API_KEY</code></td>
+<td>⚠️ Por uso</td>
 </tr>
 </tbody>
 </table>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="exemplo-aplicado-discurso-legislativo">Exemplo aplicado: discurso legislativo<a class="anchor" aria-label="anchor" href="#exemplo-aplicado-discurso-legislativo"></a>
+<h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
 </h2>
-<div class="section level3">
-<h3 id="ac_qual_list_models-listar-modelos">
-<code>ac_qual_list_models()</code> — listar modelos<a class="anchor" aria-label="anchor" href="#ac_qual_list_models-listar-modelos"></a>
-</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">modelos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_list_models.html">ac_qual_list_models</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">modelos</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Modelos LLM suportados pelo acR</span></span>
-<span><span class="co"># A tibble: 8 x 6</span></span>
-<span><span class="co">#   provider   model                      context_k  custo_1k  portugues  tipo</span></span>
-<span><span class="co"># 1 ollama     qwen3.6:latest                  1000    0.0000  excelente  moe</span></span>
-<span><span class="co"># 2 openai     gpt-4o-mini                      128    0.0002  excelente  denso</span></span>
-<span><span class="co"># 3 openai     gpt-4o                           128    0.0050  excelente  denso</span></span>
-<span><span class="co"># 4 anthropic  claude-3-haiku-20240307          200    0.0003  excelente  denso</span></span>
-<span><span class="co"># 5 anthropic  claude-3-5-sonnet-20241022       200    0.0030  excelente  denso</span></span>
-<span><span class="co"># 6 groq       llama3-8b-8192                     8    0.0001  bom        denso</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_recommend_model-recomendacao-automatica">
-<code>ac_qual_recommend_model()</code> — recomendacao
-automatica<a class="anchor" aria-label="anchor" href="#ac_qual_recommend_model-recomendacao-automatica"></a>
-</h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"custo"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"qualidade"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>lingua <span class="op">=</span> <span class="st">"pt"</span>, prioridade <span class="op">=</span> <span class="st">"velocidade"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># custo:      ollama / qwen3.6:latest</span></span>
-<span><span class="co"># qualidade:  anthropic / claude-3-5-sonnet-20241022</span></span>
-<span><span class="co"># velocidade: groq / llama3-8b-8192</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_codebook-construir-o-codebook">
-<code>ac_qual_codebook()</code> — construir o codebook<a class="anchor" aria-label="anchor" href="#ac_qual_codebook-construir-o-codebook"></a>
-</h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
-<span>  name         <span class="op">=</span> <span class="st">"discurso_legislativo"</span>,</span>
-<span>  instructions <span class="op">=</span> <span class="st">"Classifique o posicionamento do texto em relacao a proposta."</span>,</span>
-<span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Favoravel"</span>, <span class="st">"Contrario"</span>, <span class="st">"Neutro/Tecnico"</span>, <span class="st">"Ambiguo"</span><span class="op">)</span>,</span>
-<span>  mode         <span class="op">=</span> <span class="st">"manual"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">codebook</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Codebook: discurso_legislativo | 4 categorias | modo: manual</span></span>
-<span><span class="co"># 1. Favoravel       — apoio explicito a proposta</span></span>
-<span><span class="co"># 2. Contrario       — oposicao ou critica</span></span>
-<span><span class="co"># 3. Neutro/Tecnico  — texto normativo sem posicionamento</span></span>
-<span><span class="co"># 4. Ambiguo         — posicionamento contraditorio</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_search_literature-buscar-literatura">
-<code>ac_qual_search_literature()</code> — buscar literatura<a class="anchor" aria-label="anchor" href="#ac_qual_search_literature-buscar-literatura"></a>
-</h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">literatura</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
-<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  query    <span class="op">=</span> <span class="st">"analise de conteudo discurso legislativo Brasil"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">literatura</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># 1. Bardin (2011). Analise de conteudo. Edicoes 70.</span></span>
-<span><span class="co"># 2. Krippendorff (2018). Content Analysis. SAGE.</span></span>
-<span><span class="co"># 3. Laver et al. (2003). Extracting Policy Positions. APSR, 97(2).</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_save_codebook-ac_qual_load_codebook">
-<code>ac_qual_save_codebook()</code> /
-<code>ac_qual_load_codebook()</code><a class="anchor" aria-label="anchor" href="#ac_qual_save_codebook-ac_qual_load_codebook"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">codebook</span>, <span class="st">"codebook_legislativo.json"</span><span class="op">)</span></span>
-<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_load_codebook.html">ac_qual_load_codebook</a></span><span class="op">(</span><span class="st">"codebook_legislativo.json"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Salvo em: codebook_legislativo.json</span></span>
-<span><span class="co"># Carregado: discurso_legislativo | 4 categorias</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_corpus-construir-o-corpus">
-<code>ac_corpus()</code> — construir o corpus<a class="anchor" aria-label="anchor" href="#ac_corpus-construir-o-corpus"></a>
-</h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Votar favoravel a esta PEC e defender o futuro do pais."</span>,</span>
-<span>  <span class="st">"O substitutivo nao atende aos anseios da populacao."</span>,</span>
-<span>  <span class="st">"O prazo para adequacao e de 180 dias contados da promulgacao."</span>,</span>
-<span>  <span class="st">"Reconhecemos avancos no texto, mas o artigo 5o preocupa."</span>,</span>
-<span>  <span class="st">"Esta proposta representa um marco historico para a educacao."</span>,</span>
-<span>  <span class="st">"Rejeitamos categoricamente este retrocesso legislativo."</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
-<span>  <span class="va">textos</span>,</span>
-<span>  id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">textos</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  grupo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favoravel"</span>,<span class="st">"contrario"</span>,<span class="st">"tecnico"</span>,<span class="st">"ambiguo"</span>,<span class="st">"favoravel"</span>,<span class="st">"contrario"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Corpus acR: 6 documentos</span></span>
-<span><span class="co"># Grupos: favoravel (2), contrario (2), tecnico (1), ambiguo (1)</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_code-codificar-com-qwen3-6">
-<code>ac_qual_code()</code> — codificar com qwen3.6<a class="anchor" aria-label="anchor" href="#ac_qual_code-codificar-com-qwen3-6"></a>
-</h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus      <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook    <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  provider    <span class="op">=</span> <span class="st">"ollama"</span>,</span>
-<span>  model       <span class="op">=</span> <span class="st">"qwen3.6:latest"</span>,</span>
-<span>  api_key     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OLLAMA_API_KEY"</span><span class="op">)</span>,</span>
-<span>  base_url    <span class="op">=</span> <span class="st">"https://sua-instancia-ollama.com/v1"</span>,</span>
-<span>  temperature <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  think       <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># ac_qual_code | 6 documentos | 4 categorias | qwen3.6:latest</span></span>
-<span><span class="co"># doc_1  Favoravel       0.97  Apoio explicito: "defender o futuro"</span></span>
-<span><span class="co"># doc_2  Contrario       0.94  Critica direta: "nao atende"</span></span>
-<span><span class="co"># doc_3  Neutro/Tecnico  0.99  Texto normativo puro</span></span>
-<span><span class="co"># doc_4  Ambiguo         0.81  Avancos + ressalvas</span></span>
-<span><span class="co"># doc_5  Favoravel       0.96  "Marco historico"</span></span>
-<span><span class="co"># doc_6  Contrario       0.98  Rejeicao categorica</span></span>
-<span><span class="co"># Confianca media: 0.94</span></span></code></pre>
-<div class="section level4">
-<h4 id="outros-provedores">Outros provedores<a class="anchor" aria-label="anchor" href="#outros-provedores"></a>
-</h4>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># OpenAI</span></span>
-<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span><span class="va">corpus</span>, <span class="va">codebook</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"openai"</span>, model <span class="op">=</span> <span class="st">"gpt-4o-mini"</span>,</span>
-<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>, temperature <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Anthropic</span></span>
-<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span><span class="va">corpus</span>, <span class="va">codebook</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"anthropic"</span>, model <span class="op">=</span> <span class="st">"claude-3-haiku-20240307"</span>,</span>
-<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>, temperature <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Groq</span></span>
-<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span><span class="va">corpus</span>, <span class="va">codebook</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"groq"</span>, model <span class="op">=</span> <span class="st">"llama3-8b-8192"</span>,</span>
-<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GROQ_API_KEY"</span><span class="op">)</span>, temperature <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Together AI (Qwen via OpenAI-compativel)</span></span>
-<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span><span class="va">corpus</span>, <span class="va">codebook</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"openai"</span>, model <span class="op">=</span> <span class="st">"Qwen/Qwen3-235B-A22B"</span>,</span>
-<span>  api_key  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"TOGETHER_API_KEY"</span><span class="op">)</span>,</span>
-<span>  base_url <span class="op">=</span> <span class="st">"https://api.together.xyz/v1"</span>, temperature <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
-<hr>
-</div>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_sample-amostrar-para-validacao">
-<code>ac_qual_sample()</code> — amostrar para validacao<a class="anchor" aria-label="anchor" href="#ac_qual_sample-amostrar-para-validacao"></a>
-</h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, prop <span class="op">=</span> <span class="fl">0.20</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">amostra</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Amostra: 2 de 6 documentos (20%) | semente: 42</span></span>
-<span><span class="co"># Selecionados: doc_3, doc_4</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_export_for_review-exportar-para-revisao">
-<code>ac_qual_export_for_review()</code> — exportar para
-revisao<a class="anchor" aria-label="anchor" href="#ac_qual_export_for_review-exportar-para-revisao"></a>
-</h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
-<span>  <span class="va">amostra</span>,</span>
-<span>  arquivo               <span class="op">=</span> <span class="st">"revisao_humana.xlsx"</span>,</span>
-<span>  incluir_justificativa <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Exportado: revisao_humana.xlsx</span></span>
-<span><span class="co"># Colunas: doc_id | texto | categoria_llm | confianca |</span></span>
-<span><span class="co">#          justificativa | categoria_humana (vazio)</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_import_human-importar-revisao">
-<code>ac_qual_import_human()</code> — importar revisao<a class="anchor" aria-label="anchor" href="#ac_qual_import_human-importar-revisao"></a>
-</h3>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_humana.xlsx"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">humano</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># doc_3  Neutro/Tecnico</span></span>
-<span><span class="co"># doc_4  Ambiguo</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_qual_irr-e-ac_qual_reliability-concordancia">
-<code>ac_qual_irr()</code> e <code>ac_qual_reliability()</code> —
-concordancia<a class="anchor" aria-label="anchor" href="#ac_qual_irr-e-ac_qual_reliability-concordancia"></a>
-</h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">irr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">humano</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">irr</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span><span class="va">irr</span>, threshold <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Kappa de Cohen: 1.00 | Concordancia: 100%</span></span>
-<span><span class="co"># Interpretacao: quase perfeita (Landis &amp; Koch, 1977)</span></span>
-<span><span class="co"># Status: APROVADO (threshold: 0.75)</span></span></code></pre>
-<hr>
-</div>
-<div class="section level3">
-<h3 id="ac_export-exportar-resultados">
-<code>ac_export()</code> — exportar resultados<a class="anchor" aria-label="anchor" href="#ac_export-exportar-resultados"></a>
-</h3>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"csv"</span>,   arquivo <span class="op">=</span> <span class="st">"codificacao_llm.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"xlsx"</span>,  arquivo <span class="op">=</span> <span class="st">"codificacao_llm.xlsx"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"latex"</span>, arquivo <span class="op">=</span> <span class="st">"codificacao_llm.tex"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"rds"</span>,   arquivo <span class="op">=</span> <span class="st">"codificacao_llm.rds"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># codificacao_llm.csv   6 linhas x 5 colunas</span></span>
-<span><span class="co"># codificacao_llm.xlsx  6 linhas x 5 colunas</span></span>
-<span><span class="co"># codificacao_llm.tex   tabela LaTeX pronta para publicacao</span></span>
-<span><span class="co"># codificacao_llm.rds   objeto R serializado</span></span></code></pre>
-<hr>
-<hr>
-</div>
-</div>
-<div class="section level2">
-<h2 id="referencias">Referencias<a class="anchor" aria-label="anchor" href="#referencias"></a>
-</h2>
-<p><strong>Pacote</strong></p>
-<p>Henrique, A. (2025). <em>acR: Analise de Conteudo em R</em>. R
-package version 0.1.0. Centro de Estudos da Metropole (CEM-Cepid) —
-Universidade de Sao Paulo. Disponivel em: <a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></p>
-<p><strong>Pacotes utilizados</strong></p>
-<p>Santos, V. (2026). <em>senatebR: Collect Data from the Brazilian
-Federal Senate Open Data API</em>. R package version 0.1.0. <a href="https://CRAN.R-project.org/package=senatebR" class="external-link uri">https://CRAN.R-project.org/package=senatebR</a></p>
-<p>Ferreira, P., Jorge, P., Lima, D., Coelho, G., Pereira, R. H. M.,
-&amp; Mation, L. (2026). <em>ipeaplot: Add Ipea Editorial Standards to
-ggplot2 Graphics</em>. R package version 0.5.1. Instituto de Pesquisa
-Economica Aplicada (Ipea). <a href="doi:10.32614/CRAN.package.ipeaplot" class="uri">doi:10.32614/CRAN.package.ipeaplot</a></p>
-<p><strong>Inspiracao e dialogo</strong></p>
-<p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer: Qualitative and
-LLM-Assisted Text Analysis in R</em>. — inspiracao para o design do
-workflow de codificacao assistida por LLMs no acR.</p>
-<p>Benoit, K., Watanabe, K., Wang, H., Nulty, P., Obeng, A., Muller, S.,
-&amp; Matsuo, A. (2018). quanteda: An R package for the quantitative
-analysis of textual data. <em>Journal of Open Source Software</em>,
-3(30), 774. <a href="doi:10.21105/joss.00774" class="uri">doi:10.21105/joss.00774</a> — infraestrutura de analise
-textual quantitativa.</p>
-<p>Wickham, H., et al. (Posit). <em>ellmer: A unified interface to large
-language models in R</em>. <a href="https://ellmer.tidyverse.org/" class="external-link uri">https://ellmer.tidyverse.org/</a> — backend unificado de
-LLMs.</p>
-<p>Souza, M., &amp; Vieira, R. (2012). Sentiment Analysis on Twitter
-with Portuguese Language. In <em>4th Workshop on Computational
-Approaches to Subjectivity, Sentiment and Social Media Analysis</em>.
-PUCRS. — OpLexicon: lexico de sentimento para portugues brasileiro.</p>
-<p><strong>Fundamentacao teorica</strong></p>
-<p>Bardin, L. (2011). <em>Analise de conteudo</em>. Edicoes 70.</p>
-<p>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet
-Allocation. <em>Journal of Machine Learning Research</em>, 3,
-993-1022.</p>
-<p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its
-Methodology</em> (4a ed.). SAGE.</p>
-<p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer
-agreement for categorical data. <em>Biometrics</em>, 33(1), 159-174.</p>
-<p>Laver, M., Benoit, K., &amp; Garry, J. (2003). Extracting policy
-positions from political texts using words as data. <em>American
-Political Science Review</em>, 97(2), 311-331.</p>
-<p>Sampaio, R. C., &amp; Lycariao, D. (2021). <em>Analise de conteudo
-categorial: manual de aplicacao</em>. Enap. Disponivel em: <a href="https://repositorio.enap.gov.br" class="external-link uri">https://repositorio.enap.gov.br</a></p>
-<p>R Core Team. (2024). <em>R: A language and environment for
-statistical computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="external-link uri">https://www.R-project.org/</a></p>
+<p>KRIPPENDORFF, K. <strong>Content Analysis: An Introduction to Its
+Methodology</strong>. 3. ed. Thousand Oaks: SAGE, 2013.</p>
+<p>NEUENDORF, K. A. <strong>The Content Analysis Guidebook</strong>. 2.
+ed. Thousand Oaks: SAGE, 2017.</p>
+<p>WICKHAM, H. et al. <strong>ellmer: Chat with Large Language
+Models</strong>. R package version 0.2.0. Disponível em: <a href="https://ellmer.tidyverse.org" class="external-link uri">https://ellmer.tidyverse.org</a>. Acesso em: abr. 2026.</p>
+<p>BAIL, C. A. Breaking the social media prism: How to make our
+platforms less polarizing. <strong>American Journal of
+Sociology</strong>, v. 127, n. 2, p. 661-663, 2021.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

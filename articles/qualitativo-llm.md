@@ -1,322 +1,500 @@
-# Codificacao qualitativa com LLMs
+# Análise de Conteúdo Qualitativa com LLMs via ellmer
 
-## Visao geral
+## Visão Geral
 
-O modulo qualitativo do `acR` implementa um pipeline completo de analise
-de conteudo assistida por modelos de linguagem (LLMs). O fluxo cobre:
-(1) listagem e recomendacao de modelos, (2) construcao do codebook, (3)
-codificacao automatica e (4) validacao com concordancia
-inter-codificador.
+O pacote **acR** oferece duas funções para análise de conteúdo
+qualitativa assistida por modelos de linguagem de grande escala (LLMs):
 
-Armazene sua chave no `.Renviron` (nunca no codigo):
+| Função                                                                                   | O que faz                                                  |
+|------------------------------------------------------------------------------------------|------------------------------------------------------------|
+| [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)         | Classifica textos em categorias de um *codebook* existente |
+| [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md) | Induz um *codebook* a partir de um corpus de textos        |
 
-    # usethis::edit_r_environ()
-    # OLLAMA_API_KEY=sua_chave_aqui
+A partir da versão 0.3.0, ambas as funções aceitam o argumento `chat =`,
+que recebe qualquer objeto `Chat` do pacote **ellmer**. Isso permite
+usar **qualquer provedor suportado pelo ellmer** — OpenAI, Google
+Gemini, Groq, Anthropic, Ollama, Mistral, DeepSeek, entre outros — sem
+alterar a lógica de análise.
 
-## Provedores suportados
-
-| Provedor     | `provider`    | Modelo recomendado                    | Portugues |
-|--------------|---------------|---------------------------------------|-----------|
-| Ollama nuvem | `"ollama"`    | `qwen3.6:latest`                      | Excelente |
-| OpenAI       | `"openai"`    | `gpt-4o-mini`, `gpt-4o`               | Excelente |
-| Anthropic    | `"anthropic"` | `claude-3-haiku`, `claude-3-5-sonnet` | Excelente |
-| Groq         | `"groq"`      | `llama3-8b-8192`                      | Bom       |
-| Together AI  | `"openai"`    | `Qwen/Qwen3-235B-A22B`                | Excelente |
+> **Retrocompatibilidade:** quando `chat = NULL` (padrão), as funções
+> usam o comportamento anterior baseado em `provider` e `api_key`,
+> mantendo compatibilidade total com código existente.
 
 ------------------------------------------------------------------------
 
-## Exemplo aplicado: discurso legislativo
-
-### `ac_qual_list_models()` — listar modelos
+## Instalação
 
 ``` r
-modelos <- ac_qual_list_models()
-print(modelos)
+# Versão de desenvolvimento
+remotes::install_github("andersonheri/acR")
+
+# Dependências necessárias
+install.packages(c("ellmer", "dplyr", "tibble"))
 ```
 
-    # Modelos LLM suportados pelo acR
-    # A tibble: 8 x 6
-    #   provider   model                      context_k  custo_1k  portugues  tipo
-    # 1 ollama     qwen3.6:latest                  1000    0.0000  excelente  moe
-    # 2 openai     gpt-4o-mini                      128    0.0002  excelente  denso
-    # 3 openai     gpt-4o                           128    0.0050  excelente  denso
-    # 4 anthropic  claude-3-haiku-20240307          200    0.0003  excelente  denso
-    # 5 anthropic  claude-3-5-sonnet-20241022       200    0.0030  excelente  denso
-    # 6 groq       llama3-8b-8192                     8    0.0001  bom        denso
+------------------------------------------------------------------------
+
+## O argumento `chat =`: conceito central
+
+O `ellmer` padroniza a interface com qualquer LLM em um objeto `Chat`
+criado pelas funções `chat_*()`. O acR usa esse objeto diretamente,
+delegando ao ellmer toda a comunicação com a API.
+
+    Pesquisador
+        │
+        ▼
+    ellmer::chat_*()   ←─── escolha o provedor aqui
+        │
+        ▼
+    acR::ac_qual_code()   /   ac_qual_codebook()
+        │
+        ▼
+    Resultado: data.frame com categorias + justificativas
+
+O fluxo de trabalho padrão tem três passos:
+
+1.  **Configurar** a chave de API via variável de ambiente
+    (`.Renviron`).
+2.  **Instanciar** o objeto `Chat` com `ellmer::chat_*()`.
+3.  **Passar** o objeto para
+    [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+    ou
+    [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
+    via `chat =`.
 
 ------------------------------------------------------------------------
 
-### `ac_qual_recommend_model()` — recomendacao automatica
+## Dados de exemplo
+
+Para reproduzir os exemplos abaixo, usamos um corpus de discursos
+parlamentares sobre política de saúde e um *codebook* temático simples.
 
 ``` r
-ac_qual_recommend_model(lingua = "pt", prioridade = "custo")
-ac_qual_recommend_model(lingua = "pt", prioridade = "qualidade")
-ac_qual_recommend_model(lingua = "pt", prioridade = "velocidade")
-```
+library(acR)
+library(ellmer)
 
-    # custo:      ollama / qwen3.6:latest
-    # qualidade:  anthropic / claude-3-5-sonnet-20241022
-    # velocidade: groq / llama3-8b-8192
-
-------------------------------------------------------------------------
-
-### `ac_qual_codebook()` — construir o codebook
-
-``` r
-codebook <- ac_qual_codebook(
-  name         = "discurso_legislativo",
-  instructions = "Classifique o posicionamento do texto em relacao a proposta.",
-  categories   = c("Favoravel", "Contrario", "Neutro/Tecnico", "Ambiguo"),
-  mode         = "manual"
+# Corpus: trechos de discursos parlamentares (vetor de caracteres)
+corpus <- c(
+  "O governo precisa ampliar o financiamento do SUS nas regiões Norte e Nordeste.",
+  "A privatização dos serviços hospitalares reduz custos e melhora a eficiência.",
+  "Precisamos de mais médicos nas UBSs da periferia, especialmente pediatras.",
+  "O Programa Farmácia Popular deve ser expandido para municípios menores.",
+  "A subnotificação de doenças tropicais compromete as políticas de vigilância.",
+  "Defendo a universalização da cobertura vacinal como prioridade orçamentária.",
+  "O modelo de OSS (Organizações Sociais de Saúde) deve ser regulamentado.",
+  "É preciso investir em telemedicina para alcançar populações isoladas."
 )
-print(codebook)
-```
 
-    # Codebook: discurso_legislativo | 4 categorias | modo: manual
-    # 1. Favoravel       — apoio explicito a proposta
-    # 2. Contrario       — oposicao ou critica
-    # 3. Neutro/Tecnico  — texto normativo sem posicionamento
-    # 4. Ambiguo         — posicionamento contraditorio
+# Codebook: categorias temáticas
+codebook <- data.frame(
+  categoria    = c("Financiamento", "Privatização", "Atenção Básica",
+                   "Acesso a Medicamentos", "Vigilância Epidemiológica",
+                   "Imunização", "Gestão", "Tecnologia em Saúde"),
+  descricao    = c(
+    "Referências a orçamento, repasses e financiamento público da saúde",
+    "Discussões sobre privatização, concessão ou gestão privada de serviços",
+    "Menções a UBS, ESF, atenção primária e médicos de família",
+    "Acesso a medicamentos, farmácias populares e assistência farmacêutica",
+    "Vigilância sanitária, epidemiológica, subnotificação e doenças endêmicas",
+    "Vacinação, campanhas de imunização e cobertura vacinal",
+    "Modelos de gestão hospitalar, OSS, eficiência administrativa",
+    "Telemedicina, prontuário eletrônico, inovação em saúde"
+  ),
+  stringsAsFactors = FALSE
+)
+```
 
 ------------------------------------------------------------------------
 
-### `ac_qual_search_literature()` — buscar literatura
+## Provedores disponíveis via ellmer
+
+### 1. Google Gemini (tier gratuito disponível)
+
+Recomendado para pesquisadores sem orçamento para APIs pagas. O modelo
+`gemini-2.5-flash` é rápido e preciso para classificação de textos em
+português.
 
 ``` r
-literatura <- ac_qual_search_literature(
+# 1. Configurar: adicione ao .Renviron
+# GOOGLE_API_KEY="sua_chave_aqui"
+
+# 2. Instanciar
+chat_gemini <- chat_google_gemini(
+  model         = "gemini-2.5-flash",
+  system_prompt = "Você é um especialista em análise de conteúdo de discursos políticos brasileiros.",
+  echo          = "none"
+)
+
+# 3. Classificar com codebook existente
+resultado_gemini <- ac_qual_code(
+  textos   = corpus,
   codebook = codebook,
-  query    = "analise de conteudo discurso legislativo Brasil"
+  chat     = chat_gemini
 )
-print(literatura)
-```
 
-    # 1. Bardin (2011). Analise de conteudo. Edicoes 70.
-    # 2. Krippendorff (2018). Content Analysis. SAGE.
-    # 3. Laver et al. (2003). Extracting Policy Positions. APSR, 97(2).
+head(resultado_gemini)
 
-------------------------------------------------------------------------
-
-### `ac_qual_save_codebook()` / `ac_qual_load_codebook()`
-
-``` r
-ac_qual_save_codebook(codebook, "codebook_legislativo.json")
-codebook <- ac_qual_load_codebook("codebook_legislativo.json")
-```
-
-    # Salvo em: codebook_legislativo.json
-    # Carregado: discurso_legislativo | 4 categorias
-
-------------------------------------------------------------------------
-
-### `ac_corpus()` — construir o corpus
-
-``` r
-textos <- c(
-  "Votar favoravel a esta PEC e defender o futuro do pais.",
-  "O substitutivo nao atende aos anseios da populacao.",
-  "O prazo para adequacao e de 180 dias contados da promulgacao.",
-  "Reconhecemos avancos no texto, mas o artigo 5o preocupa.",
-  "Esta proposta representa um marco historico para a educacao.",
-  "Rejeitamos categoricamente este retrocesso legislativo."
+# 4. Ou induzir codebook a partir do corpus
+codebook_gemini <- ac_qual_codebook(
+  textos = corpus,
+  n_cats = 5,
+  chat   = chat_gemini
 )
-corpus <- ac_corpus(
-  textos,
-  id    = paste0("doc_", seq_along(textos)),
-  grupo = c("favoravel","contrario","tecnico","ambiguo","favoravel","contrario")
+
+print(codebook_gemini)
+```
+
+------------------------------------------------------------------------
+
+### 2. OpenAI (GPT-4.1 / GPT-4o)
+
+``` r
+# OPENAI_API_KEY="sua_chave_aqui"  # .Renviron
+
+chat_gpt <- chat_openai(
+  model         = "gpt-4.1",          # ou "gpt-4o", "gpt-4.1-nano"
+  system_prompt = "Você é um especialista em análise de conteúdo de discursos políticos brasileiros.",
+  echo          = "none"
 )
-print(corpus)
-```
 
-    # Corpus acR: 6 documentos
-    # Grupos: favoravel (2), contrario (2), tecnico (1), ambiguo (1)
-
-------------------------------------------------------------------------
-
-### `ac_qual_code()` — codificar com qwen3.6
-
-``` r
-resultado <- ac_qual_code(
-  corpus      = corpus,
-  codebook    = codebook,
-  provider    = "ollama",
-  model       = "qwen3.6:latest",
-  api_key     = Sys.getenv("OLLAMA_API_KEY"),
-  base_url    = "https://sua-instancia-ollama.com/v1",
-  temperature = 0,
-  think       = FALSE
+resultado_openai <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_gpt
 )
-print(resultado)
-```
 
-    # ac_qual_code | 6 documentos | 4 categorias | qwen3.6:latest
-    # doc_1  Favoravel       0.97  Apoio explicito: "defender o futuro"
-    # doc_2  Contrario       0.94  Critica direta: "nao atende"
-    # doc_3  Neutro/Tecnico  0.99  Texto normativo puro
-    # doc_4  Ambiguo         0.81  Avancos + ressalvas
-    # doc_5  Favoravel       0.96  "Marco historico"
-    # doc_6  Contrario       0.98  Rejeicao categorica
-    # Confianca media: 0.94
+# Para tarefas em lote com muitos textos, prefira modelos mais baratos:
+chat_gpt_nano <- chat_openai(
+  model = "gpt-4.1-nano",
+  echo  = "none"
+)
 
-#### Outros provedores
-
-``` r
-# OpenAI
-resultado <- ac_qual_code(corpus, codebook,
-  provider = "openai", model = "gpt-4o-mini",
-  api_key  = Sys.getenv("OPENAI_API_KEY"), temperature = 0)
-
-# Anthropic
-resultado <- ac_qual_code(corpus, codebook,
-  provider = "anthropic", model = "claude-3-haiku-20240307",
-  api_key  = Sys.getenv("ANTHROPIC_API_KEY"), temperature = 0)
-
-# Groq
-resultado <- ac_qual_code(corpus, codebook,
-  provider = "groq", model = "llama3-8b-8192",
-  api_key  = Sys.getenv("GROQ_API_KEY"), temperature = 0)
-
-# Together AI (Qwen via OpenAI-compativel)
-resultado <- ac_qual_code(corpus, codebook,
-  provider = "openai", model = "Qwen/Qwen3-235B-A22B",
-  api_key  = Sys.getenv("TOGETHER_API_KEY"),
-  base_url = "https://api.together.xyz/v1", temperature = 0)
-```
-
-------------------------------------------------------------------------
-
-### `ac_qual_sample()` — amostrar para validacao
-
-``` r
-amostra <- ac_qual_sample(resultado, prop = 0.20, seed = 42)
-print(amostra)
-```
-
-    # Amostra: 2 de 6 documentos (20%) | semente: 42
-    # Selecionados: doc_3, doc_4
-
-------------------------------------------------------------------------
-
-### `ac_qual_export_for_review()` — exportar para revisao
-
-``` r
-ac_qual_export_for_review(
-  amostra,
-  arquivo               = "revisao_humana.xlsx",
-  incluir_justificativa = TRUE
+resultado_nano <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_gpt_nano
 )
 ```
 
-    # Exportado: revisao_humana.xlsx
-    # Colunas: doc_id | texto | categoria_llm | confianca |
-    #          justificativa | categoria_humana (vazio)
-
 ------------------------------------------------------------------------
 
-### `ac_qual_import_human()` — importar revisao
+### 3. Groq (inferência ultrarrápida, plano gratuito)
+
+O Groq é especialmente útil para prototipagem rápida: latência muito
+baixa e plano gratuito generoso para modelos como
+`llama-3.3-70b-versatile`.
 
 ``` r
-humano <- ac_qual_import_human("revisao_humana.xlsx")
-print(humano)
-```
+# GROQ_API_KEY="sua_chave_aqui"  # .Renviron
 
-    # doc_3  Neutro/Tecnico
-    # doc_4  Ambiguo
+chat_groq <- chat_groq(
+  model         = "llama-3.3-70b-versatile",
+  system_prompt = "Você é um especialista em análise de conteúdo de discursos políticos brasileiros.",
+  echo          = "none"
+)
+
+resultado_groq <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_groq
+)
+
+# Para classificação mais econômica:
+chat_groq_mini <- chat_groq(
+  model = "llama-3.1-8b-instant",
+  echo  = "none"
+)
+
+resultado_groq_mini <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_groq_mini
+)
+```
 
 ------------------------------------------------------------------------
 
-### `ac_qual_irr()` e `ac_qual_reliability()` — concordancia
+### 4. Anthropic Claude
 
 ``` r
-irr <- ac_qual_irr(resultado, humano)
-print(irr)
-ac_qual_reliability(irr, threshold = 0.75)
-```
+# ANTHROPIC_API_KEY="sua_chave_aqui"  # .Renviron
 
-    # Kappa de Cohen: 1.00 | Concordancia: 100%
-    # Interpretacao: quase perfeita (Landis & Koch, 1977)
-    # Status: APROVADO (threshold: 0.75)
+chat_claude <- chat_anthropic(
+  model         = "claude-sonnet-4-20250514",
+  system_prompt = "Você é um especialista em análise de conteúdo de discursos políticos brasileiros.",
+  echo          = "none"
+)
+
+resultado_claude <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_claude
+)
+
+codebook_claude <- ac_qual_codebook(
+  textos = corpus,
+  n_cats = 6,
+  chat   = chat_claude
+)
+```
 
 ------------------------------------------------------------------------
 
-### `ac_export()` — exportar resultados
+### 5. Ollama (modelos locais, 100% privado)
+
+Ideal quando os textos contêm informações sensíveis (entrevistas,
+documentos internos de gestão pública) e não podem ser enviados a APIs
+externas. Requer [Ollama](https://ollama.com) instalado localmente.
 
 ``` r
-ac_export(resultado, formato = "csv",   arquivo = "codificacao_llm.csv")
-ac_export(resultado, formato = "xlsx",  arquivo = "codificacao_llm.xlsx")
-ac_export(resultado, formato = "latex", arquivo = "codificacao_llm.tex")
-ac_export(resultado, formato = "rds",   arquivo = "codificacao_llm.rds")
+# Sem chave de API — modelos rodam localmente
+# Instale o modelo antes: ollama pull llama3.2
+
+chat_ollama_local <- chat_ollama(
+  model         = "llama3.2",          # ou "mistral", "qwen2.5", "gemma3"
+  system_prompt = "Você é um especialista em análise de conteúdo de discursos políticos brasileiros.",
+  echo          = "none"
+)
+
+resultado_ollama <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_ollama_local
+)
+
+# Modelos maiores para melhor precisão (requer hardware adequado):
+chat_ollama_grande <- chat_ollama(
+  model = "llama3.1:70b",
+  echo  = "none"
+)
+
+resultado_ollama_grande <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_ollama_grande
+)
 ```
 
-    # codificacao_llm.csv   6 linhas x 5 colunas
-    # codificacao_llm.xlsx  6 linhas x 5 colunas
-    # codificacao_llm.tex   tabela LaTeX pronta para publicacao
-    # codificacao_llm.rds   objeto R serializado
+------------------------------------------------------------------------
+
+### 6. Mistral
+
+``` r
+# MISTRAL_API_KEY="sua_chave_aqui"  # .Renviron
+
+chat_mistral <- chat_mistral(
+  model = "mistral-large-latest",
+  echo  = "none"
+)
+
+resultado_mistral <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_mistral
+)
+```
 
 ------------------------------------------------------------------------
 
+### 7. DeepSeek
+
+``` r
+# DEEPSEEK_API_KEY="sua_chave_aqui"  # .Renviron
+
+chat_deepseek <- chat_deepseek(
+  model = "deepseek-chat",
+  echo  = "none"
+)
+
+resultado_deepseek <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_deepseek
+)
+```
+
 ------------------------------------------------------------------------
 
-## Referencias
+### 8. OpenRouter (acesso unificado a centenas de modelos)
 
-**Pacote**
+O OpenRouter permite acessar modelos de múltiplos provedores (Anthropic,
+Google, Meta, Mistral etc.) com uma única chave de API, útil para
+comparar resultados.
 
-Henrique, A. (2025). *acR: Analise de Conteudo em R*. R package version
-0.1.0. Centro de Estudos da Metropole (CEM-Cepid) — Universidade de Sao
-Paulo. Disponivel em: <https://andersonheri.github.io/acR/>
+``` r
+# OPENROUTER_API_KEY="sua_chave_aqui"  # .Renviron
 
-**Pacotes utilizados**
+chat_or_gemini <- chat_openrouter(
+  model = "google/gemini-2.5-flash",
+  echo  = "none"
+)
 
-Santos, V. (2026). *senatebR: Collect Data from the Brazilian Federal
-Senate Open Data API*. R package version 0.1.0.
-<https://CRAN.R-project.org/package=senatebR>
+chat_or_llama <- chat_openrouter(
+  model = "meta-llama/llama-3.3-70b-instruct",
+  echo  = "none"
+)
 
-Ferreira, P., Jorge, P., Lima, D., Coelho, G., Pereira, R. H. M., &
-Mation, L. (2026). *ipeaplot: Add Ipea Editorial Standards to ggplot2
-Graphics*. R package version 0.5.1. Instituto de Pesquisa Economica
-Aplicada (Ipea). <doi:10.32614/CRAN.package.ipeaplot>
+resultado_or <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_or_gemini
+)
+```
 
-**Inspiracao e dialogo**
+------------------------------------------------------------------------
 
-Maerz, S., & Benoit, K. (2025). *quallmer: Qualitative and LLM-Assisted
-Text Analysis in R*. — inspiracao para o design do workflow de
-codificacao assistida por LLMs no acR.
+## Retrocompatibilidade: uso sem `chat =`
 
-Benoit, K., Watanabe, K., Wang, H., Nulty, P., Obeng, A., Muller, S., &
-Matsuo, A. (2018). quanteda: An R package for the quantitative analysis
-of textual data. *Journal of Open Source Software*, 3(30), 774.
-<doi:10.21105/joss.00774> — infraestrutura de analise textual
-quantitativa.
+Código escrito com as versões anteriores do acR continua funcionando sem
+modificações. Quando `chat = NULL`, as funções usam os argumentos
+legados `provider` e `api_key`:
 
-Wickham, H., et al. (Posit). *ellmer: A unified interface to large
-language models in R*. <https://ellmer.tidyverse.org/> — backend
-unificado de LLMs.
+``` r
+# Comportamento anterior — ainda funciona
+resultado_legado <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  provider = "openai",
+  api_key  = Sys.getenv("OPENAI_API_KEY"),
+  model    = "gpt-4o"
+  # chat = NULL  (padrão implícito)
+)
+```
 
-Souza, M., & Vieira, R. (2012). Sentiment Analysis on Twitter with
-Portuguese Language. In *4th Workshop on Computational Approaches to
-Subjectivity, Sentiment and Social Media Analysis*. PUCRS. — OpLexicon:
-lexico de sentimento para portugues brasileiro.
+> **Recomendação:** migre gradualmente para `chat =` em projetos novos,
+> pois esse padrão oferece controle mais fino sobre o modelo, o
+> `system_prompt` e os parâmetros de geração.
 
-**Fundamentacao teorica**
+------------------------------------------------------------------------
 
-Bardin, L. (2011). *Analise de conteudo*. Edicoes 70.
+## Comparação entre provedores
 
-Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet
-Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
+Um uso avançado é comparar a concordância entre diferentes modelos no
+mesmo corpus, uma estratégia análoga à avaliação de confiabilidade
+intercodificadores (Krippendorff, 2004).
 
-Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
-Methodology* (4a ed.). SAGE.
+``` r
+library(dplyr)
+library(irr)  # install.packages("irr")
 
-Landis, J. R., & Koch, G. G. (1977). The measurement of observer
-agreement for categorical data. *Biometrics*, 33(1), 159-174.
+# Instanciar múltiplos provedores
+provedores <- list(
+  gemini  = chat_google_gemini(model = "gemini-2.5-flash", echo = "none"),
+  groq    = chat_groq(model = "llama-3.3-70b-versatile",   echo = "none"),
+  ollama  = chat_ollama(model = "llama3.2",                 echo = "none")
+)
 
-Laver, M., Benoit, K., & Garry, J. (2003). Extracting policy positions
-from political texts using words as data. *American Political Science
-Review*, 97(2), 311-331.
+# Classificar com cada provedor
+resultados <- lapply(names(provedores), function(nome) {
+  res <- ac_qual_code(
+    textos   = corpus,
+    codebook = codebook,
+    chat     = provedores[[nome]]
+  )
+  res$provedor <- nome
+  res
+})
 
-Sampaio, R. C., & Lycariao, D. (2021). *Analise de conteudo categorial:
-manual de aplicacao*. Enap. Disponivel em:
-<https://repositorio.enap.gov.br>
+# Combinar e pivotar para matriz de concordância
+df_comp <- bind_rows(resultados)
 
-R Core Team. (2024). *R: A language and environment for statistical
-computing*. R Foundation for Statistical Computing.
-<https://www.R-project.org/>
+# Avaliar concordância (kappa de Cohen entre pares)
+matriz <- df_comp |>
+  select(texto_id, categoria, provedor) |>
+  tidyr::pivot_wider(names_from = provedor, values_from = categoria)
+
+kappa2(matriz[, -1])
+```
+
+------------------------------------------------------------------------
+
+## Ajuste fino do `system_prompt`
+
+O `system_prompt` é o principal vetor de customização do comportamento
+do modelo. Recomendações para análise de conteúdo:
+
+``` r
+# Prompt genérico (funciona para qualquer corpus)
+prompt_generico <- paste(
+  "Você é um assistente especializado em análise de conteúdo qualitativa.",
+  "Classifique cada texto na categoria mais adequada do codebook fornecido.",
+  "Responda apenas com o nome exato da categoria e uma justificativa de 1-2 frases.",
+  "Nunca invente categorias que não estejam no codebook."
+)
+
+# Prompt especializado para ciência política brasileira
+prompt_cp_br <- paste(
+  "Você é um cientista político especializado em políticas públicas brasileiras.",
+  "Sua tarefa é classificar trechos de discursos parlamentares nas categorias",
+  "temáticas do codebook, com base no conteúdo substantivo do texto.",
+  "Priorize o tema central do trecho, não menções secundárias.",
+  "Justifique com referência a conceitos e atores políticos quando pertinente."
+)
+
+chat_especializado <- chat_google_gemini(
+  model         = "gemini-2.5-flash",
+  system_prompt = prompt_cp_br,
+  echo          = "none"
+)
+
+resultado_esp <- ac_qual_code(
+  textos   = corpus,
+  codebook = codebook,
+  chat     = chat_especializado
+)
+```
+
+------------------------------------------------------------------------
+
+## Configuração de variáveis de ambiente
+
+O método recomendado é armazenar todas as chaves no arquivo `.Renviron`
+do usuário, editável com `usethis::edit_r_environ()`:
+
+    # ~/.Renviron
+    GOOGLE_API_KEY=AIza...
+    OPENAI_API_KEY=sk-...
+    GROQ_API_KEY=gsk_...
+    ANTHROPIC_API_KEY=sk-ant-...
+    MISTRAL_API_KEY=...
+    DEEPSEEK_API_KEY=...
+    OPENROUTER_API_KEY=sk-or-...
+
+Depois de salvar, reinicie o R. Verifique com
+`Sys.getenv("GOOGLE_API_KEY")`.
+
+Nunca inclua chaves diretamente no código-fonte ou em arquivos
+versionados.
+
+------------------------------------------------------------------------
+
+## Tabela de referência rápida
+
+| Provedor         | Função ellmer                                                                            | Variável de ambiente | Tier gratuito |
+|------------------|------------------------------------------------------------------------------------------|----------------------|---------------|
+| Google Gemini    | [`chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html) | `GOOGLE_API_KEY`     | ✅ Sim        |
+| Groq             | [`chat_groq()`](https://ellmer.tidyverse.org/reference/chat_groq.html)                   | `GROQ_API_KEY`       | ✅ Sim        |
+| Ollama (local)   | [`chat_ollama()`](https://ellmer.tidyverse.org/reference/chat_ollama.html)               | Não necessária       | ✅ Gratuito   |
+| OpenAI           | [`chat_openai()`](https://ellmer.tidyverse.org/reference/chat_openai.html)               | `OPENAI_API_KEY`     | ❌ Pago       |
+| Anthropic Claude | [`chat_anthropic()`](https://ellmer.tidyverse.org/reference/chat_anthropic.html)         | `ANTHROPIC_API_KEY`  | ❌ Pago       |
+| Mistral          | [`chat_mistral()`](https://ellmer.tidyverse.org/reference/chat_mistral.html)             | `MISTRAL_API_KEY`    | ❌ Pago       |
+| DeepSeek         | [`chat_deepseek()`](https://ellmer.tidyverse.org/reference/chat_deepseek.html)           | `DEEPSEEK_API_KEY`   | ⚠️ Limitado   |
+| OpenRouter       | [`chat_openrouter()`](https://ellmer.tidyverse.org/reference/chat_openrouter.html)       | `OPENROUTER_API_KEY` | ⚠️ Por uso    |
+
+------------------------------------------------------------------------
+
+## Referências
+
+KRIPPENDORFF, K. **Content Analysis: An Introduction to Its
+Methodology**. 3. ed. Thousand Oaks: SAGE, 2013.
+
+NEUENDORF, K. A. **The Content Analysis Guidebook**. 2. ed. Thousand
+Oaks: SAGE, 2017.
+
+WICKHAM, H. et al. **ellmer: Chat with Large Language Models**. R
+package version 0.2.0. Disponível em: <https://ellmer.tidyverse.org>.
+Acesso em: abr. 2026.
+
+BAIL, C. A. Breaking the social media prism: How to make our platforms
+less polarizing. **American Journal of Sociology**, v. 127, n. 2,
+p. 661-663, 2021.

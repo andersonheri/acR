@@ -65,6 +65,7 @@ da LLM para cada documento.</p>
 <span>  <span class="va">corpus</span>,</span>
 <span>  <span class="va">codebook</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
+<span>  chat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  confidence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"total"</span>, <span class="st">"by_variable"</span>, <span class="st">"both"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  k_consistency <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  temperature <span class="op">=</span> <span class="fl">0.3</span>,</span>
@@ -87,16 +88,23 @@ da LLM para cada documento.</p>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>Modelo LLM a usar. Aceita:</p><ul><li><p><strong>String</strong> no formato <code>"provedor/modelo"</code> (ex: <code>"anthropic/claude-sonnet-4-5"</code>, <code>"openai/gpt-4.1"</code>). Argumentos adicionais como <code>base_url</code> e <code>api_key</code> podem ser passados via <code>...</code>;</p></li>
-<li><p><strong>Objeto <code>Chat</code></strong> do pacote <code>ellmer</code> pre-configurado (ex: <code>ellmer::chat_openai_compatible(base_url = ...)</code>), para provedores institucionais, Ollama, Azure, OAuth, etc.</p></li>
-</ul></dd>
+<dd><p>Modelo LLM a usar. Aceita string no formato
+<code>"provedor/modelo"</code> (ex: <code>"anthropic/claude-sonnet-4-5"</code>,
+<code>"openai/gpt-4.1"</code>) ou objeto <code>Chat</code> do pacote <code>ellmer</code>
+pré-configurado. Quando <code>chat</code> é fornecido, <code>model</code> é ignorado.</p></dd>
+
+
+<dt id="arg-chat">chat<a class="anchor" aria-label="anchor" href="#arg-chat"></a></dt>
+<dd><p>Objeto <code>Chat</code> do pacote <code>ellmer</code> (ex: <code>chat_google_gemini()</code>,
+<code>chat_openai()</code>, <code>chat_ollama()</code>). Quando fornecido, tem prioridade sobre
+<code>model</code>. Permite usar qualquer provedor suportado pelo <code>ellmer</code>.</p></dd>
 
 
 <dt id="arg-confidence">confidence<a class="anchor" aria-label="anchor" href="#arg-confidence"></a></dt>
 <dd><p>Como calcular certeza:</p><ul><li><p><code>"total"</code> (padrão): uma coluna <code>confidence_score</code> com média de todas
 as variáveis;</p></li>
 <li><p><code>"by_variable"</code>: uma coluna <code>&lt;variavel&gt;_confidence</code> por categoria;</p></li>
-<li><p><code>"both"</code>: colunas por variável + coluna <code>confidence_score</code> (média).</p></li>
+<li><p><code>"both"</code>: colunas por variável + coluna <code>confidence_score</code> (média);</p></li>
 <li><p><code>"none"</code>: não calcula certeza (mais rápido, menor custo).</p></li>
 </ul></dd>
 
@@ -124,12 +132,6 @@ com justificativa da classificação.</p></dd>
 <dd><p>Argumentos adicionais passados a <code><a href="https://ellmer.tidyverse.org/reference/chat-any.html" class="external-link">ellmer::chat()</a></code>.
 Permite uso de APIs OpenAI-compatible self-hosted via <code>base_url</code>.</p></dd>
 
-
-<dt id="arg-chat">chat<a class="anchor" aria-label="anchor" href="#arg-chat"></a></dt>
-<dd><p>Objeto <code>Chat</code> do pacote <code>ellmer</code> (ex: <code>chat_google_gemini()</code>,
-<code>chat_openai()</code>, <code>chat_ollama()</code>). Quando fornecido, tem prioridade sobre
-<code>model</code>. Permite usar qualquer provedor suportado pelo <code>ellmer</code>.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -140,32 +142,6 @@ Permite uso de APIs OpenAI-compatible self-hosted via <code>base_url</code>.</p>
 <li><p><code>confidence_level</code>: <code>"alta"</code>, <code>"media"</code>, <code>"baixa"</code>;</p></li>
 <li><p><code>raciocinio</code>: justificativa da classificação (se <code>reasoning = TRUE</code>).</p></li>
 </ul></div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-
-<div class="section">
-<h3 id="grau-de-certeza-self-consistency-">Grau de certeza (self-consistency)<a class="anchor" aria-label="anchor" href="#grau-de-certeza-self-consistency-"></a></h3>
-
-
-<p>A certeza é calculada rodando o modelo <code>k_consistency</code> vezes com
-<code>temperature &gt; 0</code> e medindo a proporção de concordância entre as rodadas.
-Valores próximos de 1.0 indicam alta consistência; valores próximos de 0.5
-indicam incerteza elevada.</p>
-<p>Interpretação baseada em Landis &amp; Koch (1977):</p><ul><li><p>≥ 0.80: quase perfeita (<em>almost perfect</em>)</p></li>
-<li><p>0.61–0.79: substancial (<em>substantial</em>)</p></li>
-<li><p>0.41–0.60: moderada (<em>moderate</em>)</p></li>
-<li><p>&lt; 0.41: fraca (<em>fair to slight</em>)</p></li>
-</ul></div>
-
-<div class="section">
-<h3 id="racioc-nio">Raciocínio<a class="anchor" aria-label="anchor" href="#racioc-nio"></a></h3>
-
-
-<p>Quando <code>reasoning = TRUE</code>, a LLM fornece uma justificativa curta (1-3 frases)
-para cada classificação, armazenada na coluna <code>raciocinio</code>.</p>
-</div>
-
-    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Wang, X. et al. (2023). Self-Consistency Improves Chain of Thought Reasoning
@@ -193,8 +169,21 @@ Workers for Text-Annotation Tasks. <em>PNAS</em>, 120(30).</p>
 <span class="r-in"><span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Proponho cooperacao."</span>, <span class="st">"Este governo e um fracasso."</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">coded</span>  <span class="op">&lt;-</span> <span class="fu">ac_qual_code</span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">coded</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Usando string de modelo (comportamento padrao)</span></span></span>
+<span class="r-in"><span><span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_code</span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Usando objeto Chat do ellmer (recomendado para controle fino)</span></span></span>
+<span class="r-in"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_code</span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, chat <span class="op">=</span> <span class="va">chat_obj</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Groq (inferencia rapida, plano gratuito)</span></span></span>
+<span class="r-in"><span><span class="va">chat_groq</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_code</span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, chat <span class="op">=</span> <span class="va">chat_groq</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Ollama (modelos locais, sem envio de dados externos)</span></span></span>
+<span class="r-in"><span><span class="va">chat_local</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama3.2"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_code</span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, chat <span class="op">=</span> <span class="va">chat_local</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

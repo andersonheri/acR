@@ -6,8 +6,10 @@ keyness calculadas por
 destacando os termos mais caracteristicos do grupo alvo e do grupo de
 referencia.
 
-A funcao usa `ggplot2` como base e pode, opcionalmente, aplicar o estilo
-editorial do pacote `ipeaplot`.
+A funcao usa
+[ggplot2](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
+como base e pode, opcionalmente, aplicar o estilo editorial do pacote
+`ipeaplot`.
 
 ## Usage
 

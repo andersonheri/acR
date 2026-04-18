@@ -6,8 +6,10 @@ frequentes a partir de uma tabela de frequencias, tipicamente gerada por
 ou filtrada por
 [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md).
 
-A funcao usa `ggplot2` como base e pode, opcionalmente, aplicar o estilo
-editorial do pacote `ipeaplot`.
+A funcao usa
+[ggplot2](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
+como base e pode, opcionalmente, aplicar o estilo editorial do pacote
+`ipeaplot`.
 
 ## Usage
 

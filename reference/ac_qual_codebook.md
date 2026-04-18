@@ -131,7 +131,7 @@ cb
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 18/04/2026 03:40
+#> • Criado em: 18/04/2026 15:15
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.

@@ -12,6 +12,7 @@ ac_qual_code(
   corpus,
   codebook,
   model = "anthropic/claude-sonnet-4-5",
+  chat = NULL,
   confidence = c("total", "by_variable", "both", "none"),
   k_consistency = 3L,
   temperature = 0.3,
@@ -34,15 +35,16 @@ ac_qual_code(
 
 - model:
 
-  Modelo LLM a usar. Aceita:
+  Modelo LLM a usar. Aceita string no formato `"provedor/modelo"` (ex:
+  `"anthropic/claude-sonnet-4-5"`, `"openai/gpt-4.1"`) ou objeto `Chat`
+  do pacote `ellmer` pré-configurado. Quando `chat` é fornecido, `model`
+  é ignorado.
 
-  - **String** no formato `"provedor/modelo"` (ex:
-    `"anthropic/claude-sonnet-4-5"`, `"openai/gpt-4.1"`). Argumentos
-    adicionais como `base_url` e `api_key` podem ser passados via `...`;
+- chat:
 
-  - **Objeto `Chat`** do pacote `ellmer` pre-configurado (ex:
-    `ellmer::chat_openai_compatible(base_url = ...)`), para provedores
-    institucionais, Ollama, Azure, OAuth, etc.
+  Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
+  `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
+  sobre `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
 
 - confidence:
 
@@ -53,7 +55,7 @@ ac_qual_code(
 
   - `"by_variable"`: uma coluna `<variavel>_confidence` por categoria;
 
-  - `"both"`: colunas por variável + coluna `confidence_score` (média).
+  - `"both"`: colunas por variável + coluna `confidence_score` (média);
 
   - `"none"`: não calcula certeza (mais rápido, menor custo).
 
@@ -82,12 +84,6 @@ ac_qual_code(
   [`ellmer::chat()`](https://ellmer.tidyverse.org/reference/chat-any.html).
   Permite uso de APIs OpenAI-compatible self-hosted via `base_url`.
 
-- chat:
-
-  Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
-  `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
-  sobre `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
-
 ## Value
 
 Tibble com colunas:
@@ -103,30 +99,6 @@ Tibble com colunas:
 - `confidence_level`: `"alta"`, `"media"`, `"baixa"`;
 
 - `raciocinio`: justificativa da classificação (se `reasoning = TRUE`).
-
-## Details
-
-### Grau de certeza (self-consistency)
-
-A certeza é calculada rodando o modelo `k_consistency` vezes com
-`temperature > 0` e medindo a proporção de concordância entre as
-rodadas. Valores próximos de 1.0 indicam alta consistência; valores
-próximos de 0.5 indicam incerteza elevada.
-
-Interpretação baseada em Landis & Koch (1977):
-
-- ≥ 0.80: quase perfeita (*almost perfect*)
-
-- 0.61–0.79: substancial (*substantial*)
-
-- 0.41–0.60: moderada (*moderate*)
-
-- \< 0.41: fraca (*fair to slight*)
-
-### Raciocínio
-
-Quando `reasoning = TRUE`, a LLM fornece uma justificativa curta (1-3
-frases) para cada classificação, armazenada na coluna `raciocinio`.
 
 ## References
 
@@ -157,7 +129,20 @@ df <- data.frame(
   texto = c("Proponho cooperacao.", "Este governo e um fracasso.")
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
-coded  <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5")
-coded
+
+# Usando string de modelo (comportamento padrao)
+coded <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5")
+
+# Usando objeto Chat do ellmer (recomendado para controle fino)
+chat_obj <- ellmer::chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
+coded <- ac_qual_code(corpus, cb, chat = chat_obj)
+
+# Groq (inferencia rapida, plano gratuito)
+chat_groq <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+coded <- ac_qual_code(corpus, cb, chat = chat_groq)
+
+# Ollama (modelos locais, sem envio de dados externos)
+chat_local <- ellmer::chat_ollama(model = "llama3.2", echo = "none")
+coded <- ac_qual_code(corpus, cb, chat = chat_local)
 } # }
 ```
