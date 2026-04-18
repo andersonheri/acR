@@ -76,3 +76,7 @@ cache/
 # Outputs locais de teste
 /scratch/
 /sandbox/
+inst/doc
+/doc/
+/Meta/
+inst/doc/
