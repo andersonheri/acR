@@ -5,7 +5,7 @@
 Importacao de textos de fontes abertas brasileiras.
 
 - [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md)
-  : Busca discursos de deputados federais via API da C^amara dos
+  : Busca discursos de deputados federais via API da Camara dos
   Deputados
 - [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md)
   : Busca discursos de senadores federais via senatebR
