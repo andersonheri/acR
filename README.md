@@ -7,20 +7,20 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-> **Analise de Conteudo em R**: pipeline integrado qualitativo (LLMs) e
-> quantitativo, com visualizacoes modernas e foco em corpora brasileiros.
+> **Análise de Conteúdo em R**: pipeline integrado qualitativo (LLMs) e
+> quantitativo, com visualizações modernas e foco em corpora brasileiros.
 
 ## Visao geral
 
-O `acR` oferece um pipeline completo de analise de conteudo textual para
-pesquisadores em ciencias sociais. O pacote integra dois modulos principais:
-um **modulo qualitativo** baseado em LLMs para codificacao automatica com
-validacao humana, e um **modulo quantitativo** para frequencias, TF-IDF,
-keyness, sentimento e modelagem de topicos (LDA). Todas as funcoes foram
+O `acR` oferece um pipeline completo de análise de conteúdo textual para
+pesquisadores em ciências sociais. O pacote integra dois módulos principais:
+um **módulo qualitativo** baseado em LLMs para codificação automática com
+validação humana, e um **módulo quantitativo** para frequencias, TF-IDF,
+keyness, sentimento e modelagem de tópicos (LDA). Todas as funções foram
 projetadas para corpora em portugues e seguem as convencoes metodologicas
 de Bardin (2011) e Krippendorff (2018).
 
-A partir da versao 0.1.0, o modulo qualitativo usa o pacote
+A partir da versão 0.1.0, o módulo qualitativo usa o pacote
 [ellmer](https://ellmer.tidyverse.org/) como backend unificado, permitindo
 usar qualquer provedor de LLM — OpenAI, Google Gemini, Groq, Anthropic,
 Ollama, Mistral, DeepSeek, OpenRouter e outros — via o argumento `chat=`.
@@ -28,14 +28,14 @@ Ollama, Mistral, DeepSeek, OpenRouter e outros — via o argumento `chat=`.
 ## Instalacao
 
 ```r
-# Versao de desenvolvimento (GitHub)
+# Versão de desenvolvimento (GitHub)
 # install.packages("remotes")
 remotes::install_github("andersonheri/acR")
 ```
 
 ## Exemplo minimo
 
-### Modulo qualitativo — codificacao com LLM
+### Módulo qualitativo — codificação com LLM
 
 ```r
 library(acR)
@@ -70,10 +70,10 @@ resultado <- ac_qual_code(
 )
 
 # 5. Exportar
-ac_export(resultado, formato = "csv", arquivo = "codificacao.csv")
+ac_export(resultado, formato = "csv", arquivo = "codificação.csv")
 ```
 
-### Modulo quantitativo — frequencias e sentimento
+### Módulo quantitativo — frequencias e sentimento
 
 ```r
 # Tokenizar e calcular frequencias
@@ -94,12 +94,12 @@ library(acR)
 df <- data.frame(
   id      = paste0("prop_", 1:6),
   texto   = c(
-    "Esta proposta amplia direitos trabalhistas e protecao social.",
+    "Esta proposta amplia direitos trabalhistas e proteção social.",
     "O projeto garante seguro-desemprego para trabalhadores informais.",
-    "Propomos reducao de impostos para estimular o mercado.",
-    "A desburocratizacao e essencial para a competitividade.",
-    "O texto fortalece o SUS e o acesso a saude publica.",
-    "Defendemos a expansao de politicas de assistencia social."
+    "Propomos redução de impostos para estimular o mercado.",
+    "A desburocratização e essencial para a competitividade.",
+    "O texto fortalece o SUS e o acesso a saúde pública.",
+    "Defendemos a expansão de políticas de assistência social."
   ),
   partido = c("PT", "PT", "PL", "PL", "PSOL", "PSOL"),
   stringsAsFactors = FALSE
@@ -118,66 +118,66 @@ tfidf |>
 ac_plot_tf_idf(tfidf, by = "partido", n = 5)
 ```
 
-## Funcoes por modulo
+## Funções por módulo
 
 ### Corpus e pre-processamento
 
-| Funcao | Descricao |
+| Funcao | Descrição |
 |--------|-----------|
 | `ac_corpus()` | Criar objeto corpus |
 | `ac_import()` | Importar corpus de arquivo externo |
 | `ac_clean()` | Limpar texto (lowercase, pontuacao, numeros) |
 | `is_ac_corpus()` | Verificar se objeto e um corpus acR |
-| `ac_tokenize()` | Tokenizar com remocao de stopwords |
+| `ac_tokenize()` | Tokenizar com remoção de stopwords |
 
-### Analise quantitativa
+### Análise quantitativa
 
-| Funcao | Descricao |
+| Funcao | Descrição |
 |--------|-----------|
-| `ac_count()` | Frequencia de termos |
+| `ac_count()` | Frequência de termos |
 | `ac_top_terms()` | Top N termos |
 | `ac_tf_idf()` | TF-IDF por documento |
 | `ac_keyness()` | Vocabulario distintivo entre grupos |
 | `ac_cooccurrence()` | Rede de co-ocorrencia |
 | `ac_sentiment()` | Sentimento (OpLexicon / SentiLex-PT) |
-| `ac_lda()` | Modelagem de topicos LDA |
-| `ac_lda_tune()` | Selecao otima de K topicos |
+| `ac_lda()` | Modelagem de tópicos LDA |
+| `ac_lda_tune()` | Seleção ótima de K tópicos |
 
-### Analise qualitativa com LLMs
+### Análise qualitativa com LLMs
 
-| Funcao | Descricao |
+| Funcao | Descrição |
 |--------|-----------|
 | `ac_qual_codebook()` | Construir codebook estruturado |
 | `ac_qual_code()` | Codificar corpus via LLM |
 | `ac_qual_search_literature()` | Buscar literatura via OpenAlex + LLM |
 | `ac_qual_list_models()` | Listar modelos disponiveis |
-| `ac_qual_recommend_model()` | Recomendacao automatica de modelo |
-| `ac_qual_sample()` | Amostrar para validacao humana |
+| `ac_qual_recommend_model()` | Recomendação automática de modelo |
+| `ac_qual_sample()` | Amostrar para validação humana |
 | `ac_qual_export_for_review()` | Exportar para revisao em .xlsx |
 | `ac_qual_import_human()` | Importar revisao humana |
-| `ac_qual_irr()` | Concordancia inter-codificador (kappa) |
+| `ac_qual_irr()` | Concordância inter-codificador (kappa) |
 | `ac_qual_reliability()` | Validar threshold de confiabilidade |
 | `ac_qual_save_codebook()` | Salvar codebook em YAML |
 | `ac_qual_load_codebook()` | Carregar codebook salvo |
 
-### Visualizacao
+### Visualização
 
-| Funcao | Descricao |
+| Funcao | Descrição |
 |--------|-----------|
 | `ac_plot_top_terms()` | Barras de frequencia |
 | `ac_plot_tf_idf()` | TF-IDF por grupo |
 | `ac_plot_keyness()` | Keyness por grupo de referencia |
-| `ac_plot_sentiment()` | Distribuicao de sentimento |
-| `ac_plot_xray()` | Evolucao de sentimento no texto |
-| `ac_plot_lda_topics()` | Termos por topico LDA |
+| `ac_plot_sentiment()` | Distribuição de sentimento |
+| `ac_plot_xray()` | Evolução de sentimento no texto |
+| `ac_plot_lda_topics()` | Termos por tópico LDA |
 | `ac_plot_lda_tune()` | Curva de selecao de K |
 | `ac_plot_cooccurrence()` | Rede de co-ocorrencia |
 | `ac_wordcloud()` | Nuvem de palavras |
-| `ac_plot_wordcloud_comparative()` | Nuvem comparativa por topico |
+| `ac_plot_wordcloud_comparative()` | Nuvem comparativa por tópico |
 
-### Exportacao e coleta
+### Exportação e coleta
 
-| Funcao | Descricao |
+| Funcao | Descrição |
 |--------|-----------|
 | `ac_export()` | Exportar resultados (`csv`, `xlsx`, `latex`, `rds`) |
 | `ac_fetch_camara()` | Coleta via API da Camara dos Deputados |
@@ -194,7 +194,7 @@ library(ellmer)
 # Google Gemini — tier gratuito disponivel
 chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
 
-# Groq — inferencia rapida, plano gratuito
+# Groq — inferência rápida, plano gratuito
 chat_obj <- chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
 
 # Ollama — modelos locais, sem envio de dados
@@ -216,11 +216,11 @@ chat_obj <- chat_deepseek(model = "deepseek-chat", echo = "none")
 chat_obj <- chat_openrouter(model = "google/gemini-2.5-flash", echo = "none")
 ```
 
-| Provedor | Funcao ellmer | Variavel de ambiente | Tier gratuito |
+| Provedor | Função ellmer | Variável de ambiente | Tier gratuito |
 |----------|---------------|----------------------|---------------|
 | Google Gemini | `chat_google_gemini()` | `GOOGLE_API_KEY` | Sim |
 | Groq | `chat_groq()` | `GROQ_API_KEY` | Sim |
-| Ollama (local) | `chat_ollama()` | nao necessaria | Gratuito |
+| Ollama (local) | `chat_ollama()` | não necessária | Gratuito |
 | OpenAI | `chat_openai()` | `OPENAI_API_KEY` | Nao |
 | Anthropic | `chat_anthropic()` | `ANTHROPIC_API_KEY` | Nao |
 | Mistral | `chat_mistral()` | `MISTRAL_API_KEY` | Nao |
@@ -238,9 +238,9 @@ ANTHROPIC_API_KEY=sua_chave
 
 ## Busca de literatura com OpenAlex
 
-`ac_qual_search_literature()` busca referencias academicas reais na API do
+`ac_qual_search_literature()` busca referências acadêmicas reais na API do
 [OpenAlex](https://openalex.org/) (gratuita, sem chave) e usa a LLM para
-sintetizar os abstracts em portugues. Isso evita alucinacoes bibliograficas
+sintetizar os abstracts em portugues. Isso evita alucinações bibliográficas
 comuns quando a LLM opera sem fonte externa.
 
 ```r
@@ -248,7 +248,7 @@ library(ellmer)
 
 chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
 
-# Buscar referencias sobre um conceito
+# Buscar referências sobre um conceito
 lit <- ac_qual_search_literature(
   concept = "democratic backsliding",
   n_refs  = 5,
@@ -272,12 +272,12 @@ print(lit)
 
 - **Site completo**: <https://andersonheri.github.io/acR/>
 - **Vignettes**:
-  - [Introducao ao acR](https://andersonheri.github.io/acR/articles/introducao-acR.html)
-  - [Codificacao qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html)
-  - [Analise de proposicoes legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html)
-  - [Analise quantitativa](https://andersonheri.github.io/acR/articles/quantitativo.html)
-  - [Analise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html)
-  - [Modelagem de topicos LDA](https://andersonheri.github.io/acR/articles/lda.html)
+  - [Introdução ao acR](https://andersonheri.github.io/acR/articles/introducao-acR.html)
+  - [Codificação qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html)
+  - [Análise de proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html)
+  - [Análise quantitativa](https://andersonheri.github.io/acR/articles/quantitativo.html)
+  - [Análise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html)
+  - [Modelagem de tópicos LDA](https://andersonheri.github.io/acR/articles/lda.html)
 
 ## Como citar
 
@@ -286,15 +286,15 @@ citation("acR")
 ```
 
 ```
-Henrique, A. (2025). acR: Analise de Conteudo em R.
+Henrique, A. (2025). acR: Análise de Conteúdo em R.
 R package version 0.1.0.
-Centro de Estudos da Metropole (CEM-Cepid) — Universidade de Sao Paulo.
+Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/
 ```
 
-## Referencias
+## Referências
 
-Bardin, L. (2011). *Analise de conteudo*. Edicoes 70.
+Bardin, L. (2011). *Análise de conteúdo*. Edições 70.
 
 Benoit, K., et al. (2018). quanteda. *JOSS*, 3(30), 774. doi:10.21105/joss.00774
 
@@ -311,13 +311,13 @@ Landis, J. R., & Koch, G. G. (1977). *Biometrics*, 33(1), 159-174.
 Priem, J., et al. (2022). OpenAlex: A fully-open index of the global
 research system. *arXiv*, 2205.01833.
 
-Sampaio, R. C., & Lycariao, D. (2021). *Analise de conteudo categorial*. Enap.
+Sampaio, R. C., & Lycariao, D. (2021). *Análise de conteúdo categorial*. Enap.
 
 Souza, M., & Vieira, R. (2012). OpLexicon. *WASSA*. PUCRS.
 
 Wickham, H., et al. (2025). *ellmer*. Posit. <https://ellmer.tidyverse.org/>
 
-## Licenca
+## Licença
 
-MIT © Anderson Henrique — Centro de Estudos da Metropole (CEM-Cepid),
-Universidade de Sao Paulo.
+MIT © Anderson Henrique — Centro de Estudos da Metrópole (CEM-Cepid),
+Universidade de São Paulo.
