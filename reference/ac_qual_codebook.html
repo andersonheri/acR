@@ -83,6 +83,7 @@ O pesquisador revisa e aprova interativamente antes de usar.</p></li>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"manual"</span>, <span class="st">"literature"</span><span class="op">)</span>,</span>
 <span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  lang <span class="op">=</span> <span class="st">"pt"</span>,</span>
+<span>  chat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
 <span>  journals <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  n_refs <span class="op">=</span> <span class="fl">5L</span>,</span>
@@ -120,6 +121,12 @@ uma categoria. Padrão: <code>FALSE</code>.</p></dd>
 
 <dt id="arg-lang">lang<a class="anchor" aria-label="anchor" href="#arg-lang"></a></dt>
 <dd><p>Idioma do corpus: <code>"pt"</code> (padrão) ou <code>"en"</code>.</p></dd>
+
+
+<dt id="arg-chat">chat<a class="anchor" aria-label="anchor" href="#arg-chat"></a></dt>
+<dd><p>Objeto <code>Chat</code> do pacote <code>ellmer</code> (ex: <code>chat_google_gemini()</code>,
+<code>chat_openai()</code>, <code>chat_ollama()</code>). Quando fornecido, tem prioridade sobre
+<code>model</code>. Permite usar qualquer provedor suportado pelo <code>ellmer</code>.</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
@@ -180,7 +187,7 @@ SAGE.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias (2): <span style="color: #0000BB;">"positivo"</span> and <span style="color: #0000BB;">"negativo"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 18/04/2026 03:05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 18/04/2026 03:40</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Instrução geral</span>:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Classifique o tom geral do discurso.</span>

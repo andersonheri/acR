@@ -43,6 +43,12 @@ ac_qual_search_literature(
 
   Ignorado.
 
+- chat:
+
+  Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
+  `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
+  sobre `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
+
 ## Value
 
 Tibble com colunas: `conceito`, `autor`, `ano`, `trecho_original`,

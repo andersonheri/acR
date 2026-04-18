@@ -21,6 +21,7 @@ ac_qual_codebook(
   mode = c("manual", "literature"),
   multilabel = FALSE,
   lang = "pt",
+  chat = NULL,
   model = "anthropic/claude-sonnet-4-5",
   journals = "default",
   n_refs = 5L,
@@ -61,6 +62,12 @@ ac_qual_codebook(
 - lang:
 
   Idioma do corpus: `"pt"` (padrão) ou `"en"`.
+
+- chat:
+
+  Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
+  `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
+  sobre `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
 
 - model:
 
@@ -124,7 +131,7 @@ cb
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 18/04/2026 03:05
+#> • Criado em: 18/04/2026 03:40
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.

@@ -82,6 +82,12 @@ ac_qual_code(
   [`ellmer::chat()`](https://ellmer.tidyverse.org/reference/chat-any.html).
   Permite uso de APIs OpenAI-compatible self-hosted via `base_url`.
 
+- chat:
+
+  Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
+  `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade
+  sobre `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
+
 ## Value
 
 Tibble com colunas:
