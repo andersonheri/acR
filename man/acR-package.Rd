@@ -49,7 +49,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Anderson Henrique \email{anderson.henrique@usp.br} (\href{https://orcid.org/0000-0002-1842-2725}{ORCID})
+\strong{Maintainer}: Anderson Henrique \email{anderson.henrique@usp.br} (\href{https://orcid.org/0000-0000-0000-0000}{ORCID}) (Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao Paulo)
 
 }
 \keyword{internal}

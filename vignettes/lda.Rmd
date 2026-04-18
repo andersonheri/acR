@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 library(acR)
 ```
 
@@ -60,13 +60,8 @@ summary(corpus)
 ## 2. Preparar a DFM (Document-Feature Matrix)
 
 ```{r dfm}
-tokens <- ac_tokenize(
-  ac_clean(corpus, lowercase = TRUE),
-  remover_stopwords = TRUE,
-  ngrams            = 1L
-)
-dfm <- ac_dfm(tokens, min_freq = 1L)
-print(dfm)
+corpus_limpo <- ac_clean(corpus)
+print(corpus_limpo)
 ```
 
 ```
@@ -80,14 +75,10 @@ print(dfm)
 
 ```{r tune}
 tune <- ac_lda_tune(
-  dfm,
-  k_min  = 2L,
-  k_max  = 8L,
-  metrica = "perplexidade",  # "perplexidade" | "coerencia" | "ambos"
-  seed   = 42L
+  corpus_limpo,
+  k_range = 2:8,
+  seed    = 42L
 )
-print(tune)
-ac_plot_lda_tune(tune)
 ```
 
 ```
@@ -109,10 +100,9 @@ ac_plot_lda_tune(tune)
 
 ```{r lda}
 modelo <- ac_lda(
-  dfm,
-  k     = 4L,
-  seed  = 42L,
-  iter  = 1000L
+  corpus_limpo,
+  k    = 4L,
+  seed = 42L
 )
 print(modelo)
 summary(modelo)
@@ -134,9 +124,9 @@ summary(modelo)
 ## 5. Termos por topico (beta)
 
 ```{r beta}
-beta <- ac_lda_terms(modelo, n = 10)
-print(beta)
-ac_plot_lda_topics(modelo, n_termos = 10)
+beta <- modelo$terms
+print(head(beta, 10))
+ac_plot_lda_topics(modelo, top_n = 10L)
 ```
 
 ```
@@ -157,8 +147,8 @@ ac_plot_lda_topics(modelo, n_termos = 10)
 ## 6. Distribuicao de topicos por documento (gamma)
 
 ```{r gamma}
-gamma <- ac_lda_docs(modelo)
-print(gamma)
+gamma <- modelo$documents
+print(head(gamma, 10))
 ```
 
 ```
@@ -178,16 +168,12 @@ print(gamma)
 ## 7. Visualizacoes
 
 ```{r viz-wordcloud}
-# Wordcloud comparativa por topico
-ac_plot_wordcloud_comparative(
-  modelo,
-  n_termos = 20
-)
+beta_top <- dplyr::slice_max(dplyr::group_by(beta, topic), beta, n = 20)
+print(beta_top)
 ```
 
 ```{r viz-heatmap}
-# Heatmap: distribuicao gamma por documento x topico
-ac_plot_lda_topics(modelo, tipo = "heatmap")
+ac_plot_lda_topics(modelo)
 ```
 
 ---
@@ -195,11 +181,6 @@ ac_plot_lda_topics(modelo, tipo = "heatmap")
 ## 8. Nomear os topicos
 
 ```{r nomear}
-modelo <- ac_lda_label(
-  modelo,
-  labels = c("Reforma Tributaria", "IA e Dados",
-             "Habitacao", "Educacao")
-)
 print(modelo)
 ```
 
@@ -216,10 +197,8 @@ print(modelo)
 ## 9. Exportar
 
 ```{r exportar}
-ac_export(beta,   formato = "csv",  arquivo = "lda_beta.csv")
-ac_export(gamma,  formato = "csv",  arquivo = "lda_gamma.csv")
-ac_export(modelo, formato = "rds",  arquivo = "lda_modelo.rds")
-ac_export(beta,   formato = "latex", arquivo = "lda_topicos.tex")
+ac_export(beta,  path = "lda_beta.csv",  format = "csv")
+ac_export(gamma, path = "lda_gamma.csv", format = "csv")
 ```
 
 ```

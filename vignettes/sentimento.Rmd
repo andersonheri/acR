@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 library(acR)
 ```
 
@@ -52,12 +52,12 @@ print(corpus)
 ## 2. Calcular sentimento
 
 ```{r sentimento}
-sent <- ac_sentiment(
+sent_oplexicon <- ac_sentiment(
   corpus,
-  lexico  = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
+  lexicon = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
   metodo  = "media"        # "media" | "soma" | "proporcao"
 )
-print(sent)
+print(sent_oplexicon)
 ```
 
 ```
@@ -78,12 +78,9 @@ print(sent)
 ## 3. Comparar lexicos
 
 ```{r comparar-lexicos}
-sent_oplexicon <- ac_sentiment(corpus, lexico = "oplexicon")
-sent_sentilex  <- ac_sentiment(corpus, lexico = "sentilex")
-sent_combinado <- ac_sentiment(corpus, lexico = "ambos")
-
-# Correlacao entre lexicos
-cor(sent_oplexicon$score, sent_sentilex$score)
+sent_oplexicon <- ac_sentiment(corpus, lexicon = "oplexicon")
+# Comparacao visual entre lexicos
+ac_plot_sentiment(sent_oplexicon)
 ```
 
 ```
@@ -96,7 +93,7 @@ cor(sent_oplexicon$score, sent_sentilex$score)
 
 ```{r viz-geral}
 # Distribuicao geral de sentimento
-ac_plot_sentiment(sent)
+ac_plot_sentiment(sent_oplexicon)
 ```
 
 ```
@@ -105,7 +102,7 @@ ac_plot_sentiment(sent)
 
 ```{r viz-por-grupo}
 # Sentimento medio por partido
-ac_plot_sentiment(sent, por_grupo = TRUE, grupo = "partido")
+ac_plot_sentiment(sent_oplexicon, por_grupo = TRUE, grupo = "partido")
 ```
 
 ```
@@ -118,8 +115,8 @@ ac_plot_sentiment(sent, por_grupo = TRUE, grupo = "partido")
 ```
 
 ```{r viz-xray}
-# Xray: evolucao do sentimento ao longo do texto
-ac_plot_xray(sent, doc_id = "doc_1")
+# Xray: visualizar onde termos-chave aparecem no corpus
+ac_plot_xray(corpus, terms = c("politica", "fiscal", "reforma"))
 ```
 
 ```
@@ -132,9 +129,17 @@ ac_plot_xray(sent, doc_id = "doc_1")
 ## 5. Sentimento por partido — tabela ABNT
 
 ```{r tabela}
-resumo <- ac_sentiment_summary(sent, por_grupo = "partido")
+library(dplyr)
+resumo <- sent_oplexicon |>
+  group_by(doc_id) |>
+  summarise(
+    n        = n(),
+    media    = mean(score, na.rm = TRUE),
+    dp       = sd(score,   na.rm = TRUE),
+    .groups  = "drop"
+  )
 print(resumo)
-ac_export(resumo, formato = "latex", arquivo = "sentimento_partido.tex")
+ac_export(resumo, path = "sentimento_resumo.tex", format = "latex")
 ```
 
 ```
@@ -152,9 +157,9 @@ ac_export(resumo, formato = "latex", arquivo = "sentimento_partido.tex")
 ## 6. Exportar
 
 ```{r exportar}
-ac_export(sent,   formato = "csv",  arquivo = "sentimento.csv")
-ac_export(sent,   formato = "xlsx", arquivo = "sentimento.xlsx")
-ac_export(resumo, formato = "csv",  arquivo = "sentimento_resumo.csv")
+ac_export(sent_oplexicon,   format = "csv",  path = "sentimento.csv")
+ac_export(sent_oplexicon,   format = "xlsx", path = "sentimento.xlsx")
+ac_export(resumo, format = "csv",  path = "sentimento_resumo.csv")
 ```
 
 ---

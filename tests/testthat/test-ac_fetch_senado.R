@@ -1,6 +1,8 @@
 test_that("ac_fetch_senado() retorna data.frame (integracao)", {
-  skip_if_not_installed("senatebR")
+  skip_on_cran()
   skip_on_ci()
+  skip_if_not_installed("senatebR")
+  skip_if_offline("legis.senate.leg.br")
   try(closeAllConnections(), silent = TRUE)
   result <- suppressWarnings(
     ac_fetch_senado(
@@ -16,8 +18,10 @@ test_that("ac_fetch_senado() retorna data.frame (integracao)", {
 })
 
 test_that("ac_fetch_senado() e ac_fetch_camara() sao compativeis (integracao)", {
-  skip_if_not_installed("senatebR")
+  skip_on_cran()
   skip_on_ci()
+  skip_if_not_installed("senatebR")
+  skip_if_offline("legis.senate.leg.br")
   try(closeAllConnections(), silent = TRUE)
   result <- suppressWarnings(
     ac_fetch_senado(
