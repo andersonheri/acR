@@ -104,10 +104,10 @@ ac_qual_code <- function(corpus,
     cli::cli_abort("{.arg codebook} deve ser um {.cls ac_codebook}.")
   }
   if (!requireNamespace("ellmer", quietly = TRUE)) {
-    cli::cli_abort("O pacote {.pkg ellmer} é necessário.")
+    cli::cli_abort("O pacote {.pkg ellmer} \u00e9 necess\u00e1rio.")
   }
   if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    cli::cli_abort("O pacote {.pkg jsonlite} é necessário.")
+    cli::cli_abort("O pacote {.pkg jsonlite} \u00e9 necess\u00e1rio.")
   }
   if (!is.null(chat) && !inherits(chat, "Chat")) {
     cli::cli_abort(
@@ -220,7 +220,7 @@ ac_qual_code <- function(corpus,
     len_map <- c(
       short    = "1 frase curta e objetiva",
       medium   = "2-3 frases",
-      detailed = "um parágrafo detalhado"
+      detailed = "um par\u00e1grafo detalhado"
     )
     paste0(
       '\n  "raciocinio": "', len_map[reasoning_length],
@@ -237,13 +237,13 @@ ac_qual_code <- function(corpus,
   cat_names <- names(codebook$categories)
 
   paste0(
-    "Você é um assistente especializado em análise de conteúdo qualitativa.\n\n",
+    "Voc\u00ea \u00e9 um assistente especializado em an\u00e1lise de conte\u00fado qualitativa.\n\n",
     codebook$instructions, "\n\n",
     multilabel_instruction, "\n\n",
     "CATEGORIAS:\n",
     paste(cat_descriptions, collapse = "\n\n"),
     "\n\n",
-    "Responda SEMPRE em formato JSON válido (sem markdown), seguindo exatamente:\n",
+    "Responda SEMPRE em formato JSON v\u00e1lido (sem markdown), seguindo exatamente:\n",
     "{\n",
     "  \"categoria\": \"", paste(cat_names, collapse = "|"), "\"",
     reasoning_instruction,
@@ -385,7 +385,7 @@ ac_qual_code <- function(corpus,
 
   cli::cli_inform(c(
     "i" = "Certeza calculada via self-consistency (Wang et al., 2023, EMNLP).",
-    "i" = "Interpretação: >= 0.80 = alta | 0.61-0.79 = média | < 0.61 = baixa (Landis & Koch, 1977)."
+    "i" = "Interpreta\u00e7\u00e3o: >= 0.80 = alta | 0.61-0.79 = m\u00e9dia | < 0.61 = baixa (Landis & Koch, 1977)."
   ))
 
   result
