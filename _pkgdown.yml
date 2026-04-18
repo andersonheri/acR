@@ -79,6 +79,7 @@ reference:
   desc: "Criacao, limpeza e tokenizacao de corpus em portugues."
   contents:
   - ac_corpus
+  - ac_import
   - ac_clean
   - ac_tokenize
   - is_ac_corpus
