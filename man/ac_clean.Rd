@@ -12,17 +12,23 @@ ac_clean(
   remove_url = TRUE,
   remove_email = TRUE,
   remove_symbols = FALSE,
+  remove_hashtags = FALSE,
+  remove_mentions = FALSE,
   remove_stopwords = NULL,
   remove_accents = FALSE,
   normalize_pt = FALSE,
   protect = NULL,
+  extra_stopwords = NULL,
+  min_char = NULL,
+  custom_replacements = NULL,
+  handle_na = c("preserve", "empty", "remove"),
   strip_whitespace = TRUE,
+  verbose = FALSE,
   ...
 )
 }
 \arguments{
-\item{corpus}{Objeto de classe \code{ac_corpus}, tipicamente criado por
-\code{\link[=ac_corpus]{ac_corpus()}}.}
+\item{corpus}{Objeto de classe \code{ac_corpus}, criado por \code{\link[=ac_corpus]{ac_corpus()}}.}
 
 \item{lower}{Se \code{TRUE} (padrão), converte texto para minúsculas.}
 
@@ -37,64 +43,84 @@ ac_clean(
 \item{remove_symbols}{Se \code{TRUE}, remove símbolos e emojis (@, #, \*, etc.).
 Padrão: \code{FALSE}. Cuidado: hashtags e menções podem ser informativas.}
 
+\item{remove_hashtags}{Se \code{TRUE}, remove hashtags (#termo). Padrão: \code{FALSE}.}
+
+\item{remove_mentions}{Se \code{TRUE}, remove menções (\@usuario). Padrão: \code{FALSE}.}
+
 \item{remove_stopwords}{Pode ser:
 \itemize{
 \item \code{NULL} (padrão): não remove stopwords;
 \item uma string com nome de preset (\code{"pt"}, \code{"pt-br-extended"},
-\code{"pt-legislativo"});
+\code{"pt-legislativo"}, \code{"en"});
 \item um vetor \code{character} com stopwords customizadas.
 }}
 
 \item{remove_accents}{Se \code{TRUE}, remove acentos (ex: "ação" vira "acao").
-Padrão: \code{FALSE}. Útil para certas análises quantitativas, mas descaracteriza
-o texto para análise qualitativa.}
+Padrão: \code{FALSE}.}
 
 \item{normalize_pt}{Se \code{TRUE}, aplica normalizações ortográficas do português
-brasileiro coloquial: \code{"pra"} → \code{"para"}, \code{"pro"} → \code{"para o"},
-\code{"tá"} → \code{"está"}, etc. Padrão: \code{FALSE}.}
+brasileiro coloquial: \code{"pra"} → \code{"para"}, \code{"tá"} → \code{"está"}, etc.
+Padrão: \code{FALSE}.}
 
-\item{protect}{Vetor \code{character} com termos a preservar exatamente como estão
-(ignora \code{lower}, \code{remove_punct}, \code{remove_stopwords} para esses termos).
-Útil para siglas políticas (\code{c("PT", "PSDB", "CCJ")}). Padrão: \code{NULL}.}
+\item{protect}{Vetor \code{character} com termos a preservar exatamente como
+estão. Útil para siglas (\code{c("PT", "PSDB", "CCJ")}). Padrão: \code{NULL}.}
 
-\item{strip_whitespace}{Se \code{TRUE} (padrão e sempre aplicado ao final),
-colapsa espaços consecutivos e remove espaços no início/fim.}
+\item{extra_stopwords}{Vetor \code{character} com stopwords adicionais a remover
+antes de qualquer análise, combinado ao preset de \code{remove_stopwords}.
+Use \code{\link[=ac_clean_stopwords]{ac_clean_stopwords()}} para inspecionar e editar o objeto padrão.
+Padrão: \code{NULL}.}
+
+\item{min_char}{Inteiro. Descarta tokens com menos de \code{min_char} caracteres
+após a limpeza. Padrão: \code{NULL} (sem filtro).}
+
+\item{custom_replacements}{Lista nomeada de substituições livres aplicadas
+antes das demais transformações. Ex: \code{list("pres\\\\." = "presidente", "dep\\\\." = "deputado")}. Padrão: \code{NULL}.}
+
+\item{handle_na}{Como tratar valores \code{NA} no texto:
+\itemize{
+\item \code{"preserve"} (padrão): mantém \code{NA} como \code{NA};
+\item \code{"empty"}: converte \code{NA} para \code{""};
+\item \code{"remove"}: remove documentos com \code{NA} do corpus.
+}}
+
+\item{strip_whitespace}{Se \code{TRUE} (padrão), colapsa espaços consecutivos.}
+
+\item{verbose}{Se \code{TRUE}, exibe resumo das operações e estatísticas de
+remoção por etapa. Padrão: \code{FALSE}.}
 
 \item{...}{Ignorado com aviso se houver argumentos não reconhecidos.}
 }
 \value{
 Um novo objeto \code{ac_corpus} com a coluna \code{text} transformada e o
 atributo \code{cleaning_steps} registrando as operações aplicadas em ordem.
+Quando \code{verbose = TRUE}, também imprime um resumo com tokens removidos
+por etapa e documentos que ficaram vazios após limpeza.
 }
 \description{
 \code{ac_clean()} aplica um conjunto configurável de transformações ao texto de
 um objeto \code{ac_corpus}, retornando um novo corpus com o texto modificado.
-As transformações são aplicadas em ordem lógica (URLs e emails antes de
-pontuação, etc.) e registradas como atributo para auditoria.
+As transformações são aplicadas em ordem lógica e registradas como atributo
+para auditoria.
 }
 \details{
 \strong{Ordem de aplicação} das transformações:
 \enumerate{
-\item Proteção de termos (\code{protect}): substitui termos por placeholders
-\item Remoção de URLs e emails
-\item Remoção de símbolos (se ativado)
-\item \code{lower} (minúsculas)
+\item \code{handle_na}: tratamento de NAs
+\item \code{custom_replacements}: substituições livres
+\item \code{protect}: proteção de termos com placeholders
+\item \code{remove_url} e \code{remove_email}
+\item \code{remove_hashtags} e \code{remove_mentions}
+\item \code{remove_symbols}
+\item \code{lower}
 \item \code{remove_accents}
 \item \code{normalize_pt}
 \item \code{remove_numbers}
 \item \code{remove_punct}
-\item \code{remove_stopwords}
+\item \code{remove_stopwords} + \code{extra_stopwords}
+\item \code{min_char}: remoção de tokens curtos
 \item Restauração dos termos protegidos
 \item \code{strip_whitespace} (sempre)
 }
-
-\strong{Sobre stopwords}: a remoção é feita por \emph{palavras inteiras} (delimitadas
-por fronteiras), não por substring. Isso evita que remover \code{"em"} corte
-\code{"embora"}.
-
-\strong{Sobre termos protegidos}: durante a limpeza, termos em \code{protect} são
-substituídos por placeholders internos inacessíveis às demais transformações
-e restaurados ao final com case original.
 }
 \examples{
 df <- data.frame(
@@ -102,7 +128,7 @@ df <- data.frame(
   texto = c(
     "O deputado do PT disse: 'Defendo a CCJ!' Veja em https://exemplo.org",
     "Sra. presidente, o Sr. senador apresentou o requerimento n\u00ba 123.",
-    "Tá na hora de votar, pra acabar com isso."
+    "T\u00e1 na hora de votar, pra acabar com isso."
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
@@ -110,16 +136,20 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 # Limpeza básica
 ac_clean(corpus)
 
-# Limpeza agressiva com stopwords legislativas e proteção de siglas
+# Limpeza completa com todas as opções
 ac_clean(
   corpus,
-  remove_stopwords = "pt-legislativo",
-  protect = c("PT", "CCJ"),
-  normalize_pt = TRUE
+  remove_stopwords  = "pt-legislativo",
+  extra_stopwords   = c("isso", "aquilo", "coisa"),
+  protect           = c("PT", "CCJ"),
+  normalize_pt      = TRUE,
+  custom_replacements = list("pres\\\\." = "presidente"),
+  min_char          = 3L,
+  verbose           = TRUE
 )
 
 }
 \seealso{
-\code{\link[=ac_corpus]{ac_corpus()}} para construir o corpus de entrada.
+\code{\link[=ac_corpus]{ac_corpus()}}, \code{\link[=ac_clean_stopwords]{ac_clean_stopwords()}}
 }
 \concept{corpus}
