@@ -23,6 +23,9 @@ Criacao, limpeza e tokenizacao de corpus em portugues.
 - [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
   : Limpar e normalizar texto de um corpus
 
+- [`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md)
+  : Inspecionar e editar stopwords extras do acR
+
 - [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
   : Tokenizar textos de um corpus acR
 
