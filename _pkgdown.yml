@@ -10,10 +10,8 @@ template:
       google: "Inter"
     code_font:
       google: "JetBrains Mono"
-
 development:
   mode: auto
-
 home:
   title: acR — Analise de Conteudo em R
   description: >
@@ -25,7 +23,6 @@ home:
     href: https://github.com/andersonheri/acR
   - text: Reportar problema
     href: https://github.com/andersonheri/acR/issues
-
 navbar:
   structure:
     left:  [intro, reference, articles, news]
@@ -53,7 +50,6 @@ navbar:
         href: articles/sentimento.html
       - text: Modelagem de topicos (LDA)
         href: articles/lda.html
-
 articles:
   - title: "Introducao"
     contents:
@@ -67,23 +63,21 @@ articles:
       - quantitativo
       - sentimento
       - lda
-
 reference:
 - title: "Coleta de dados"
   desc: "Importacao de textos de fontes abertas brasileiras."
   contents:
   - ac_fetch_camara
   - ac_fetch_senado
-
 - title: "Corpus e pre-processamento"
   desc: "Criacao, limpeza e tokenizacao de corpus em portugues."
   contents:
   - ac_corpus
   - ac_import
   - ac_clean
+  - ac_clean_stopwords
   - ac_tokenize
   - is_ac_corpus
-
 - title: "Analise quantitativa"
   desc: >
     Frequencias, associacoes e modelagem estatistica de textos.
@@ -96,7 +90,6 @@ reference:
   - ac_sentiment
   - ac_lda
   - ac_lda_tune
-
 - title: "Codificacao qualitativa via LLM"
   desc: >
     Pipeline de analise de conteudo qualitativa assistida por LLMs.
@@ -106,7 +99,6 @@ reference:
   - ac_qual_code
   - ac_qual_save_codebook
   - ac_qual_load_codebook
-
 - title: "Validacao e confiabilidade"
   desc: >
     Amostragem, concordancia inter-codificador e importacao/exportacao.
@@ -116,25 +108,21 @@ reference:
   - ac_qual_sample
   - ac_qual_export_for_review
   - ac_qual_import_human
-
 - title: "Selecao de modelos LLM"
   desc: >
     Listagem e recomendacao de modelos LLM.
   contents:
   - ac_qual_list_models
   - ac_qual_recommend_model
-
 - title: "Visualizacao"
   desc: "Graficos modernos baseados em ggplot2."
   contents:
   - starts_with("ac_plot_")
   - ac_wordcloud
-
 - title: "Exportacao"
   desc: "Exporta resultados para CSV, LaTeX, Excel e RDS."
   contents:
   - ac_export
-
 footer:
   structure:
     left: developed_by

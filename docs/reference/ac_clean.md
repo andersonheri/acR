@@ -2,9 +2,8 @@
 
 `ac_clean()` aplica um conjunto configurável de transformações ao texto
 de um objeto `ac_corpus`, retornando um novo corpus com o texto
-modificado. As transformações são aplicadas em ordem lógica (URLs e
-emails antes de pontuação, etc.) e registradas como atributo para
-auditoria.
+modificado. As transformações são aplicadas em ordem lógica e
+registradas como atributo para auditoria.
 
 ## Usage
 
@@ -17,11 +16,18 @@ ac_clean(
   remove_url = TRUE,
   remove_email = TRUE,
   remove_symbols = FALSE,
+  remove_hashtags = FALSE,
+  remove_mentions = FALSE,
   remove_stopwords = NULL,
   remove_accents = FALSE,
   normalize_pt = FALSE,
   protect = NULL,
+  extra_stopwords = NULL,
+  min_char = NULL,
+  custom_replacements = NULL,
+  handle_na = c("preserve", "empty", "remove"),
   strip_whitespace = TRUE,
+  verbose = FALSE,
   ...
 )
 ```
@@ -30,7 +36,7 @@ ac_clean(
 
 - corpus:
 
-  Objeto de classe `ac_corpus`, tipicamente criado por
+  Objeto de classe `ac_corpus`, criado por
   [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md).
 
 - lower:
@@ -58,6 +64,14 @@ ac_clean(
   Se `TRUE`, remove símbolos e emojis (@, \#, \\, etc.). Padrão:
   `FALSE`. Cuidado: hashtags e menções podem ser informativas.
 
+- remove_hashtags:
+
+  Se `TRUE`, remove hashtags (#termo). Padrão: `FALSE`.
+
+- remove_mentions:
+
+  Se `TRUE`, remove menções (\\usuario). Padrão: `FALSE`.
+
 - remove_stopwords:
 
   Pode ser:
@@ -65,32 +79,62 @@ ac_clean(
   - `NULL` (padrão): não remove stopwords;
 
   - uma string com nome de preset (`"pt"`, `"pt-br-extended"`,
-    `"pt-legislativo"`);
+    `"pt-legislativo"`, `"en"`);
 
   - um vetor `character` com stopwords customizadas.
 
 - remove_accents:
 
   Se `TRUE`, remove acentos (ex: "ação" vira "acao"). Padrão: `FALSE`.
-  Útil para certas análises quantitativas, mas descaracteriza o texto
-  para análise qualitativa.
 
 - normalize_pt:
 
   Se `TRUE`, aplica normalizações ortográficas do português brasileiro
-  coloquial: `"pra"` → `"para"`, `"pro"` → `"para o"`, `"tá"` →
-  `"está"`, etc. Padrão: `FALSE`.
+  coloquial: `"pra"` → `"para"`, `"tá"` → `"está"`, etc. Padrão:
+  `FALSE`.
 
 - protect:
 
-  Vetor `character` com termos a preservar exatamente como estão (ignora
-  `lower`, `remove_punct`, `remove_stopwords` para esses termos). Útil
-  para siglas políticas (`c("PT", "PSDB", "CCJ")`). Padrão: `NULL`.
+  Vetor `character` com termos a preservar exatamente como estão. Útil
+  para siglas (`c("PT", "PSDB", "CCJ")`). Padrão: `NULL`.
+
+- extra_stopwords:
+
+  Vetor `character` com stopwords adicionais a remover antes de qualquer
+  análise, combinado ao preset de `remove_stopwords`. Use
+  [`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md)
+  para inspecionar e editar o objeto padrão. Padrão: `NULL`.
+
+- min_char:
+
+  Inteiro. Descarta tokens com menos de `min_char` caracteres após a
+  limpeza. Padrão: `NULL` (sem filtro).
+
+- custom_replacements:
+
+  Lista nomeada de substituições livres aplicadas antes das demais
+  transformações. Ex:
+  `list("pres\\." = "presidente", "dep\\." = "deputado")`. Padrão:
+  `NULL`.
+
+- handle_na:
+
+  Como tratar valores `NA` no texto:
+
+  - `"preserve"` (padrão): mantém `NA` como `NA`;
+
+  - `"empty"`: converte `NA` para `""`;
+
+  - `"remove"`: remove documentos com `NA` do corpus.
 
 - strip_whitespace:
 
-  Se `TRUE` (padrão e sempre aplicado ao final), colapsa espaços
-  consecutivos e remove espaços no início/fim.
+  Se `TRUE` (padrão), colapsa espaços consecutivos.
+
+- verbose:
+
+  Se `TRUE`, exibe resumo das operações e estatísticas de remoção por
+  etapa. Padrão: `FALSE`.
 
 - ...:
 
@@ -99,46 +143,48 @@ ac_clean(
 ## Value
 
 Um novo objeto `ac_corpus` com a coluna `text` transformada e o atributo
-`cleaning_steps` registrando as operações aplicadas em ordem.
+`cleaning_steps` registrando as operações aplicadas em ordem. Quando
+`verbose = TRUE`, também imprime um resumo com tokens removidos por
+etapa e documentos que ficaram vazios após limpeza.
 
 ## Details
 
 **Ordem de aplicação** das transformações:
 
-1.  Proteção de termos (`protect`): substitui termos por placeholders
+1.  `handle_na`: tratamento de NAs
 
-2.  Remoção de URLs e emails
+2.  `custom_replacements`: substituições livres
 
-3.  Remoção de símbolos (se ativado)
+3.  `protect`: proteção de termos com placeholders
 
-4.  `lower` (minúsculas)
+4.  `remove_url` e `remove_email`
 
-5.  `remove_accents`
+5.  `remove_hashtags` e `remove_mentions`
 
-6.  `normalize_pt`
+6.  `remove_symbols`
 
-7.  `remove_numbers`
+7.  `lower`
 
-8.  `remove_punct`
+8.  `remove_accents`
 
-9.  `remove_stopwords`
+9.  `normalize_pt`
 
-10. Restauração dos termos protegidos
+10. `remove_numbers`
 
-11. `strip_whitespace` (sempre)
+11. `remove_punct`
 
-**Sobre stopwords**: a remoção é feita por *palavras inteiras*
-(delimitadas por fronteiras), não por substring. Isso evita que remover
-`"em"` corte `"embora"`.
+12. `remove_stopwords` + `extra_stopwords`
 
-**Sobre termos protegidos**: durante a limpeza, termos em `protect` são
-substituídos por placeholders internos inacessíveis às demais
-transformações e restaurados ao final com case original.
+13. `min_char`: remoção de tokens curtos
+
+14. Restauração dos termos protegidos
+
+15. `strip_whitespace` (sempre)
 
 ## See also
 
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
-para construir o corpus de entrada.
+[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
+[`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md)
 
 ## Examples
 
@@ -148,7 +194,7 @@ df <- data.frame(
   texto = c(
     "O deputado do PT disse: 'Defendo a CCJ!' Veja em https://exemplo.org",
     "Sra. presidente, o Sr. senador apresentou o requerimento n\u00ba 123.",
-    "Tá na hora de votar, pra acabar com isso."
+    "T\u00e1 na hora de votar, pra acabar com isso."
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
@@ -168,13 +214,24 @@ ac_clean(corpus)
 #> 2 b      sra presidente o sr senador apresentou o requerimento nº 123
 #> 3 c      tá na hora de votar pra acabar com isso                     
 
-# Limpeza agressiva com stopwords legislativas e proteção de siglas
+# Limpeza completa com todas as opções
 ac_clean(
   corpus,
-  remove_stopwords = "pt-legislativo",
-  protect = c("PT", "CCJ"),
-  normalize_pt = TRUE
+  remove_stopwords  = "pt-legislativo",
+  extra_stopwords   = c("isso", "aquilo", "coisa"),
+  protect           = c("PT", "CCJ"),
+  normalize_pt      = TRUE,
+  custom_replacements = list("pres\\." = "presidente"),
+  min_char          = 3L,
+  verbose           = TRUE
 )
+#> ✔ Limpeza concluída.
+#> ℹ Tokens antes: 30 | após: 10 (20 removidos).
+#> ℹ Documentos vazios após limpeza: 0.
+#> ℹ Etapas aplicadas: "custom_replacements(1)", "protect(2 termos)",
+#>   "remove_url", "remove_email", "lower", "normalize_pt", "remove_punct",
+#>   "remove_stopwords(preset=pt-legislativo)", "extra_stopwords(3)",
+#>   "min_char(3)", and "strip_whitespace".
 #> 
 #> ── Corpus acR ──────────────────────────────────────────────────────────────────
 #> • Documentos: 3
@@ -185,6 +242,6 @@ ac_clean(
 #>   doc_id text                     
 #>   <chr>  <chr>                    
 #> 1 a      PT disse defendo CCJ veja
-#> 2 b      apresentou nº 123        
+#> 2 b      apresentou 123           
 #> 3 c      hora votar acabar        
 ```
