@@ -8,7 +8,7 @@
 [![Codecov](https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg)](https://codecov.io/gh/andersonheri/acR)
 <!-- badges: end -->
 
-> **Análise de Conteúdo em R** — pipeline integrado qualitativo (LLMs) e
+> **Análise de Conteúdo em R**, um pipeline integrado qualitativo (LLMs) e
 > quantitativo, com foco em corpora brasileiros e dados parlamentares.
 
 ---
@@ -17,30 +17,46 @@
 
 O `acR` é um pacote R para análise de conteúdo textual desenvolvido para
 pesquisadores em ciências sociais, ciência política e administração pública.
-Ele resolve um problema concreto: o processo de análise de conteúdo —
-desde a coleta de textos até a classificação, validação e visualização —
+Ele resolve um problema concreto: o processo de análise de conteúdo,
+desde a coleta de textos até a classificação, validação e visualização,
 envolve muitas etapas manuais, ferramentas dispersas e decisões metodológicas
 que raramente ficam documentadas de forma reproduzível.
 
 O `acR` integra essas etapas em um único pipeline coerente, seguindo as
-diretrizes de Bardin (2011) e Krippendorff (2018), e aproveitando os avanços
-recentes em modelos de linguagem (LLMs) para automatizar a codificação
-qualitativa com validação humana.
+diretrizes contemporâneas de Sampaio e Lycarião (2021), referência atual
+para análise de conteúdo categorial no Brasil, e de Krippendorff (2018),
+aproveitando os avanços recentes em modelos de linguagem (LLMs) para
+automatizar a codificação qualitativa com validação humana. Bardin (2011)
+é reconhecida como uma das obras pioneiras da tradição, mas o pacote
+privilegia abordagens metodologicamente atualizadas.
+
+O módulo qualitativo foi desenvolvido inspirado no `quallmer` (Maerz e
+Benoit, 2025), pacote precursor para codificação qualitativa com LLMs em R,
+do qual o `acR` é uma extensão voltada ao contexto brasileiro, com pipeline
+de coleta de dados parlamentares, corpora em português e integração com
+ferramentas de análise quantitativa. O ambiente de comunicação com LLMs é
+provido pelo pacote `ellmer` (Wickham et al., 2025), que oferece uma
+interface unificada para múltiplos provedores.
 
 O pacote tem dois módulos principais:
 
-**Módulo qualitativo** — usa LLMs para classificar textos em categorias
+**Módulo qualitativo**, que usa LLMs para classificar textos em categorias
 definidas por um codebook. O pesquisador define as categorias e suas
-definições; o modelo aplica o codebook a cada documento, reportando a
+definições, o modelo aplica o codebook a cada documento, reportando a
 categoria, o nível de certeza (via *self-consistency*) e um raciocínio
 justificando a classificação. Uma amostra pode ser exportada para validação
 humana e a concordância intercodificadores é calculada automaticamente.
 
-**Módulo quantitativo** — oferece as ferramentas estatísticas clássicas de
-análise de conteúdo: frequência de termos, TF-IDF, keyness, análise de
+**Módulo quantitativo**, que oferece as ferramentas estatísticas clássicas
+de análise de conteúdo: frequência de termos, TF-IDF, keyness, análise de
 sentimento (OpLexicon), co-ocorrência e modelagem de tópicos via LDA.
 Todas as funções de visualização seguem o estilo do `ggplot2` e são
 compatíveis com o `ipeaplot`.
+
+> **Nota:** o `acR` está em desenvolvimento ativo. Novas funcionalidades,
+> melhorias metodológicas e suporte a novos formatos de dados serão
+> incorporados progressivamente. Contribuições e sugestões são bem-vindas
+> via [issues](https://github.com/andersonheri/acR/issues) no GitHub.
 
 ---
 
@@ -62,9 +78,12 @@ install.packages("ellmer")
 ### Passo 1 — Coletar discursos parlamentares
 
 O `acR` tem funções nativas para coletar dados das APIs abertas da Câmara
-dos Deputados e do Senado Federal. A coleta é feita por período, partido,
-UF e tipo de discurso, com paginação automática e tratamento de erros de
-conexão.
+dos Deputados e do Senado Federal. A coleta da Câmara é feita por período,
+partido, UF e tipo de discurso, com paginação automática e tratamento de
+erros de conexão. A coleta do Senado é viabilizada pelo pacote
+[senatebR](https://github.com/vsntos/senatebR), de Vinicius Santos (UERJ),
+cujas funções o `acR` estende com uma interface padronizada ao restante
+do pipeline.
 
 ```r
 library(acR)
@@ -81,14 +100,12 @@ corpus_raw <- ac_fetch_camara(
 ```
 
 O resultado é um `data.frame` com colunas `id_discurso`, `nome_deputado`,
-`partido`, `uf`, `data`, `tipo_discurso`, `sumario` e `texto` (transcrição
-integral quando disponível na API).
+`partido`, `uf`, `data`, `tipo_discurso`, `sumario` e `texto`.
 
 ### Passo 2 — Estruturar o corpus
 
-O objeto `ac_corpus` é a unidade central do pacote — ele carrega o texto,
-os metadados e o idioma do corpus, e é aceito por todas as funções de
-análise.
+O objeto `ac_corpus` é a unidade central do pacote, carregando o texto,
+os metadados e o idioma do corpus, aceito por todas as funções de análise.
 
 ```r
 corpus <- ac_corpus(
@@ -103,7 +120,7 @@ print(corpus)
 ### Passo 3 — Definir o codebook
 
 O codebook estrutura as categorias analíticas com suas definições e
-instruções de classificação. Ele pode ser criado manualmente ou carregado
+instruções de classificação. Pode ser criado manualmente ou carregado
 de um arquivo YAML para reuso entre projetos.
 
 ```r
@@ -134,14 +151,10 @@ codebook <- ac_qual_codebook(
 ### Passo 4 — Classificar com LLM
 
 A função `ac_qual_code()` recebe o corpus, o codebook e um objeto `Chat`
-do pacote **ellmer**. O argumento `chat =` permite usar qualquer provedor
-suportado pelo ellmer sem alterar o restante do código.
-
-O parâmetro `k_consistency = 3` ativa o cálculo de certeza via
-*self-consistency* (Wang et al., 2023): o modelo classifica cada documento
-três vezes com temperatura > 0 e a confiança é a proporção de concordância
-entre as rodadas. Isso permite identificar automaticamente os documentos
-mais ambíguos para revisão humana prioritária.
+do pacote **ellmer**. O parâmetro `k_consistency = 3` ativa o cálculo de
+certeza via *self-consistency* (Wang et al., 2023): o modelo classifica
+cada documento três vezes e a confiança é a proporção de concordância
+entre as rodadas.
 
 ```r
 chat_obj <- chat_groq(
@@ -160,32 +173,7 @@ resultado <- ac_qual_code(
 )
 ```
 
-Os resultados obtidos com 30 discursos do plenário de março/2024 mostram
-a distribuição esperada para o período — dominância de orientações de
-votação (50%) com confiança média de 0.91, sendo 22 dos 30 documentos
-classificados com confiança alta (≥ 0.80):
-
-```r
-resultado |>
-  count(categoria, sort = TRUE) |>
-  mutate(pct = round(n / sum(n) * 100, 1))
-
-#> # A tibble: 5 × 3
-#>   categoria              n   pct
-#>   <chr>              <int> <dbl>
-#> 1 orientacao_votacao    15  50.0
-#> 2 politica_social        6  20.0
-#> 3 economia_fiscal        4  13.3
-#> 4 outros                 4  13.3
-#> 5 seguranca_publica      1   3.3
-```
-
 ### Passo 5 — Validar com codificadores humanos
-
-A confiabilidade da classificação automática é avaliada comparando uma
-amostra dos resultados do modelo com a classificação de codificadores
-humanos. O `acR` calcula automaticamente percentual de concordância,
-kappa de Cohen, kappa de Fleiss e alpha de Krippendorff.
 
 ```r
 # Exportar amostra priorizando documentos com menor confiança
@@ -199,9 +187,8 @@ ac_qual_irr(gold = humano, predicted = resultado,
 ```
 
 Os resultados de validação com 15 documentos produziram kappa de Cohen
-de **0.70** — concordância substancial segundo Landis e Koch (1977) —
-comparável aos benchmarks reportados por Gilardi, Alizadeh e Kubli (2023)
-para tarefas de anotação política com LLMs.
+de **0.70**, concordância substancial segundo Landis e Koch (1977),
+comparável aos benchmarks de Gilardi, Alizadeh e Kubli (2023).
 
 ---
 
@@ -209,8 +196,10 @@ para tarefas de anotação política com LLMs.
 
 O `acR` usa o pacote [ellmer](https://ellmer.tidyverse.org/) como backend,
 o que significa que qualquer provedor suportado pelo ellmer funciona
-diretamente via `chat =`. As chaves de API devem ser configuradas no
-`.Renviron` com `usethis::edit_r_environ()` — nunca diretamente no código.
+diretamente via `chat =`. Isso inclui modelos comerciais (OpenAI, Anthropic,
+Google, Mistral, DeepSeek), modelos locais via Ollama, e qualquer serviço
+que implemente a interface compatível com a API da OpenAI, como instâncias
+privadas ou servidores institucionais.
 
 ```r
 # Groq — gratuito, latência muito baixa, ideal para prototipagem
@@ -222,47 +211,36 @@ chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
 # Ollama — modelos locais, sem envio de dados para servidores externos
 chat_obj <- chat_ollama(model = "llama3.2", echo = "none")
 
-# OpenAI, Anthropic, Mistral, DeepSeek e OpenRouter também são suportados
+# OpenAI, Anthropic, Mistral, DeepSeek e OpenRouter
 chat_obj <- chat_openai(model = "gpt-4.1", echo = "none")
 chat_obj <- chat_anthropic(model = "claude-sonnet-4-20250514", echo = "none")
+
+# Servidores com interface compatível com OpenAI (LM Studio, vLLM,
+# instâncias institucionais) via chat_openai() apontando para URL local
 ```
 
-Para configurar as chaves, adicione ao `.Renviron`:
-
-```
-GROQ_API_KEY=sua_chave
-GOOGLE_API_KEY=sua_chave
-OPENAI_API_KEY=sua_chave
-ANTHROPIC_API_KEY=sua_chave
-```
+As chaves de API devem ser configuradas no `.Renviron` com
+`usethis::edit_r_environ()`, nunca diretamente no código.
 
 ---
 
 ## Busca de literatura via OpenAlex
 
-A função `ac_qual_search_literature()` combina busca bibliográfica real com
-síntese por LLM. Ela consulta a API do [OpenAlex](https://openalex.org/)
-(gratuita, sem chave) para recuperar referências reais com DOI, abstract e
-número de citações verificados, e usa a LLM apenas para sintetizar o abstract
-em português. Isso evita alucinações bibliográficas — um problema comum quando
-se pede a um LLM que "invente" referências sem consultar uma fonte externa.
+A função `ac_qual_search_literature()` consulta a API do
+[OpenAlex](https://openalex.org/) (gratuita, sem chave) para recuperar
+referências reais com DOI, abstract e número de citações verificados,
+usando a LLM apenas para sintetizar o abstract em português. Isso evita
+alucinações bibliográficas, um problema comum quando se pede a um LLM
+que "invente" referências sem consultar uma fonte externa.
 
 ```r
 lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
   n_refs        = 5,
-  journals      = "default",   # lista curada de periódicos de CP/CS/AP
+  journals      = "default",
   min_citations = 50,
   chat          = chat_obj
 )
-
-print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
-
-#> # A tibble: 3 × 5
-#>   autor                       ano revista                          n_citacoes
-#>   <chr>                     <int> <chr>                                 <int>
-#> 1 Nancy Bermeo               2016 Journal of democracy                   2015
-#> 2 David Waldner; Ellen Lust  2018 Annual Review of Political Science       782
 ```
 
 ---
@@ -270,31 +248,22 @@ print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
 ## Pipeline quantitativo
 
 ```r
-# Tokenizar e remover stopwords em português
-tokens <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
-
-# Frequência de termos e visualização
+tokens  <- ac_tokenize(ac_clean(corpus), remover_stopwords = TRUE)
 contagem <- ac_count(tokens)
 ac_plot_top_terms(ac_top_terms(contagem, n = 15))
 
-# TF-IDF por partido
-freq  <- ac_count(tokens, by = "partido")
-tfidf <- ac_tf_idf(freq, by = "partido")
+tfidf <- ac_tf_idf(ac_count(tokens, by = "partido"), by = "partido")
 ac_plot_tf_idf(tfidf, by = "partido", n = 10)
 
-# Keyness: vocabulário distintivo entre grupos
 keyness <- ac_keyness(tokens, target = "PT", ref = "PL")
 ac_plot_keyness(keyness)
 
-# Análise de sentimento (OpLexicon)
 sent <- ac_sentiment(corpus)
 ac_plot_sentiment(sent)
 
-# Co-ocorrência e rede de termos
 cooc <- ac_cooccurrence(tokens, window = 5, min_count = 2)
 ac_plot_cooccurrence(cooc, top_n = 30)
 
-# Modelagem de tópicos LDA
 lda  <- ac_lda(tokens, k = 5)
 ac_plot_lda_topics(lda)
 ```
@@ -306,80 +275,52 @@ ac_plot_lda_topics(lda)
 ### Coleta de dados
 
 `ac_fetch_camara()` coleta discursos parlamentares via API da Câmara dos
-Deputados, com filtros por período, partido, UF e tipo de discurso.
-`ac_fetch_senado()` faz o mesmo para o Senado Federal.
+Deputados. `ac_fetch_senado()` faz o mesmo para o Senado Federal, com base
+no pacote `senatebR` (Santos, 2024).
 
 ### Corpus e pré-processamento
 
-`ac_corpus()` cria o objeto corpus a partir de um `data.frame` ou vetor de
-textos. `ac_import()` importa de arquivos externos (`.txt`, `.csv`, `.docx`,
-`.pdf`) com detecção automática de formato, suporte a glob e OCR via
-`tesseract`. `ac_clean()` padroniza o texto removendo pontuação, números e
-caracteres especiais. `ac_tokenize()` tokeniza com remoção automática de
-stopwords em português.
+`ac_corpus()`, `ac_import()`, `ac_clean()`, `ac_tokenize()`.
 
 ### Análise qualitativa com LLMs
 
-`ac_qual_codebook()` cria o codebook com categorias e definições.
-`ac_qual_code()` classifica o corpus via LLM com self-consistency.
-`ac_qual_search_literature()` busca referências reais no OpenAlex e sintetiza
-com LLM. `ac_qual_sample()` amostra documentos para validação humana,
-priorizando casos incertos. `ac_qual_export_for_review()` exporta a amostra
-para `.xlsx`. `ac_qual_import_human()` importa a revisão preenchida.
-`ac_qual_irr()` calcula kappa de Cohen, Fleiss e alpha de Krippendorff.
-`ac_qual_reliability()` calcula confiabilidade entre codificação LLM e
-humana com intervalos de confiança via bootstrap (Krippendorff alpha, Gwet
-AC1, F1-macro e percentual de concordância). `ac_qual_save_codebook()` e
-`ac_qual_load_codebook()` salvam e carregam codebooks em YAML.
+`ac_qual_codebook()`, `ac_qual_code()`, `ac_qual_search_literature()`,
+`ac_qual_sample()`, `ac_qual_export_for_review()`, `ac_qual_import_human()`,
+`ac_qual_irr()`, `ac_qual_reliability()`, `ac_qual_save_codebook()`,
+`ac_qual_load_codebook()`.
 
 ### Análise quantitativa
 
-`ac_count()` conta frequência de termos. `ac_top_terms()` retorna os N
-termos mais frequentes. `ac_tf_idf()` calcula TF-IDF por grupo.
-`ac_keyness()` identifica vocabulário distintivo entre grupos.
-`ac_cooccurrence()` monta rede de co-ocorrência com PMI e coeficiente Dice.
-`ac_sentiment()` calcula sentimento por documento usando OpLexicon.
-`ac_lda()` ajusta modelo LDA. `ac_lda_tune()` seleciona o K ótimo.
+`ac_count()`, `ac_top_terms()`, `ac_tf_idf()`, `ac_keyness()`,
+`ac_cooccurrence()`, `ac_sentiment()`, `ac_lda()`, `ac_lda_tune()`.
 
 ### Visualização
 
 `ac_plot_top_terms()`, `ac_plot_tf_idf()`, `ac_plot_keyness()`,
 `ac_plot_sentiment()`, `ac_plot_xray()`, `ac_plot_lda_topics()`,
-`ac_plot_lda_tune()`, `ac_plot_cooccurrence()`, `ac_wordcloud()` e
+`ac_plot_lda_tune()`, `ac_plot_cooccurrence()`, `ac_wordcloud()`,
 `ac_plot_wordcloud_comparative()`.
 
 ---
 
 ## Cobertura de testes
 
-A suite de testes cobre **56%** do código com 541 testes unitários e de
-integração, incluindo testes para todas as funções centrais do pipeline.
-Testes de integração com APIs externas (OpenAlex, LLMs) usam `skip_on_cran()`
-e verificação prévia de disponibilidade para evitar falhas em CI.
-
-```
-ac_clean.R               95%   ac_cooccurrence.R        97%
-ac_corpus.R              89%   ac_qual_irr.R            97%
-ac_lda.R                 90%   ac_plot_wordcloud*.R    100%
-ac_tokenize.R            86%   is_ac_corpus.R          100%
-ac_qual_reliability.R    72%   ac_sentiment.R           65%
-```
+Suite de 541 testes unitários e de integração, cobrindo **56%** do código.
+Testes de integração com APIs externas usam `skip_on_cran()` e verificação
+prévia de disponibilidade.
 
 ---
 
 ## Documentação
 
-O site completo com vignettes interativas está em
-**<https://andersonheri.github.io/acR/>**.
+**<https://andersonheri.github.io/acR/>**
 
-As vignettes cobrem:
-
-- [Introdução ao acR](https://andersonheri.github.io/acR/articles/introducao-acR.html) — visão geral do pipeline com exemplos reproduzíveis
-- [Codificação qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) — pipeline completo com dados reais da Câmara
-- [Análise de proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) — aplicação com dados do Senado
-- [Análise quantitativa](https://andersonheri.github.io/acR/articles/quantitativo.html) — TF-IDF, keyness, co-ocorrência e nuvem de palavras
-- [Análise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html) — OpLexicon
-- [Modelagem de tópicos LDA](https://andersonheri.github.io/acR/articles/lda.html) — ajuste, seleção de K e visualização
+- [Introdução ao acR](https://andersonheri.github.io/acR/articles/introducao-acR.html)
+- [Codificação qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html)
+- [Análise de proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html)
+- [Análise quantitativa](https://andersonheri.github.io/acR/articles/quantitativo.html)
+- [Análise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html)
+- [Modelagem de tópicos LDA](https://andersonheri.github.io/acR/articles/lda.html)
 
 ---
 
@@ -414,8 +355,19 @@ Methodology*. 4. ed. SAGE.
 Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement
 for categorical data. *Biometrics*, 33(1), 159–174.
 
+Maerz, S. F., & Benoit, K. (2025). *quallmer: Qualitative Analysis with
+Large Language Models*. R package version 0.3.0.
+<https://quallmer.github.io/quallmer/>
+
 Priem, J. et al. (2022). OpenAlex: A fully-open index of the global research
 system. *arXiv*, 2205.01833.
+
+Sampaio, R. C., & Lycarião, D. (2021). *Análise de conteúdo categorial:
+manual de aplicação*. Brasília: ENAP.
+<https://repositorio.enap.gov.br/handle/1/6542>
+
+Santos, V. (2024). *senatebR: Functions to collect data from the Brazilian
+Senate*. R package version 0.1.0. <https://github.com/vsntos/senatebR>
 
 Souza, M., & Vieira, R. (2012). Sentiment analysis on Twitter data for
 Portuguese language. *PROPOR*.
