@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,84 +46,39 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0" id="acr-010">acR 0.1.0<a class="anchor" aria-label="anchor" href="#acr-010"></a></h2>
-<p>Primeira versão estável do pacote. Pipeline quantitativo completo e módulo qualitativo via LLM implementados e testados.</p>
+<h2 class="pkg-version" data-toc-text="0.2.1" id="acr-021">acR 0.2.1<a class="anchor" aria-label="anchor" href="#acr-021"></a></h2>
 <div class="section level3">
-<h3 id="pipeline-quantitativo-0-1-0">Pipeline quantitativo<a class="anchor" aria-label="anchor" href="#pipeline-quantitativo-0-1-0"></a></h3>
-<ul><li>
-<code><a href="../reference/ac_corpus.html">ac_corpus()</a></code>: construtor de corpus com suporte a data.frame, vetor e quanteda::corpus</li>
-<li>
-<code><a href="../reference/ac_clean.html">ac_clean()</a></code>: limpeza com 3 presets de stopwords PT-BR (<code>"pt"</code>, <code>"pt-br-extended"</code>, <code>"pt-legislativo"</code>), proteção de termos e normalização coloquial</li>
-<li>
-<code><a href="../reference/ac_tokenize.html">ac_tokenize()</a></code>: tokenização tidy (doc_id, token_id, token)</li>
-<li>
-<code><a href="../reference/ac_count.html">ac_count()</a></code>: frequências e n-gramas</li>
-<li>
-<code><a href="../reference/ac_top_terms.html">ac_top_terms()</a></code>: top termos por grupo</li>
-<li>
-<code><a href="../reference/ac_tf_idf.html">ac_tf_idf()</a></code>: TF-IDF com agrupamento por metadados</li>
-<li>
-<code><a href="../reference/ac_keyness.html">ac_keyness()</a></code>: keyness com chi², log-likelihood e outras métricas</li>
-<li>
-<code><a href="../reference/ac_cooccurrence.html">ac_cooccurrence()</a></code>: co-ocorrência por janela deslizante ou documento, com PMI e Dice</li>
-<li>
-<code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code>: análise de sentimento via OpLexicon (Souza &amp; Vieira,
-<ol start="2012" style="list-style-type: decimal"><li>com cache local</li>
-</ol></li>
-<li>
-<code><a href="../reference/ac_lda.html">ac_lda()</a></code> + <code><a href="../reference/ac_lda_tune.html">ac_lda_tune()</a></code>: LDA via topicmodels com seleção de k por perplexidade</li>
-<li>Visualizações correspondentes: <code><a href="../reference/ac_plot_top_terms.html">ac_plot_top_terms()</a></code>, <code><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>, <code><a href="../reference/ac_plot_keyness.html">ac_plot_keyness()</a></code>, <code><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code>, <code>ac_plot_wordcloud()</code>, <code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code>, <code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code>, <code><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment()</a></code>, <code><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code>, <code><a href="../reference/ac_plot_lda_tune.html">ac_plot_lda_tune()</a></code>
-</li>
+<h3 id="novas-funções-0-2-1">Novas funções<a class="anchor" aria-label="anchor" href="#novas-fun%C3%A7%C3%B5es-0-2-1"></a></h3>
+<ul><li><p><code><a href="../reference/ac_qual_codebook_hybrid.html">ac_qual_codebook_hybrid()</a></code> — enriquece definições de categorias com referências bibliográficas buscadas via LLM, combinando fundamento manual com ancora teórica induzida da literatura.</p></li>
+<li><p><code><a href="../reference/ac_qual_codebook_merge.html">ac_qual_codebook_merge()</a></code> — funde dois objetos <code>ac_codebook</code> em um único, com controle de conflitos de nomes (<code>error</code>, <code>keep_first</code>, <code>keep_second</code>, <code>rename_second</code>).</p></li>
+<li><p><code><a href="../reference/ac_qual_codebook_translate.html">ac_qual_codebook_translate()</a></code> — traduz instruções, definições e exemplos de um codebook para outro idioma via LLM (<code>"pt"</code> ↔︎ <code>"en"</code>).</p></li>
+<li><p><code><a href="../reference/ac_qual_codebook_history.html">ac_qual_codebook_history()</a></code> — retorna o histórico de modificações de um <code>ac_codebook</code> (adições, remoções, merges, traduções, enriquecimentos).</p></li>
+<li><p><code><a href="../reference/as_prompt.html">as_prompt()</a></code> / <code><a href="../reference/as_prompt.html">as_prompt.ac_codebook()</a></code> — converte um <code>ac_codebook</code> em system prompt formatado para uso direto com objetos <code>Chat</code> do <code>ellmer</code>, com suporte a raciocínio estruturado (<code>reasoning_length</code>).</p></li>
+<li><p><code><a href="../reference/as_prompt.html">as_prompt.default()</a></code> — método default com mensagem de erro informativa para objetos que não são <code>ac_codebook</code>.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="pipeline-qualitativo-llm-0-1-0">Pipeline qualitativo (LLM)<a class="anchor" aria-label="anchor" href="#pipeline-qualitativo-llm-0-1-0"></a></h3>
-<ul><li>
-<code><a href="../reference/ac_qual_codebook.html">ac_qual_codebook()</a></code>: criação de codebook com modo manual e modo literatura (busca definições em periódicos nacionais e internacionais)</li>
-<li>
-<code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code>: banco estruturado de referências com trecho original, tradução PT, autor, ano, revista e link</li>
-<li>
-<code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>: classificação de textos via LLM com self-consistency (k = 3, Wang et al., 2023), grau de certeza por variável ou total, e coluna de raciocínio. Suporta qualquer provedor via ellmer (Anthropic, OpenAI, Google, Groq, Ollama, Azure, endpoints institucionais)</li>
-<li>
-<code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>: Krippendorff alpha, Gwet AC1 (implementação própria, sem dependência de irrCAC), F1 macro, com IC bootstrap (Landis &amp; Koch, 1977; Gwet, 2014)</li>
-<li>
-<code><a href="../reference/ac_qual_sample.html">ac_qual_sample()</a></code>: amostragem por incerteza, estratificada, aleatória ou por discordância de self-consistency</li>
-<li>
-<code><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>: exportação para Excel para validação humana</li>
-<li>
-<code><a href="../reference/ac_qual_import_human.html">ac_qual_import_human()</a></code>: importação de codificação humana do Excel</li>
-<li>
-<code><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code> / <code><a href="../reference/ac_qual_load_codebook.html">ac_qual_load_codebook()</a></code>: persistência de codebooks em YAML</li>
-<li>
-<code><a href="../reference/ac_qual_list_models.html">ac_qual_list_models()</a></code>: banco curado de 25 modelos em 7 provedores com custo, janela de contexto e suporte ao português</li>
-<li>
-<code><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code>: recomendação baseada em tarefa, orçamento e idioma (Gilardi et al., 2023; Törnberg, 2023)</li>
+<h3 id="correções-0-2-1">Correções<a class="anchor" aria-label="anchor" href="#corre%C3%A7%C3%B5es-0-2-1"></a></h3>
+<ul><li><p>Corrigido warning <code>non-ASCII characters</code> em <code>R/ac_qual_codebook.R</code>: escapes <code>\uXXXX</code> agora usados no código R; UTF-8 real mantido nos blocos roxygen.</p></li>
+<li><p>Corrigido warning <code>missing documentation entries</code>: todas as 5 novas funções do Bloco B agora têm blocos roxygen completos com título, <code>@param</code> e <code>@return</code>.</p></li>
+<li><p>Corrigido mismatch de documentação: <code>check_overlap</code> adicionado ao <code>.Rd</code> de <code><a href="../reference/ac_qual_codebook.html">ac_qual_codebook()</a></code>.</p></li>
+<li><p>Corrigido <code>vignettes/sentimento.Rmd</code>: <code>eval=FALSE</code> adicionado a todos os chunks que faziam download externo, prevenindo falha no CI sem internet.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="infraestrutura-0-1-0">Infraestrutura<a class="anchor" aria-label="anchor" href="#infraestrutura-0-1-0"></a></h3>
-<ul><li>327+ testes automatizados (0 falhas)</li>
-<li>CI em 5 ambientes (Ubuntu, macOS, Windows × R 4.3/release/devel)</li>
-<li>Site pkgdown em <a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a>
-</li>
-<li>ADR documentado em <code>inst/docs/adr/</code>
-</li>
+<h3 id="testes-0-2-1">Testes<a class="anchor" aria-label="anchor" href="#testes-0-2-1"></a></h3>
+<ul><li>63 testes passando em <code>tests/testthat/test-ac_qual_codebook.R</code>, cobrindo todas as funções do Bloco B. Testes com LLM real usam <code>skip_if_offline()</code> e <code>skip_on_cran()</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentação-0-2-1">Documentação<a class="anchor" aria-label="anchor" href="#documenta%C3%A7%C3%A3o-0-2-1"></a></h3>
+<ul><li><p><code>README.md</code> atualizado com tabela de funções de gestão de codebook, referências completas (12 entradas) e bloco de citação com ORCID e afiliação CEM-Cepid/USP.</p></li>
+<li><p><code>vignettes/qualitativo-llm.Rmd</code> reescrita com pipeline completo do Bloco B: criação, enriquecimento, fusão, tradução, histórico e geração de system prompt.</p></li>
+<li><p><code>vignettes/analise-proposicoes.Rmd</code> atualizada com seção 3b demonstrando refinamento iterativo do codebook com as novas funções.</p></li>
+<li><p><code>_pkgdown.yml</code> atualizado: seção “Codificacao qualitativa via LLM” agora lista todas as 12 funções do módulo qualitativo.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="acr-020">acR 0.2.0<a class="anchor" aria-label="anchor" href="#acr-020"></a></h2>
-<div class="section level3">
-<h3 id="correções-0-2-0">Correções<a class="anchor" aria-label="anchor" href="#corre%C3%A7%C3%B5es-0-2-0"></a></h3>
-<ul><li>
-<code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code>: removidas aspas literais da query OpenAlex (API não suporta phrase search via aspas no parâmetro <code>search</code>)</li>
-<li>
-<code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code>: adicionado fallback automático sem filtro de venue quando busca com periódicos selecionados retorna zero resultados</li>
+<ul><li>Versão inicial com módulos qualitativo e quantitativo completos.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="testes-0-2-0">Testes<a class="anchor" aria-label="anchor" href="#testes-0-2-0"></a></h3>
-<ul><li>Testes de integração com OpenAlex + LLM agora usam <code>skip_on_cran()</code>, verificação prévia da API e <code>skip_if(!api_ok)</code> para evitar falhas em ambientes sem conectividade ou com API instável</li>
-<li>
-<code>test-ac_qual_codebook.R</code>: adicionado <code>skip_if(GROQ_API_KEY == 0)</code> e <code>chat_obj</code> explícito no teste de integração</li>
-</ul></div>
-</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
