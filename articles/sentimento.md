@@ -30,29 +30,6 @@ corpus <- ac_corpus(
 print(corpus)
 ```
 
-    ## 
-
-    ## ── Corpus acR ──────────────────────────────────────────────────────────────────
-
-    ## • Documentos: 8
-
-    ## • Metadados: 0 colunas
-
-    ## • Idioma: "pt"
-
-    ## 
-
-    ## # A tibble: 8 × 2
-    ##   doc_id text                                                                   
-    ##   <chr>  <chr>                                                                  
-    ## 1 doc_1  Esta reforma e um retrocesso que prejudica os trabalhadores mais pobre…
-    ## 2 doc_2  A aprovacao garante a sustentabilidade fiscal e o futuro das aposentad…
-    ## 3 doc_3  O texto substitutivo altera o artigo 201 da Constituicao Federal.      
-    ## 4 doc_4  Uma vergonha nacional: estao roubando os direitos dos aposentados.     
-    ## 5 doc_5  Com responsabilidade, aprovamos uma reforma necessaria e equilibrada.  
-    ## 6 doc_6  Votamos contra esse projeto que ataca os mais vulneraveis.             
-    ## # ℹ 2 more rows
-
     # Corpus acR: 8 documentos
     # Variaveis: parlamentar, partido
 
@@ -90,8 +67,6 @@ sent_oplexicon <- ac_sentiment(corpus, lexicon = "oplexicon")
 ac_plot_sentiment(sent_oplexicon)
 ```
 
-![](sentimento_files/figure-html/comparar-lexicos-1.png)
-
     #  0.87  — alta concordancia entre os dois lexicos
 
 ------------------------------------------------------------------------
@@ -103,16 +78,12 @@ ac_plot_sentiment(sent_oplexicon)
 ac_plot_sentiment(sent_oplexicon)
 ```
 
-![](sentimento_files/figure-html/viz-geral-1.png)
-
     # Grafico: distribuicao de scores | positivo/neutro/negativo
 
 ``` r
 # Sentimento medio por partido
 ac_plot_sentiment(sent_oplexicon, por_grupo = TRUE, grupo = "partido")
 ```
-
-![](sentimento_files/figure-html/viz-por-grupo-1.png)
 
     # PT   media: -0.72 (negativo)
     # PL   media:  0.64 (positivo)
@@ -126,8 +97,6 @@ ac_plot_sentiment(sent_oplexicon, por_grupo = TRUE, grupo = "partido")
 ac_plot_xray(corpus, terms = c("politica", "fiscal", "reforma"))
 ```
 
-![](sentimento_files/figure-html/viz-xray-1.png)
-
     # Grafico de linhas: score por posicao no texto
     # Mostra onde o texto concentra termos negativos/positivos
 
@@ -137,20 +106,6 @@ ac_plot_xray(corpus, terms = c("politica", "fiscal", "reforma"))
 
 ``` r
 library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 resumo <- sent_oplexicon |>
   group_by(doc_id) |>
   summarise(
@@ -160,25 +115,8 @@ resumo <- sent_oplexicon |>
     .groups  = "drop"
   )
 print(resumo)
-```
-
-    ## # A tibble: 8 × 4
-    ##   doc_id     n media    dp
-    ##   <chr>  <int> <dbl> <dbl>
-    ## 1 doc_1      1     0    NA
-    ## 2 doc_2      1     0    NA
-    ## 3 doc_3      1     0    NA
-    ## 4 doc_4      1     0    NA
-    ## 5 doc_5      1     1    NA
-    ## 6 doc_6      1     0    NA
-    ## 7 doc_7      1    -1    NA
-    ## 8 doc_8      1     1    NA
-
-``` r
 ac_export(resumo, path = "sentimento_resumo.tex", format = "latex")
 ```
-
-    ## ✔ Exportado para sentimento_resumo.tex (latex).
 
     # partido  n  media   dp    positivo  neutro  negativo
     # MDB      2   0.02  0.01       0%     100%        0%
@@ -194,21 +132,9 @@ ac_export(resumo, path = "sentimento_resumo.tex", format = "latex")
 
 ``` r
 ac_export(sent_oplexicon,   format = "csv",  path = "sentimento.csv")
-```
-
-    ## ✔ Exportado para sentimento.csv (csv).
-
-``` r
 ac_export(sent_oplexicon,   format = "xlsx", path = "sentimento.xlsx")
-```
-
-    ## ✔ Exportado para sentimento.xlsx (xlsx).
-
-``` r
 ac_export(resumo, format = "csv",  path = "sentimento_resumo.csv")
 ```
-
-    ## ✔ Exportado para sentimento_resumo.csv (csv).
 
 ------------------------------------------------------------------------
 
