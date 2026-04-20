@@ -946,6 +946,12 @@ ac_qual_codebook_history <- function(codebook, n=Inf) {
 as_prompt <- function(x, ...) UseMethod('as_prompt')
 
 #' @rdname as_prompt
+#' @export
+as_prompt.default <- function(x, ...) {
+  cli::cli_abort('{.arg x} deve ser um objeto {.cls ac_codebook}.')
+}
+
+#' @rdname as_prompt
 #' @param reasoning Lógico. Se `TRUE`, inclui campo de raciocínio no JSON de saída. Padrão: `TRUE`.
 #' @param reasoning_length Extensão do raciocínio: `"short"`, `"medium"` ou `"detailed"`.
 #' @export

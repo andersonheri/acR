@@ -2,10 +2,13 @@
 % Please edit documentation in R/ac_qual_codebook.R
 \name{as_prompt}
 \alias{as_prompt}
+\alias{as_prompt.default}
 \alias{as_prompt.ac_codebook}
 \title{Converter codebook em system prompt para LLM}
 \usage{
 as_prompt(x, ...)
+
+\method{as_prompt}{default}(x, ...)
 
 \method{as_prompt}{ac_codebook}(
   x,
