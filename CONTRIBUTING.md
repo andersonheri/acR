@@ -37,12 +37,10 @@ Para sugerir novas funcionalidades:
     ou `fix/descricao-do-bug`.
 3.  Faça commits pequenos e bem descritos, em português ou inglês.
 4.  Inclua testes (`tests/testthat/`) para qualquer código novo.
-5.  Atualize a documentação (`roxygen2`) e rode
-    [`devtools::document()`](https://devtools.r-lib.org/reference/document.html).
+5.  Atualize a documentação (`roxygen2`) e rode `devtools::document()`.
 6.  Atualize o `NEWS.md` na seção “development version”.
-7.  Rode
-    [`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
-    localmente — não envie PRs com NOTES, WARNINGS ou ERRORS.
+7.  Rode `devtools::check()` localmente — não envie PRs com NOTES,
+    WARNINGS ou ERRORS.
 8.  Abra o PR contra o branch `main` usando o template fornecido.
 
 ### Padrões de código

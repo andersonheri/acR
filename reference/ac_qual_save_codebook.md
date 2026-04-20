@@ -16,7 +16,7 @@ ac_qual_save_codebook(codebook, path = NULL, ...)
 
 - path:
 
-  Caminho do arquivo `.yaml`.
+  Caminho do arquivo `.yaml`. Se omitido, usa `<name>.yaml`.
 
 - ...:
 

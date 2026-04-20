@@ -1,4 +1,4 @@
-pandoc: 3.6.3
+pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -8,7 +8,7 @@ articles:
   qualitativo-llm: qualitativo-llm.html
   quantitativo: quantitativo.html
   sentimento: sentimento.html
-last_built: 2026-04-20T15:03Z
+last_built: 2026-04-20T15:07Z
 urls:
   reference: https://andersonheri.github.io/acR/reference
   article: https://andersonheri.github.io/acR/articles

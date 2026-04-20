@@ -38,7 +38,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/introducao-acR.html">Comece aqui</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
+<li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes">
 <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visao geral do pacote</a></li>
@@ -75,7 +75,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Analise quantitativa de texto</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/HEAD/vignettes/quantitativo.Rmd" class="external-link"><code>vignettes/quantitativo.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/main/vignettes/quantitativo.Rmd" class="external-link"><code>vignettes/quantitativo.Rmd</code></a></small>
       <div class="d-none name"><code>quantitativo.Rmd</code></div>
     </div>
 
@@ -206,6 +206,14 @@
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_wordcloud.html">ac_wordcloud</a></span><span class="op">(</span><span class="va">contagem</span>, max_words <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; empresas could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; financeiro could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; imposto could not be fit on page. It will not be plotted.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
+<span><span class="co">#&gt; inflacao could not be fit on page. It will not be plotted.</span></span>
 <span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
 <span><span class="co">#&gt; infraestrutura could not be fit on page. It will not be plotted.</span></span>
 <span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
