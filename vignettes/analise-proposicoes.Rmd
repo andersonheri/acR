@@ -131,6 +131,152 @@ print(codebook)
 
 ---
 
+## 3b. Refinamento do codebook
+
+O `acR` oferece um conjunto de funções para refinar o codebook iterativamente
+antes de iniciar a classificação. Este passo é opcional mas recomendado para
+análises com categorias complexas ou sobrepostas.
+
+### Adicionar exemplos às categorias
+
+Exemplos positivos e negativos melhoram a precisão da classificação,
+especialmente em categorias limítrofes como `populista` e `ambiguo`
+(Sampaio & Lycarião, 2021):
+
+```{r codebook-add-exemplos}
+# Recriar com exemplos explícitos para as categorias mais difíceis
+codebook <- ac_qual_codebook(
+  name         = "posicionamento_proposicoes",
+  instructions = paste(
+    "Classifique o posicionamento do texto em relação à proposição.",
+    "Use Populista para apelo emocional sem argumentação substantiva."
+  ),
+  categories = list(
+    favoravel = list(
+      definition   = "Apoio explícito à proposição com argumentação substantiva.",
+      examples_pos = c("Esta reforma aumentará a produtividade e reduzirá custos."),
+      examples_neg = c("Votaremos com o coração pela causa do povo.")
+    ),
+    contrario = list(
+      definition   = "Oposição à proposição com argumentação substantiva.",
+      examples_pos = c("Os dados mostram que esta medida aumentará o desemprego."),
+      examples_neg = c("Esta proposta é uma vergonha nacional.")
+    ),
+    neutro_tecnico = list(
+      definition   = "Descrição jurídica ou técnica sem valoração explícita.",
+      examples_pos = c("Altera o art. 58 da CLT, estabelecendo nova escala."),
+      examples_neg = c("Apoiamos esta proposta de modernização.")
+    ),
+    populista = list(
+      definition   = "Apelo emocional sem evidência ou argumentação técnica.",
+      examples_pos = c("Presos políticos: este é o momento da justiça!"),
+      examples_neg = c("Estudos mostram que a medida reduz 15% dos custos."),
+      weight       = 1.5  # categoria mais difícil: peso maior
+    ),
+    ambiguo = list(
+      definition   = "Posicionamento contraditório ou impossível de classificar.",
+      examples_pos = c("Apoio a reforma mas temo suas consequências sociais."),
+      weight       = 1.2
+    )
+  ),
+  mode = "manual"
+)
+```
+
+### Enriquecer com literatura via LLM
+
+`ac_qual_codebook_hybrid()` re-ancora as definições em referências
+bibliográficas buscadas via LLM, preservando os exemplos manuais:
+
+```{r codebook-hybrid}
+chat_obj <- chat_groq(
+  model = "llama-3.3-70b-versatile",
+  echo  = "none"
+)
+
+codebook_enriquecido <- ac_qual_codebook_hybrid(
+  codebook = codebook,
+  chat     = chat_obj,
+  n_refs   = 2L,
+  lang     = "pt"
+)
+
+# Ver definição enriquecida da categoria populista
+cat(codebook_enriquecido$categories$populista$definition)
+cat("\nReferências:\n")
+print(codebook_enriquecido$categories$populista$references)
+```
+
+### Fundir com codebook de estilo retórico
+
+Para análises multidimensionais, é possível fundir dois codebooks.
+Aqui adicionamos uma dimensão de estilo retórico ao codebook de posicionamento:
+
+```{r codebook-merge}
+codebook_retorico <- ac_qual_codebook(
+  name         = "estilo_retorico",
+  instructions = "Identifique o estilo retórico dominante.",
+  categories   = list(
+    pathos = list(
+      definition   = "Apelo emocional predominante.",
+      examples_pos = c("Não podemos trair a esperança do povo brasileiro.")
+    ),
+    logos = list(
+      definition   = "Apelo racional e argumentativo predominante.",
+      examples_pos = c("Os dados do IBGE confirmam redução de 12% no emprego.")
+    )
+  )
+)
+
+# Fundir: posicionamento + estilo retórico
+codebook_completo <- ac_qual_codebook_merge(
+  cb1          = codebook_enriquecido,
+  cb2          = codebook_retorico,
+  name         = "posicionamento_e_estilo",
+  on_conflict  = "rename_second",
+  instructions = paste(
+    "Classifique o posicionamento e o estilo retórico do texto.",
+    "Use Populista para apelo emocional sem argumentação."
+  )
+)
+```
+
+### Gerar system prompt e inspecionar histórico
+
+```{r codebook-prompt}
+# Gerar system prompt para uso com ellmer
+prompt <- as_prompt(
+  codebook_enriquecido,
+  reasoning        = TRUE,
+  reasoning_length = "short"
+)
+
+# Inspecionar todas as modificações feitas no codebook
+ac_qual_codebook_history(codebook_enriquecido)
+```
+
+```
+## -- Histórico: "posicionamento_proposicoes" --
+## # A tibble: 1 x 3
+##   timestamp           action detail
+##   <chr>               <chr>  <chr>
+## 1 2025-06-01 14:23:01 hybrid favoravel, contrario, neutro_tecnico, ...
+```
+
+### Salvar o codebook para replicabilidade
+
+```{r codebook-save}
+ac_qual_save_codebook(
+  codebook_enriquecido,
+  path = "codebook_proposicoes_v1.yaml"
+)
+
+# Em outra sessão ou para outro pesquisador:
+# codebook <- ac_qual_load_codebook("codebook_proposicoes_v1.yaml")
+```
+
+---
+
 ## 4. Classificação com LLM
 
 O argumento `chat =` recebe qualquer objeto `Chat` do **ellmer**. Aqui usamos
@@ -145,7 +291,7 @@ chat_obj <- chat_groq(
 
 resultado <- ac_qual_code(
   corpus           = corpus,
-  codebook         = codebook,
+  codebook         = codebook_enriquecido,
   chat             = chat_obj,
   confidence       = "total",
   k_consistency    = 3L,
@@ -289,7 +435,10 @@ KRIPPENDORFF, K. **Content Analysis: An Introduction to Its Methodology**.
 4. ed. SAGE, 2018.
 
 LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
-categorical data. **Biometrics**, v. 33, n. 1, p. 159–174, 1977.
+categorical data. **Biometrics**, v. 33, n. 1, p. 159-174, 1977.
+
+SAMPAIO, R. C.; LYCARIAO, D. **Análise de conteúdo categorial: manual
+de aplicação**. Brasília: ENAP, 2021.
 
 WICKHAM, H. et al. **ellmer: Chat with Large Language Models**. Posit, 2025.
 Disponível em: <https://ellmer.tidyverse.org>.
