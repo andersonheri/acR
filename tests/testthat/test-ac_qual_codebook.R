@@ -428,8 +428,20 @@ test_that("ac_qual_codebook_translate() traduz PT->EN com LLM (online)", {
     "Nenhuma API key configurada"
   )
 
-  cb     <- make_cb_manual()
-  cb_en  <- ac_qual_codebook_translate(cb, to = "en")
+  chat_obj <- if (nchar(Sys.getenv("ANTHROPIC_API_KEY")) > 0)
+    ellmer::chat(name = "anthropic/claude-sonnet-4-5", echo = "none")
+  else
+    ellmer::chat(name = "groq/llama-3.3-70b-versatile", echo = "none")
+
+  cb    <- make_cb_manual()
+  cb_en <- tryCatch(
+    ac_qual_codebook_translate(cb, to = "en", chat = chat_obj),
+    error = function(e) {
+      if (grepl("401|Invalid API Key|Unauthorized", conditionMessage(e)))
+        skip("API key invalida ou sem creditos")
+      stop(e)
+    }
+  )
 
   expect_s3_class(cb_en, "ac_codebook")
   expect_equal(cb_en$lang, "en")
@@ -463,22 +475,25 @@ test_that("ac_qual_codebook_hybrid() enriquece definicoes com LLM (online)", {
     "Nenhuma API key configurada"
   )
 
+  chat_obj <- if (nchar(Sys.getenv("ANTHROPIC_API_KEY")) > 0)
+    ellmer::chat(name = "anthropic/claude-sonnet-4-5", echo = "none")
+  else
+    ellmer::chat(name = "groq/llama-3.3-70b-versatile", echo = "none")
+
   cb        <- make_cb_manual()
-  cb_hybrid <- ac_qual_codebook_hybrid(
-    cb,
-    model  = "anthropic/claude-sonnet-4-5",
-    n_refs = 2L,
-    lang   = "pt"
+  cb_hybrid <- tryCatch(
+    ac_qual_codebook_hybrid(cb, chat = chat_obj, n_refs = 2L, lang = "pt"),
+    error = function(e) {
+      if (grepl("401|Invalid API Key|Unauthorized", conditionMessage(e)))
+        skip("API key invalida ou sem creditos")
+      stop(e)
+    }
   )
 
   expect_s3_class(cb_hybrid, "ac_codebook")
   expect_equal(cb_hybrid$mode, "hybrid")
   expect_equal(names(cb_hybrid$categories), names(cb$categories))
-
-  # Definicoes devem ter sido atualizadas (ou pelo menos mantidas)
   expect_true(nchar(cb_hybrid$categories[["positivo"]]$definition) > 0)
-
-  # Historico deve registrar a acao
   hist <- ac_qual_codebook_history(cb_hybrid)
   expect_true(any(hist$action == "hybrid"))
 })

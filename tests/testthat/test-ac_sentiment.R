@@ -210,3 +210,39 @@ test_that("ac_plot_sentiment() aceita title", {
   expect_s3_class(p, "ggplot")
   expect_equal(p$labels$title, "Meu titulo")
 })
+
+test_that("ac_plot_sentiment() retorna ggplot para type = 'line'", {
+  skip_if_not_installed("ggplot2")
+
+  sent_tbl <- tibble::tibble(
+    doc_id    = paste0("d", 1:5),
+    score     = c(3, -2, 0, 1, -1),
+    sentiment = c("positivo", "negativo", "neutro", "positivo", "negativo"),
+    n_pos     = c(3L, 0L, 0L, 1L, 0L),
+    n_neg     = c(0L, 2L, 0L, 0L, 1L),
+    n_neu     = c(0L, 0L, 3L, 0L, 0L)
+  )
+
+  p <- ac_plot_sentiment(sent_tbl, type = "line")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("ac_plot_sentiment() rejeita type invalido", {
+  sent_tbl <- tibble::tibble(
+    doc_id    = "d1",
+    score     = 1,
+    sentiment = "positivo",
+    n_pos = 1L, n_neg = 0L, n_neu = 0L
+  )
+  expect_error(
+    ac_plot_sentiment(sent_tbl, type = "invalido"),
+    regexp = "invalido|arg"
+  )
+})
+
+test_that(".ac_load_lexicon() retorna erro para lexicon nao suportado", {
+  expect_error(
+    acR:::.ac_load_lexicon("lexicon_inexistente"),
+    regexp = "suportado"
+  )
+})
