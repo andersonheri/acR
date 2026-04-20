@@ -141,17 +141,6 @@ nem chave de API.</p>
 <span>  metodo  <span class="op">=</span> <span class="st">"media"</span>        <span class="co"># "media" | "soma" | "proporcao"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sent_oplexicon</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 6</span></span></span>
-<span><span class="co">##   doc_id n_pos n_neg n_neu score sentiment</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> doc_1      1     1     9     0 neutro   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> doc_2      0     0    11     0 neutro   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> doc_3      0     0    10     0 neutro   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> doc_4      0     0     9     0 neutro   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> doc_5      1     0     7     1 positivo </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> doc_6      0     0     9     0 neutro   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> doc_7      0     1     7    -<span style="color: #BB0000;">1</span> negativo </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> doc_8      1     0    10     1 positivo</span></span></code></pre>
 <pre><code><span><span class="co"># A tibble: 8 x 6</span></span>
 <span><span class="co">#   doc_id  texto_trunc             score  polaridade  pos   neg</span></span>
 <span><span class="co">#   doc_1   Esta reforma e um re.. -0.62   negativo    0.08  0.70</span></span>
@@ -167,7 +156,7 @@ nem chave de API.</p>
 <div class="section level2">
 <h2 id="comparar-lexicos">3. Comparar lexicos<a class="anchor" aria-label="anchor" href="#comparar-lexicos"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sent_oplexicon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, lexicon <span class="op">=</span> <span class="st">"oplexicon"</span><span class="op">)</span></span>
 <span><span class="co"># Comparacao visual entre lexicos</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent_oplexicon</span><span class="op">)</span></span></code></pre></div>
@@ -178,12 +167,12 @@ nem chave de API.</p>
 <div class="section level2">
 <h2 id="visualizacoes">4. Visualizacoes<a class="anchor" aria-label="anchor" href="#visualizacoes"></a>
 </h2>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Distribuicao geral de sentimento</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent_oplexicon</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/viz-geral-1.png" class="r-plt" alt="" width="700"></p>
 <pre><code><span><span class="co"># Grafico: distribuicao de scores | positivo/neutro/negativo</span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Sentimento medio por partido</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent_oplexicon</span>, por_grupo <span class="op">=</span> <span class="cn">TRUE</span>, grupo <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/viz-por-grupo-1.png" class="r-plt" alt="" width="700"></p>
@@ -193,7 +182,7 @@ nem chave de API.</p>
 <span><span class="co"># PSOL media: -0.81 (negativo)</span></span>
 <span><span class="co"># PP   media:  0.61 (positivo)</span></span>
 <span><span class="co"># PDT  media: -0.55 (negativo)</span></span></code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Xray: visualizar onde termos-chave aparecem no corpus</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_xray.html">ac_plot_xray</a></span><span class="op">(</span><span class="va">corpus</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"politica"</span>, <span class="st">"fiscal"</span>, <span class="st">"reforma"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/viz-xray-1.png" class="r-plt" alt="" width="700"></p>
@@ -204,7 +193,7 @@ nem chave de API.</p>
 <div class="section level2">
 <h2 id="sentimento-por-partido-tabela-abnt">5. Sentimento por partido — tabela ABNT<a class="anchor" aria-label="anchor" href="#sentimento-por-partido-tabela-abnt"></a>
 </h2>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Attaching package: 'dplyr'</span></span></code></pre>
@@ -214,7 +203,7 @@ nem chave de API.</p>
 <pre><code><span><span class="co">## The following objects are masked from 'package:base':</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##     intersect, setdiff, setequal, union</span></span></code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resumo</span> <span class="op">&lt;-</span> <span class="va">sent_oplexicon</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
@@ -235,7 +224,7 @@ nem chave de API.</p>
 <span><span class="co">## <span style="color: #BCBCBC;">6</span> doc_6      1     0    <span style="color: #BB0000;">NA</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">7</span> doc_7      1    -<span style="color: #BB0000;">1</span>    <span style="color: #BB0000;">NA</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">8</span> doc_8      1     1    <span style="color: #BB0000;">NA</span></span></span></code></pre>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resumo</span>, path <span class="op">=</span> <span class="st">"sentimento_resumo.tex"</span>, format <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">sentimento_resumo.tex</span> (latex).</span></span></code></pre>
 <pre><code><span><span class="co"># partido  n  media   dp    positivo  neutro  negativo</span></span>
@@ -250,13 +239,13 @@ nem chave de API.</p>
 <div class="section level2">
 <h2 id="exportar">6. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
 </h2>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">sent_oplexicon</span>,   format <span class="op">=</span> <span class="st">"csv"</span>,  path <span class="op">=</span> <span class="st">"sentimento.csv"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">sentimento.csv</span> (csv).</span></span></code></pre>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">sent_oplexicon</span>,   format <span class="op">=</span> <span class="st">"xlsx"</span>, path <span class="op">=</span> <span class="st">"sentimento.xlsx"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">sentimento.xlsx</span> (xlsx).</span></span></code></pre>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resumo</span>, format <span class="op">=</span> <span class="st">"csv"</span>,  path <span class="op">=</span> <span class="st">"sentimento_resumo.csv"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">sentimento_resumo.csv</span> (csv).</span></span></code></pre>
 <hr>

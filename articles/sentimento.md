@@ -69,18 +69,6 @@ sent_oplexicon <- ac_sentiment(
 print(sent_oplexicon)
 ```
 
-    ## # A tibble: 8 × 6
-    ##   doc_id n_pos n_neg n_neu score sentiment
-    ##   <chr>  <int> <int> <int> <int> <chr>    
-    ## 1 doc_1      1     1     9     0 neutro   
-    ## 2 doc_2      0     0    11     0 neutro   
-    ## 3 doc_3      0     0    10     0 neutro   
-    ## 4 doc_4      0     0     9     0 neutro   
-    ## 5 doc_5      1     0     7     1 positivo 
-    ## 6 doc_6      0     0     9     0 neutro   
-    ## 7 doc_7      0     1     7    -1 negativo 
-    ## 8 doc_8      1     0    10     1 positivo
-
     # A tibble: 8 x 6
     #   doc_id  texto_trunc             score  polaridade  pos   neg
     #   doc_1   Esta reforma e um re.. -0.62   negativo    0.08  0.70

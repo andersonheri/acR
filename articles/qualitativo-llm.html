@@ -89,14 +89,16 @@ completo de análise de conteúdo assistida por modelos de linguagem
 (LLMs), seguindo as diretrizes metodológicas de Krippendorff (2018) e as
 recomendações empíricas de Gilardi, Alizadeh e Kubli (2023) sobre uso de
 LLMs para anotação de textos políticos.</p>
-<p>O pipeline tem quatro etapas:</p>
-<pre><code>ac_fetch_camara() / ac_fetch_senado()   ← coleta
+<p>O pipeline tem cinco etapas:</p>
+<pre><code>ac_fetch_camara() / ac_fetch_senado()        ← coleta
          ↓
-ac_corpus()                             ← estruturação
+ac_corpus()                                  ← estruturação
          ↓
-ac_qual_codebook()                      ← codebook
+ac_qual_codebook() + funções de gestão       ← codebook
          ↓
-ac_qual_code()                          ← classificação com LLM</code></pre>
+as_prompt()                                  ← system prompt
+         ↓
+ac_qual_code()                               ← classificação com LLM</code></pre>
 <p>A função <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> aceita o argumento
 <code>chat =</code>, que recebe qualquer objeto <code>Chat</code> do
 pacote <strong>ellmer</strong> (Wickham et al., 2025). Isso permite usar
@@ -112,406 +114,233 @@ Mistral, DeepSeek, OpenRouter — sem alterar a lógica de análise.</p>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Instalar ellmer</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ellmer"</span><span class="op">)</span></span></code></pre></div>
-<p>As chaves de API devem ser armazenadas no <code>.Renviron</code>,
-<strong>nunca</strong> no código-fonte. Edite com:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Adicione as linhas correspondentes ao(s) provedor(es) que vai
-usar:</p>
-<pre><code><span><span class="va">GROQ_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
-<span><span class="va">OPENAI_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
-<span><span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
-<span><span class="va">GOOGLE_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
-<span><span class="va">MISTRAL_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
-<span><span class="va">DEEPSEEK_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>
-<span><span class="va">OPENROUTER_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span></code></pre>
-<p>Reinicie o R após salvar. Verifique com
-<code>Sys.getenv("GROQ_API_KEY")</code>.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ellmer"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Configurar chave de API (exemplo: Anthropic)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"sk-ant-..."</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="exemplo-completo-discursos-parlamentares">Exemplo completo: discursos parlamentares<a class="anchor" aria-label="anchor" href="#exemplo-completo-discursos-parlamentares"></a>
+<h2 id="etapa-1-criar-o-codebook">Etapa 1 — Criar o codebook<a class="anchor" aria-label="anchor" href="#etapa-1-criar-o-codebook"></a>
 </h2>
-<div class="section level3">
-<h3 id="etapa-1-coletar-corpus-via-api-da-câmara">Etapa 1 — Coletar corpus via API da Câmara<a class="anchor" aria-label="anchor" href="#etapa-1-coletar-corpus-via-api-da-c%C3%A2mara"></a>
-</h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>O codebook é o instrumento central da análise de conteúdo. Ele define
+as categorias analíticas, suas definições operacionais, exemplos
+positivos e negativos, e pesos relativos para instrução da LLM.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Coletar discursos plenários — março de 2024</span></span>
-<span><span class="va">corpus_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_fetch_camara.html">ac_fetch_camara</a></span><span class="op">(</span></span>
-<span>  data_inicio   <span class="op">=</span> <span class="st">"2024-03-11"</span>,</span>
-<span>  data_fim      <span class="op">=</span> <span class="st">"2024-03-15"</span>,</span>
-<span>  tipo_discurso <span class="op">=</span> <span class="st">"plenario"</span>,</span>
-<span>  n_max         <span class="op">=</span> <span class="fl">30L</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Estrutura do resultado</span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">corpus_raw</span><span class="op">)</span></span></code></pre></div>
-<p>A função retorna um <code>data.frame</code> com as colunas
-<code>id_discurso</code>, <code>nome_deputado</code>,
-<code>partido</code>, <code>uf</code>, <code>data</code>,
-<code>tipo_discurso</code>, <code>sumario</code> e <code>texto</code>
-(transcrição integral quando disponível).</p>
-</div>
-<div class="section level3">
-<h3 id="etapa-2-criar-corpus">Etapa 2 — Criar corpus<a class="anchor" aria-label="anchor" href="#etapa-2-criar-corpus"></a>
-</h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
-<span>  <span class="va">corpus_raw</span>,</span>
-<span>  text  <span class="op">=</span> <span class="va">texto</span>,</span>
-<span>  docid <span class="op">=</span> <span class="va">id_discurso</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="etapa-3-definir-codebook">Etapa 3 — Definir codebook<a class="anchor" aria-label="anchor" href="#etapa-3-definir-codebook"></a>
-</h3>
-<p>O codebook estrutura as categorias analíticas, suas definições e
-instruções de classificação. Para discursos parlamentares temáticos, um
-codebook de cinco categorias cobre a maior parte do conteúdo do
-plenário:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
-<span>  name         <span class="op">=</span> <span class="st">"temas_plenario"</span>,</span>
-<span>  instructions <span class="op">=</span> <span class="st">"Classifique o tema principal do discurso parlamentar."</span>,</span>
+<span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  name         <span class="op">=</span> <span class="st">"tom_discurso"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Classifique o tom geral do discurso parlamentar."</span>,</span>
 <span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    seguranca_publica  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      definition <span class="op">=</span> <span class="st">"Discursos sobre violência, polícia, crime e segurança pública."</span></span>
+<span>    positivo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom propositivo e colaborativo."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Proponho que trabalhemos juntos nesta agenda."</span><span class="op">)</span>,</span>
+<span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Este governo é um desastre completo."</span><span class="op">)</span>,</span>
+<span>      weight       <span class="op">=</span> <span class="fl">1</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    economia_fiscal    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      definition <span class="op">=</span> <span class="st">"Discursos sobre impostos, orçamento, gastos públicos e política fiscal."</span></span>
+<span>    negativo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom crítico ou confrontacional."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta proposta vai arruinar o país."</span><span class="op">)</span>,</span>
+<span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apresento esta emenda para melhorar o texto."</span><span class="op">)</span>,</span>
+<span>      weight       <span class="op">=</span> <span class="fl">1.5</span>  <span class="co"># categoria mais difícil: peso maior</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    politica_social    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      definition <span class="op">=</span> <span class="st">"Discursos sobre saúde, educação, assistência social e combate à pobreza."</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    orientacao_votacao <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      definition <span class="op">=</span> <span class="st">"Orientação de bancada para votação de projetos de lei."</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    outros             <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      definition <span class="op">=</span> <span class="st">"Discursos que não se encaixam nas categorias anteriores."</span></span>
+<span>    neutro <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Discurso descritivo, sem posicionamento claro."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"O projeto foi apresentado na sessão de hoje."</span><span class="op">)</span>,</span>
+<span>      weight       <span class="op">=</span> <span class="fl">1</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  mode <span class="op">=</span> <span class="st">"manual"</span></span>
+<span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  lang       <span class="op">=</span> <span class="st">"pt"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">codebook</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cb</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="adicionar-e-remover-categorias">Adicionar e remover categorias<a class="anchor" aria-label="anchor" href="#adicionar-e-remover-categorias"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Adicionar categoria iterativamente</span></span>
+<span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_add.html">ac_qual_codebook_add</a></span><span class="op">(</span><span class="va">cb</span>,</span>
+<span>  tecnico <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    definition   <span class="op">=</span> <span class="st">"Discurso com linguagem técnica e referências normativas."</span>,</span>
+<span>    examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Conforme o art. 37 da CF, a administração pública..."</span><span class="op">)</span>,</span>
+<span>    weight       <span class="op">=</span> <span class="fl">1</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Remover se necessário</span></span>
+<span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_remove.html">ac_qual_codebook_remove</a></span><span class="op">(</span><span class="va">cb</span>, <span class="st">"tecnico"</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+</div>
+<div class="section level2">
+<h2 id="etapa-2-enriquecer-o-codebook-com-literatura">Etapa 2 — Enriquecer o codebook com literatura<a class="anchor" aria-label="anchor" href="#etapa-2-enriquecer-o-codebook-com-literatura"></a>
+</h2>
+<div class="section level3">
+<h3 id="modo-híbrido-definições-ancoradas-em-referências">Modo híbrido: definições ancoradas em referências<a class="anchor" aria-label="anchor" href="#modo-h%C3%ADbrido-defini%C3%A7%C3%B5es-ancoradas-em-refer%C3%AAncias"></a>
+</h3>
+<p><code><a href="../reference/ac_qual_codebook_hybrid.html">ac_qual_codebook_hybrid()</a></code> re-ancora as definições
+manuais em referências bibliográficas buscadas via LLM, preservando os
+exemplos originais:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cb_hybrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_hybrid.html">ac_qual_codebook_hybrid</a></span><span class="op">(</span></span>
+<span>  codebook <span class="op">=</span> <span class="va">cb</span>,</span>
+<span>  model    <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
+<span>  journals <span class="op">=</span> <span class="st">"default"</span>,  <span class="co"># periódicos de CP/CS brasileiros e internacionais</span></span>
+<span>  n_refs   <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  lang     <span class="op">=</span> <span class="st">"pt"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Ver definição enriquecida da categoria "negativo"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">cb_hybrid</span><span class="op">$</span><span class="va">categories</span><span class="op">$</span><span class="va">negativo</span><span class="op">$</span><span class="va">definition</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nReferências:\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cb_hybrid</span><span class="op">$</span><span class="va">categories</span><span class="op">$</span><span class="va">negativo</span><span class="op">$</span><span class="va">references</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="etapa-4-classificar-com-llm">Etapa 4 — Classificar com LLM<a class="anchor" aria-label="anchor" href="#etapa-4-classificar-com-llm"></a>
+<h3 id="modo-literature-construção-inteiramente-baseada-em-literatura">Modo literature: construção inteiramente baseada em literatura<a class="anchor" aria-label="anchor" href="#modo-literature-constru%C3%A7%C3%A3o-inteiramente-baseada-em-literatura"></a>
 </h3>
-<p>O argumento <code>chat =</code> recebe qualquer objeto
-<code>Chat</code> do <strong>ellmer</strong>. Abaixo usamos o Groq com
-<code>llama-3.3-70b-versatile</code>, que oferece plano gratuito e
-latência baixa:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cb_lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  name         <span class="op">=</span> <span class="st">"frames_politicos"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Identifique o frame predominante no discurso."</span>,</span>
+<span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    conflito    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">""</span>, concept <span class="op">=</span> <span class="st">"conflict framing politics"</span><span class="op">)</span>,</span>
+<span>    consenso    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">""</span>, concept <span class="op">=</span> <span class="st">"consensus framing politics"</span><span class="op">)</span>,</span>
+<span>    moralidade  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">""</span>, concept <span class="op">=</span> <span class="st">"moral framing political discourse"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  mode  <span class="op">=</span> <span class="st">"literature"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
+<span>  lang  <span class="op">=</span> <span class="st">"pt"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+</div>
+<div class="section level2">
+<h2 id="etapa-3-fundir-e-traduzir-codebooks">Etapa 3 — Fundir e traduzir codebooks<a class="anchor" aria-label="anchor" href="#etapa-3-fundir-e-traduzir-codebooks"></a>
+</h2>
+<div class="section level3">
+<h3 id="fundir-dois-codebooks">Fundir dois codebooks<a class="anchor" aria-label="anchor" href="#fundir-dois-codebooks"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cb_estilo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  name         <span class="op">=</span> <span class="st">"estilo_retórico"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Classifique o estilo retórico dominante."</span>,</span>
+<span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    pathos  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apelo emocional predominante."</span><span class="op">)</span>,</span>
+<span>    logos   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apelo racional/argumentativo predominante."</span><span class="op">)</span>,</span>
+<span>    ethos   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apelo à autoridade ou credibilidade do orador."</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Fundir: tom + estilo retórico em um único codebook multilabel</span></span>
+<span><span class="va">cb_completo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_merge.html">ac_qual_codebook_merge</a></span><span class="op">(</span></span>
+<span>  cb1          <span class="op">=</span> <span class="va">cb_hybrid</span>,</span>
+<span>  cb2          <span class="op">=</span> <span class="va">cb_estilo</span>,</span>
+<span>  name         <span class="op">=</span> <span class="st">"discurso_parlamentar"</span>,</span>
+<span>  on_conflict  <span class="op">=</span> <span class="st">"rename_second"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Classifique o tom e o estilo retórico do discurso."</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="traduzir-para-inglês">Traduzir para inglês<a class="anchor" aria-label="anchor" href="#traduzir-para-ingl%C3%AAs"></a>
+</h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Instanciar provedor — chave lida do .Renviron automaticamente</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
-<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Classificar corpus completo</span></span>
-<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus           <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook         <span class="op">=</span> <span class="va">codebook</span>,</span>
-<span>  chat             <span class="op">=</span> <span class="va">chat_obj</span>,</span>
-<span>  confidence       <span class="op">=</span> <span class="st">"total"</span>,    <span class="co"># self-consistency em k rodadas</span></span>
-<span>  k_consistency    <span class="op">=</span> <span class="fl">3L</span>,</span>
-<span>  reasoning        <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># inclui justificativa por documento</span></span>
-<span>  reasoning_length <span class="op">=</span> <span class="st">"short"</span></span>
+<code class="sourceCode R"><span><span class="va">cb_en</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_translate.html">ac_qual_codebook_translate</a></span><span class="op">(</span></span>
+<span>  codebook          <span class="op">=</span> <span class="va">cb_completo</span>,</span>
+<span>  to                <span class="op">=</span> <span class="st">"en"</span>,</span>
+<span>  model             <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
+<span>  translate_examples <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>O argumento <code>confidence = "total"</code> ativa o cálculo de
-certeza via <em>self-consistency</em> (Wang et al., 2023): o modelo
-classifica cada documento <code>k_consistency</code> vezes com
-temperatura &gt; 0 e a confiança é a proporção de concordância entre as
-rodadas. Valores ≥ 0.80 indicam alta consistência (Landis &amp; Koch,
-1977).</p>
 <hr>
 </div>
 </div>
 <div class="section level2">
-<h2 id="resultados">Resultados<a class="anchor" aria-label="anchor" href="#resultados"></a>
+<h2 id="etapa-4-inspecionar-histórico-e-gerar-system-prompt">Etapa 4 — Inspecionar histórico e gerar system prompt<a class="anchor" aria-label="anchor" href="#etapa-4-inspecionar-hist%C3%B3rico-e-gerar-system-prompt"></a>
 </h2>
-<p>Os resultados obtidos com 30 discursos do plenário de março/2024:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Distribuição de categorias</span></span>
-<span><span class="va">resultado</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">categoria</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">n</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## # A tibble: 5 × 3</span></span>
-<span><span class="co">##   categoria              n   pct</span></span>
-<span><span class="co">##   &lt;chr&gt;              &lt;int&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">## 1 orientacao_votacao    15  50</span></span>
-<span><span class="co">## 2 politica_social        6  20</span></span>
-<span><span class="co">## 3 economia_fiscal        4  13.3</span></span>
-<span><span class="co">## 4 outros                 4  13.3</span></span>
-<span><span class="co">## 5 seguranca_publica      1   3.3</span></span></code></pre>
+<code class="sourceCode R"><span><span class="co"># Ver todas as modificações feitas no codebook</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_codebook_history.html">ac_qual_codebook_history</a></span><span class="op">(</span><span class="va">cb_completo</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Gerar system prompt para uso direto com ellmer</span></span>
+<span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_prompt.html">as_prompt</a></span><span class="op">(</span></span>
+<span>  <span class="va">cb_completo</span>,</span>
+<span>  reasoning        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  reasoning_length <span class="op">=</span> <span class="st">"medium"</span>  <span class="co"># "short" | "medium" | "detailed"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># O prompt pode ser passado diretamente a um objeto Chat:</span></span>
+<span><span class="co"># chat$set_system_prompt(prompt)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="etapa-5-classificar-o-corpus">Etapa 5 — Classificar o corpus<a class="anchor" aria-label="anchor" href="#etapa-5-classificar-o-corpus"></a>
+</h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Confiança média e distribuição</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">$</span><span class="va">confidence_score</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">resultado</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">confidence_level</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.9111111</span></span>
-<span><span class="co">##</span></span>
-<span><span class="co">## # A tibble: 2 × 2</span></span>
-<span><span class="co">##   confidence_level     n</span></span>
-<span><span class="co">##   &lt;chr&gt;            &lt;int&gt;</span></span>
-<span><span class="co">## 1 alta                22</span></span>
-<span><span class="co">## 2 media                8</span></span></code></pre>
-<p>Confiança média de <strong>0.91</strong> com 22/30 documentos na
-faixa “alta” (≥ 0.80) indica classificação estável e reproduzível. A
-dominância de <code>orientacao_votacao</code> (50%) é consistente com o
-padrão de votações intensas no plenário no período.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Coletar e estruturar corpus</span></span>
+<span><span class="va">discursos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_fetch_camara.html">ac_fetch_camara</a></span><span class="op">(</span></span>
+<span>  id_deputado <span class="op">=</span> <span class="fl">204379</span>,</span>
+<span>  data_inicio <span class="op">=</span> <span class="st">"2023-01-01"</span>,</span>
+<span>  data_fim    <span class="op">=</span> <span class="st">"2023-06-30"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">discursos</span>, text_col <span class="op">=</span> <span class="st">"transcricao"</span>, id_col <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Classificar</span></span>
+<span><span class="va">chat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"claude-sonnet-4-5"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  corpus   <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook <span class="op">=</span> <span class="va">cb_completo</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat</span>,</span>
+<span>  n_rep    <span class="op">=</span> <span class="fl">3</span>,       <span class="co"># self-consistency</span></span>
+<span>  batch    <span class="op">=</span> <span class="fl">10</span>,      <span class="co"># documentos por lote</span></span>
+<span>  verbose  <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span></code></pre></div>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="etapa-6-salvar-e-carregar">Etapa 6 — Salvar e carregar<a class="anchor" aria-label="anchor" href="#etapa-6-salvar-e-carregar"></a>
+</h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Amostra de classificações com raciocínio</span></span>
-<span><span class="va">resultado</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">nome_deputado</span>, <span class="va">partido</span>, <span class="va">categoria</span>, <span class="va">confidence_score</span>, <span class="va">raciocinio</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## # A tibble: 5 × 5</span></span>
-<span><span class="co">##   nome_deputado   partido categoria          confidence_score raciocinio</span></span>
-<span><span class="co">##   &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;                         &lt;dbl&gt; &lt;chr&gt;</span></span>
-<span><span class="co">## 1 Acácio Favacho  MDB     seguranca_publica             1     O discurso aborda os índices de</span></span>
-<span><span class="co">## 2 Adriana Ventura NOVO    orientacao_votacao            1     O texto expressa a orientação</span></span>
-<span><span class="co">## 3 Adriana Ventura NOVO    economia_fiscal               0.667 O texto foi classificado nesta</span></span>
-<span><span class="co">## 4 Adriana Ventura NOVO    orientacao_votacao            1     O texto é uma orientação de voto</span></span>
-<span><span class="co">## 5 Adriana Ventura NOVO    orientacao_votacao            1     O texto apresenta uma orientação</span></span></code></pre>
+<code class="sourceCode R"><span><span class="co"># Salvar em YAML para replicabilidade</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb_completo</span>, path <span class="op">=</span> <span class="st">"codebook_discurso.yaml"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Carregar em outra sessão</span></span>
+<span><span class="va">cb_recarregado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_load_codebook.html">ac_qual_load_codebook</a></span><span class="op">(</span><span class="st">"codebook_discurso.yaml"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="provedores-disponíveis">Provedores disponíveis<a class="anchor" aria-label="anchor" href="#provedores-dispon%C3%ADveis"></a>
+<h2 id="etapa-7-validação-e-confiabilidade">Etapa 7 — Validação e confiabilidade<a class="anchor" aria-label="anchor" href="#etapa-7-valida%C3%A7%C3%A3o-e-confiabilidade"></a>
 </h2>
-<p>Qualquer provedor suportado pelo <strong>ellmer</strong> funciona via
-<code>chat =</code>. A escolha depende de custo, privacidade e qualidade
-para português:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Groq — gratuito, rápido, bom para prototipagem</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Amostrar 30 documentos para revisão humana (amostragem estratificada)</span></span>
+<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">30</span>, method <span class="op">=</span> <span class="st">"stratified"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="st">"revisao.xlsx"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Google Gemini — tier gratuito generoso</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Ollama — local, sem envio de dados (ideal para dados sensíveis)</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama3.2"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># OpenAI</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-4.1"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Anthropic Claude</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"claude-sonnet-4-20250514"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Mistral</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_mistral.html" class="external-link">chat_mistral</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"mistral-large-latest"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># DeepSeek</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_deepseek.html" class="external-link">chat_deepseek</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"deepseek-chat"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># OpenRouter (acesso a centenas de modelos com uma chave)</span></span>
-<span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openrouter.html" class="external-link">chat_openrouter</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"google/gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th>Provedor</th>
-<th>Função</th>
-<th>Variável de ambiente</th>
-<th>Tier gratuito</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Groq</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq()</a></code></td>
-<td><code>GROQ_API_KEY</code></td>
-<td>Sim</td>
-</tr>
-<tr class="even">
-<td>Google Gemini</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini()</a></code></td>
-<td><code>GOOGLE_API_KEY</code></td>
-<td>Sim</td>
-</tr>
-<tr class="odd">
-<td>Ollama</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama()</a></code></td>
-<td>não necessária</td>
-<td>Gratuito</td>
-</tr>
-<tr class="even">
-<td>OpenAI</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai()</a></code></td>
-<td><code>OPENAI_API_KEY</code></td>
-<td>Não</td>
-</tr>
-<tr class="odd">
-<td>Anthropic</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic()</a></code></td>
-<td><code>ANTHROPIC_API_KEY</code></td>
-<td>Não</td>
-</tr>
-<tr class="even">
-<td>Mistral</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_mistral.html" class="external-link">chat_mistral()</a></code></td>
-<td><code>MISTRAL_API_KEY</code></td>
-<td>Não</td>
-</tr>
-<tr class="odd">
-<td>DeepSeek</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_deepseek.html" class="external-link">chat_deepseek()</a></code></td>
-<td><code>DEEPSEEK_API_KEY</code></td>
-<td>Limitado</td>
-</tr>
-<tr class="even">
-<td>OpenRouter</td>
-<td><code><a href="https://ellmer.tidyverse.org/reference/chat_openrouter.html" class="external-link">chat_openrouter()</a></code></td>
-<td><code>OPENROUTER_API_KEY</code></td>
-<td>Por uso</td>
-</tr>
-</tbody>
-</table>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="busca-de-literatura-via-openalex">Busca de literatura via OpenAlex<a class="anchor" aria-label="anchor" href="#busca-de-literatura-via-openalex"></a>
-</h2>
-<p><code><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code> busca referências reais na
-API do <a href="https://openalex.org/" class="external-link">OpenAlex</a> (Priem et al., 2022)
-e usa a LLM para sintetizar os abstracts em português. Isso evita
-alucinações bibliográficas comuns quando a LLM opera sem fonte
-externa.</p>
-<p>A arquitetura é: OpenAlex recupera registros verificados (autor, ano,
-DOI, abstract, revista, número de citações); a LLM sintetiza o abstract
-e extrai o trecho mais relevante.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
-<span>  concept       <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span>
-<span>  n_refs        <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  journals      <span class="op">=</span> <span class="st">"default"</span>,   <span class="co"># lista curada de periodicos de CP/CS</span></span>
-<span>  lang          <span class="op">=</span> <span class="st">"pt"</span>,        <span class="co"># definicoes sintetizadas em portugues</span></span>
-<span>  min_citations <span class="op">=</span> <span class="fl">50</span>,          <span class="co"># apenas trabalhos consolidados</span></span>
-<span>  chat          <span class="op">=</span> <span class="va">chat_obj</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lit</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"autor"</span>, <span class="st">"ano"</span>, <span class="st">"revista"</span>, <span class="st">"n_citacoes"</span>, <span class="st">"definicao_pt"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## # A tibble: 3 × 5</span></span>
-<span><span class="co">##   autor                       ano revista                             n_citacoes</span></span>
-<span><span class="co">##   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                                    &lt;int&gt;</span></span>
-<span><span class="co">## 1 Nancy Bermeo               2016 Journal of democracy                      2015</span></span>
-<span><span class="co">## 2 Dean T. Jamison et al.     2013 The Lancet                                1209</span></span>
-<span><span class="co">## 3 David Waldner; Ellen Lust  2018 Annual Review of Political Science         782</span></span>
-<span><span class="co">##   definicao_pt</span></span>
-<span><span class="co">##   &lt;chr&gt;</span></span>
-<span><span class="co">## 1 O recuo democrático se refere à debilitação ou eliminação de instituições</span></span>
-<span><span class="co">##   políticas que sustentam uma democracia existente, liderada pelo Estado.</span></span>
-<span><span class="co">##   Esse conceito tem mudado significativamente desde a Guerra Fria, com formas</span></span>
-<span><span class="co">##   contemporâneas se tornando mais sutis e complexas.</span></span>
-<span><span class="co">## 2 O texto fornecido não apresenta informações relevantes sobre o conceito de</span></span>
-<span><span class="co">##   recuo democrático, pois trata de saúde pública e políticas fiscais.</span></span>
-<span><span class="co">## 3 O recuo democrático refere-se às mudanças que ocorrem dentro de um regime</span></span>
-<span><span class="co">##   político, levando à deterioração da democracia. O estudo desse fenômeno</span></span>
-<span><span class="co">##   carece de fundamentos conceituais e teóricos sólidos.</span></span></code></pre>
-<p>O resultado é um tibble com 9 colunas: <code>conceito</code>,
-<code>autor</code>, <code>ano</code>, <code>revista</code>,
-<code>n_citacoes</code>, <code>trecho_original</code>,
-<code>definicao_pt</code>, <code>abstract_original</code> e
-<code>link</code>.</p>
-<p>O argumento <code>journals = "default"</code> prioriza periódicos de
-referência em Ciência Política, Administração Pública e Ciências Sociais
-(APSR, AJPS, DADOS, RBCS, Opinião Pública, entre outros). Use
-<code>journals = "all"</code> para busca sem restrição, ou passe um
-vetor customizado como
-<code>journals = c("default", "Latin American Politics and Society")</code>.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="validação-confiabilidade-intercodificadores">Validação: confiabilidade intercodificadores<a class="anchor" aria-label="anchor" href="#valida%C3%A7%C3%A3o-confiabilidade-intercodificadores"></a>
-</h2>
-<p>Após a classificação automática, recomenda-se validar uma amostra com
-codificadores humanos. O fluxo é: exportar amostra → preencher
-manualmente → importar → calcular concordância.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 1. Amostrar e exportar para revisao humana</span></span>
-<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span></span>
-<span>  <span class="va">resultado</span>,</span>
-<span>  n        <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="st">"uncertainty"</span>   <span class="co"># prioriza documentos com menor confidence_score</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
-<span>  sample <span class="op">=</span> <span class="va">amostra</span>,</span>
-<span>  path   <span class="op">=</span> <span class="st">"revisao_humana.xlsx"</span>,</span>
-<span>  corpus <span class="op">=</span> <span class="va">corpus</span>   <span class="co"># inclui texto original para facilitar a revisao</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>O arquivo <code>.xlsx</code> exportado contém uma coluna
-<code>categoria_humano</code> vazia para preenchimento manual. Após o
-preenchimento, importe e calcule a concordância:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 2. Importar revisao humana preenchida</span></span>
-<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span></span>
-<span>  path    <span class="op">=</span> <span class="st">"revisao_humana.xlsx"</span>,</span>
-<span>  cat_col <span class="op">=</span> <span class="st">"categoria_humano"</span>,</span>
-<span>  id_col  <span class="op">=</span> <span class="st">"doc_id"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 3. Calcular concordancia intercodificadores</span></span>
-<span><span class="va">concordancia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span></span>
-<span>  gold      <span class="op">=</span> <span class="va">humano</span>,      <span class="co"># classificacao humana (referencia)</span></span>
-<span>  predicted <span class="op">=</span> <span class="va">resultado</span>,   <span class="co"># classificacao do modelo</span></span>
-<span>  method    <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span>  id_col    <span class="op">=</span> <span class="st">"doc_id"</span>,</span>
-<span>  cat_col   <span class="op">=</span> <span class="st">"categoria"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">concordancia</span><span class="op">)</span></span></code></pre></div>
-<p>Os resultados obtidos na validação com 15 documentos (duas rodadas
-independentes do mesmo modelo, simulando dois codificadores):</p>
-<pre><code><span><span class="co">## ── Confiabilidade inter-anotador (acR) ──</span></span>
-<span><span class="co">## • Documentos comparados: 15</span></span>
-<span><span class="co">## • Categorias: economia_fiscal, orientacao_votacao, outros,</span></span>
-<span><span class="co">##   politica_social, seguranca_publica</span></span>
-<span><span class="co">##</span></span>
-<span><span class="co">## Metrica                            Estimativa  IC 95%           Interpretacao</span></span>
-<span><span class="co">## ──────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">## Percent Agreement                  0.800       [, ]             Muito bom</span></span>
-<span><span class="co">## Cohen's Kappa (unweighted)         0.702       [0.403, 1.001]   Substancial</span></span>
-<span><span class="co">## Fleiss' Kappa                      0.699       [0.389, 1.009]   Substancial</span></span>
-<span><span class="co">## Krippendorff's Alpha (nominal)     0.709       [, ]             Substancial</span></span>
-<span><span class="co">##</span></span>
-<span><span class="co">## Matriz de confusao:</span></span>
-<span><span class="co">##                     Predicted</span></span>
-<span><span class="co">## Gold                 economia_fiscal orientacao_votacao outros politica_social</span></span>
-<span><span class="co">##   orientacao_votacao               0                  7      0               0</span></span>
-<span><span class="co">##   outros                           1                  0      2               0</span></span>
-<span><span class="co">##   politica_social                  0                  1      1               2</span></span>
-<span><span class="co">##   seguranca_publica                0                  0      0               0</span></span></code></pre>
-<p>Kappa de Cohen de <strong>0.70</strong> indica concordância
-substancial (Landis &amp; Koch, 1977), resultado comparável aos
-benchmarks de anotação humana relatados por Gilardi, Alizadeh e Kubli
-(2023) para tarefas de classificação política.</p>
-<p><code><a href="../reference/ac_qual_irr.html">ac_qual_irr()</a></code> calcula quatro métricas: percentual de
-concordância, kappa de Cohen, kappa de Fleiss e alpha de Krippendorff.
-Interpretação: ≥ 0.80 = quase perfeita; 0.61–0.79 = substancial;
-0.41–0.60 = moderada; &lt; 0.41 = fraca.</p>
+<span><span class="co"># Após preenchimento manual, calcular IRR</span></span>
+<span><span class="va">revisado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_preenchida.xlsx"</span><span class="op">)</span></span>
+<span><span class="va">irr</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">revisado</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">irr</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
 </h2>
-<p>GILARDI, F.; ALIZADEH, M.; KUBLI, M. ChatGPT outperforms crowd
-workers for text-annotation tasks. <strong>PNAS</strong>, v. 120, n. 30,
-2023.</p>
-<p>KRIPPENDORFF, K. <strong>Content Analysis: An Introduction to Its
-Methodology</strong>. 4. ed. Thousand Oaks: SAGE, 2018.</p>
-<p>LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
-categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159–174,
-1977.</p>
-<p>PRIEM, J. et al. OpenAlex: A fully-open index of the global research
-system. <strong>arXiv</strong>, 2205.01833, 2022.</p>
-<p>WANG, X. et al. Self-consistency improves chain of thought reasoning
-in language models. <strong>EMNLP</strong>, 2023.</p>
-<p>WICKHAM, H. et al. <strong>ellmer: Chat with Large Language
-Models</strong>. Posit, 2025. Disponível em: <a href="https://ellmer.tidyverse.org" class="external-link uri">https://ellmer.tidyverse.org</a>.</p>
+<p>Gilardi, F., Alizadeh, M., &amp; Kubli, M. (2023). ChatGPT
+outperforms crowd workers for text-annotation tasks. <em>PNAS</em>,
+120(30). <a href="https://doi.org/10.1073/pnas.2305016120" class="external-link uri">https://doi.org/10.1073/pnas.2305016120</a></p>
+<p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its
+Methodology</em> (4th ed.). SAGE.</p>
+<p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer: Qualitative
+Analysis with Large Language Models in R</em>. GitHub. <a href="https://github.com/SFB1472/quallmer" class="external-link uri">https://github.com/SFB1472/quallmer</a></p>
+<p>Sampaio, R. C., &amp; Lycarião, D. (2021). <em>Análise de conteúdo
+categorial: manual de aplicação</em>. Brasília: ENAP.</p>
+<p>Wickham, H., et al. (2025). <em>ellmer: Chat with Large Language
+Models</em>. R package. <a href="https://ellmer.tidyverse.org" class="external-link uri">https://ellmer.tidyverse.org</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
