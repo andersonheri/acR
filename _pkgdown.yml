@@ -92,9 +92,18 @@ reference:
   - ac_lda_tune
 - title: "Codificacao qualitativa via LLM"
   desc: >
-    Pipeline de analise de conteudo qualitativa assistida por LLMs.
+    Pipeline de analise de conteudo qualitativa assistida por LLMs:
+    criacao e gestao de codebooks, enriquecimento com literatura,
+    traducao, fusao e geracao de system prompts.
   contents:
   - ac_qual_codebook
+  - ac_qual_codebook_add
+  - ac_qual_codebook_remove
+  - ac_qual_codebook_hybrid
+  - ac_qual_codebook_merge
+  - ac_qual_codebook_translate
+  - ac_qual_codebook_history
+  - as_prompt
   - ac_qual_search_literature
   - ac_qual_code
   - ac_qual_save_codebook
