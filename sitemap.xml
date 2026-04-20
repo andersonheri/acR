@@ -39,6 +39,12 @@
 <url><loc>https://andersonheri.github.io/acR/reference/ac_plot_xray.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_code.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook_history.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook_hybrid.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook_merge.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook_remove.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_codebook_translate.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_import_human.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_irr.html</loc></url>
@@ -54,6 +60,7 @@
 <url><loc>https://andersonheri.github.io/acR/reference/ac_tokenize.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_top_terms.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_wordcloud.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/as_prompt.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/index.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/is_ac_corpus.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/print.ac_irr.html</loc></url>

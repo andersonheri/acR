@@ -250,16 +250,16 @@ chat_obj <- chat_deepseek(model = "deepseek-chat", echo = "none")
 chat_obj <- chat_openrouter(model = "google/gemini-2.5-flash", echo = "none")
 ```
 
-| Provedor      | Função                                                                                   | Variável de ambiente | Tier gratuito |
-|---------------|------------------------------------------------------------------------------------------|----------------------|---------------|
-| Groq          | [`chat_groq()`](https://ellmer.tidyverse.org/reference/chat_groq.html)                   | `GROQ_API_KEY`       | Sim           |
-| Google Gemini | [`chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html) | `GOOGLE_API_KEY`     | Sim           |
-| Ollama        | [`chat_ollama()`](https://ellmer.tidyverse.org/reference/chat_ollama.html)               | não necessária       | Gratuito      |
-| OpenAI        | [`chat_openai()`](https://ellmer.tidyverse.org/reference/chat_openai.html)               | `OPENAI_API_KEY`     | Não           |
-| Anthropic     | [`chat_anthropic()`](https://ellmer.tidyverse.org/reference/chat_anthropic.html)         | `ANTHROPIC_API_KEY`  | Não           |
-| Mistral       | [`chat_mistral()`](https://ellmer.tidyverse.org/reference/chat_mistral.html)             | `MISTRAL_API_KEY`    | Não           |
-| DeepSeek      | [`chat_deepseek()`](https://ellmer.tidyverse.org/reference/chat_deepseek.html)           | `DEEPSEEK_API_KEY`   | Limitado      |
-| OpenRouter    | [`chat_openrouter()`](https://ellmer.tidyverse.org/reference/chat_openrouter.html)       | `OPENROUTER_API_KEY` | Por uso       |
+| Provedor | Função | Variável de ambiente | Tier gratuito |
+|----|----|----|----|
+| Groq | [`chat_groq()`](https://ellmer.tidyverse.org/reference/chat_groq.html) | `GROQ_API_KEY` | Sim |
+| Google Gemini | [`chat_google_gemini()`](https://ellmer.tidyverse.org/reference/chat_google_gemini.html) | `GOOGLE_API_KEY` | Sim |
+| Ollama | [`chat_ollama()`](https://ellmer.tidyverse.org/reference/chat_ollama.html) | não necessária | Gratuito |
+| OpenAI | [`chat_openai()`](https://ellmer.tidyverse.org/reference/chat_openai.html) | `OPENAI_API_KEY` | Não |
+| Anthropic | [`chat_anthropic()`](https://ellmer.tidyverse.org/reference/chat_anthropic.html) | `ANTHROPIC_API_KEY` | Não |
+| Mistral | [`chat_mistral()`](https://ellmer.tidyverse.org/reference/chat_mistral.html) | `MISTRAL_API_KEY` | Não |
+| DeepSeek | [`chat_deepseek()`](https://ellmer.tidyverse.org/reference/chat_deepseek.html) | `DEEPSEEK_API_KEY` | Limitado |
+| OpenRouter | [`chat_openrouter()`](https://ellmer.tidyverse.org/reference/chat_openrouter.html) | `OPENROUTER_API_KEY` | Por uso |
 
 ------------------------------------------------------------------------
 

@@ -126,14 +126,6 @@ ac_plot_top_terms(top)
 ``` r
 ac_wordcloud(contagem, max_words = 50)
 #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> empresas could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> financeiro could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> imposto could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> inflacao could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
 #> infraestrutura could not be fit on page. It will not be plotted.
 #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
 #> investimentos could not be fit on page. It will not be plotted.

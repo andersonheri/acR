@@ -38,7 +38,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/introducao-acR.html">Comece aqui</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes">
 <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visao geral do pacote</a></li>
@@ -75,7 +75,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Análise de Conteúdo Qualitativa com LLMs</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/main/vignettes/qualitativo-llm.Rmd" class="external-link"><code>vignettes/qualitativo-llm.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/HEAD/vignettes/qualitativo-llm.Rmd" class="external-link"><code>vignettes/qualitativo-llm.Rmd</code></a></small>
       <div class="d-none name"><code>qualitativo-llm.Rmd</code></div>
     </div>
 
@@ -109,14 +109,14 @@ Mistral, DeepSeek, OpenRouter — sem alterar a lógica de análise.</p>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Instalar acR</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Instalar ellmer</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ellmer"</span><span class="op">)</span></span></code></pre></div>
 <p>As chaves de API devem ser armazenadas no <code>.Renviron</code>,
 <strong>nunca</strong> no código-fonte. Edite com:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Adicione as linhas correspondentes ao(s) provedor(es) que vai
 usar:</p>
 <pre><code><span><span class="va">GROQ_API_KEY</span><span class="op">=</span><span class="va">sua_chave</span></span>

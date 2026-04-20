@@ -233,7 +233,8 @@ chat_obj <- chat_anthropic(model = "claude-sonnet-4-20250514", echo = "none")
 ```
 
 As chaves de API devem ser configuradas no `.Renviron` com
-`usethis::edit_r_environ()`, nunca diretamente no código.
+[`usethis::edit_r_environ()`](https://usethis.r-lib.org/reference/edit.html),
+nunca diretamente no código.
 
 ------------------------------------------------------------------------
 

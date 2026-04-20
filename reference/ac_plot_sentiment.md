@@ -66,7 +66,6 @@ df <- data.frame(
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 sent <- ac_sentiment(corpus)
-#> Baixando OpLexicon (primeira execução — será cacheado)...
 ac_plot_sentiment(sent)
 
 ```

@@ -57,10 +57,26 @@ Frequencias, associacoes e modelagem estatistica de textos.
 
 ## Codificacao qualitativa via LLM
 
-Pipeline de analise de conteudo qualitativa assistida por LLMs.
+Pipeline de analise de conteudo qualitativa assistida por LLMs: criacao
+e gestao de codebooks, enriquecimento com literatura, traducao, fusao e
+geracao de system prompts.
 
 - [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
   : Criar um codebook para análise de conteúdo qualitativa
+- [`ac_qual_codebook_add()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.md)
+  : Adicionar categoria a um codebook existente
+- [`ac_qual_codebook_remove()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_remove.md)
+  : Remover categoria de um codebook existente
+- [`ac_qual_codebook_hybrid()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_hybrid.md)
+  : Enriquecer codebook com literatura via LLM (modo híbrido)
+- [`ac_qual_codebook_merge()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_merge.md)
+  : Fundir dois codebooks em um
+- [`ac_qual_codebook_translate()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_translate.md)
+  : Traduzir codebook para outro idioma via LLM
+- [`ac_qual_codebook_history()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_history.md)
+  : Exibir histórico de modificações de um codebook
+- [`as_prompt()`](https://andersonheri.github.io/acR/reference/as_prompt.md)
+  : Converter codebook em system prompt para LLM
 - [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
   : Buscar referencias bibliograficas sobre um conceito via OpenAlex e
   LLM
