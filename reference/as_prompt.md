@@ -10,6 +10,9 @@ exemplos, pesos e, opcionalmente, raciocínio estruturado.
 ``` r
 as_prompt(x, ...)
 
+# Default S3 method
+as_prompt(x, ...)
+
 # S3 method for class 'ac_codebook'
 as_prompt(
   x,
