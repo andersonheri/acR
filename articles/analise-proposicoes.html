@@ -187,13 +187,156 @@ parlamentares brasileiros.</p>
 <hr>
 </div>
 <div class="section level2">
+<h2 id="b--refinamento-do-codebook">3b. Refinamento do codebook<a class="anchor" aria-label="anchor" href="#b--refinamento-do-codebook"></a>
+</h2>
+<p>O <code>acR</code> oferece um conjunto de funções para refinar o
+codebook iterativamente antes de iniciar a classificação. Este passo é
+opcional mas recomendado para análises com categorias complexas ou
+sobrepostas.</p>
+<div class="section level3">
+<h3 id="adicionar-exemplos-às-categorias">Adicionar exemplos às categorias<a class="anchor" aria-label="anchor" href="#adicionar-exemplos-%C3%A0s-categorias"></a>
+</h3>
+<p>Exemplos positivos e negativos melhoram a precisão da classificação,
+especialmente em categorias limítrofes como <code>populista</code> e
+<code>ambiguo</code> (Sampaio &amp; Lycarião, 2021):</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Recriar com exemplos explícitos para as categorias mais difíceis</span></span>
+<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  name         <span class="op">=</span> <span class="st">"posicionamento_proposicoes"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Classifique o posicionamento do texto em relação à proposição."</span>,</span>
+<span>    <span class="st">"Use Populista para apelo emocional sem argumentação substantiva."</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    favoravel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Apoio explícito à proposição com argumentação substantiva."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta reforma aumentará a produtividade e reduzirá custos."</span><span class="op">)</span>,</span>
+<span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Votaremos com o coração pela causa do povo."</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    contrario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Oposição à proposição com argumentação substantiva."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Os dados mostram que esta medida aumentará o desemprego."</span><span class="op">)</span>,</span>
+<span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta proposta é uma vergonha nacional."</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    neutro_tecnico <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Descrição jurídica ou técnica sem valoração explícita."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Altera o art. 58 da CLT, estabelecendo nova escala."</span><span class="op">)</span>,</span>
+<span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apoiamos esta proposta de modernização."</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    populista <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Apelo emocional sem evidência ou argumentação técnica."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Presos políticos: este é o momento da justiça!"</span><span class="op">)</span>,</span>
+<span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Estudos mostram que a medida reduz 15% dos custos."</span><span class="op">)</span>,</span>
+<span>      weight       <span class="op">=</span> <span class="fl">1.5</span>  <span class="co"># categoria mais difícil: peso maior</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    ambiguo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Posicionamento contraditório ou impossível de classificar."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apoio a reforma mas temo suas consequências sociais."</span><span class="op">)</span>,</span>
+<span>      weight       <span class="op">=</span> <span class="fl">1.2</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"manual"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="enriquecer-com-literatura-via-llm">Enriquecer com literatura via LLM<a class="anchor" aria-label="anchor" href="#enriquecer-com-literatura-via-llm"></a>
+</h3>
+<p><code><a href="../reference/ac_qual_codebook_hybrid.html">ac_qual_codebook_hybrid()</a></code> re-ancora as definições em
+referências bibliográficas buscadas via LLM, preservando os exemplos
+manuais:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
+<span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">codebook_enriquecido</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_hybrid.html">ac_qual_codebook_hybrid</a></span><span class="op">(</span></span>
+<span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  chat     <span class="op">=</span> <span class="va">chat_obj</span>,</span>
+<span>  n_refs   <span class="op">=</span> <span class="fl">2L</span>,</span>
+<span>  lang     <span class="op">=</span> <span class="st">"pt"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Ver definição enriquecida da categoria populista</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">codebook_enriquecido</span><span class="op">$</span><span class="va">categories</span><span class="op">$</span><span class="va">populista</span><span class="op">$</span><span class="va">definition</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nReferências:\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">codebook_enriquecido</span><span class="op">$</span><span class="va">categories</span><span class="op">$</span><span class="va">populista</span><span class="op">$</span><span class="va">references</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="fundir-com-codebook-de-estilo-retórico">Fundir com codebook de estilo retórico<a class="anchor" aria-label="anchor" href="#fundir-com-codebook-de-estilo-ret%C3%B3rico"></a>
+</h3>
+<p>Para análises multidimensionais, é possível fundir dois codebooks.
+Aqui adicionamos uma dimensão de estilo retórico ao codebook de
+posicionamento:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">codebook_retorico</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<span>  name         <span class="op">=</span> <span class="st">"estilo_retorico"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Identifique o estilo retórico dominante."</span>,</span>
+<span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    pathos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Apelo emocional predominante."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Não podemos trair a esperança do povo brasileiro."</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    logos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Apelo racional e argumentativo predominante."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Os dados do IBGE confirmam redução de 12% no emprego."</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Fundir: posicionamento + estilo retórico</span></span>
+<span><span class="va">codebook_completo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_merge.html">ac_qual_codebook_merge</a></span><span class="op">(</span></span>
+<span>  cb1          <span class="op">=</span> <span class="va">codebook_enriquecido</span>,</span>
+<span>  cb2          <span class="op">=</span> <span class="va">codebook_retorico</span>,</span>
+<span>  name         <span class="op">=</span> <span class="st">"posicionamento_e_estilo"</span>,</span>
+<span>  on_conflict  <span class="op">=</span> <span class="st">"rename_second"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Classifique o posicionamento e o estilo retórico do texto."</span>,</span>
+<span>    <span class="st">"Use Populista para apelo emocional sem argumentação."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="gerar-system-prompt-e-inspecionar-histórico">Gerar system prompt e inspecionar histórico<a class="anchor" aria-label="anchor" href="#gerar-system-prompt-e-inspecionar-hist%C3%B3rico"></a>
+</h3>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Gerar system prompt para uso com ellmer</span></span>
+<span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_prompt.html">as_prompt</a></span><span class="op">(</span></span>
+<span>  <span class="va">codebook_enriquecido</span>,</span>
+<span>  reasoning        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  reasoning_length <span class="op">=</span> <span class="st">"short"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Inspecionar todas as modificações feitas no codebook</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_codebook_history.html">ac_qual_codebook_history</a></span><span class="op">(</span><span class="va">codebook_enriquecido</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## -- Histórico: "posicionamento_proposicoes" --</span></span>
+<span><span class="co">## # A tibble: 1 x 3</span></span>
+<span><span class="co">##   timestamp           action detail</span></span>
+<span><span class="co">##   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;</span></span>
+<span><span class="co">## 1 2025-06-01 14:23:01 hybrid favoravel, contrario, neutro_tecnico, ...</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="salvar-o-codebook-para-replicabilidade">Salvar o codebook para replicabilidade<a class="anchor" aria-label="anchor" href="#salvar-o-codebook-para-replicabilidade"></a>
+</h3>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span></span>
+<span>  <span class="va">codebook_enriquecido</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"codebook_proposicoes_v1.yaml"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Em outra sessão ou para outro pesquisador:</span></span>
+<span><span class="co"># codebook &lt;- ac_qual_load_codebook("codebook_proposicoes_v1.yaml")</span></span></code></pre></div>
+<hr>
+</div>
+</div>
+<div class="section level2">
 <h2 id="classificação-com-llm">4. Classificação com LLM<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-llm"></a>
 </h2>
 <p>O argumento <code>chat =</code> recebe qualquer objeto
 <code>Chat</code> do <strong>ellmer</strong>. Aqui usamos o Groq com
 <code>llama-3.3-70b-versatile</code>, que oferece plano gratuito e
 latência baixa — ideal para corpora de tamanho médio como este.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
 <span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
@@ -201,7 +344,7 @@ latência baixa — ideal para corpora de tamanho médio como este.</p>
 <span></span>
 <span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
 <span>  corpus           <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook         <span class="op">=</span> <span class="va">codebook</span>,</span>
+<span>  codebook         <span class="op">=</span> <span class="va">codebook_enriquecido</span>,</span>
 <span>  chat             <span class="op">=</span> <span class="va">chat_obj</span>,</span>
 <span>  confidence       <span class="op">=</span> <span class="st">"total"</span>,</span>
 <span>  k_consistency    <span class="op">=</span> <span class="fl">3L</span>,</span>
@@ -236,7 +379,7 @@ revisão humana prioritária.</p>
 <p>A amostragem por <code>strategy = "uncertainty"</code> prioriza
 documentos com menor confiança, otimizando o esforço do codificador
 humano.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Exportar amostra priorizando casos incertos</span></span>
 <span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span></span>
 <span>  <span class="va">resultado</span>,</span>
@@ -284,7 +427,7 @@ adequados para publicação (Landis &amp; Koch, 1977).</p>
 <div class="section level2">
 <h2 id="análise-por-tema-e-tipo">6. Análise por tema e tipo<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-por-tema-e-tipo"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Distribuição de categorias por tema</span></span>
 <span><span class="va">resultado</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">tema</span>, <span class="va">categoria</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -308,7 +451,7 @@ com a natureza jurídica desses textos.</p>
 <div class="section level2">
 <h2 id="exportar-resultados">7. Exportar resultados<a class="anchor" aria-label="anchor" href="#exportar-resultados"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># CSV para análise posterior</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resultado</span>, formato <span class="op">=</span> <span class="st">"csv"</span>, arquivo <span class="op">=</span> <span class="st">"proposicoes_codificadas.csv"</span><span class="op">)</span></span>
 <span></span>
@@ -330,8 +473,10 @@ workers for text-annotation tasks. <strong>PNAS</strong>, v. 120, n. 30,
 <p>KRIPPENDORFF, K. <strong>Content Analysis: An Introduction to Its
 Methodology</strong>. 4. ed. SAGE, 2018.</p>
 <p>LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
-categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159–174,
+categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174,
 1977.</p>
+<p>SAMPAIO, R. C.; LYCARIAO, D. <strong>Análise de conteúdo categorial:
+manual de aplicação</strong>. Brasília: ENAP, 2021.</p>
 <p>WICKHAM, H. et al. <strong>ellmer: Chat with Large Language
 Models</strong>. Posit, 2025. Disponível em: <a href="https://ellmer.tidyverse.org" class="external-link uri">https://ellmer.tidyverse.org</a>.</p>
 </div>
