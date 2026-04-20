@@ -1,78 +1,63 @@
-# acR 0.1.0
+# acR 0.2.1
 
-Primeira versão estável do pacote. Pipeline quantitativo completo e
-módulo qualitativo via LLM implementados e testados.
+## Novas funções
 
-## Pipeline quantitativo
+* `ac_qual_codebook_hybrid()` — enriquece definições de categorias com referências
+  bibliográficas buscadas via LLM, combinando fundamento manual com ancora teórica
+  induzida da literatura.
 
-- `ac_corpus()`: construtor de corpus com suporte a data.frame, vetor e
-  quanteda::corpus
-- `ac_clean()`: limpeza com 3 presets de stopwords PT-BR (`"pt"`,
-  `"pt-br-extended"`, `"pt-legislativo"`), proteção de termos e
-  normalização coloquial
-- `ac_tokenize()`: tokenização tidy (doc_id, token_id, token)
-- `ac_count()`: frequências e n-gramas
-- `ac_top_terms()`: top termos por grupo
-- `ac_tf_idf()`: TF-IDF com agrupamento por metadados
-- `ac_keyness()`: keyness com chi², log-likelihood e outras métricas
-- `ac_cooccurrence()`: co-ocorrência por janela deslizante ou documento,
-  com PMI e Dice
-- `ac_sentiment()`: análise de sentimento via OpLexicon (Souza & Vieira,
-  2012) com cache local
-- `ac_lda()` + `ac_lda_tune()`: LDA via topicmodels com seleção de k
-  por perplexidade
-- Visualizações correspondentes: `ac_plot_top_terms()`,
-  `ac_plot_tf_idf()`, `ac_plot_keyness()`, `ac_plot_cooccurrence()`,
-  `ac_plot_wordcloud()`, `ac_plot_wordcloud_comparative()`,
-  `ac_plot_xray()`, `ac_plot_sentiment()`, `ac_plot_lda_topics()`,
-  `ac_plot_lda_tune()`
+* `ac_qual_codebook_merge()` — funde dois objetos `ac_codebook` em um único,
+  com controle de conflitos de nomes (`error`, `keep_first`, `keep_second`,
+  `rename_second`).
 
-## Pipeline qualitativo (LLM)
+* `ac_qual_codebook_translate()` — traduz instruções, definições e exemplos de um
+  codebook para outro idioma via LLM (`"pt"` ↔ `"en"`).
 
-- `ac_qual_codebook()`: criação de codebook com modo manual e modo
-  literatura (busca definições em periódicos nacionais e internacionais)
-- `ac_qual_search_literature()`: banco estruturado de referências com
-  trecho original, tradução PT, autor, ano, revista e link
-- `ac_qual_code()`: classificação de textos via LLM com self-consistency
-  (k = 3, Wang et al., 2023), grau de certeza por variável ou total, e
-  coluna de raciocínio. Suporta qualquer provedor via ellmer (Anthropic,
-  OpenAI, Google, Groq, Ollama, Azure, endpoints institucionais)
-- `ac_qual_reliability()`: Krippendorff alpha, Gwet AC1 (implementação
-  própria, sem dependência de irrCAC), F1 macro, com IC bootstrap
-  (Landis & Koch, 1977; Gwet, 2014)
-- `ac_qual_sample()`: amostragem por incerteza, estratificada, aleatória
-  ou por discordância de self-consistency
-- `ac_qual_export_for_review()`: exportação para Excel para validação
-  humana
-- `ac_qual_import_human()`: importação de codificação humana do Excel
-- `ac_qual_save_codebook()` / `ac_qual_load_codebook()`: persistência de
-  codebooks em YAML
-- `ac_qual_list_models()`: banco curado de 25 modelos em 7 provedores
-  com custo, janela de contexto e suporte ao português
-- `ac_qual_recommend_model()`: recomendação baseada em tarefa, orçamento
-  e idioma (Gilardi et al., 2023; Törnberg, 2023)
+* `ac_qual_codebook_history()` — retorna o histórico de modificações de um
+  `ac_codebook` (adições, remoções, merges, traduções, enriquecimentos).
 
-## Infraestrutura
+* `as_prompt()` / `as_prompt.ac_codebook()` — converte um `ac_codebook` em
+  system prompt formatado para uso direto com objetos `Chat` do `ellmer`,
+  com suporte a raciocínio estruturado (`reasoning_length`).
 
-- 327+ testes automatizados (0 falhas)
-- CI em 5 ambientes (Ubuntu, macOS, Windows × R 4.3/release/devel)
-- Site pkgdown em https://andersonheri.github.io/acR/
-- ADR documentado em `inst/docs/adr/`
+* `as_prompt.default()` — método default com mensagem de erro informativa para
+  objetos que não são `ac_codebook`.
 
+## Correções
+
+* Corrigido warning `non-ASCII characters` em `R/ac_qual_codebook.R`: escapes
+  `\uXXXX` agora usados no código R; UTF-8 real mantido nos blocos roxygen.
+
+* Corrigido warning `missing documentation entries`: todas as 5 novas funções
+  do Bloco B agora têm blocos roxygen completos com título, `@param` e `@return`.
+
+* Corrigido mismatch de documentação: `check_overlap` adicionado ao `.Rd` de
+  `ac_qual_codebook()`.
+
+* Corrigido `vignettes/sentimento.Rmd`: `eval=FALSE` adicionado a todos os
+  chunks que faziam download externo, prevenindo falha no CI sem internet.
+
+## Testes
+
+* 63 testes passando em `tests/testthat/test-ac_qual_codebook.R`, cobrindo
+  todas as funções do Bloco B. Testes com LLM real usam `skip_if_offline()`
+  e `skip_on_cran()`.
+
+## Documentação
+
+* `README.md` atualizado com tabela de funções de gestão de codebook,
+  referências completas (12 entradas) e bloco de citação com ORCID e afiliação
+  CEM-Cepid/USP.
+
+* `vignettes/qualitativo-llm.Rmd` reescrita com pipeline completo do Bloco B:
+  criação, enriquecimento, fusão, tradução, histórico e geração de system prompt.
+
+* `vignettes/analise-proposicoes.Rmd` atualizada com seção 3b demonstrando
+  refinamento iterativo do codebook com as novas funções.
+
+* `_pkgdown.yml` atualizado: seção "Codificacao qualitativa via LLM" agora
+  lista todas as 12 funções do módulo qualitativo.
 
 # acR 0.2.0
 
-## Correções
-- `ac_qual_search_literature()`: removidas aspas literais da query OpenAlex
-  (API não suporta phrase search via aspas no parâmetro `search`)
-- `ac_qual_search_literature()`: adicionado fallback automático sem filtro de
-  venue quando busca com periódicos selecionados retorna zero resultados
-
-## Testes
-- Testes de integração com OpenAlex + LLM agora usam `skip_on_cran()`,
-  verificação prévia da API e `skip_if(!api_ok)` para evitar falhas em
-  ambientes sem conectividade ou com API instável
-- `test-ac_qual_codebook.R`: adicionado `skip_if(GROQ_API_KEY == 0)` e
-  `chat_obj` explícito no teste de integração
-
-
+* Versão inicial com módulos qualitativo e quantitativo completos.
