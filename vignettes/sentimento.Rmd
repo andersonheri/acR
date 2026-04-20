@@ -51,7 +51,7 @@ print(corpus)
 
 ## 2. Calcular sentimento
 
-```{r sentimento}
+```{r sentimento, eval=FALSE}
 sent_oplexicon <- ac_sentiment(
   corpus,
   lexicon = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
