@@ -17,27 +17,29 @@ ac_qual_codebook(
   model = "anthropic/claude-sonnet-4-5",
   journals = "default",
   n_refs = 5L,
+  check_overlap = FALSE,
   ...
 )
 }
 \arguments{
 \item{name}{Nome identificador do codebook (string).}
 
-\item{instructions}{Instrução geral para a LLM (o que ela deve fazer com
-o texto). Ex: \code{"Classifique o discurso quanto ao conteúdo iliberal."}.}
+\item{instructions}{Instrução geral para a LLM.}
 
-\item{categories}{Lista nomeada de categorias. Cada elemento pode ser:
+\item{categories}{Lista nomeada de categorias. Cada elemento pode conter:
 \itemize{
-\item \strong{Modo manual}: lista com \code{definition}, \code{examples_pos}, \code{examples_neg}.
-\item \strong{Modo literature}: lista com \code{concept} (string de busca em inglês).
-\item \strong{Modo induced}: ignorado — as categorias são geradas pela LLM.
+\item \code{definition}: definição operacional da categoria (obrigatório).
+\item \code{examples_pos}: vetor de exemplos positivos (recomendado).
+\item \code{examples_neg}: vetor de exemplos negativos (recomendado).
+\item \code{references}: vetor de referências bibliográficas (opcional).
+\item \code{weight}: número entre 0 e 1 indicando a importância relativa da
+categoria para a LLM (padrão: \code{1}). Categorias raras ou difíceis
+podem receber peso maior para instrução extra.
 }}
 
-\item{corpus}{Objeto \code{ac_corpus}. Obrigatório no modo \code{"induced"}. A LLM
-analisa uma amostra de até 20 documentos para induzir as categorias.}
+\item{corpus}{Objeto \code{ac_corpus}. Obrigatório no modo \code{"induced"}.}
 
-\item{n_categories}{Inteiro. Número de categorias a induzir no modo
-\code{"induced"}. Padrão: \code{5L}. Ignorado nos modos \code{"manual"} e \code{"literature"}.}
+\item{n_categories}{Inteiro. Número de categorias a induzir. Padrão: \code{5L}.}
 
 \item{mode}{\code{"manual"} (padrão), \code{"induced"} ou \code{"literature"}.}
 
@@ -46,21 +48,16 @@ uma categoria. Padrão: \code{FALSE}.}
 
 \item{lang}{Idioma do corpus: \code{"pt"} (padrão) ou \code{"en"}.}
 
-\item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
-\code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
-\code{model}. Permite usar qualquer provedor suportado pelo \code{ellmer}.}
+\item{chat}{Objeto \code{Chat} do pacote \code{ellmer}. Tem prioridade sobre \code{model}.}
 
-\item{model}{Modelo LLM a usar nos modos \code{"induced"} e \code{"literature"}.
-Padrão: \code{"anthropic/claude-sonnet-4-5"}.}
+\item{model}{Modelo LLM. Padrão: \code{"anthropic/claude-sonnet-4-5"}.}
 
-\item{journals}{Periódicos a incluir na busca de literatura. Pode ser:
-\itemize{
-\item \code{"default"}: lista padrão de periódicos nacionais e internacionais;
-\item \code{"all"}: sem restrição de periódico;
-\item vetor character: \code{c("default", "RBCS", "Cadernos Gestão Pública")}.
-}}
+\item{journals}{Periódicos para busca de literatura.}
 
-\item{n_refs}{Número de referências a buscar por categoria. Padrão: \code{5}.}
+\item{n_refs}{Número de referências por categoria. Padrão: \code{5}.}
+
+\item{check_overlap}{Se \code{TRUE}, verifica sobreposição semântica entre
+definições e avisa o pesquisador. Requer \code{chat} ou \code{model}. Padrão: \code{FALSE}.}
 
 \item{...}{Ignorado.}
 }
@@ -74,16 +71,13 @@ de textos via LLM. Suporta três modos:
 \item \strong{\code{"manual"}} (padrão): o pesquisador fornece definições, exemplos e
 referências diretamente.
 \item \strong{\code{"induced"}}: a LLM induz categorias automaticamente a partir de uma
-amostra do corpus, sugerindo nomes, definições e exemplos. Útil quando
-o pesquisador ainda não tem categorias pré-definidas.
-\item \strong{\code{"literature"}}: a LLM busca definições na literatura acadêmica
-(periódicos nacionais e internacionais de alto impacto), gerando um banco
-estruturado com trecho original, tradução, autor, ano, revista e link.
-O pesquisador revisa e aprova interativamente antes de usar.
+amostra do corpus, sugerindo nomes, definições e exemplos.
+\item \strong{\code{"literature"}}: a LLM busca definições na literatura acadêmica,
+gerando um banco estruturado com trecho original, tradução, autor, ano,
+revista e link. O pesquisador revisa e aprova interativamente.
 }
 }
 \examples{
-# Modo manual
 cb <- ac_qual_codebook(
   name         = "tom_discurso",
   instructions = "Classifique o tom geral do discurso.",
@@ -91,43 +85,25 @@ cb <- ac_qual_codebook(
     positivo = list(
       definition   = "Discurso com tom propositivo e colaborativo.",
       examples_pos = c("Proponho que trabalhemos juntos nesta agenda."),
-      examples_neg = c("Este governo e um desastre completo.")
+      examples_neg = c("Este governo e um desastre completo."),
+      weight       = 1
     ),
     negativo = list(
-      definition   = "Discurso com tom critico, confrontacional ou pessimista.",
+      definition   = "Discurso com tom critico ou confrontacional.",
       examples_pos = c("Esta proposta vai arruinar o pais."),
-      examples_neg = c("Apresento esta emenda para melhorar o texto.")
+      examples_neg = c("Apresento esta emenda para melhorar o texto."),
+      weight       = 1
     )
   )
 )
 cb
-
-\dontrun{
-# Modo induced — categorias sugeridas automaticamente pela LLM
-corpus <- ac_corpus(
-  data.frame(id = c("d1","d2","d3"),
-             texto = c("Texto A", "Texto B", "Texto C")),
-  text = texto, docid = id
-)
-chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
-cb_ind <- ac_qual_codebook(
-  name         = "temas_induzidos",
-  instructions = "Classifique o tema principal do discurso.",
-  categories   = list(),
-  corpus       = corpus,
-  n_categories = 5L,
-  mode         = "induced",
-  chat         = chat_obj
-)
-print(cb_ind)
-}
 
 }
 \references{
 Krippendorff, K. (2018). \emph{Content Analysis: An Introduction to Its
 Methodology} (4th ed.). SAGE.
 
-Mayring, P. (2022). \emph{Qualitative Content Analysis: A Step-by-Step Guide}.
-SAGE.
+Sampaio, R. C., & Lycarião, D. (2021). \emph{Análise de conteúdo categorial:
+manual de aplicação}. Brasília: ENAP.
 }
 \concept{qualitative}
