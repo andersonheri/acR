@@ -126,7 +126,7 @@ ac_qual_code <- function(corpus,
   cat_names <- names(codebook$categories)
 
   # === Construir system prompt ================================================
-  system_prompt <- .ac_build_system_prompt(codebook, reasoning, reasoning_length)
+  system_prompt <- .ac_build_system_prompt_with_weight(codebook, reasoning, reasoning_length)
 
   # === Classificar cada documento =============================================
   n_docs      <- nrow(corpus)

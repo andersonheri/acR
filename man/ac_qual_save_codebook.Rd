@@ -9,7 +9,7 @@ ac_qual_save_codebook(codebook, path = NULL, ...)
 \arguments{
 \item{codebook}{Objeto \code{ac_codebook}.}
 
-\item{path}{Caminho do arquivo \code{.yaml}. Se omitido, usa \verb{<name>.yaml}.}
+\item{path}{Caminho do arquivo \code{.yaml}.}
 
 \item{...}{Ignorado.}
 }

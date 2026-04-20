@@ -4,24 +4,20 @@ de textos via LLM. Suporta três modos:
 "manual" (padrão): o pesquisador fornece definições, exemplos e
 referências diretamente.
 "induced": a LLM induz categorias automaticamente a partir de uma
-amostra do corpus, sugerindo nomes, definições e exemplos. Útil quando
-o pesquisador ainda não tem categorias pré-definidas.
-"literature": a LLM busca definições na literatura acadêmica
-(periódicos nacionais e internacionais de alto impacto), gerando um banco
-estruturado com trecho original, tradução, autor, ano, revista e link.
-O pesquisador revisa e aprova interativamente antes de usar.
+amostra do corpus, sugerindo nomes, definições e exemplos.
+"literature": a LLM busca definições na literatura acadêmica,
+gerando um banco estruturado com trecho original, tradução, autor, ano,
+revista e link. O pesquisador revisa e aprova interativamente.
 
 '><meta property="og:description" content='ac_qual_codebook() cria um livro de códigos estruturado para classificação
 de textos via LLM. Suporta três modos:
 "manual" (padrão): o pesquisador fornece definições, exemplos e
 referências diretamente.
 "induced": a LLM induz categorias automaticamente a partir de uma
-amostra do corpus, sugerindo nomes, definições e exemplos. Útil quando
-o pesquisador ainda não tem categorias pré-definidas.
-"literature": a LLM busca definições na literatura acadêmica
-(periódicos nacionais e internacionais de alto impacto), gerando um banco
-estruturado com trecho original, tradução, autor, ano, revista e link.
-O pesquisador revisa e aprova interativamente antes de usar.
+amostra do corpus, sugerindo nomes, definições e exemplos.
+"literature": a LLM busca definições na literatura acadêmica,
+gerando um banco estruturado com trecho original, tradução, autor, ano,
+revista e link. O pesquisador revisa e aprova interativamente.
 
 '><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -75,12 +71,10 @@ O pesquisador revisa e aprova interativamente antes de usar.
 de textos via LLM. Suporta três modos:</p><ul><li><p><strong><code>"manual"</code></strong> (padrão): o pesquisador fornece definições, exemplos e
 referências diretamente.</p></li>
 <li><p><strong><code>"induced"</code></strong>: a LLM induz categorias automaticamente a partir de uma
-amostra do corpus, sugerindo nomes, definições e exemplos. Útil quando
-o pesquisador ainda não tem categorias pré-definidas.</p></li>
-<li><p><strong><code>"literature"</code></strong>: a LLM busca definições na literatura acadêmica
-(periódicos nacionais e internacionais de alto impacto), gerando um banco
-estruturado com trecho original, tradução, autor, ano, revista e link.
-O pesquisador revisa e aprova interativamente antes de usar.</p></li>
+amostra do corpus, sugerindo nomes, definições e exemplos.</p></li>
+<li><p><strong><code>"literature"</code></strong>: a LLM busca definições na literatura acadêmica,
+gerando um banco estruturado com trecho original, tradução, autor, ano,
+revista e link. O pesquisador revisa e aprova interativamente.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -98,6 +92,7 @@ O pesquisador revisa e aprova interativamente antes de usar.</p></li>
 <span>  model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
 <span>  journals <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  n_refs <span class="op">=</span> <span class="fl">5L</span>,</span>
+<span>  check_overlap <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -111,25 +106,26 @@ O pesquisador revisa e aprova interativamente antes de usar.</p></li>
 
 
 <dt id="arg-instructions">instructions<a class="anchor" aria-label="anchor" href="#arg-instructions"></a></dt>
-<dd><p>Instrução geral para a LLM (o que ela deve fazer com
-o texto). Ex: <code>"Classifique o discurso quanto ao conteúdo iliberal."</code>.</p></dd>
+<dd><p>Instrução geral para a LLM.</p></dd>
 
 
 <dt id="arg-categories">categories<a class="anchor" aria-label="anchor" href="#arg-categories"></a></dt>
-<dd><p>Lista nomeada de categorias. Cada elemento pode ser:</p><ul><li><p><strong>Modo manual</strong>: lista com <code>definition</code>, <code>examples_pos</code>, <code>examples_neg</code>.</p></li>
-<li><p><strong>Modo literature</strong>: lista com <code>concept</code> (string de busca em inglês).</p></li>
-<li><p><strong>Modo induced</strong>: ignorado — as categorias são geradas pela LLM.</p></li>
+<dd><p>Lista nomeada de categorias. Cada elemento pode conter:</p><ul><li><p><code>definition</code>: definição operacional da categoria (obrigatório).</p></li>
+<li><p><code>examples_pos</code>: vetor de exemplos positivos (recomendado).</p></li>
+<li><p><code>examples_neg</code>: vetor de exemplos negativos (recomendado).</p></li>
+<li><p><code>references</code>: vetor de referências bibliográficas (opcional).</p></li>
+<li><p><code>weight</code>: número entre 0 e 1 indicando a importância relativa da
+categoria para a LLM (padrão: <code>1</code>). Categorias raras ou difíceis
+podem receber peso maior para instrução extra.</p></li>
 </ul></dd>
 
 
 <dt id="arg-corpus">corpus<a class="anchor" aria-label="anchor" href="#arg-corpus"></a></dt>
-<dd><p>Objeto <code>ac_corpus</code>. Obrigatório no modo <code>"induced"</code>. A LLM
-analisa uma amostra de até 20 documentos para induzir as categorias.</p></dd>
+<dd><p>Objeto <code>ac_corpus</code>. Obrigatório no modo <code>"induced"</code>.</p></dd>
 
 
 <dt id="arg-n-categories">n_categories<a class="anchor" aria-label="anchor" href="#arg-n-categories"></a></dt>
-<dd><p>Inteiro. Número de categorias a induzir no modo
-<code>"induced"</code>. Padrão: <code>5L</code>. Ignorado nos modos <code>"manual"</code> e <code>"literature"</code>.</p></dd>
+<dd><p>Inteiro. Número de categorias a induzir. Padrão: <code>5L</code>.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
@@ -146,25 +142,24 @@ uma categoria. Padrão: <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-chat">chat<a class="anchor" aria-label="anchor" href="#arg-chat"></a></dt>
-<dd><p>Objeto <code>Chat</code> do pacote <code>ellmer</code> (ex: <code><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini()</a></code>,
-<code><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai()</a></code>, <code><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama()</a></code>). Quando fornecido, tem prioridade sobre
-<code>model</code>. Permite usar qualquer provedor suportado pelo <code>ellmer</code>.</p></dd>
+<dd><p>Objeto <code>Chat</code> do pacote <code>ellmer</code>. Tem prioridade sobre <code>model</code>.</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>Modelo LLM a usar nos modos <code>"induced"</code> e <code>"literature"</code>.
-Padrão: <code>"anthropic/claude-sonnet-4-5"</code>.</p></dd>
+<dd><p>Modelo LLM. Padrão: <code>"anthropic/claude-sonnet-4-5"</code>.</p></dd>
 
 
 <dt id="arg-journals">journals<a class="anchor" aria-label="anchor" href="#arg-journals"></a></dt>
-<dd><p>Periódicos a incluir na busca de literatura. Pode ser:</p><ul><li><p><code>"default"</code>: lista padrão de periódicos nacionais e internacionais;</p></li>
-<li><p><code>"all"</code>: sem restrição de periódico;</p></li>
-<li><p>vetor character: <code>c("default", "RBCS", "Cadernos Gestão Pública")</code>.</p></li>
-</ul></dd>
+<dd><p>Periódicos para busca de literatura.</p></dd>
 
 
 <dt id="arg-n-refs">n_refs<a class="anchor" aria-label="anchor" href="#arg-n-refs"></a></dt>
-<dd><p>Número de referências a buscar por categoria. Padrão: <code>5</code>.</p></dd>
+<dd><p>Número de referências por categoria. Padrão: <code>5</code>.</p></dd>
+
+
+<dt id="arg-check-overlap">check_overlap<a class="anchor" aria-label="anchor" href="#arg-check-overlap"></a></dt>
+<dd><p>Se <code>TRUE</code>, verifica sobreposição semântica entre
+definições e avisa o pesquisador. Requer <code>chat</code> ou <code>model</code>. Padrão: <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -179,26 +174,27 @@ Padrão: <code>"anthropic/claude-sonnet-4-5"</code>.</p></dd>
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its
 Methodology</em> (4th ed.). SAGE.</p>
-<p>Mayring, P. (2022). <em>Qualitative Content Analysis: A Step-by-Step Guide</em>.
-SAGE.</p>
+<p>Sampaio, R. C., &amp; Lycarião, D. (2021). <em>Análise de conteúdo categorial:
+manual de aplicação</em>. Brasília: ENAP.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Modo manual</span></span></span>
-<span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook</span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name         <span class="op">=</span> <span class="st">"tom_discurso"</span>,</span></span>
 <span class="r-in"><span>  instructions <span class="op">=</span> <span class="st">"Classifique o tom geral do discurso."</span>,</span></span>
 <span class="r-in"><span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    positivo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom propositivo e colaborativo."</span>,</span></span>
 <span class="r-in"><span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Proponho que trabalhemos juntos nesta agenda."</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Este governo e um desastre completo."</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Este governo e um desastre completo."</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      weight       <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
 <span class="r-in"><span>    negativo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom critico, confrontacional ou pessimista."</span>,</span></span>
+<span class="r-in"><span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom critico ou confrontacional."</span>,</span></span>
 <span class="r-in"><span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta proposta vai arruinar o pais."</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apresento esta emenda para melhorar o texto."</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apresento esta emenda para melhorar o texto."</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      weight       <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -209,34 +205,16 @@ SAGE.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias (2): <span style="color: #0000BB;">"positivo"</span> and <span style="color: #0000BB;">"negativo"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 19/04/2026 11:53</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 20/04/2026 12:02</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Instrução geral</span>:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Classifique o tom geral do discurso.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Categorias</span>:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #0000BB;">"positivo"</span>: Discurso com tom propositivo e colaborativo.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #0000BB;">"negativo"</span>: Discurso com tom critico, confrontacional ou pessimista.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Modo induced — categorias sugeridas automaticamente pela LLM</span></span></span>
-<span class="r-in"><span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d1"</span>,<span class="st">"d2"</span>,<span class="st">"d3"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>             texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Texto A"</span>, <span class="st">"Texto B"</span>, <span class="st">"Texto C"</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cb_ind</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  name         <span class="op">=</span> <span class="st">"temas_induzidos"</span>,</span></span>
-<span class="r-in"><span>  instructions <span class="op">=</span> <span class="st">"Classifique o tema principal do discurso."</span>,</span></span>
-<span class="r-in"><span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  corpus       <span class="op">=</span> <span class="va">corpus</span>,</span></span>
-<span class="r-in"><span>  n_categories <span class="op">=</span> <span class="fl">5L</span>,</span></span>
-<span class="r-in"><span>  mode         <span class="op">=</span> <span class="st">"induced"</span>,</span></span>
-<span class="r-in"><span>  chat         <span class="op">=</span> <span class="va">chat_obj</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cb_ind</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ex+: Proponho que trabalhemos juntos nesta agenda.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • <span style="color: #0000BB;">"negativo"</span>: Discurso com tom critico ou confrontacional.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ex+: Esta proposta vai arruinar o pais.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
