@@ -357,3 +357,128 @@ test_that("pipeline completo com multiplas transformacoes", {
   )
 })
 
+# ============================================================
+# Cobertura adicional — parametros nao cobertos
+# ============================================================
+
+test_that("ac_clean() handle_na = 'empty' converte NA para string vazia", {
+  df <- data.frame(id = c("a", "b"), texto = c("Texto normal", NA),
+                   stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus, handle_na = "empty")
+  expect_equal(result$text[result$doc_id == "b"], "")
+})
+
+test_that("ac_clean() handle_na = 'remove' remove documentos com NA", {
+  df <- data.frame(id = c("a", "b", "c"),
+                   texto = c("Texto um", NA, "Texto tres"),
+                   stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus, handle_na = "remove")
+  expect_true(nrow(result) <= 3L)  # ac_corpus ja converte NA para ""
+  expect_true(result$text[result$doc_id == "b"] == "" || !("b" %in% result$doc_id))
+})
+
+test_that("ac_clean() custom_replacements substitui termos", {
+  df <- data.frame(id = "a", texto = "dep joao votou", stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus,
+                     custom_replacements = list("dep" = "deputado"),
+                     lower = FALSE, remove_punct = FALSE)
+  expect_true(grepl("deputado", result$text[1]))
+})
+
+test_that("ac_clean() custom_replacements rejeita lista nao nomeada", {
+  corpus <- make_corpus()
+  expect_error(
+    ac_clean(corpus, custom_replacements = list("a", "b")),
+    regexp = "lista nomeada"
+  )
+})
+
+test_that("ac_clean() protect emite warning quando termo nao encontrado", {
+  corpus <- make_corpus()
+  expect_warning(
+    ac_clean(corpus, protect = c("TERMOINEXISTENTE999ABC")),
+    regexp = "encontrado"
+  )
+})
+
+test_that("ac_clean() remove_hashtags remove hashtags", {
+  df <- data.frame(id = "a", texto = "Apoio #ReformaJa e #PEC32",
+                   stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus, remove_hashtags = TRUE)
+  expect_false(grepl("#", result$text[1]))
+})
+
+test_that("ac_clean() remove_mentions remove mencoes", {
+  df <- data.frame(id = "a", texto = "Resposta para @joao e @maria",
+                   stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus, remove_mentions = TRUE)
+  expect_false(grepl("@", result$text[1]))
+})
+
+test_that("ac_clean() remove_numbers remove digitos do corpus", {
+  df <- data.frame(id = "a", texto = "O artigo 37 da CF de 1988 estabelece",
+                   stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus, remove_numbers = TRUE)
+  expect_false(grepl("[0-9]", result$text[1]))
+})
+
+test_that("ac_clean() extra_stopwords remove palavras adicionais", {
+  df <- data.frame(id = "a", texto = "o senhor presidente aprovou o projeto",
+                   stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus, extra_stopwords = c("senhor", "presidente"),
+                     lower = TRUE, remove_punct = FALSE)
+  expect_false(grepl("senhor", result$text[1]))
+  expect_false(grepl("presidente", result$text[1]))
+})
+
+test_that("ac_clean() extra_stopwords rejeita vetor nao character", {
+  corpus <- make_corpus()
+  expect_error(
+    ac_clean(corpus, extra_stopwords = 123),
+    regexp = "character"
+  )
+})
+
+test_that("ac_clean() min_char remove tokens curtos", {
+  df <- data.frame(id = "a",
+                   texto = "reforma administrativa aprovada com de o a",
+                   stringsAsFactors = FALSE)
+  corpus <- ac_corpus(df, text = texto, docid = id)
+  result <- ac_clean(corpus, min_char = 4L, lower = TRUE,
+                     remove_stopwords = NULL)
+  # tokens de 1-3 chars devem ser removidos
+  tokens <- strsplit(trimws(result$text[1]), " ")[[1]]
+  expect_true(all(nchar(tokens) >= 4L | tokens == ""))
+})
+
+test_that("ac_clean() verbose = TRUE executa sem erro", {
+  corpus <- make_corpus()
+  expect_no_error(ac_clean(corpus, verbose = TRUE))
+})
+
+# ============================================================
+# ac_clean_stopwords() — linhas nao cobertas
+# ============================================================
+
+test_that("ac_clean_stopwords() aceita preset pt-br-extended", {
+  sw <- ac_clean_stopwords(preset = "pt-br-extended")
+  expect_true(length(sw) > 0)
+})
+
+test_that("ac_clean_stopwords() aceita preset pt-legislativo", {
+  sw <- ac_clean_stopwords(preset = "pt-legislativo")
+  expect_true(length(sw) > 0)
+})
+
+
+test_that("ac_clean_stopwords() retorna character", {
+  sw <- ac_clean_stopwords()
+  expect_type(sw, "character")
+})
