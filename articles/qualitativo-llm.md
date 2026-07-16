@@ -284,7 +284,7 @@ Methodology* (4th ed.). SAGE.
 
 Maerz, S., & Benoit, K. (2025). *quallmer: Qualitative Analysis with
 Large Language Models in R*. GitHub.
-<https://github.com/SFB1472/quallmer>
+<https://github.com/quallmer/quallmer>
 
 Sampaio, R. C., & Lycarião, D. (2021). *Análise de conteúdo categorial:
 manual de aplicação*. Brasília: ENAP.
