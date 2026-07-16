@@ -61,6 +61,9 @@ lda  # imprime resumo do modelo
 \references{
 Blei, D. M.; Ng, A. Y.; Jordan, M. I. (2003). Latent Dirichlet Allocation.
 \emph{Journal of Machine Learning Research}, 3, 993-1022.
+
+Vignette: \code{vignette("lda", package = "acR")} — tutorial completo com
+corpus real e visualizações.
 }
 \seealso{
 \code{\link[=ac_lda_tune]{ac_lda_tune()}}, \code{\link[=ac_plot_lda_topics]{ac_plot_lda_topics()}}

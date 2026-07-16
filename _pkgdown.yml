@@ -167,10 +167,12 @@ reference:
   - ac_qual_list_models
   - ac_qual_recommend_model
 - title: "Visualizacao"
-  desc: "Graficos modernos baseados em ggplot2."
+  desc: "Graficos modernos baseados em ggplot2, com tema e paleta consistentes."
   contents:
   - starts_with("ac_plot_")
   - ac_wordcloud
+  - theme_ac
+  - ac_palette
 - title: "Exportacao"
   desc: "Exporta resultados para CSV, LaTeX, Excel e RDS."
   contents:
