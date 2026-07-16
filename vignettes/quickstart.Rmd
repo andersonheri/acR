@@ -46,7 +46,11 @@ corpus
 
 ## 2 · Termos mais frequentes por grupo
 
+Removemos *stopwords* antes de contar — sem isso, "de", "a", "o" dominariam
+qualquer contagem em português.
+
 ```{r frequencia}
+corpus <- ac_clean(corpus, remove_stopwords = "pt")
 freq_por_grupo <- ac_count(corpus, by = "posicao")
 ac_top_terms(freq_por_grupo, n = 5, by = "posicao")
 ```

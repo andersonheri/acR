@@ -60,16 +60,22 @@ corpus
 
 ## 1. Frequências e termos salientes
 
+Antes de contar, precisamos **remover stopwords**. Sem essa etapa, os termos
+mais frequentes seriam `o`, `a`, `de`, `que` — carregam pouca informação
+temática e mascaram os padrões reais do corpus.
+
 ```{r contagem}
+corpus_limpo <- ac_clean(corpus, remove_stopwords = "pt")
+
 # Frequência global
-freq <- ac_count(corpus)
+freq <- ac_count(corpus_limpo)
 ac_top_terms(freq, n = 8)
 ```
 
 Agora quebrando por lado (`favor` vs `contra`):
 
 ```{r contagem-grupo}
-freq_lado <- ac_count(corpus, by = "posicao")
+freq_lado <- ac_count(corpus_limpo, by = "posicao")
 ac_top_terms(freq_lado, n = 5, by = "posicao")
 ```
 

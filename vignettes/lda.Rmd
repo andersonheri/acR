@@ -60,7 +60,7 @@ summary(corpus)
 ## 2. Preparar a DFM (Document-Feature Matrix)
 
 ```{r dfm}
-corpus_limpo <- ac_clean(corpus)
+corpus_limpo <- ac_clean(corpus, remove_stopwords = "pt")
 print(corpus_limpo)
 ```
 
