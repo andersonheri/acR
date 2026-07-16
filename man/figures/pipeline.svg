@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 500" role="img" aria-labelledby="pipeline-title pipeline-desc" font-family="Inter, -apple-system, Segoe UI, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" role="img" aria-labelledby="pipeline-title pipeline-desc" font-family="Inter, -apple-system, Segoe UI, sans-serif">
   <title id="pipeline-title">Pipeline do acR</title>
-  <desc id="pipeline-desc">Seis etapas: coleta, corpus, analise quantitativa e qualitativa em paralelo (com live view opcional), validacao humana, replicabilidade e exportacao.</desc>
+  <desc id="pipeline-desc">Seis etapas: coleta, corpus, análise quantitativa e qualitativa em paralelo (com live view opcional), validação humana, replicabilidade e exportação.</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
@@ -63,92 +63,98 @@
     }
   </style>
 
+  <!-- Row 1: Coleta -> Corpus -> Analise -> Validacao -->
+
   <!-- Step 1: Coleta -->
   <g transform="translate(20, 180)">
-    <rect class="box-shell base" width="170" height="90" rx="12"/>
+    <rect class="box-shell base" width="180" height="100" rx="12"/>
     <text class="step-num"   x="16" y="24">ETAPA 1</text>
-    <text class="step-title" x="16" y="46">Coleta</text>
-    <text class="step-fn"    x="16" y="66">ac_fetch_camara()</text>
-    <text class="step-fn"    x="16" y="80">ac_fetch_senado()</text>
+    <text class="step-title" x="16" y="48">Coleta</text>
+    <text class="step-fn"    x="16" y="70">ac_fetch_camara()</text>
+    <text class="step-fn"    x="16" y="86">ac_fetch_senado()</text>
   </g>
 
   <!-- Arrow 1 -> 2 -->
-  <path class="arrow" d="M192,225 L222,225" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M202,230 L232,230" marker-end="url(#arrow)"/>
 
   <!-- Step 2: Corpus -->
-  <g transform="translate(225, 180)">
-    <rect class="box-shell base" width="180" height="90" rx="12"/>
+  <g transform="translate(235, 180)">
+    <rect class="box-shell base" width="200" height="100" rx="12"/>
     <text class="step-num"   x="16" y="24">ETAPA 2</text>
-    <text class="step-title" x="16" y="46">Corpus</text>
-    <text class="step-fn"    x="16" y="66">ac_corpus() · ac_clean()</text>
-    <text class="step-fn"    x="16" y="80">ac_tokenize()</text>
+    <text class="step-title" x="16" y="48">Corpus</text>
+    <text class="step-fn"    x="16" y="70">ac_corpus() · ac_clean()</text>
+    <text class="step-fn"    x="16" y="86">ac_tokenize()</text>
   </g>
 
-  <!-- Arrow 2 branching -->
-  <path class="arrow" d="M407,210 L425,210 L425,140 L442,140" marker-end="url(#arrow)"/>
-  <path class="arrow" d="M407,240 L425,240 L425,340 L442,340" marker-end="url(#arrow)"/>
+  <!-- Arrow 2 branching to 3A (up) and 3B (down) -->
+  <path class="arrow" d="M437,208 L455,208 L455,120 L472,120" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M437,252 L455,252 L455,360 L472,360" marker-end="url(#arrow)"/>
 
   <!-- Lane label: Quantitativo -->
-  <text class="lane-label quant" x="445" y="82">Quantitativo</text>
+  <text class="lane-label quant" x="475" y="60">QUANTITATIVO</text>
 
   <!-- Step 3A: Quantitativo -->
-  <g transform="translate(445, 95)">
-    <rect class="box-shell quant" width="345" height="90" rx="12"/>
+  <g transform="translate(475, 75)">
+    <rect class="box-shell quant" width="370" height="100" rx="12"/>
     <text class="step-num"         x="16" y="24">ETAPA 3A</text>
-    <text class="step-title quant" x="16" y="46">Analise estatistica</text>
-    <text class="step-fn quant"    x="16" y="66">ac_count() · ac_keyness() · ac_lda()</text>
-    <text class="step-fn quant"    x="16" y="80">ac_sentiment() · ac_cooccurrence()</text>
+    <text class="step-title quant" x="16" y="48">Análise estatística</text>
+    <text class="step-fn quant"    x="16" y="70">ac_count() · ac_keyness() · ac_lda()</text>
+    <text class="step-fn quant"    x="16" y="86">ac_sentiment() · ac_cooccurrence()</text>
   </g>
 
-  <!-- Lane label: Qualitativo com badge de live view -->
-  <text class="lane-label quali" x="445" y="282">Qualitativo · LLM</text>
-  <g transform="translate(590, 270)">
-    <rect class="badge" width="115" height="16" rx="8"/>
-    <text class="badge-text" x="8" y="12">LIVE VIEW OPCIONAL</text>
+  <!-- Lane label: Qualitativo -->
+  <text class="lane-label quali" x="475" y="315">QUALITATIVO · LLM</text>
+
+  <!-- Badge LIVE VIEW OPCIONAL -->
+  <g transform="translate(645, 305)">
+    <rect class="badge" width="130" height="16" rx="8"/>
+    <text class="badge-text" x="10" y="12">LIVE VIEW OPCIONAL</text>
   </g>
 
   <!-- Step 3B: Qualitativo -->
-  <g transform="translate(445, 295)">
-    <rect class="box-shell quali" width="345" height="90" rx="12"/>
+  <g transform="translate(475, 325)">
+    <rect class="box-shell quali" width="370" height="100" rx="12"/>
     <text class="step-num"         x="16" y="24">ETAPA 3B</text>
-    <text class="step-title quali" x="16" y="46">Codificacao com LLM</text>
-    <text class="step-fn quali"    x="16" y="66">ac_qual_codebook() · ac_qual_code()</text>
-    <text class="step-fn quali"    x="16" y="80">as_prompt() · live = "terminal|shiny"</text>
+    <text class="step-title quali" x="16" y="48">Codificação com LLM</text>
+    <text class="step-fn quali"    x="16" y="70">ac_qual_codebook() · ac_qual_code()</text>
+    <text class="step-fn quali"    x="16" y="86">as_prompt() · live = "terminal"|"shiny"</text>
   </g>
 
   <!-- Arrow 3A -> 4 -->
-  <path class="arrow" d="M792,140 L820,140 L820,210 L843,210" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M847,125 L870,125 L870,215 L890,215" marker-end="url(#arrow)"/>
   <!-- Arrow 3B -> 4 -->
-  <path class="arrow" d="M792,340 L820,340 L820,240 L843,240" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M847,375 L870,375 L870,245 L890,245" marker-end="url(#arrow)"/>
 
   <!-- Step 4: Validacao -->
-  <g transform="translate(845, 180)">
-    <rect class="box-shell base" width="215" height="90" rx="12"/>
+  <g transform="translate(895, 180)">
+    <rect class="box-shell base" width="215" height="100" rx="12"/>
     <text class="step-num"   x="16" y="24">ETAPA 4</text>
-    <text class="step-title" x="16" y="46">Validacao humana</text>
-    <text class="step-fn"    x="16" y="66">ac_qual_sample()</text>
-    <text class="step-fn"    x="16" y="80">ac_qual_reliability()</text>
+    <text class="step-title" x="16" y="48">Validação humana</text>
+    <text class="step-fn"    x="16" y="70">ac_qual_sample()</text>
+    <text class="step-fn"    x="16" y="86">ac_qual_reliability()</text>
   </g>
 
-  <!-- Arrow 4 -> 5 (para baixo em direcao ao bloco de reportar) -->
-  <path class="arrow" d="M952,272 L952,405 L790,405" marker-end="url(#arrow)"/>
+  <!-- Arrow 4 -> 5: desce e vai para a Etapa 5 -->
+  <path class="arrow" d="M1002,282 L1002,470 L830,470" marker-end="url(#arrow)"/>
+
+  <!-- Row 2: Reportar & Exportar (embaixo, bem separadas) -->
 
   <!-- Step 5: Reportar & replicar -->
-  <g transform="translate(400, 395)">
-    <rect class="box-shell report" width="390" height="45" rx="10"/>
-    <text class="step-num"           x="16" y="18">ETAPA 5</text>
-    <text class="step-title report"  x="16" y="36" font-size="13">Reportar &amp; replicar</text>
-    <text class="step-fn report"     x="220" y="28">ac_qual_report(format = "md" | "html")</text>
+  <g transform="translate(430, 450)">
+    <rect class="box-shell report" width="400" height="50" rx="10"/>
+    <text class="step-num"           x="16" y="20">ETAPA 5</text>
+    <text class="step-title report"  x="16" y="40" font-size="13">Reportar &amp; replicar</text>
+    <text class="step-fn report"     x="200" y="30">ac_qual_report(format = "md" | "html")</text>
   </g>
 
-  <!-- Arrow 5 -> 6 -->
-  <path class="arrow" d="M400,417 L360,417 L360,462 L340,462" marker-end="url(#arrow)"/>
+  <!-- Arrow 5 -> 6: caminho em L pela lateral esquerda -->
+  <path class="arrow" d="M430,475 L380,475 L380,528 L410,528" marker-end="url(#arrow)"/>
 
   <!-- Step 6: Exportar -->
-  <g transform="translate(20, 440)">
-    <rect class="box-shell export" width="320" height="45" rx="10"/>
+  <g transform="translate(20, 505)">
+    <rect class="box-shell export" width="390" height="45" rx="10"/>
     <text class="step-num"          x="16" y="18">ETAPA 6</text>
     <text class="step-title export" x="16" y="36" font-size="13">Exportar &amp; visualizar</text>
-    <text class="step-fn export"    x="180" y="28">ac_export() · ac_plot_*()</text>
+    <text class="step-fn export"    x="200" y="28">ac_export() · ac_plot_*() · ac_wordcloud()</text>
   </g>
 </svg>

@@ -1,6 +1,9 @@
 ---
 title: "Analise de sentimento"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{Analise de sentimento}
   %\VignetteEngine{knitr::rmarkdown}
@@ -8,221 +11,266 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(
+  echo       = TRUE,
+  eval       = TRUE,
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 8.5,
+  fig.height = 5.5,
+  fig.align  = "center",
+  out.width  = "100%",
+  dpi        = 140
+)
 library(acR)
 ```
 
-## Visao geral
+## O que é análise de sentimento com léxico
 
-O modulo de sentimento do `acR` classifica textos em positivo, negativo
-e neutro usando lexicos em portugues (OpLexicon e SentiLex-PT). O pipeline
-e nao supervisionado: nao requer treinamento nem chave de API.
+Análise de sentimento baseada em **léxico** classifica textos em positivo,
+negativo ou neutro **contando palavras** de listas curadas: palavras que
+carregam valência positiva (*excelente*, *aprovar*, *conquista*) contra
+palavras de valência negativa (*péssimo*, *fracasso*, *retrocesso*).
 
----
+O `acR` usa por padrão o **OpLexicon** (Souza & Vieira, 2012), o mais
+usado para português brasileiro, com cerca de 30 mil palavras rotuladas.
 
-## 1. Corpus: pronunciamentos sobre reforma previdenciaria
+### Quando usar léxico vs. LLM?
 
-```{r corpus, eval=FALSE}
-textos <- c(
-  "Esta reforma e um retrocesso que prejudica os trabalhadores mais pobres.",
-  "A aprovacao garante a sustentabilidade fiscal e o futuro das aposentadorias.",
-  "O texto substitutivo altera o artigo 201 da Constituicao Federal.",
-  "Uma vergonha nacional: estao roubando os direitos dos aposentados.",
-  "Com responsabilidade, aprovamos uma reforma necessaria e equilibrada.",
-  "Votamos contra esse projeto que ataca os mais vulneraveis.",
-  "O relatorio final incorporou emendas de diferentes partidos.",
-  "Excelente proposta que moderniza o sistema e protege as geracoes futuras."
-)
-corpus <- ac_corpus(
-  textos,
-  id        = paste0("doc_", seq_along(textos)),
-  parlamentar = c("A","B","C","D","E","F","G","H"),
-  partido   = c("PT","PL","MDB","PSOL","PP","PDT","MDB","PL")
-)
-print(corpus)
-```
+| Cenário | Léxico | LLM |
+|---|---|---|
+| Sinal grosso em milhares de docs | ✅ | ❌ caro |
+| Ironia, sarcasmo, contexto | ❌ | ✅ |
+| Sem chave de API, sem rede | ✅ | ❌ |
+| Precisa reprodutibilidade exata | ✅ | ⚠️ estocástico |
+| Documentos muito curtos (tweets) | ⚠️ | ✅ |
 
-```
-# Corpus acR: 8 documentos
-# Variaveis: parlamentar, partido
-```
+Regra prática: use léxico para **panorama rápido** e **filtragem de casos
+extremos**, depois use codificação qualitativa (via `ac_qual_code()`) na
+amostra que interessa.
 
----
-
-## 2. Calcular sentimento
-
-```{r sentimento, eval=FALSE}
-sent_oplexicon <- ac_sentiment(
-  corpus,
-  lexicon = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
-  metodo  = "media"        # "media" | "soma" | "proporcao"
-)
-print(sent_oplexicon)
-```
-
-```
-# A tibble: 8 x 6
-#   doc_id  texto_trunc             score  polaridade  pos   neg
-#   doc_1   Esta reforma e um re.. -0.62   negativo    0.08  0.70
-#   doc_2   A aprovacao garante..   0.54   positivo    0.62  0.08
-#   doc_3   O texto substitutivo..  0.01   neutro      0.10  0.09
-#   doc_4   Uma vergonha nacional.. -0.81   negativo    0.05  0.86
-#   doc_5   Com responsabilidade..  0.61   positivo    0.69  0.08
-#   doc_6   Votamos contra esse..  -0.55   negativo    0.09  0.64
-#   doc_7   O relatorio final inc..  0.03   neutro      0.11  0.08
-#   doc_8   Excelente proposta...   0.73   positivo    0.80  0.07
-```
-
----
-
-## 3. Comparar lexicos
-
-```{r comparar-lexicos, eval=FALSE}
-sent_oplexicon <- ac_sentiment(corpus, lexicon = "oplexicon")
-# Comparacao visual entre lexicos
-ac_plot_sentiment(sent_oplexicon)
-```
-
-```
-#  0.87  — alta concordancia entre os dois lexicos
-```
-
----
-
-## 4. Visualizacoes
-
-```{r viz-geral, eval=FALSE}
-# Distribuicao geral de sentimento
-ac_plot_sentiment(sent_oplexicon)
-```
-
-```
-# Grafico: distribuicao de scores | positivo/neutro/negativo
-```
-
-```{r viz-por-grupo, eval=FALSE}
-# Sentimento medio por partido
-ac_plot_sentiment(sent_oplexicon, por_grupo = TRUE, grupo = "partido")
-```
-
-```
-# PT   media: -0.72 (negativo)
-# PL   media:  0.64 (positivo)
-# MDB  media:  0.02 (neutro)
-# PSOL media: -0.81 (negativo)
-# PP   media:  0.61 (positivo)
-# PDT  media: -0.55 (negativo)
-```
-
-```{r viz-xray, eval=FALSE}
-# Xray: visualizar onde termos-chave aparecem no corpus
-ac_plot_xray(corpus, terms = c("politica", "fiscal", "reforma"))
-```
-
-```
-# Grafico de linhas: score por posicao no texto
-# Mostra onde o texto concentra termos negativos/positivos
-```
-
----
-
-## 5. Sentimento por partido — tabela ABNT
-
-```{r tabela, eval=FALSE}
+```{r pkg}
+library(acR)
 library(dplyr)
-resumo <- sent_oplexicon |>
-  group_by(doc_id) |>
-  summarise(
-    n        = n(),
-    media    = mean(score, na.rm = TRUE),
-    dp       = sd(score,   na.rm = TRUE),
-    .groups  = "drop"
+```
+
+## 1. Corpus: pronunciamentos sobre uma reforma polêmica
+
+Corpus fabricado de 14 pronunciamentos, com metadados de partido e
+posição declarada. Serve para exercitar visualizações; em corpora reais,
+substitua pela coleta via `ac_fetch_camara()` ou `ac_fetch_senado()`.
+
+```{r corpus}
+textos <- c(
+  # Favoráveis
+  "Excelente proposta que moderniza o sistema e protege as geracoes futuras.",
+  "Aprovamos com convicção esta reforma responsável e necessária ao país.",
+  "Vitória histórica para a economia: reforma corrige distorções antigas.",
+  "Reforma equilibrada garante sustentabilidade fiscal e futuro promissor.",
+  "Conquista importante que beneficia trabalhadores e empresas do Brasil.",
+  # Contrários
+  "Esta reforma é um retrocesso vergonhoso que prejudica os trabalhadores.",
+  "Voto contra: proposta desastrosa ataca os mais pobres e vulneráveis.",
+  "Uma tragédia nacional: estão roubando direitos duramente conquistados.",
+  "Rejeitamos com indignação essa proposta injusta e cruel com o povo.",
+  "Reforma péssima que aprofunda desigualdades e destrói a proteção social.",
+  # Neutros / técnicos
+  "O texto substitutivo altera o artigo 201 da Constituição Federal.",
+  "O relatório final incorporou emendas apresentadas em plenário.",
+  "A comissão aprovou o parecer com dez votos a favor e oito contra.",
+  "A proposta segue para votação na próxima sessão ordinária."
+)
+
+df <- data.frame(
+  text     = textos,
+  posicao  = c(rep("favor", 5), rep("contra", 5), rep("neutro", 4)),
+  partido  = c("PT","PSD","PL","MDB","PSDB",
+               "PSOL","PT","PDT","PSOL","PCdoB",
+               "MDB","PSDB","PL","MDB"),
+  stringsAsFactors = FALSE
+)
+corpus <- ac_corpus(df)
+corpus
+```
+
+## 2. Sentimento por documento
+
+`ac_sentiment()` retorna um tibble com contagens de palavras positivas
+(`n_pos`), negativas (`n_neg`) e neutras (`n_neu`), o `score` (n_pos −
+n_neg pelo método padrão `sum`) e o rótulo categórico `sentiment`.
+
+```{r sentiment}
+sent <- ac_sentiment(corpus)
+sent
+```
+
+Cruzando com a posição declarada — o léxico "acerta"?
+
+```{r validacao}
+sent |>
+  dplyr::left_join(df |> dplyr::mutate(doc_id = paste0("doc_", dplyr::row_number())),
+                   by = "doc_id") |>
+  dplyr::count(posicao, sentiment) |>
+  tidyr::pivot_wider(names_from = sentiment, values_from = n, values_fill = 0L)
+```
+
+Léxico funciona bem para **posições explícitas** (favor/contra) com
+vocabulário emotivo. Falha em textos técnicos-neutros, que
+tipicamente misturam palavras positivas e negativas em proporção baixa.
+
+## 3. Comparar métodos de agregação
+
+Três métodos alteram como o `score` é calculado a partir das contagens:
+
+* **`sum`** (padrão): `score = n_pos − n_neg`. Depende do tamanho do texto.
+* **`mean`**: normaliza pelo número total de palavras. Comparável entre
+  textos curtos e longos.
+* **`ratio`**: `(n_pos − n_neg) / (n_pos + n_neg)`. Ignora palavras
+  neutras, foca só na intensidade emotiva relativa.
+
+```{r metodos}
+sent_sum   <- ac_sentiment(corpus, method = "sum")
+sent_mean  <- ac_sentiment(corpus, method = "mean")
+sent_ratio <- ac_sentiment(corpus, method = "ratio")
+
+comparacao <- data.frame(
+  doc_id = sent_sum$doc_id,
+  sum    = round(sent_sum$score,   2),
+  mean   = round(sent_mean$score,  2),
+  ratio  = round(sent_ratio$score, 2)
+)
+head(comparacao, 10)
+```
+
+## 4. Visualização: barras por documento
+
+```{r plot-bar, fig.height=6}
+ac_plot_sentiment(sent, type = "bar") +
+  ggplot2::labs(
+    title    = "Sentimento por documento",
+    subtitle = "Contagem de palavras positivas vs. negativas (OpLexicon)",
+    caption  = "acR - ac_plot_sentiment(type = \"bar\")"
   )
-print(resumo)
-ac_export(resumo, path = "sentimento_resumo.tex", format = "latex")
 ```
 
-```
-# partido  n  media   dp    positivo  neutro  negativo
-# MDB      2   0.02  0.01       0%     100%        0%
-# PDT      1  -0.55  —          0%       0%      100%
-# PL       2   0.64  0.13     100%       0%        0%
-# PP       1   0.61  —        100%       0%        0%
-# PSOL     1  -0.81  —          0%       0%      100%
-# PT       1  -0.62  —          0%       0%      100%
+Padrão claro: os 5 primeiros documentos (favoráveis) verdes/positivos,
+os 5 seguintes (contrários) vermelhos/negativos, os 4 últimos
+(neutros/técnicos) cinza.
+
+## 5. Visualização: distribuição (densidade)
+
+Útil para ver **a forma da distribuição** — sentimento é bimodal (dois
+picos, favor e contra) ou tem uma cauda longa?
+
+```{r plot-density, fig.height=5}
+ac_plot_sentiment(sent, type = "density") +
+  ggplot2::labs(
+    title    = "Distribuição de scores de sentimento",
+    subtitle = "Bimodalidade sugere polarização; unimodal sugere consenso"
+  )
 ```
 
----
+## 6. Visualização: série ordenada
 
-## 6. Exportar
+Se seus documentos têm ordem temporal (discursos ao longo do ano), a
+série mostra tendência.
+
+```{r plot-line, fig.height=5}
+ac_plot_sentiment(sent, type = "line") +
+  ggplot2::labs(
+    title    = "Sentimento ao longo dos documentos (ordem de entrada)",
+    subtitle = "Substitua a ordem por data em corpora reais"
+  )
+```
+
+## 7. Agregação por grupo (partido)
+
+A análise mais útil raramente é doc-a-doc: é comparar **grupos**. Vamos
+agregar por partido:
+
+```{r por-partido}
+por_partido <- sent |>
+  dplyr::left_join(df |> dplyr::mutate(doc_id = paste0("doc_", dplyr::row_number())),
+                   by = "doc_id") |>
+  dplyr::group_by(partido) |>
+  dplyr::summarise(
+    n_docs     = dplyr::n(),
+    score_med  = round(mean(score), 2),
+    score_dp   = round(stats::sd(score, na.rm = TRUE), 2),
+    n_positivo = sum(sentiment == "positivo"),
+    n_negativo = sum(sentiment == "negativo"),
+    n_neutro   = sum(sentiment == "neutro"),
+    .groups    = "drop"
+  ) |>
+  dplyr::arrange(dplyr::desc(score_med))
+
+por_partido
+```
+
+Visualização (ranqueando partidos pelo score médio):
+
+```{r plot-partidos, fig.height=6}
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ggplot2::ggplot(
+    por_partido,
+    ggplot2::aes(x = stats::reorder(partido, score_med), y = score_med,
+                 fill = score_med > 0)
+  ) +
+    ggplot2::geom_col(alpha = 0.85, show.legend = FALSE) +
+    ggplot2::geom_hline(yintercept = 0, linetype = 2, color = "grey40") +
+    ggplot2::coord_flip() +
+    ggplot2::scale_fill_manual(values = c("TRUE" = "#166534", "FALSE" = "#991B1B")) +
+    ggplot2::labs(
+      title    = "Sentimento médio por partido",
+      subtitle = "Score médio agregando pronunciamentos por sigla partidária",
+      x        = NULL,
+      y        = "Score médio (positivo = verde, negativo = vermelho)",
+      caption  = "acR"
+    ) +
+    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(
+      plot.title    = ggplot2::element_text(face = "bold"),
+      plot.subtitle = ggplot2::element_text(color = "grey40", size = 10),
+      panel.grid.major.y = ggplot2::element_blank()
+    )
+}
+```
+
+## 8. Termos-chave dentro do texto (X-ray)
+
+`ac_plot_xray()` mostra **onde** termos-alvo aparecem dentro de cada
+documento. Útil para ver se palavras negativas se concentram no começo,
+meio ou fim — sinal de estrutura retórica.
+
+```{r plot-xray, fig.height=5}
+ac_plot_xray(corpus, terms = c("reforma", "trabalhadores", "aprovar", "vergonha")) +
+  ggplot2::labs(
+    title    = "Onde os termos-chave aparecem no corpus",
+    subtitle = "Cada ponto marca uma ocorrência do termo (posição relativa no texto)"
+  )
+```
+
+## 9. Exportar para artigo/relatório
 
 ```{r exportar, eval=FALSE}
-ac_export(sent_oplexicon,   format = "csv",  path = "sentimento.csv")
-ac_export(sent_oplexicon,   format = "xlsx", path = "sentimento.xlsx")
-ac_export(resumo, format = "csv",  path = "sentimento_resumo.csv")
+# Tabela por partido pronta para colar no LaTeX
+ac_export(por_partido, arquivo = "sentimento_por_partido.tex", formato = "latex")
+
+# CSV para Excel/planilha
+ac_export(sent, arquivo = "sentimento.csv", formato = "csv")
+
+# Se quiser passar para a etapa qualitativa (LLM):
+# amostrar documentos ambíguos (perto de score = 0) para revisão humana
+casos_limitrofes <- sent |> dplyr::filter(abs(score) <= 1)
 ```
 
----
+## Referências
 
----
-
-## Referencias
-
-**Pacote**
-
-Henrique, A. (2025). *acR: Analise de Conteudo em R*. R package version 0.1.0.
-Centro de Estudos da Metropole (CEM-Cepid) — Universidade de Sao Paulo.
-Disponivel em: <https://andersonheri.github.io/acR/>
-
-**Pacotes utilizados**
-
-Santos, V. (2026). *senatebR: Collect Data from the Brazilian Federal Senate
-Open Data API*. R package version 0.1.0.
-<https://CRAN.R-project.org/package=senatebR>
-
-Ferreira, P., Jorge, P., Lima, D., Coelho, G., Pereira, R. H. M., & Mation, L.
-(2026). *ipeaplot: Add Ipea Editorial Standards to ggplot2 Graphics*.
-R package version 0.5.1. Instituto de Pesquisa Economica Aplicada (Ipea).
-doi:10.32614/CRAN.package.ipeaplot
-
-**Inspiracao e dialogo**
-
-Maerz, S., & Benoit, K. (2025). *quallmer: Qualitative and LLM-Assisted
-Text Analysis in R*. — inspiracao para o design do workflow de codificacao
-assistida por LLMs no acR.
-
-Benoit, K., Watanabe, K., Wang, H., Nulty, P., Obeng, A., Muller, S., &
-Matsuo, A. (2018). quanteda: An R package for the quantitative analysis of
-textual data. *Journal of Open Source Software*, 3(30), 774.
-doi:10.21105/joss.00774 — infraestrutura de analise textual quantitativa.
-
-Wickham, H., et al. (Posit). *ellmer: A unified interface to large language
-models in R*. <https://ellmer.tidyverse.org/> — backend unificado de LLMs.
-
-Souza, M., & Vieira, R. (2012). Sentiment Analysis on Twitter with
-Portuguese Language. In *4th Workshop on Computational Approaches to
-Subjectivity, Sentiment and Social Media Analysis*. PUCRS.
-— OpLexicon: lexico de sentimento para portugues brasileiro.
-
-**Fundamentacao teorica**
-
-Bardin, L. (2011). *Analise de conteudo*. Edicoes 70.
-
-Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet Allocation.
-*Journal of Machine Learning Research*, 3, 993-1022.
-
-Krippendorff, K. (2018). *Content Analysis: An Introduction to Its Methodology*
-(4a ed.). SAGE.
-
-Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement
-for categorical data. *Biometrics*, 33(1), 159-174.
-
-Laver, M., Benoit, K., & Garry, J. (2003). Extracting policy positions from
-political texts using words as data. *American Political Science Review*,
-97(2), 311-331.
-
-Sampaio, R. C., & Lycariao, D. (2021). *Analise de conteudo categorial:
-manual de aplicacao*. Enap. Disponivel em: <https://repositorio.enap.gov.br>
-
-R Core Team. (2024). *R: A language and environment for statistical computing*.
-R Foundation for Statistical Computing. <https://www.R-project.org/>
+* Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter with
+  Portuguese Language. *4th Workshop on Computational Approaches to
+  Subjectivity, Sentiment and Social Media Analysis*, PUCRS.
+* Pang, B.; Lee, L. (2008). Opinion Mining and Sentiment Analysis.
+  *Foundations and Trends in Information Retrieval*, 2(1-2), 1-135.
+* Silge, J.; Robinson, D. (2017). *Text Mining with R*. O'Reilly.
+* Sampaio, R. C.; Lycarião, D. (2021). *Análise de conteúdo categorial:
+  manual de aplicação*. ENAP.
