@@ -366,17 +366,20 @@ individualmente.</p>
 <h2 id="etapa-5-classificar-o-corpus">Etapa 5 — Classificar o corpus<a class="anchor" aria-label="anchor" href="#etapa-5-classificar-o-corpus"></a>
 </h2>
 <p>Com codebook pronto e corpus estruturado, <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>
-faz a classificação em lotes. Dois parâmetros são chave:</p>
+faz a classificação em lotes. Três parâmetros são chave:</p>
 <ul>
 <li>
-<code>n_rep</code>: número de repetições de
-<em>self-consistency</em>. O mesmo texto é classificado 3× (padrão) com
-pequena variação de temperatura, e a categoria final é a moda. O
-<code>confidence_score</code> sai daí — 1.0 = todas as 3 rodadas
-concordaram; 0.67 = 2 de 3.</li>
+<code>k_consistency</code>: número de repetições de
+<em>self-consistency</em> (Wang et al., 2022). O mesmo texto é
+classificado k× (padrão 3) com pequena variação de temperatura, e a
+categoria final é a moda. O <code>confidence_score</code> sai daí — 1.0
+= todas as k rodadas concordaram; 0.67 = 2 de 3.</li>
 <li>
-<code>batch</code>: quantos documentos vão por requisição. Depende
-do modelo — 10–20 é seguro para corpora legislativos.</li>
+<code>reasoning</code>: pede raciocínio estruturado em JSON.</li>
+<li>
+<code>live</code>: <strong>visualização em tempo real</strong> da
+classificação, tirando o processo do “caixa-preta”. Ver blockquote
+abaixo.</li>
 </ul>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
@@ -393,12 +396,11 @@ do modelo — 10–20 é seguro para corpora legislativos.</li>
 <span><span class="va">chat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"claude-sonnet-4-5"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus   <span class="op">=</span> <span class="va">corpus</span>,</span>
-<span>  codebook <span class="op">=</span> <span class="va">cb_completo</span>,</span>
-<span>  chat     <span class="op">=</span> <span class="va">chat</span>,</span>
-<span>  n_rep    <span class="op">=</span> <span class="fl">3</span>,       <span class="co"># self-consistency</span></span>
-<span>  batch    <span class="op">=</span> <span class="fl">10</span>,      <span class="co"># documentos por lote</span></span>
-<span>  verbose  <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  corpus        <span class="op">=</span> <span class="va">corpus</span>,</span>
+<span>  codebook      <span class="op">=</span> <span class="va">cb_completo</span>,</span>
+<span>  chat          <span class="op">=</span> <span class="va">chat</span>,</span>
+<span>  k_consistency <span class="op">=</span> <span class="fl">3</span>,               <span class="co"># self-consistency</span></span>
+<span>  live          <span class="op">=</span> <span class="st">"terminal"</span>       <span class="co"># ver a maquina classificando ao vivo</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span></code></pre></div>
@@ -406,7 +408,43 @@ do modelo — 10–20 é seguro para corpora legislativos.</li>
 <code>confidence_score</code> (via <em>self-consistency</em>),
 <code>reasoning</code> (raciocínio do modelo, se pedido) e os metadados
 originais do corpus.</p>
+<div class="section level3">
+<h3 id="live-view-tirando-o-llm-do-caixa-preta">Live view: tirando o LLM do caixa-preta<a class="anchor" aria-label="anchor" href="#live-view-tirando-o-llm-do-caixa-preta"></a>
+</h3>
+<p>O argumento <code>live</code> de <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> mostra a
+máquina classificando em tempo real. Três modos:</p>
+<ul>
+<li>
+<code>live = "off"</code> (padrão) — sem visualização.</li>
+<li>
+<code>live = "terminal"</code> — barra de progresso <code>cli</code>
+com doc atual, categoria, confiança e início do raciocínio. Zero
+dependências, roda em qualquer setup (batch, CI, servidor sem interface
+gráfica).</li>
+<li>
+<code>live = "shiny"</code> — janela Shiny em background com tabela
+atualizando a cada 500 ms, destaque para casos de baixa confiança.
+Requer <code>shiny</code> e <code>callr</code>. Ideal para apresentações
+e demonstrações.</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  <span class="va">corpus</span>, <span class="va">cb_completo</span>, chat <span class="op">=</span> <span class="va">chat</span>,</span>
+<span>  live <span class="op">=</span> <span class="st">"terminal"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># 42/120 | ============&gt;              35% | ETA 2m10s</span></span>
+<span><span class="co">#   doc_042 -&gt; populista  (conf 1.00) "Apela ao povo contra elite..."</span></span></code></pre></div>
+<blockquote>
+<p><strong>Por que isso importa?</strong> Numa rodada de 500 documentos,
+sem <code>live</code> você não sabe se o modelo travou, se está
+devolvendo lixo, ou se está indo bem — só descobre no fim, depois de
+gastar todo o orçamento de tokens. Com <code>live = "terminal"</code>,
+você vê nos primeiros 10 docs se o raciocínio faz sentido e a
+distribuição de categorias está plausível. Se algo estiver errado,
+<code>Ctrl+C</code> e ajusta.</p>
+</blockquote>
 <hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="etapa-6-salvar-e-carregar">Etapa 6 — Salvar e carregar<a class="anchor" aria-label="anchor" href="#etapa-6-salvar-e-carregar"></a>
@@ -414,7 +452,7 @@ originais do corpus.</p>
 <p>Codebook e resultados devem ser <strong>serializados</strong> para
 replicabilidade. YAML foi escolhido por ser legível por humanos e
 versionável em Git.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Salvar em YAML para replicabilidade</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb_completo</span>, path <span class="op">=</span> <span class="st">"codebook_discurso.yaml"</span><span class="op">)</span></span>
 <span></span>
@@ -454,7 +492,7 @@ pelo menos 10% do corpus, no mínimo 30 documentos, priorizando os casos
 com <code>confidence_score &lt; 0.8</code> (é onde o modelo mais tende a
 errar).</p>
 </blockquote>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Amostrar 30 documentos priorizando os incertos</span></span>
 <span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">30</span>, strategy <span class="op">=</span> <span class="st">"uncertainty"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="st">"revisao.xlsx"</span>, corpus <span class="op">=</span> <span class="va">corpus</span><span class="op">)</span></span>
@@ -495,6 +533,86 @@ errar).</p>
 <p>Para análises publicáveis, valores acima de <strong>0.67</strong>
 (Krippendorff) ou <strong>0.61</strong> (Landis-Koch) são geralmente
 aceitos, com discussão dos casos divergentes na seção de método.</p>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="etapa-8-replicabilidade-e-transparência">Etapa 8 — Replicabilidade e transparência<a class="anchor" aria-label="anchor" href="#etapa-8-replicabilidade-e-transpar%C3%AAncia"></a>
+</h2>
+<p>Análises com LLM têm um risco de comunicação: <strong>o revisor ou
+leitor não consegue reproduzir a rodada</strong> sem saber exatamente
+que modelo, que codebook, que parâmetros e que amostra foram usados.
+<code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code> gera um documento estruturado com
+<strong>todas essas decisões</strong>, pronto para anexar como material
+suplementar de um artigo ou como apêndice metodológico.</p>
+<p>O relatório cobre oito seções:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Metadados</strong> — data, versão do <code>acR</code>,
+autor(es), método</li>
+<li>
+<strong>Codebook completo</strong> — categorias, definições,
+exemplos ± e pesos</li>
+<li>
+<strong>Histórico de modificações</strong> — auditoria das
+alterações no codebook</li>
+<li>
+<strong>Configuração da LLM</strong> — provedor, modelo,
+temperatura, k, reasoning</li>
+<li>
+<strong>Resultados</strong> — distribuição por categoria, quartis de
+<code>confidence_score</code>, contagem de casos com confiança &lt;
+0.80</li>
+<li>
+<strong>Confiabilidade inter-codificador</strong> — se
+<code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> foi rodado, tabela completa com IC
+95%</li>
+<li>
+<strong>Referências metodológicas</strong> — Krippendorff,
+Landis-Koch, Gilardi, Wang, Gwet</li>
+<li>
+<strong>Sugestão de citação</strong> — formatada em ABNT (PT) ou APA
+(EN)</li>
+</ol>
+<p>Uso mínimo:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Apos ter o resultado da classificacao</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_report.html">ac_qual_report</a></span><span class="op">(</span></span>
+<span>  coded     <span class="op">=</span> <span class="va">resultado</span>,</span>
+<span>  codebook  <span class="op">=</span> <span class="va">cb_completo</span>,</span>
+<span>  chat      <span class="op">=</span> <span class="va">chat</span>,                     <span class="co"># opcional: extrai provedor/modelo</span></span>
+<span>  author    <span class="op">=</span> <span class="st">"Anderson Henrique"</span>,</span>
+<span>  path      <span class="op">=</span> <span class="st">"relatorio_metodo.md"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Uso completo (com IRR e HTML autocontido):</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">irr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span>llm <span class="op">=</span> <span class="va">resultado</span>, human <span class="op">=</span> <span class="va">revisado</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/ac_qual_report.html">ac_qual_report</a></span><span class="op">(</span></span>
+<span>  coded       <span class="op">=</span> <span class="va">resultado</span>,</span>
+<span>  codebook    <span class="op">=</span> <span class="va">cb_completo</span>,</span>
+<span>  reliability <span class="op">=</span> <span class="va">irr</span>,</span>
+<span>  chat        <span class="op">=</span> <span class="va">chat</span>,</span>
+<span>  title       <span class="op">=</span> <span class="st">"Codificação do posicionamento parlamentar - 57ª legislatura"</span>,</span>
+<span>  author      <span class="op">=</span> <span class="st">"Silva, A.; Souza, B."</span>,</span>
+<span>  method      <span class="op">=</span> <span class="st">"Discursos coletados via API da Câmara (jan-jun/2023, n=847)."</span>,</span>
+<span>  format      <span class="op">=</span> <span class="st">"html"</span>,</span>
+<span>  path        <span class="op">=</span> <span class="st">"metodo_apendice.html"</span>,</span>
+<span>  lang        <span class="op">=</span> <span class="st">"pt"</span>       <span class="co"># ou "en" para submissao internacional</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>O arquivo gerado é <strong>autocontido</strong> (HTML embute todos os
+estilos; MD é Markdown puro versionável em Git). Pode ser anexado como
+material suplementar do artigo, incluído como apêndice, ou publicado num
+repositório de dados junto com o codebook em YAML
+(<code><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code>) e a saída bruta da LLM.</p>
+<blockquote>
+<p><strong>Nota metodológica.</strong> A prática de publicar codebook +
+rodada da LLM + métricas IRR num único documento é a
+<strong>transparência mínima</strong> para análise assistida por LLM em
+ciências sociais. Sem isso, o leitor tem que confiar no autor — algo que
+a tradição de análise de conteúdo (Krippendorff, 2018) sempre rejeitou.
+O <code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code> empacota essa transparência num único
+comando.</p>
+</blockquote>
 <hr>
 </div>
 <div class="section level2">
