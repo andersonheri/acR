@@ -11,7 +11,30 @@ ac_qual_load_codebook(path, ...)
 
 \item{...}{Ignorado.}
 }
+\value{
+Objeto \code{ac_codebook}.
+}
 \description{
-Carregar codebook de arquivo YAML
+Le um arquivo YAML gerado por \code{\link[=ac_qual_save_codebook]{ac_qual_save_codebook()}} e reconstroi
+o objeto \code{ac_codebook} na sessao atual. Uso tipico: retomar uma analise
+iniciada em outra sessao ou por outro pesquisador.
+}
+\examples{
+# Preparar um codebook e salvar em arquivo temporario
+cb <- ac_qual_codebook(
+  name         = "polaridade",
+  instructions = "Classifique a polaridade do texto.",
+  categories   = list(
+    favor   = list(definition = "Apoia a proposta."),
+    contra  = list(definition = "Opoe-se a proposta.")
+  )
+)
+arquivo <- tempfile(fileext = ".yaml")
+ac_qual_save_codebook(cb, path = arquivo)
+
+# Recarregar em outra sessao
+cb_novo <- ac_qual_load_codebook(arquivo)
+names(cb_novo$categories)  # "favor" "contra"
+
 }
 \concept{qualitative}

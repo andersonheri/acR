@@ -41,10 +41,25 @@ classificação feita pela LLM e uma classificação humana de referência,
 com intervalos de confiança via bootstrap.
 }
 \examples{
-\dontrun{
-rel <- ac_qual_reliability(llm = coded, human = humano_df)
+# Simular saidas: LLM (coded) e revisao humana (humano_df)
+# ambos com as colunas doc_id + categoria
+coded <- tibble::tibble(
+  doc_id    = paste0("d", 1:5),
+  categoria = c("favor", "contra", "favor", "contra", "favor")
+)
+humano_df <- tibble::tibble(
+  doc_id    = paste0("d", 1:5),
+  categoria = c("favor", "contra", "contra", "contra", "favor")
+)
+
+# Calcular metricas de confiabilidade (bootstrap curto so para demonstrar;
+# em uso real, deixe o padrao de 1000 replicas)
+rel <- ac_qual_reliability(
+  llm       = coded,
+  human     = humano_df,
+  bootstrap = 50
+)
 print(rel)
-}
 
 }
 \references{

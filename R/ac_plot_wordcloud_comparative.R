@@ -17,6 +17,7 @@
 #' @return Objeto `ggplot`.
 #'
 #' @examples
+#' # Corpus dividido em dois grupos com vocabulario contrastante
 #' df <- data.frame(
 #'   id     = paste0("d", 1:6),
 #'   texto  = c(
@@ -30,6 +31,8 @@
 #'   grupo = c("A","A","A","B","B","B")
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
+#'
+#' # Nuvem comparativa: termos distintivos de cada grupo
 #' ac_plot_wordcloud_comparative(corpus, group = grupo)
 #'
 #' @seealso [ac_tf_idf()]
@@ -168,6 +171,7 @@ ac_plot_wordcloud_comparative <- function(corpus,
 #' @return Objeto `ggplot`.
 #'
 #' @examples
+#' # Dois documentos com repeticao de termos-alvo em posicoes diferentes
 #' df <- data.frame(
 #'   id = c("d1", "d2"),
 #'   texto = c(
@@ -176,6 +180,8 @@ ac_plot_wordcloud_comparative <- function(corpus,
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
+#'
+#' # X-ray: pontos marcam a posicao relativa de cada termo dentro do texto
 #' ac_plot_xray(corpus, terms = c("democracia", "mercado", "liberdade"))
 #'
 #' @seealso [ac_corpus()]

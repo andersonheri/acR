@@ -41,4 +41,20 @@ Tibble com os documentos selecionados, incluindo uma coluna
 LLM para validação por um codificador humano, usando diferentes estratégias
 para maximizar a eficiência da validação.
 }
+\examples{
+# Simular saida de ac_qual_code() com 20 documentos ja classificados
+set.seed(1)
+coded <- tibble::tibble(
+  doc_id           = paste0("doc_", 1:20),
+  categoria        = sample(c("favor", "contra"), 20, replace = TRUE),
+  confidence_score = runif(20, 0.5, 1.0)
+)
+
+# Priorizar casos mais incertos para revisao humana
+ac_qual_sample(coded, n = 5, strategy = "uncertainty")
+
+# Garantir cobertura proporcional das duas categorias
+ac_qual_sample(coded, n = 6, strategy = "stratified")
+
+}
 \concept{qualitative}

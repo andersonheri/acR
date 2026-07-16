@@ -18,4 +18,23 @@ Tibble com colunas \code{timestamp}, \code{action} e \code{detail} (invisível).
 \code{ac_qual_codebook_history()} retorna e imprime o histórico de ações
 registradas em um \code{ac_codebook} (adições, remoções, merges, traduções etc.).
 }
+\examples{
+# Criar codebook e aplicar duas modificacoes
+cb <- ac_qual_codebook(
+  name         = "sentimento",
+  instructions = "Classifique o sentimento.",
+  categories   = list(
+    positivo = list(definition = "Sentimento positivo."),
+    negativo = list(definition = "Sentimento negativo.")
+  )
+)
+cb <- ac_qual_codebook_add(cb,
+  neutro = list(definition = "Sem valencia clara.")
+)
+cb <- ac_qual_codebook_remove(cb, "neutro")
+
+# Ver historico completo de acoes registradas
+ac_qual_codebook_history(cb)
+
+}
 \concept{qualitative}

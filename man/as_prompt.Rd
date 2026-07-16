@@ -35,4 +35,20 @@ formatado para uso com LLMs. O método \code{as_prompt.ac_codebook()} gera
 o prompt a partir de um \code{ac_codebook}, incluindo instruções, categorias,
 exemplos, pesos e, opcionalmente, raciocínio estruturado.
 }
+\examples{
+# Codebook base
+cb <- ac_qual_codebook(
+  name         = "tom",
+  instructions = "Classifique o tom do texto.",
+  categories   = list(
+    formal   = list(definition = "Linguagem tecnica e impessoal."),
+    informal = list(definition = "Linguagem coloquial ou emotiva.")
+  )
+)
+
+# Gerar o system prompt para uso direto com objetos Chat do ellmer
+prompt <- as_prompt(cb, reasoning = TRUE, reasoning_length = "short")
+substr(prompt, 1, 200)  # inspecionar o comeco do prompt
+
+}
 \concept{qualitative}

@@ -34,6 +34,7 @@ ideal de tópicos.
 }
 \examples{
 \dontrun{
+# 1. Corpus sintetico (mesmos temas de ac_lda(), palavras diferentes)
 df <- data.frame(
   id = paste0("d", 1:10),
   texto = c(
@@ -50,6 +51,8 @@ df <- data.frame(
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# 2. Testar k de 2 a 5 e comparar perplexidade (menor = melhor ajuste)
 tune <- ac_lda_tune(corpus, k_range = 2:5)
 tune
 }

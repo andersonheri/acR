@@ -24,6 +24,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' # 1. Corpus sintetico com 3 temas nitidos (democracia, economia, saude, educacao)
 #' df <- data.frame(
 #'   id = paste0("d", 1:10),
 #'   texto = c(
@@ -40,8 +41,10 @@
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
+#'
+#' # 2. Ajustar LDA com k=3 topicos (o corpus tem ~4 temas; k=3 for a experimentacao)
 #' lda <- ac_lda(corpus, k = 3)
-#' lda
+#' lda  # imprime resumo do modelo
 #' }
 #'
 #' @seealso [ac_lda_tune()], [ac_plot_lda_topics()]
@@ -155,6 +158,7 @@ print.ac_lda <- function(x, ...) {
 #'
 #' @examples
 #' \dontrun{
+#' # 1. Corpus sintetico (mesmos temas de ac_lda(), palavras diferentes)
 #' df <- data.frame(
 #'   id = paste0("d", 1:10),
 #'   texto = c(
@@ -171,6 +175,8 @@ print.ac_lda <- function(x, ...) {
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
+#'
+#' # 2. Testar k de 2 a 5 e comparar perplexidade (menor = melhor ajuste)
 #' tune <- ac_lda_tune(corpus, k_range = 2:5)
 #' tune
 #' }
@@ -229,7 +235,10 @@ ac_lda_tune <- function(corpus,
 #'
 #' @examples
 #' \dontrun{
+#' # Assumindo corpus preparado como em ?ac_lda
 #' lda <- ac_lda(corpus, k = 3)
+#'
+#' # Grafico com os 8 termos mais probabilisticos por topico
 #' ac_plot_lda_topics(lda, top_n = 8)
 #' }
 #'
@@ -299,6 +308,8 @@ ac_plot_lda_topics <- function(lda_result,
 #'
 #' @examples
 #' \dontrun{
+#' # Testar k de 2 a 10 e visualizar a curva de perplexidade
+#' # (ponto de inflexao/"cotovelo" sugere um bom k)
 #' tune <- ac_lda_tune(corpus, k_range = 2:10)
 #' ac_plot_lda_tune(tune)
 #' }

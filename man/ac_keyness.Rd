@@ -76,6 +76,7 @@ do grupo alvo e valores negativos termos mais caracteristicos do
 grupo de referencia.
 }
 \examples{
+# 1. Corpus fabricado com duas subamostras (Governo vs Oposicao)
 df <- data.frame(
   id    = c("d1", "d2", "d3", "d4"),
   texto = c(
@@ -88,9 +89,11 @@ df <- data.frame(
   stringsAsFactors = FALSE
 )
 
+# 2. Frequencias por grupo — insumo obrigatorio de ac_keyness()
 corp <- ac_corpus(df, text = texto, docid = id, meta = lado)
 freq <- ac_count(corp, by = "lado")
 
+# 3. Termos-chave: quais palavras sao sobre-representadas no grupo alvo
 key <- ac_keyness(freq, group = "lado", target = "Governo")
 
 }

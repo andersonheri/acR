@@ -47,6 +47,7 @@ Tibble com colunas:
 pontuações por documento e, opcionalmente, por grupo ou janela temporal.
 }
 \examples{
+# Corpus com um documento positivo, um negativo e um neutro
 df <- data.frame(
   id = c("a", "b", "c"),
   texto = c(
@@ -56,6 +57,8 @@ df <- data.frame(
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# Score por documento (soma de polaridade via OpLexicon PT-BR)
 ac_sentiment(corpus)
 
 }

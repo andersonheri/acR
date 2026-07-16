@@ -59,14 +59,20 @@ bibliograficas comuns quando a LLM opera sem fonte externa.
 }
 \examples{
 \dontrun{
+# Requer internet (busca no OpenAlex) e credenciais da LLM (para sintese)
+
+# Chat via Groq (plano gratuito com llama-3.3-70b)
 chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
 
+# Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma
 lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
   n_refs        = 5,
-  min_citations = 50,
+  min_citations = 50,  # filtra papers com pouca reverberacao
   chat          = chat_obj
 )
+
+# Colunas principais do resultado
 print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
 }
 

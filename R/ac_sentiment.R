@@ -33,6 +33,7 @@
 #' *STIL/SBC*.
 #'
 #' @examples
+#' # Corpus com um documento positivo, um negativo e um neutro
 #' df <- data.frame(
 #'   id = c("a", "b", "c"),
 #'   texto = c(
@@ -42,6 +43,8 @@
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
+#'
+#' # Score por documento (soma de polaridade via OpLexicon PT-BR)
 #' ac_sentiment(corpus)
 #'
 #' @seealso [ac_plot_sentiment()]
@@ -183,6 +186,7 @@ ac_sentiment <- function(corpus,
 #' @return Objeto `ggplot`.
 #'
 #' @examples
+#' # Corpus com quatro documentos de valencias distintas
 #' df <- data.frame(
 #'   id = c("a", "b", "c", "d"),
 #'   texto = c(
@@ -193,6 +197,8 @@ ac_sentiment <- function(corpus,
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
+#'
+#' # Calcular scores e visualizar em barras (positivo/neutro/negativo por doc)
 #' sent <- ac_sentiment(corpus)
 #' ac_plot_sentiment(sent)
 #'

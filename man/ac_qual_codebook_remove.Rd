@@ -19,6 +19,7 @@ Objeto \code{ac_codebook} atualizado.
 \code{ac_codebook} existente.
 }
 \examples{
+# Codebook com 3 categorias
 cb <- ac_qual_codebook(
   name         = "tom",
   instructions = "Classifique o tom.",
@@ -28,8 +29,10 @@ cb <- ac_qual_codebook(
     neutro   = list(definition = "Tom neutro.")
   )
 )
+
+# Remover a categoria "neutro" (aceita tambem um vetor de nomes)
 cb <- ac_qual_codebook_remove(cb, "neutro")
-names(cb$categories)
+names(cb$categories)  # "positivo" "negativo"
 
 }
 \seealso{

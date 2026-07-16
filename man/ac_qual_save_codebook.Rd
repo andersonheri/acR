@@ -9,11 +9,36 @@ ac_qual_save_codebook(codebook, path = NULL, ...)
 \arguments{
 \item{codebook}{Objeto \code{ac_codebook}.}
 
-\item{path}{Caminho do arquivo \code{.yaml}.}
+\item{path}{Caminho do arquivo \code{.yaml}. Se \code{NULL}, deriva do nome do codebook.}
 
 \item{...}{Ignorado.}
 }
+\value{
+Invisivel: caminho do arquivo gerado.
+}
 \description{
-Salvar codebook em arquivo YAML
+Serializa um objeto \code{ac_codebook} em disco no formato YAML, preservando
+instrucoes, categorias, exemplos, referencias e historico de modificacoes.
+YAML foi escolhido por ser legivel por humanos e versionavel em Git.
+}
+\examples{
+# Criar um codebook simples
+cb <- ac_qual_codebook(
+  name         = "tom_discurso",
+  instructions = "Classifique o tom do discurso.",
+  categories   = list(
+    positivo = list(definition = "Tom propositivo e colaborativo."),
+    negativo = list(definition = "Tom critico e confrontacional.")
+  )
+)
+
+# Salvar em arquivo temporario (usar caminho real fora de exemplos)
+arquivo <- tempfile(fileext = ".yaml")
+ac_qual_save_codebook(cb, path = arquivo)
+
+# Reabrir para conferir
+cb_recarregado <- ac_qual_load_codebook(arquivo)
+identical(cb$categories, cb_recarregado$categories)
+
 }
 \concept{qualitative}

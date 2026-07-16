@@ -46,6 +46,8 @@
 #' manual de aplicação*. Brasília: ENAP.
 #'
 #' @examples
+#' # Codebook manual com duas categorias, cada uma com exemplos positivos
+#' # (o que E) e negativos (o que NAO e, para desambiguar categorias vizinhas)
 #' cb <- ac_qual_codebook(
 #'   name         = "tom_discurso",
 #'   instructions = "Classifique o tom geral do discurso.",
@@ -54,7 +56,7 @@
 #'       definition   = "Discurso com tom propositivo e colaborativo.",
 #'       examples_pos = c("Proponho que trabalhemos juntos nesta agenda."),
 #'       examples_neg = c("Este governo e um desastre completo."),
-#'       weight       = 1
+#'       weight       = 1  # peso relativo no prompt; use >1 para priorizar
 #'     ),
 #'     negativo = list(
 #'       definition   = "Discurso com tom critico ou confrontacional.",
@@ -64,7 +66,7 @@
 #'     )
 #'   )
 #' )
-#' cb
+#' cb  # imprime resumo do codebook
 #'
 #' @concept qualitative
 #' @export
@@ -179,6 +181,7 @@ ac_qual_codebook <- function(name,
 #' @return Objeto `ac_codebook` atualizado.
 #'
 #' @examples
+#' # Codebook inicial com 2 categorias
 #' cb <- ac_qual_codebook(
 #'   name         = "tom",
 #'   instructions = "Classifique o tom.",
@@ -188,13 +191,14 @@ ac_qual_codebook <- function(name,
 #'   )
 #' )
 #'
+#' # Adicionar uma terceira categoria (nome do argumento vira nome da categoria)
 #' cb <- ac_qual_codebook_add(cb,
 #'   neutro = list(
 #'     definition   = "Tom neutro, sem posicionamento claro.",
 #'     examples_pos = c("O projeto foi apresentado na sessao de hoje.")
 #'   )
 #' )
-#' names(cb$categories)
+#' names(cb$categories)  # "positivo" "negativo" "neutro"
 #'
 #' @seealso [ac_qual_codebook()], [ac_qual_codebook_remove()]
 #' @concept qualitative
@@ -241,6 +245,7 @@ ac_qual_codebook_add <- function(codebook, ...) {
 #' @return Objeto `ac_codebook` atualizado.
 #'
 #' @examples
+#' # Codebook com 3 categorias
 #' cb <- ac_qual_codebook(
 #'   name         = "tom",
 #'   instructions = "Classifique o tom.",
@@ -250,8 +255,10 @@ ac_qual_codebook_add <- function(codebook, ...) {
 #'     neutro   = list(definition = "Tom neutro.")
 #'   )
 #' )
+#'
+#' # Remover a categoria "neutro" (aceita tambem um vetor de nomes)
 #' cb <- ac_qual_codebook_remove(cb, "neutro")
-#' names(cb$categories)
+#' names(cb$categories)  # "positivo" "negativo"
 #'
 #' @seealso [ac_qual_codebook()], [ac_qual_codebook_add()]
 #' @concept qualitative
@@ -343,9 +350,36 @@ summary.ac_codebook <- function(object, ...) {
 # ============================================================================
 
 #' Salvar codebook em arquivo YAML
+#'
+#' Serializa um objeto `ac_codebook` em disco no formato YAML, preservando
+#' instrucoes, categorias, exemplos, referencias e historico de modificacoes.
+#' YAML foi escolhido por ser legivel por humanos e versionavel em Git.
+#'
 #' @param codebook Objeto `ac_codebook`.
-#' @param path Caminho do arquivo `.yaml`.
+#' @param path Caminho do arquivo `.yaml`. Se `NULL`, deriva do nome do codebook.
 #' @param ... Ignorado.
+#'
+#' @return Invisivel: caminho do arquivo gerado.
+#'
+#' @examples
+#' # Criar um codebook simples
+#' cb <- ac_qual_codebook(
+#'   name         = "tom_discurso",
+#'   instructions = "Classifique o tom do discurso.",
+#'   categories   = list(
+#'     positivo = list(definition = "Tom propositivo e colaborativo."),
+#'     negativo = list(definition = "Tom critico e confrontacional.")
+#'   )
+#' )
+#'
+#' # Salvar em arquivo temporario (usar caminho real fora de exemplos)
+#' arquivo <- tempfile(fileext = ".yaml")
+#' ac_qual_save_codebook(cb, path = arquivo)
+#'
+#' # Reabrir para conferir
+#' cb_recarregado <- ac_qual_load_codebook(arquivo)
+#' identical(cb$categories, cb_recarregado$categories)
+#'
 #' @export
 #' @concept qualitative
 ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
@@ -386,8 +420,33 @@ ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
 
 
 #' Carregar codebook de arquivo YAML
+#'
+#' Le um arquivo YAML gerado por [ac_qual_save_codebook()] e reconstroi
+#' o objeto `ac_codebook` na sessao atual. Uso tipico: retomar uma analise
+#' iniciada em outra sessao ou por outro pesquisador.
+#'
 #' @param path Caminho do arquivo `.yaml`.
 #' @param ... Ignorado.
+#'
+#' @return Objeto `ac_codebook`.
+#'
+#' @examples
+#' # Preparar um codebook e salvar em arquivo temporario
+#' cb <- ac_qual_codebook(
+#'   name         = "polaridade",
+#'   instructions = "Classifique a polaridade do texto.",
+#'   categories   = list(
+#'     favor   = list(definition = "Apoia a proposta."),
+#'     contra  = list(definition = "Opoe-se a proposta.")
+#'   )
+#' )
+#' arquivo <- tempfile(fileext = ".yaml")
+#' ac_qual_save_codebook(cb, path = arquivo)
+#'
+#' # Recarregar em outra sessao
+#' cb_novo <- ac_qual_load_codebook(arquivo)
+#' names(cb_novo$categories)  # "favor" "contra"
+#'
 #' @export
 #' @concept qualitative
 ac_qual_load_codebook <- function(path, ...) {
@@ -886,6 +945,32 @@ ac_qual_load_codebook <- function(path, ...) {
 #'
 #' @return Objeto `ac_codebook` com definições atualizadas e literatura anexada.
 #'
+#' @examples
+#' \dontrun{
+#' # Requer conexao com a internet + credenciais da LLM (ANTHROPIC_API_KEY).
+#'
+#' # 1. Codebook manual como ponto de partida
+#' cb <- ac_qual_codebook(
+#'   name         = "populismo",
+#'   instructions = "Identifique tom populista no discurso.",
+#'   categories   = list(
+#'     populista     = list(definition = "Apela ao povo contra a elite."),
+#'     nao_populista = list(definition = "Discurso tecnico ou institucional.")
+#'   )
+#' )
+#'
+#' # 2. Enriquecer com literatura: busca 3 refs por categoria e reescreve
+#' #    as definicoes com base na literatura recuperada
+#' cb_ancorado <- ac_qual_codebook_hybrid(
+#'   codebook = cb,
+#'   n_refs   = 3L,
+#'   lang     = "pt"
+#' )
+#'
+#' # 3. Inspecionar as referencias anexadas a cada categoria
+#' cb_ancorado$categories$populista$references
+#' }
+#'
 #' @concept qualitative
 #' @export
 ac_qual_codebook_hybrid <- function(codebook, chat=NULL, model='anthropic/claude-sonnet-4-5', concepts=NULL, journals='default', n_refs=3L, lang='pt') {
@@ -916,6 +1001,24 @@ ac_qual_codebook_hybrid <- function(codebook, chat=NULL, model='anthropic/claude
 #'
 #' @return Tibble com colunas `timestamp`, `action` e `detail` (invisível).
 #'
+#' @examples
+#' # Criar codebook e aplicar duas modificacoes
+#' cb <- ac_qual_codebook(
+#'   name         = "sentimento",
+#'   instructions = "Classifique o sentimento.",
+#'   categories   = list(
+#'     positivo = list(definition = "Sentimento positivo."),
+#'     negativo = list(definition = "Sentimento negativo.")
+#'   )
+#' )
+#' cb <- ac_qual_codebook_add(cb,
+#'   neutro = list(definition = "Sem valencia clara.")
+#' )
+#' cb <- ac_qual_codebook_remove(cb, "neutro")
+#'
+#' # Ver historico completo de acoes registradas
+#' ac_qual_codebook_history(cb)
+#'
 #' @concept qualitative
 #' @export
 ac_qual_codebook_history <- function(codebook, n=Inf) {
@@ -940,6 +1043,21 @@ ac_qual_codebook_history <- function(codebook, n=Inf) {
 #' @param ... Argumentos adicionais passados ao método.
 #'
 #' @return String com o system prompt (invisível).
+#'
+#' @examples
+#' # Codebook base
+#' cb <- ac_qual_codebook(
+#'   name         = "tom",
+#'   instructions = "Classifique o tom do texto.",
+#'   categories   = list(
+#'     formal   = list(definition = "Linguagem tecnica e impessoal."),
+#'     informal = list(definition = "Linguagem coloquial ou emotiva.")
+#'   )
+#' )
+#'
+#' # Gerar o system prompt para uso direto com objetos Chat do ellmer
+#' prompt <- as_prompt(cb, reasoning = TRUE, reasoning_length = "short")
+#' substr(prompt, 1, 200)  # inspecionar o comeco do prompt
 #'
 #' @concept qualitative
 #' @export
@@ -979,6 +1097,29 @@ as_prompt.ac_codebook <- function(x, reasoning=TRUE, reasoning_length=c('short',
 #'
 #' @return Objeto `ac_codebook` fundido.
 #'
+#' @examples
+#' # Dois codebooks pequenos que cobrem dimensoes distintas
+#' cb_tom <- ac_qual_codebook(
+#'   name         = "tom",
+#'   instructions = "Classifique o tom.",
+#'   categories   = list(
+#'     positivo = list(definition = "Tom positivo."),
+#'     negativo = list(definition = "Tom negativo.")
+#'   )
+#' )
+#' cb_estilo <- ac_qual_codebook(
+#'   name         = "estilo",
+#'   instructions = "Classifique o estilo retorico.",
+#'   categories   = list(
+#'     pathos = list(definition = "Apelo emocional."),
+#'     logos  = list(definition = "Apelo racional.")
+#'   )
+#' )
+#'
+#' # Fundir em um unico codebook com 4 categorias
+#' cb <- ac_qual_codebook_merge(cb_tom, cb_estilo, name = "tom_estilo")
+#' names(cb$categories)  # "positivo" "negativo" "pathos" "logos"
+#'
 #' @concept qualitative
 #' @export
 ac_qual_codebook_merge <- function(cb1, cb2, name=NULL, on_conflict=c('error','keep_first','keep_second','rename_second'), instructions=NULL) {
@@ -1011,6 +1152,27 @@ ac_qual_codebook_merge <- function(cb1, cb2, name=NULL, on_conflict=c('error','k
 #' @param translate_examples Se `TRUE` (padrão), traduz também os exemplos.
 #'
 #' @return Objeto `ac_codebook` traduzido.
+#'
+#' @examples
+#' \dontrun{
+#' # Requer credenciais da LLM (ANTHROPIC_API_KEY ou GROQ_API_KEY).
+#'
+#' cb_pt <- ac_qual_codebook(
+#'   name         = "polaridade",
+#'   instructions = "Classifique a polaridade do texto.",
+#'   categories   = list(
+#'     favor  = list(definition = "Apoia a proposta.",
+#'                   examples_pos = "Sou totalmente a favor desta reforma."),
+#'     contra = list(definition = "Opoe-se a proposta.",
+#'                   examples_pos = "Esta proposta e um retrocesso.")
+#'   )
+#' )
+#'
+#' # Traduzir para ingles preservando estrutura e exemplos
+#' cb_en <- ac_qual_codebook_translate(cb_pt, to = "en")
+#' cb_en$lang  # "en"
+#' cb_en$categories$favor$definition
+#' }
 #'
 #' @concept qualitative
 #' @export

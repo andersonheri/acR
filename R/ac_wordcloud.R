@@ -31,12 +31,14 @@
 #' invisivelmente a tabela usada no desenho.
 #'
 #' @examples
+#' # Corpus minimo (usando so as letras A, B, C como tokens)
 #' df <- data.frame(
 #'   id    = c("d1", "d2", "d3"),
 #'   texto = c("A A B", "B C", "A C"),
 #'   stringsAsFactors = FALSE
 #' )
 #'
+#' # Frequencia -> nuvem (requer pacote wordcloud instalado)
 #' corp <- ac_corpus(df, text = texto, docid = id)
 #' freq <- ac_count(corp)
 #'

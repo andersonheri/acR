@@ -29,4 +29,22 @@ Tibble com colunas \code{doc_id} e \code{categoria}.
 codificador humano, retornando um tibble compatível com
 \code{\link[=ac_qual_reliability]{ac_qual_reliability()}}.
 }
+\examples{
+if (requireNamespace("openxlsx", quietly = TRUE)) {
+  # Simular uma planilha ja preenchida pelo codificador humano
+  arquivo <- tempfile(fileext = ".xlsx")
+  openxlsx::write.xlsx(
+    data.frame(
+      doc_id           = paste0("doc_", 1:3),
+      categoria_humano = c("favor", "contra", "favor")
+    ),
+    arquivo
+  )
+
+  # Importar de volta para o R para uso com ac_qual_reliability()
+  humano <- ac_qual_import_human(arquivo)
+  humano
+}
+
+}
 \concept{qualitative}

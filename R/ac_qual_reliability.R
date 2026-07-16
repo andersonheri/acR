@@ -29,10 +29,25 @@
 #' for Categorical Data. *Biometrics*, 33(1), 159-174.
 #'
 #' @examples
-#' \dontrun{
-#' rel <- ac_qual_reliability(llm = coded, human = humano_df)
+#' # Simular saidas: LLM (coded) e revisao humana (humano_df)
+#' # ambos com as colunas doc_id + categoria
+#' coded <- tibble::tibble(
+#'   doc_id    = paste0("d", 1:5),
+#'   categoria = c("favor", "contra", "favor", "contra", "favor")
+#' )
+#' humano_df <- tibble::tibble(
+#'   doc_id    = paste0("d", 1:5),
+#'   categoria = c("favor", "contra", "contra", "contra", "favor")
+#' )
+#'
+#' # Calcular metricas de confiabilidade (bootstrap curto so para demonstrar;
+#' # em uso real, deixe o padrao de 1000 replicas)
+#' rel <- ac_qual_reliability(
+#'   llm       = coded,
+#'   human     = humano_df,
+#'   bootstrap = 50
+#' )
 #' print(rel)
-#' }
 #'
 #' @concept qualitative
 #' @export
@@ -193,6 +208,21 @@ ac_qual_reliability <- function(llm,
 #' @return Tibble com os documentos selecionados, incluindo uma coluna
 #'   `sample_reason` indicando por que cada documento foi selecionado.
 #'
+#' @examples
+#' # Simular saida de ac_qual_code() com 20 documentos ja classificados
+#' set.seed(1)
+#' coded <- tibble::tibble(
+#'   doc_id           = paste0("doc_", 1:20),
+#'   categoria        = sample(c("favor", "contra"), 20, replace = TRUE),
+#'   confidence_score = runif(20, 0.5, 1.0)
+#' )
+#'
+#' # Priorizar casos mais incertos para revisao humana
+#' ac_qual_sample(coded, n = 5, strategy = "uncertainty")
+#'
+#' # Garantir cobertura proporcional das duas categorias
+#' ac_qual_sample(coded, n = 6, strategy = "stratified")
+#'
 #' @concept qualitative
 #' @export
 ac_qual_sample <- function(coded,
@@ -285,6 +315,23 @@ ac_qual_sample <- function(coded,
 #' @param ... Ignorado.
 #'
 #' @return Invisível: caminho do arquivo gerado.
+#'
+#' @examples
+#' if (requireNamespace("openxlsx", quietly = TRUE)) {
+#'   # Amostra de documentos ja classificados pela LLM
+#'   coded <- tibble::tibble(
+#'     doc_id           = paste0("doc_", 1:5),
+#'     categoria        = c("favor", "contra", "favor", "contra", "favor"),
+#'     confidence_score = c(0.6, 0.9, 0.8, 0.7, 0.55)
+#'   )
+#'   amostra <- ac_qual_sample(coded, n = 3, strategy = "uncertainty")
+#'
+#'   # Exportar para revisao humana em arquivo temporario
+#'   arquivo <- tempfile(fileext = ".xlsx")
+#'   ac_qual_export_for_review(amostra, path = arquivo)
+#'   file.exists(arquivo)
+#' }
+#'
 #' @concept qualitative
 #' @export
 ac_qual_export_for_review <- function(sample,
@@ -363,6 +410,24 @@ ac_qual_export_for_review <- function(sample,
 #' @param ... Ignorado.
 #'
 #' @return Tibble com colunas `doc_id` e `categoria`.
+#'
+#' @examples
+#' if (requireNamespace("openxlsx", quietly = TRUE)) {
+#'   # Simular uma planilha ja preenchida pelo codificador humano
+#'   arquivo <- tempfile(fileext = ".xlsx")
+#'   openxlsx::write.xlsx(
+#'     data.frame(
+#'       doc_id           = paste0("doc_", 1:3),
+#'       categoria_humano = c("favor", "contra", "favor")
+#'     ),
+#'     arquivo
+#'   )
+#'
+#'   # Importar de volta para o R para uso com ac_qual_reliability()
+#'   humano <- ac_qual_import_human(arquivo)
+#'   humano
+#' }
+#'
 #' @concept qualitative
 #' @export
 ac_qual_import_human <- function(path,

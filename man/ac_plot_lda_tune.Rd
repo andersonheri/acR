@@ -23,6 +23,8 @@ ideal para o modelo LDA.
 }
 \examples{
 \dontrun{
+# Testar k de 2 a 10 e visualizar a curva de perplexidade
+# (ponto de inflexao/"cotovelo" sugere um bom k)
 tune <- ac_lda_tune(corpus, k_range = 2:10)
 ac_plot_lda_tune(tune)
 }

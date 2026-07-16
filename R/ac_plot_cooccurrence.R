@@ -19,6 +19,7 @@
 #' @return Objeto `ggplot`.
 #'
 #' @examples
+#' # 1. Corpus pequeno de tres documentos
 #' df <- data.frame(
 #'   id = c("d1", "d2", "d3"),
 #'   texto = c(
@@ -27,8 +28,12 @@
 #'     "cidadania direitos participacao"
 #'   )
 #' )
+#'
+#' # 2. Calcular co-ocorrencias de termos
 #' corpus <- ac_corpus(df, text = texto, docid = id) |> ac_clean()
 #' cooc <- ac_cooccurrence(ac_tokenize(corpus), min_count = 1)
+#'
+#' # 3. Rede visualizada com ggraph (dependencia opcional)
 #' if (requireNamespace("ggraph", quietly = TRUE)) {
 #'   ac_plot_cooccurrence(cooc)
 #' }

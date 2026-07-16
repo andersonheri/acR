@@ -22,6 +22,7 @@ já criado, sem precisar recriar o objeto do zero. Útil para refinamento
 iterativo do codebook durante a análise.
 }
 \examples{
+# Codebook inicial com 2 categorias
 cb <- ac_qual_codebook(
   name         = "tom",
   instructions = "Classifique o tom.",
@@ -31,13 +32,14 @@ cb <- ac_qual_codebook(
   )
 )
 
+# Adicionar uma terceira categoria (nome do argumento vira nome da categoria)
 cb <- ac_qual_codebook_add(cb,
   neutro = list(
     definition   = "Tom neutro, sem posicionamento claro.",
     examples_pos = c("O projeto foi apresentado na sessao de hoje.")
   )
 )
-names(cb$categories)
+names(cb$categories)  # "positivo" "negativo" "neutro"
 
 }
 \seealso{

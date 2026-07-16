@@ -37,4 +37,31 @@ Objeto \code{ac_codebook} com definições atualizadas e literatura anexada.
 existente em referências bibliográficas buscadas via LLM, combinando
 definições manuais com fundamento teórico induzido da literatura.
 }
+\examples{
+\dontrun{
+# Requer conexao com a internet + credenciais da LLM (ANTHROPIC_API_KEY).
+
+# 1. Codebook manual como ponto de partida
+cb <- ac_qual_codebook(
+  name         = "populismo",
+  instructions = "Identifique tom populista no discurso.",
+  categories   = list(
+    populista     = list(definition = "Apela ao povo contra a elite."),
+    nao_populista = list(definition = "Discurso tecnico ou institucional.")
+  )
+)
+
+# 2. Enriquecer com literatura: busca 3 refs por categoria e reescreve
+#    as definicoes com base na literatura recuperada
+cb_ancorado <- ac_qual_codebook_hybrid(
+  codebook = cb,
+  n_refs   = 3L,
+  lang     = "pt"
+)
+
+# 3. Inspecionar as referencias anexadas a cada categoria
+cb_ancorado$categories$populista$references
+}
+
+}
 \concept{qualitative}

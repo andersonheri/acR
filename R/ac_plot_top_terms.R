@@ -24,6 +24,7 @@
 #' @return Um objeto `ggplot`.
 #'
 #' @examples
+#' # 1. Corpus curto com metadado de partido
 #' df <- data.frame(
 #'   id      = c("d1", "d2", "d3"),
 #'   texto   = c(
@@ -34,12 +35,13 @@
 #'   partido = c("PT", "PL", "PT"),
 #'   stringsAsFactors = FALSE
 #' )
-#'
 #' corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
 #'
+#' # 2. Top 10 termos do corpus inteiro
 #' freq <- ac_count(corp)
 #' ac_plot_top_terms(freq, n = 10)
 #'
+#' # 3. Top 5 termos POR partido (facets)
 #' freq_by <- ac_count(corp, by = "partido")
 #' ac_plot_top_terms(freq_by, by = "partido", n = 5)
 #'

@@ -31,4 +31,28 @@ Objeto \code{ac_codebook} fundido.
 \code{ac_qual_codebook_merge()} combina as categorias de dois objetos \code{ac_codebook}
 em um único codebook, com controle de conflitos de nomes.
 }
+\examples{
+# Dois codebooks pequenos que cobrem dimensoes distintas
+cb_tom <- ac_qual_codebook(
+  name         = "tom",
+  instructions = "Classifique o tom.",
+  categories   = list(
+    positivo = list(definition = "Tom positivo."),
+    negativo = list(definition = "Tom negativo.")
+  )
+)
+cb_estilo <- ac_qual_codebook(
+  name         = "estilo",
+  instructions = "Classifique o estilo retorico.",
+  categories   = list(
+    pathos = list(definition = "Apelo emocional."),
+    logos  = list(definition = "Apelo racional.")
+  )
+)
+
+# Fundir em um unico codebook com 4 categorias
+cb <- ac_qual_codebook_merge(cb_tom, cb_estilo, name = "tom_estilo")
+names(cb$categories)  # "positivo" "negativo" "pathos" "logos"
+
+}
 \concept{qualitative}

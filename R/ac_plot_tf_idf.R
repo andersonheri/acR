@@ -24,6 +24,7 @@
 #' @return Um objeto `ggplot`.
 #'
 #' @examples
+#' # 1. Corpus de 3 discursos com metadado de partido
 #' df <- data.frame(
 #'   id      = c("d1", "d2", "d3"),
 #'   texto   = c(
@@ -35,10 +36,12 @@
 #'   stringsAsFactors = FALSE
 #' )
 #'
-#' corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
-#'
-#' freq <- ac_count(corp)
+#' # 2. Pipeline padrao: corpus -> frequencia -> tf-idf
+#' corp  <- ac_corpus(df, text = texto, docid = id, meta = partido)
+#' freq  <- ac_count(corp)
 #' tfidf <- ac_tf_idf(freq)
+#'
+#' # 3. Grafico dos 10 termos com maior tf-idf (mais distintivos)
 #' ac_plot_tf_idf(tfidf, n = 10)
 #'
 #' freq_by <- ac_count(corp, by = "partido")

@@ -37,6 +37,7 @@ cada grupo em lados opostos. Usa TF-IDF para identificar os termos
 mais distintivos de cada grupo.
 }
 \examples{
+# Corpus dividido em dois grupos com vocabulario contrastante
 df <- data.frame(
   id     = paste0("d", 1:6),
   texto  = c(
@@ -50,6 +51,8 @@ df <- data.frame(
   grupo = c("A","A","A","B","B","B")
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# Nuvem comparativa: termos distintivos de cada grupo
 ac_plot_wordcloud_comparative(corpus, group = grupo)
 
 }
