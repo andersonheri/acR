@@ -48,5 +48,4 @@ Useful links:
 ## Author
 
 **Maintainer**: Anderson Henrique <anderson.henrique@usp.br>
-([ORCID](https://orcid.org/0000-0002-1842-2725)) (Centro de Estudos da
-Metropole (CEM-Cepid) - Universidade de Sao Paulo)
+([ORCID](https://orcid.org/0000-0002-1842-2725))
