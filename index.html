@@ -371,7 +371,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="cobertura-de-testes">Cobertura de testes<a class="anchor" aria-label="anchor" href="#cobertura-de-testes"></a>
 </h2>
-<p>Suite de 541 testes unitários e de integração, cobrindo <strong>56%</strong> do código. Testes de integração com APIs externas usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade.</p>
+<p>Suite de <strong>360 blocos <code>test_that</code></strong> com 655 assertions, cobrindo <strong>~55%</strong> do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
 <hr>
 </div>
 <div class="section level2">
