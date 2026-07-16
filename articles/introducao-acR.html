@@ -88,103 +88,158 @@
 
     
     
+<p>Esta vignette percorre o pipeline completo do <code>acR</code> em um
+exemplo pequeno mas realista — discursos parlamentares favoráveis e
+contrários a uma reforma — mostrando o <em>output</em> efetivo de cada
+etapa. Se você prefere um tour de 5 minutos com só o essencial, veja o
+<strong><a href="quickstart.html">Quickstart</a></strong>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="objetivo">Objetivo<a class="anchor" aria-label="anchor" href="#objetivo"></a>
+<h2 id="o-objeto-central-ac_corpus">O objeto central: <code>ac_corpus</code><a class="anchor" aria-label="anchor" href="#o-objeto-central-ac_corpus"></a>
 </h2>
-<p>O <code>acR</code> integra, em um único fluxo reprodutível, a análise
-quantitativa clássica de texto (frequências, <em>keyness</em>,
-coocorrência, LDA, sentimento) e a codificação qualitativa assistida por
-modelos de linguagem (LLMs) via <code>ellmer</code>. Esta vignette
-apresenta o caminho mínimo do dado bruto ao resultado, usando apenas
-funções que rodam sem chave de API. O módulo de LLM é demonstrado ao
-final, com execução desativada.</p>
-<p>O objeto central é o <code>ac_corpus</code>, um <code>tibble</code>
-com colunas padronizadas <code>doc_id</code> e <code>text</code>, sobre
-o qual todas as demais funções operam.</p>
-</div>
-<div class="section level2">
-<h2 id="construir-um-corpus">1. Construir um corpus<a class="anchor" aria-label="anchor" href="#construir-um-corpus"></a>
-</h2>
+<p>Tudo no <code>acR</code> gira em torno do <code>ac_corpus</code>, um
+<code>tibble</code> com colunas padronizadas <code>doc_id</code> e
+<code>text</code> que carrega quaisquer metadados adicionais. As demais
+funções aceitam esse objeto diretamente.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  id      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d1"</span>, <span class="st">"d2"</span>, <span class="st">"d3"</span>, <span class="st">"d4"</span><span class="op">)</span>,</span>
+<span>  id      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>,</span>
 <span>  texto   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"O deputado do PT defendeu a reforma na CCJ."</span>,</span>
-<span>    <span class="st">"O deputado do PL criticou a reforma novamente."</span>,</span>
-<span>    <span class="st">"A senadora do PT relatou o projeto na comissão."</span>,</span>
-<span>    <span class="st">"O senador do PL obstruiu a votação do projeto."</span></span>
+<span>    <span class="st">"Sou favoravel a reforma tributaria: simplifica o sistema e reduz distorcoes."</span>,</span>
+<span>    <span class="st">"Voto contra: essa reforma vai destruir o setor produtivo brasileiro."</span>,</span>
+<span>    <span class="st">"Apoio a proposta com forte adesao, ha ganhos claros de eficiencia arrecadatoria."</span>,</span>
+<span>    <span class="st">"Rejeito o texto: transfere renda das familias para grandes corporacoes."</span>,</span>
+<span>    <span class="st">"Defendo a reforma que corrige as distorcoes historicas do nosso sistema."</span>,</span>
+<span>    <span class="st">"Somos contrarios: o projeto beneficia apenas os mais ricos do pais."</span>,</span>
+<span>    <span class="st">"Voto sim, precisamos modernizar urgentemente a estrutura tributaria."</span>,</span>
+<span>    <span class="st">"Voto nao, os pequenos empresarios serao os grandes prejudicados."</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>, <span class="st">"PL"</span>, <span class="st">"PT"</span>, <span class="st">"PL"</span><span class="op">)</span>,</span>
+<span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>,<span class="st">"PL"</span>,<span class="st">"PT"</span>,<span class="st">"PL"</span>,<span class="st">"PT"</span>,<span class="st">"PL"</span>,<span class="st">"PT"</span>,<span class="st">"PL"</span><span class="op">)</span>,</span>
+<span>  posicao <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">partido</span><span class="op">)</span></span>
-<span><span class="va">corp</span></span>
+<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">partido</span>, <span class="va">posicao</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">corpus</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Metadados: <span style="color: #0000BB;">1</span> coluna</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Metadados: <span style="color: #0000BB;">2</span> colunas</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
-<span><span class="co">#&gt;   doc_id text                                            partido</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1     O deputado do PT defendeu a reforma na CCJ.     PT     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d2     O deputado do PL criticou a reforma novamente.  PL     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3     A senadora do PT relatou o projeto na comissão. PT     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4     O senador do PL obstruiu a votação do projeto.  PL</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 4</span></span></span>
+<span><span class="co">#&gt;   doc_id text                                                    partido posicao</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1     Sou favoravel a reforma tributaria: simplifica o siste… PT      favor  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d2     Voto contra: essa reforma vai destruir o setor produti… PL      contra </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3     Apoio a proposta com forte adesao, ha ganhos claros de… PT      favor  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4     Rejeito o texto: transfere renda das familias para gra… PL      contra </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> d5     Defendo a reforma que corrige as distorcoes historicas… PT      favor  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> d6     Somos contrarios: o projeto beneficia apenas os mais r… PL      contra </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="frequências-e-termos-mais-salientes">2. Frequências e termos mais salientes<a class="anchor" aria-label="anchor" href="#frequ%C3%AAncias-e-termos-mais-salientes"></a>
+<h2 id="frequências-e-termos-salientes">1. Frequências e termos salientes<a class="anchor" aria-label="anchor" href="#frequ%C3%AAncias-e-termos-salientes"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Frequência de unigramas no corpus inteiro</span></span>
-<span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Frequência global</span></span>
+<span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">freq</span>, n <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 34 × 3</span></span></span>
-<span><span class="co">#&gt;    doc_id token     n</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> d4     do        2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> d3     A         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> d1     CCJ.      1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> d1     O         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> d2     O         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> d4     O         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> d2     PL        1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> d4     PL        1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> d1     PT        1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> d3     PT        1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24 more rows</span></span></span>
-<span></span>
-<span><span class="co"># Frequência por partido</span></span>
-<span><span class="va">freq_partido</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">freq_partido</span>, n <span class="op">=</span> <span class="fl">5</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 27 × 3</span></span></span>
-<span><span class="co">#&gt;    partido token          n</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> PL      do             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> PL      O              2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> PL      PL             2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> PL      a              2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> PL      criticou       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> PL      deputado       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> PL      novamente.     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> PL      obstruiu       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PL      projeto.       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> PL      reforma        1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 17 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 81 × 3</span></span></span>
+<span><span class="co">#&gt;    doc_id token       n</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> d8     os          2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> d3     Apoio       1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> d5     Defendo     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> d4     Rejeito     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> d6     Somos       1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> d1     Sou         1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> d2     Voto        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> d7     Voto        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> d8     Voto        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> d1     a           1</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 71 more rows</span></span></span></code></pre></div>
+<p>Agora quebrando por lado (<code>favor</code> vs
+<code>contra</code>):</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">freq_lado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus</span>, by <span class="op">=</span> <span class="st">"posicao"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">freq_lado</span>, n <span class="op">=</span> <span class="fl">5</span>, by <span class="op">=</span> <span class="st">"posicao"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 72 × 3</span></span></span>
+<span><span class="co">#&gt;    posicao token           n</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> contra  o               3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> contra  os              3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> contra  Voto            2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> contra  grandes         2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> contra  Rejeito         1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> contra  Somos           1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> contra  apenas          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> contra  beneficia       1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> contra  brasileiro.     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> contra  contra:         1</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 62 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="escolher-um-modelo-llm-para-a-etapa-qualitativa">3. Escolher um modelo LLM para a etapa qualitativa<a class="anchor" aria-label="anchor" href="#escolher-um-modelo-llm-para-a-etapa-qualitativa"></a>
+<h2 id="termos-distintivos-com-keyness">2. Termos distintivos com <em>keyness</em><a class="anchor" aria-label="anchor" href="#termos-distintivos-com-keyness"></a>
 </h2>
-<p>Antes de codificar qualitativamente, o <code>acR</code> ajuda a
-selecionar um modelo adequado ao orçamento e ao idioma do corpus. A
-consulta usa um banco interno curado e funciona offline.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Modelos recomendados para classificação em português, orçamento médio</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>task <span class="op">=</span> <span class="st">"coding"</span>, budget <span class="op">=</span> <span class="st">"medium"</span>, lang <span class="op">=</span> <span class="st">"pt"</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<p>Quais palavras aparecem <strong>muito mais</strong> em um grupo do
+que no outro? A métrica <code>chi2</code> (χ²) mede essa
+distintividade.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_keyness.html">ac_keyness</a></span><span class="op">(</span><span class="va">freq_lado</span>, group <span class="op">=</span> <span class="st">"posicao"</span>, target <span class="op">=</span> <span class="st">"favor"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">key</span>, <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 10</span></span></span>
+<span><span class="co">#&gt;   token group target reference n_target n_reference total_target total_reference</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> a     posi… favor  contra           4           0           42              40</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Apoio posi… favor  contra           1           0           42              40</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Defe… posi… favor  contra           1           0           42              40</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Sou   posi… favor  contra           1           0           42              40</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ades… posi… favor  contra           1           0           42              40</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> arre… posi… favor  contra           1           0           42              40</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: keyness &lt;dbl&gt;, direction &lt;chr&gt;</span></span></span></code></pre></div>
+<p>Visualização compacta dos termos mais distintivos:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/ac_plot_keyness.html">ac_plot_keyness</a></span><span class="op">(</span><span class="va">key</span>, n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="introducao-acR_files/figure-html/plot-keyness-1.png" class="r-plt" alt="" width="840" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="sentimento-por-documento-oplexicon">3. Sentimento por documento (OpLexicon)<a class="anchor" aria-label="anchor" href="#sentimento-por-documento-oplexicon"></a>
+</h2>
+<p>Escore agregado de polaridade de cada documento, usando o léxico
+OpLexicon (Souza e Vieira, 2012):</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
+<span><span class="va">sent</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 6</span></span></span>
+<span><span class="co">#&gt;   doc_id n_pos n_neg n_neu score sentiment</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1         0     0    11     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d2         1     0     9     1 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3         2     0    10     2 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4         0     0    10     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> d5         0     0    11     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> d6         1     0    10     1 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> d7         0     0     8     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> d8         0     1     8    -<span style="color: #BB0000;">1</span> negativo</span></span></code></pre></div>
+<p>Visualizando por documento:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="introducao-acR_files/figure-html/plot-sentimento-1.png" class="r-plt" alt="" width="840" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="escolher-um-modelo-llm">4. Escolher um modelo LLM<a class="anchor" aria-label="anchor" href="#escolher-um-modelo-llm"></a>
+</h2>
+<p>Antes de codificar qualitativamente, o <code>acR</code> recomenda
+modelos com base em custo, idioma e tipo de tarefa. Consulta 100 %
+<em>offline</em>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model</a></span><span class="op">(</span>task <span class="op">=</span> <span class="st">"coding"</span>, budget <span class="op">=</span> <span class="st">"medium"</span>, lang <span class="op">=</span> <span class="st">"pt"</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Recomendacoes de modelo </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Tarefa: <span style="color: #0000BB;">"coding"</span> | Budget: <span style="color: #0000BB;">"medium"</span> | Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
@@ -197,64 +252,201 @@ consulta usa um banco interno curado e funciona offline.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3 openai   openai/o4-mini     o4-m… bala…       200       1.1          4.4</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: pt_support &lt;chr&gt;, score &lt;dbl&gt;, justificativa &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   acr_string &lt;chr&gt;</span></span></span></code></pre></div>
-<p>A recomendação é baseada em benchmarks de anotação de texto em
-Ciências Sociais (Gilardi, Alizadeh e Kubli, 2023; Törnberg, 2023)
-combinados com custo, janela de contexto e suporte estimado ao
-português.</p>
+<p>Base: Gilardi, Alizadeh e Kubli (2023) e Törnberg (2023).</p>
 </div>
 <div class="section level2">
-<h2 id="codificação-qualitativa-assistida-por-llm">4. Codificação qualitativa assistida por LLM<a class="anchor" aria-label="anchor" href="#codifica%C3%A7%C3%A3o-qualitativa-assistida-por-llm"></a>
+<h2 id="codificação-qualitativa-com-llm">5. Codificação qualitativa com LLM<a class="anchor" aria-label="anchor" href="#codifica%C3%A7%C3%A3o-qualitativa-com-llm"></a>
 </h2>
-<p>Esta etapa requer uma chave de API configurada e, por isso, não é
-executada na construção da vignette. O padrão de uso é o seguinte.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Requer chave de API (ex.: ANTHROPIC_API_KEY) configurada no ambiente</span></span>
-<span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
+<p>Esta etapa exige chave de API (<code>ANTHROPIC_API_KEY</code>,
+<code>GROQ_API_KEY</code>, etc.) e por isso não roda na construção da
+vignette. Estrutura mínima:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
 <span>  name         <span class="op">=</span> <span class="st">"posicionamento"</span>,</span>
-<span>  instructions <span class="op">=</span> <span class="st">"Classifique o posicionamento do parlamentar sobre a reforma."</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Classifique o posicionamento sobre a reforma tributaria."</span>,</span>
 <span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    apoio   <span class="op">=</span> <span class="st">"manifestação favorável à reforma"</span>,</span>
-<span>    critica <span class="op">=</span> <span class="st">"manifestação contrária à reforma"</span>,</span>
-<span>    neutro  <span class="op">=</span> <span class="st">"sem posicionamento claro"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  mode <span class="op">=</span> <span class="st">"manual"</span></span>
+<span>    favor  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Manifestação favorável à reforma."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="st">"Sou favoravel a reforma, simplifica o sistema."</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    contra <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      definition   <span class="op">=</span> <span class="st">"Manifestação contrária à reforma."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="st">"Voto contra, vai destruir o setor produtivo."</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">codificado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  corpus   <span class="op">=</span> <span class="va">corp</span>,</span>
+<span>  corpus   <span class="op">=</span> <span class="va">corpus</span>,</span>
 <span>  codebook <span class="op">=</span> <span class="va">codebook</span>,</span>
 <span>  model    <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">codificado</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
+<p><code>codificado</code> é um tibble com <code>doc_id</code>,
+<code>categoria</code>, <code>confidence_score</code> (via
+<em>self-consistency</em>) e <code>reasoning</code>.</p>
 </div>
 <div class="section level2">
-<h2 id="validar-com-codificação-humana">5. Validar com codificação humana<a class="anchor" aria-label="anchor" href="#validar-com-codifica%C3%A7%C3%A3o-humana"></a>
+<h2 id="validação-humana-e-confiabilidade">6. Validação humana e confiabilidade<a class="anchor" aria-label="anchor" href="#valida%C3%A7%C3%A3o-humana-e-confiabilidade"></a>
 </h2>
-<p>O <code>acR</code> fecha o ciclo com validação humana e métricas de
-confiabilidade entre codificadores. O fluxo abaixo é offline após a
-codificação.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Amostra estratificada para revisão humana</span></span>
-<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">codificado</span>, n <span class="op">=</span> <span class="fl">50</span>, strategy <span class="op">=</span> <span class="st">"stratified"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Amostra estratificada priorizando casos incertos</span></span>
+<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">codificado</span>, n <span class="op">=</span> <span class="fl">50</span>, strategy <span class="op">=</span> <span class="st">"uncertainty"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Exporta planilha para o codificador humano preencher</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="st">"validacao_humana.xlsx"</span>, corpus <span class="op">=</span> <span class="va">corp</span><span class="op">)</span></span>
+<span><span class="co"># Exporta planilha para revisão humana</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="st">"revisao.xlsx"</span>, corpus <span class="op">=</span> <span class="va">corpus</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Após o preenchimento, reimporta e calcula confiabilidade</span></span>
-<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"validacao_humana.xlsx"</span><span class="op">)</span></span>
+<span><span class="co"># Após preencher, reimporta e calcula IRR</span></span>
+<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao.xlsx"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span>llm <span class="op">=</span> <span class="va">codificado</span>, human <span class="op">=</span> <span class="va">humano</span><span class="op">)</span></span></code></pre></div>
+<p>Um exemplo do formato do output com dados sintéticos (equivalente ao
+que sai com codificação real):</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">llm_sim</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  doc_id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>,</span>
+<span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">humano_sim</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  doc_id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>,</span>
+<span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"favor"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span><span class="op">)</span></span>
+<span>  <span class="co"># 1 discordância em 8 casos -&gt; ~87.5% de concordância</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span>llm <span class="op">=</span> <span class="va">llm_sim</span>, human <span class="op">=</span> <span class="va">humano_sim</span>, bootstrap <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Calculando confiabilidade em 8 documentos comuns...</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(mat, method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
+<span><span class="co">#&gt; coercion</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Interpretação baseada em Landis &amp; Koch (1977) e Gwet (2014).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> IC 95% via bootstrap (n = 50).</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 5</span></span></span>
+<span><span class="co">#&gt;   metric             estimate ci_lower ci_upper interpretation                  </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> percent_agreement     0.875    0.625        1 boa (&gt;= 80%)                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> krippendorff_alpha    0.762    0.306        1 substancial (Landis &amp; Koch, 197…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gwet_ac1              0.754    0.342        1 substancial (Landis &amp; Koch, 197…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> f1_macro              0.873    0.667        1 quase perfeita (Landis &amp; Koch, …</span></span></code></pre></div>
 <p>As métricas incluem <em>percent agreement</em>, <em>alpha</em> de
-Krippendorff, AC1 de Gwet e F1 macro, com intervalos de confiança por
-<em>bootstrap</em> e interpretação segundo Landis e Koch (1977) e Gwet
-(2014).</p>
+Krippendorff, AC1 de Gwet e F1 macro, com IC via <em>bootstrap</em> e
+interpretação segundo Landis e Koch (1977) e Gwet (2014).</p>
 </div>
 <div class="section level2">
 <h2 id="próximos-passos">Próximos passos<a class="anchor" aria-label="anchor" href="#pr%C3%B3ximos-passos"></a>
 </h2>
-<p>Consulte as vignettes específicas para aprofundamento: análise de
-proposições, LDA, sentimento e o fluxo qualitativo completo com
-LLMs.</p>
+<ul>
+<li>
+<strong><a href="qualitativo-llm.html">Codificação com
+LLMs</a></strong> — codebook completo, <code>ellmer</code>,
+<em>self-consistency</em>, tradução, fusão.</li>
+<li>
+<strong><a href="analise-proposicoes.html">Análise de
+proposições</a></strong> — pipeline real de ponta-a-ponta em texto
+legislativo brasileiro.</li>
+<li>
+<strong><a href="lda.html">LDA</a></strong> — modelagem de
+tópicos.</li>
+<li>
+<strong><a href="sentimento.html">Sentimento</a></strong> — pipeline
+detalhado com OpLexicon.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
@@ -269,6 +461,8 @@ methodology</em>. 4. ed. Thousand Oaks: SAGE, 2018.</p>
 <p>LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 categorical data. <em>Biometrics</em>, v. 33, n. 1, p. 159-174,
 1977.</p>
+<p>SOUZA, M.; VIEIRA, R. Sentiment analysis on Twitter with Portuguese
+language. <em>STIL/SBC</em>, 2012.</p>
 <p>TÖRNBERG, P. ChatGPT-4 outperforms experts and crowd workers in
 annotating political Twitter messages with zero-shot learning. <em>PLOS
 ONE</em>, v. 18, n. 4, 2023.</p>
