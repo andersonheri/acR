@@ -1,6 +1,9 @@
 ---
 title: "Introdução ao acR: pipeline integrado de análise de conteúdo"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{Introdução ao acR: pipeline integrado de análise de conteúdo}
   %\VignetteEngine{knitr::rmarkdown}
@@ -9,125 +12,188 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment  = "#>"
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4,
+  fig.align  = "center",
+  dpi        = 120
 )
 ```
+
+Esta vignette percorre o pipeline completo do `acR` em um exemplo pequeno mas
+realista — discursos parlamentares favoráveis e contrários a uma reforma —
+mostrando o *output* efetivo de cada etapa. Se você prefere um tour de 5 minutos
+com só o essencial, veja o **[Quickstart](quickstart.html)**.
 
 ```{r setup}
 library(acR)
 ```
 
-## Objetivo
+## O objeto central: `ac_corpus`
 
-O `acR` integra, em um único fluxo reprodutível, a análise quantitativa
-clássica de texto (frequências, *keyness*, coocorrência, LDA, sentimento) e a
-codificação qualitativa assistida por modelos de linguagem (LLMs) via `ellmer`.
-Esta vignette apresenta o caminho mínimo do dado bruto ao resultado, usando
-apenas funções que rodam sem chave de API. O módulo de LLM é demonstrado ao
-final, com execução desativada.
-
-O objeto central é o `ac_corpus`, um `tibble` com colunas padronizadas
-`doc_id` e `text`, sobre o qual todas as demais funções operam.
-
-## 1. Construir um corpus
+Tudo no `acR` gira em torno do `ac_corpus`, um `tibble` com colunas
+padronizadas `doc_id` e `text` que carrega quaisquer metadados adicionais.
+As demais funções aceitam esse objeto diretamente.
 
 ```{r corpus}
 df <- data.frame(
-  id      = c("d1", "d2", "d3", "d4"),
+  id      = paste0("d", 1:8),
   texto   = c(
-    "O deputado do PT defendeu a reforma na CCJ.",
-    "O deputado do PL criticou a reforma novamente.",
-    "A senadora do PT relatou o projeto na comissão.",
-    "O senador do PL obstruiu a votação do projeto."
+    "Sou favoravel a reforma tributaria: simplifica o sistema e reduz distorcoes.",
+    "Voto contra: essa reforma vai destruir o setor produtivo brasileiro.",
+    "Apoio a proposta com forte adesao, ha ganhos claros de eficiencia arrecadatoria.",
+    "Rejeito o texto: transfere renda das familias para grandes corporacoes.",
+    "Defendo a reforma que corrige as distorcoes historicas do nosso sistema.",
+    "Somos contrarios: o projeto beneficia apenas os mais ricos do pais.",
+    "Voto sim, precisamos modernizar urgentemente a estrutura tributaria.",
+    "Voto nao, os pequenos empresarios serao os grandes prejudicados."
   ),
-  partido = c("PT", "PL", "PT", "PL"),
+  partido = c("PT","PL","PT","PL","PT","PL","PT","PL"),
+  posicao = c("favor","contra","favor","contra","favor","contra","favor","contra"),
   stringsAsFactors = FALSE
 )
 
-corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
-corp
+corpus <- ac_corpus(df, text = texto, docid = id, meta = c(partido, posicao))
+corpus
 ```
 
-## 2. Frequências e termos mais salientes
+## 1. Frequências e termos salientes
 
 ```{r contagem}
-# Frequência de unigramas no corpus inteiro
-freq <- ac_count(corp)
+# Frequência global
+freq <- ac_count(corpus)
 ac_top_terms(freq, n = 8)
-
-# Frequência por partido
-freq_partido <- ac_count(corp, by = "partido")
-ac_top_terms(freq_partido, n = 5, by = "partido")
 ```
 
-## 3. Escolher um modelo LLM para a etapa qualitativa
+Agora quebrando por lado (`favor` vs `contra`):
 
-Antes de codificar qualitativamente, o `acR` ajuda a selecionar um modelo
-adequado ao orçamento e ao idioma do corpus. A consulta usa um banco interno
-curado e funciona offline.
+```{r contagem-grupo}
+freq_lado <- ac_count(corpus, by = "posicao")
+ac_top_terms(freq_lado, n = 5, by = "posicao")
+```
+
+## 2. Termos distintivos com *keyness*
+
+Quais palavras aparecem **muito mais** em um grupo do que no outro? A
+métrica `chi2` (χ²) mede essa distintividade.
+
+```{r keyness}
+key <- ac_keyness(freq_lado, group = "posicao", target = "favor")
+head(key, 6)
+```
+
+Visualização compacta dos termos mais distintivos:
+
+```{r plot-keyness}
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ac_plot_keyness(key, n = 6)
+}
+```
+
+## 3. Sentimento por documento (OpLexicon)
+
+Escore agregado de polaridade de cada documento, usando o léxico
+OpLexicon (Souza e Vieira, 2012):
+
+```{r sentimento}
+sent <- ac_sentiment(corpus)
+sent
+```
+
+Visualizando por documento:
+
+```{r plot-sentimento}
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  ac_plot_sentiment(sent)
+}
+```
+
+## 4. Escolher um modelo LLM
+
+Antes de codificar qualitativamente, o `acR` recomenda modelos com base em
+custo, idioma e tipo de tarefa. Consulta 100 % *offline*:
 
 ```{r modelos}
-# Modelos recomendados para classificação em português, orçamento médio
 ac_qual_recommend_model(task = "coding", budget = "medium", lang = "pt", n = 3)
 ```
 
-A recomendação é baseada em benchmarks de anotação de texto em Ciências
-Sociais (Gilardi, Alizadeh e Kubli, 2023; Törnberg, 2023) combinados com custo,
-janela de contexto e suporte estimado ao português.
+Base: Gilardi, Alizadeh e Kubli (2023) e Törnberg (2023).
 
-## 4. Codificação qualitativa assistida por LLM
+## 5. Codificação qualitativa com LLM
 
-Esta etapa requer uma chave de API configurada e, por isso, não é executada na
-construção da vignette. O padrão de uso é o seguinte.
+Esta etapa exige chave de API (`ANTHROPIC_API_KEY`, `GROQ_API_KEY`, etc.) e
+por isso não roda na construção da vignette. Estrutura mínima:
 
 ```{r coding, eval = FALSE}
-# Requer chave de API (ex.: ANTHROPIC_API_KEY) configurada no ambiente
 codebook <- ac_qual_codebook(
   name         = "posicionamento",
-  instructions = "Classifique o posicionamento do parlamentar sobre a reforma.",
+  instructions = "Classifique o posicionamento sobre a reforma tributaria.",
   categories   = list(
-    apoio   = "manifestação favorável à reforma",
-    critica = "manifestação contrária à reforma",
-    neutro  = "sem posicionamento claro"
-  ),
-  mode = "manual"
+    favor  = list(
+      definition   = "Manifestação favorável à reforma.",
+      examples_pos = "Sou favoravel a reforma, simplifica o sistema."
+    ),
+    contra = list(
+      definition   = "Manifestação contrária à reforma.",
+      examples_pos = "Voto contra, vai destruir o setor produtivo."
+    )
+  )
 )
 
 codificado <- ac_qual_code(
-  corpus   = corp,
+  corpus   = corpus,
   codebook = codebook,
   model    = "anthropic/claude-sonnet-4-5"
 )
-
-codificado
 ```
 
-## 5. Validar com codificação humana
+`codificado` é um tibble com `doc_id`, `categoria`, `confidence_score`
+(via *self-consistency*) e `reasoning`.
 
-O `acR` fecha o ciclo com validação humana e métricas de confiabilidade entre
-codificadores. O fluxo abaixo é offline após a codificação.
+## 6. Validação humana e confiabilidade
 
-```{r validacao, eval = FALSE}
-# Amostra estratificada para revisão humana
-amostra <- ac_qual_sample(codificado, n = 50, strategy = "stratified")
+```{r validacao-code, eval = FALSE}
+# Amostra estratificada priorizando casos incertos
+amostra <- ac_qual_sample(codificado, n = 50, strategy = "uncertainty")
 
-# Exporta planilha para o codificador humano preencher
-ac_qual_export_for_review(amostra, path = "validacao_humana.xlsx", corpus = corp)
+# Exporta planilha para revisão humana
+ac_qual_export_for_review(amostra, path = "revisao.xlsx", corpus = corpus)
 
-# Após o preenchimento, reimporta e calcula confiabilidade
-humano <- ac_qual_import_human("validacao_humana.xlsx")
+# Após preencher, reimporta e calcula IRR
+humano <- ac_qual_import_human("revisao.xlsx")
 ac_qual_reliability(llm = codificado, human = humano)
 ```
 
-As métricas incluem *percent agreement*, *alpha* de Krippendorff, AC1 de Gwet e
-F1 macro, com intervalos de confiança por *bootstrap* e interpretação segundo
-Landis e Koch (1977) e Gwet (2014).
+Um exemplo do formato do output com dados sintéticos (equivalente ao que sai
+com codificação real):
+
+```{r validacao-demo}
+llm_sim <- tibble::tibble(
+  doc_id    = paste0("d", 1:8),
+  categoria = c("favor","contra","favor","contra","favor","contra","favor","contra")
+)
+humano_sim <- tibble::tibble(
+  doc_id    = paste0("d", 1:8),
+  categoria = c("favor","contra","favor","contra","favor","favor","favor","contra")
+  # 1 discordância em 8 casos -> ~87.5% de concordância
+)
+
+ac_qual_reliability(llm = llm_sim, human = humano_sim, bootstrap = 50)
+```
+
+As métricas incluem *percent agreement*, *alpha* de Krippendorff, AC1 de Gwet
+e F1 macro, com IC via *bootstrap* e interpretação segundo Landis e Koch (1977)
+e Gwet (2014).
 
 ## Próximos passos
 
-Consulte as vignettes específicas para aprofundamento: análise de proposições,
-LDA, sentimento e o fluxo qualitativo completo com LLMs.
+* **[Codificação com LLMs](qualitativo-llm.html)** — codebook completo, `ellmer`,
+  *self-consistency*, tradução, fusão.
+* **[Análise de proposições](analise-proposicoes.html)** — pipeline real de
+  ponta-a-ponta em texto legislativo brasileiro.
+* **[LDA](lda.html)** — modelagem de tópicos.
+* **[Sentimento](sentimento.html)** — pipeline detalhado com OpLexicon.
 
 ## Referências
 
@@ -142,6 +208,9 @@ KRIPPENDORFF, K. *Content analysis: an introduction to its methodology*.
 
 LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 categorical data. *Biometrics*, v. 33, n. 1, p. 159-174, 1977.
+
+SOUZA, M.; VIEIRA, R. Sentiment analysis on Twitter with Portuguese language.
+*STIL/SBC*, 2012.
 
 TÖRNBERG, P. ChatGPT-4 outperforms experts and crowd workers in annotating
 political Twitter messages with zero-shot learning. *PLOS ONE*, v. 18, n. 4,
