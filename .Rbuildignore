@@ -18,7 +18,8 @@
 ^sandbox$
 ^acR\.Rproj$
 ^data$
-^vignettes$
 ^inst/extdata$
 ^doc$
 ^Meta$
+^\.positai$
+^\.claude$

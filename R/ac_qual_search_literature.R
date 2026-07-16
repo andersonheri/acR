@@ -141,7 +141,7 @@ ac_qual_search_literature <- function(concept,
   } else {
     chat_args <- c(list(name = effective_model, system_prompt = system_prompt), list(...))
     chat_obj  <- tryCatch(
-      do.call(ellmer::chat, chat_args),
+      do.call(.ac_ellmer_chat, chat_args),
       error = function(e) cli::cli_abort(c("Erro ao inicializar {.pkg ellmer}.", "x" = conditionMessage(e)))
     )
   }

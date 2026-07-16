@@ -267,7 +267,7 @@ ac_qual_code <- function(corpus,
       dots
     )
     chat <- tryCatch(
-      do.call(ellmer::chat, chat_args),
+      do.call(.ac_ellmer_chat, chat_args),
       error = function(e) {
         cli::cli_abort(c(
           "Erro ao inicializar {.pkg ellmer}. Verifique o modelo e as credenciais.",

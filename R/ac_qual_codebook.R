@@ -535,7 +535,7 @@ ac_qual_load_codebook <- function(path, ...) {
     chat_obj$set_system_prompt(system_prompt)
   } else {
     chat_obj <- tryCatch(
-      ellmer::chat(name = model, system_prompt = system_prompt),
+      .ac_ellmer_chat(name = model, system_prompt = system_prompt),
       error = function(e) cli::cli_abort(c("Erro ao inicializar ellmer.", "x" = conditionMessage(e)))
     )
   }
@@ -725,7 +725,7 @@ ac_qual_load_codebook <- function(path, ...) {
   if (inherits(model, "Chat")) {
     chat <- model$clone()
   } else {
-    chat <- ellmer::chat(name = model)
+    chat <- .ac_ellmer_chat(name = model)
   }
 
   resposta <- tryCatch(chat$chat(prompt),
@@ -843,7 +843,7 @@ ac_qual_load_codebook <- function(path, ...) {
   if (inherits(model, "Chat")) {
     chat <- model$clone()
   } else {
-    chat <- ellmer::chat(name = model)
+    chat <- .ac_ellmer_chat(name = model)
   }
   definition <- tryCatch(chat$chat(prompt), error = function(e) "")
   list(definition = trimws(definition))
@@ -862,7 +862,7 @@ ac_qual_load_codebook <- function(path, ...) {
   if (inherits(model, "Chat")) {
     chat <- model$clone()
   } else {
-    chat <- ellmer::chat(name = model)
+    chat <- .ac_ellmer_chat(name = model)
   }
   resp   <- tryCatch(chat$chat(prompt), error = function(e) "")
   parsed <- tryCatch(jsonlite::fromJSON(resp),
@@ -1025,7 +1025,7 @@ ac_qual_codebook_translate <- function(codebook, to=c('en','pt'), chat=NULL, mod
   payload <- list(instructions=codebook$instructions,categories=purrr::imap(codebook$categories,function(cat,nm){entry<-list(name=nm,definition=cat$definition);if(isTRUE(translate_examples)){entry$examples_pos<-cat$examples_pos;entry$examples_neg<-cat$examples_neg};entry}))
   sys_p <- paste0('Translate JSON from ',lang_names[codebook$lang],' to ',lang_names[to],'. Keep keys. Translate values only. Return ONLY valid JSON.')
   user_msg <- paste0('Translate:\n\n',jsonlite::toJSON(payload,auto_unbox=TRUE,pretty=TRUE))
-  if (inherits(effective_model,'Chat')) { chat_obj<-effective_model$clone(); chat_obj$set_system_prompt(sys_p) } else { chat_obj<-tryCatch(ellmer::chat(name=effective_model,system_prompt=sys_p),error=function(e)cli::cli_abort(conditionMessage(e))) }
+  if (inherits(effective_model,'Chat')) { chat_obj<-effective_model$clone(); chat_obj$set_system_prompt(sys_p) } else { chat_obj<-tryCatch(.ac_ellmer_chat(name=effective_model,system_prompt=sys_p),error=function(e)cli::cli_abort(conditionMessage(e))) }
   resp <- tryCatch(chat_obj$chat(user_msg),error=function(e)cli::cli_abort(conditionMessage(e)))
   json_str <- stringr::str_extract(resp,'\\{[\\s\\S]*\\}')
   if (is.na(json_str)) cli::cli_abort('JSON inv\u00e1lido.')

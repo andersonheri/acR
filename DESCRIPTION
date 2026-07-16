@@ -24,7 +24,6 @@ BugReports: https://github.com/andersonheri/acR/issues
 Imports:
     cli,
     dplyr,
-    ellmer,
     httr2,
     irr,
     jsonlite,
@@ -37,6 +36,7 @@ Imports:
     yaml
 Suggests:
     covr,
+    ellmer,
     ggplot2,
     ggraph,
     igraph,
