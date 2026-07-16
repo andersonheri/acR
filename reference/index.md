@@ -138,7 +138,7 @@ Listagem e recomendacao de modelos LLM.
 
 ## Visualizacao
 
-Graficos modernos baseados em ggplot2.
+Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 
 - [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
   : Visualizar rede de co-ocorrência de termos
@@ -160,6 +160,10 @@ Graficos modernos baseados em ggplot2.
   : Gráfico X-ray — dispersão lexical de termos no corpus
 - [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
   : Criar nuvem de palavras
+- [`theme_ac()`](https://andersonheri.github.io/acR/reference/theme_ac.md)
+  : Tema visual consistente do acR
+- [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+  : Paleta categórica do acR
 
 ## Exportacao
 

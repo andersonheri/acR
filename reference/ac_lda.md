@@ -53,6 +53,10 @@ Lista de classe `ac_lda` com:
 Blei, D. M.; Ng, A. Y.; Jordan, M. I. (2003). Latent Dirichlet
 Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
 
+Vignette:
+[`vignette("lda", package = "acR")`](https://andersonheri.github.io/acR/articles/lda.md)
+— tutorial completo com corpus real e visualizações.
+
 ## See also
 
 [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md),
