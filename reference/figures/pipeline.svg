@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" role="img" aria-labelledby="pipeline-title pipeline-desc" font-family="Inter, -apple-system, Segoe UI, sans-serif">
+  <title id="pipeline-title">Pipeline do acR</title>
+  <desc id="pipeline-desc">Fluxo em cinco etapas: coleta, corpus, quantitativo/qualitativo em paralelo, validacao e exportacao.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F3D5C"/>
+    </marker>
+    <linearGradient id="quali" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F766E"/>
+      <stop offset="1" stop-color="#134E4A"/>
+    </linearGradient>
+    <linearGradient id="quant" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D97706"/>
+      <stop offset="1" stop-color="#92400E"/>
+    </linearGradient>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F3D5C"/>
+      <stop offset="1" stop-color="#0B2942"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    .step-title { fill: #ffffff; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+    .step-desc  { fill: #E5E7EB; font-size: 11px; }
+    .step-fn    { fill: #FBFAF7; font-size: 10.5px; font-family: "JetBrains Mono", ui-monospace, monospace; opacity: 0.9; }
+    .lane       { fill: #6B7280; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    .arrow      { stroke: #0F3D5C; stroke-width: 1.8; fill: none; }
+    @media (prefers-color-scheme: dark) {
+      .lane { fill: #9CA3AF; }
+      .arrow { stroke: #93C5FD; }
+    }
+  </style>
+
+  <!-- Coleta -->
+  <g transform="translate(20, 130)">
+    <rect width="150" height="80" rx="10" fill="url(#base)"/>
+    <text class="step-title" x="14" y="22">1 · Coleta</text>
+    <text class="step-desc"  x="14" y="42">APIs do Legislativo</text>
+    <text class="step-fn"    x="14" y="60">ac_fetch_camara()</text>
+    <text class="step-fn"    x="14" y="72">ac_fetch_senado()</text>
+  </g>
+
+  <!-- Corpus -->
+  <g transform="translate(210, 130)">
+    <rect width="150" height="80" rx="10" fill="url(#base)"/>
+    <text class="step-title" x="14" y="22">2 · Corpus</text>
+    <text class="step-desc"  x="14" y="42">Limpar e tokenizar</text>
+    <text class="step-fn"    x="14" y="60">ac_corpus()</text>
+    <text class="step-fn"    x="14" y="72">ac_clean() · ac_tokenize()</text>
+  </g>
+
+  <!-- Lane labels -->
+  <text class="lane" x="400" y="65">Quantitativo</text>
+  <text class="lane" x="400" y="255">Qualitativo · LLM</text>
+
+  <!-- Quantitativo -->
+  <g transform="translate(400, 80)">
+    <rect width="330" height="80" rx="10" fill="url(#quant)"/>
+    <text class="step-title" x="14" y="22">3 · Analise estatistica</text>
+    <text class="step-desc"  x="14" y="42">Frequencia · keyness · LDA · sentimento</text>
+    <text class="step-fn"    x="14" y="60">ac_count() · ac_keyness() · ac_lda()</text>
+    <text class="step-fn"    x="14" y="72">ac_sentiment() · ac_cooccurrence()</text>
+  </g>
+
+  <!-- Qualitativo -->
+  <g transform="translate(400, 200)">
+    <rect width="330" height="80" rx="10" fill="url(#quali)"/>
+    <text class="step-title" x="14" y="22">3 · Codificacao com LLM</text>
+    <text class="step-desc"  x="14" y="42">Codebook + self-consistency</text>
+    <text class="step-fn"    x="14" y="60">ac_qual_codebook() · ac_qual_code()</text>
+    <text class="step-fn"    x="14" y="72">as_prompt() · ac_qual_codebook_hybrid()</text>
+  </g>
+
+  <!-- Validacao -->
+  <g transform="translate(770, 130)">
+    <rect width="170" height="80" rx="10" fill="url(#base)"/>
+    <text class="step-title" x="14" y="22">4 · Validacao</text>
+    <text class="step-desc"  x="14" y="42">Concordancia humana</text>
+    <text class="step-fn"    x="14" y="60">ac_qual_sample()</text>
+    <text class="step-fn"    x="14" y="72">ac_qual_reliability()</text>
+  </g>
+
+  <!-- Exportacao -->
+  <g transform="translate(370, 285)">
+    <rect width="220" height="42" rx="10" fill="#1F2937"/>
+    <text class="step-title" x="14" y="18">5 · Exportar &amp; visualizar</text>
+    <text class="step-fn"    x="14" y="34">ac_export() · ac_plot_*() · ac_wordcloud()</text>
+  </g>
+
+  <!-- Arrows -->
+  <path class="arrow" d="M170,170 L210,170" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M360,170 L400,120" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M360,170 L400,240" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M730,120 L770,170" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M730,240 L770,170" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M855,210 L855,270 L590,290" marker-end="url(#arrow)"/>
+</svg>

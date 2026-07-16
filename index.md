@@ -1,57 +1,79 @@
 # acR
 
-> **Análise de Conteúdo em R**, um pipeline integrado qualitativo (LLMs)
-> e quantitativo, com foco em corpora brasileiros e dados parlamentares.
+> **Análise de Conteúdo em R** — pipeline integrado qualitativo (LLMs) e
+> quantitativo, com foco em corpora brasileiros e dados parlamentares.
+
+![Pipeline do acR: coleta, corpus, análise quantitativa/qualitativa em
+paralelo, validação e exportação](reference/figures/pipeline.svg)
+
+## Em uma linha
+
+Do texto bruto ao resultado publicável — codebook, LLM, *keyness*, LDA,
+sentimento e concordância inter-codificador, num único fluxo
+reprodutível.
+
+## Para quem é
+
+[TABLE]
+
+## Comece em 3 linhas
+
+``` r
+
+# 1. Instalar
+install.packages("acR")           # via CRAN (em análise)
+remotes::install_github("andersonheri/acR")  # ou versão dev
+
+# 2. Rodar o pipeline mínimo
+library(acR)
+corpus <- ac_corpus(data.frame(id = 1:3, text = c("...","...","...")))
+ac_count(corpus) |> ac_top_terms(n = 10)
+
+# 3. Codificar qualitativamente (requer chave de LLM)
+codebook  <- ac_qual_codebook("posicao", "Classifique.",
+                              categories = list(favor = "...", contra = "..."))
+resultado <- ac_qual_code(corpus, codebook, model = "anthropic/claude-sonnet-4-5")
+```
+
+Vignette completa: **[Comece aqui
+→](https://andersonheri.github.io/acR/articles/introducao-acR.html)** ·
+**[Quickstart 5 min
+→](https://andersonheri.github.io/acR/articles/quickstart.html)**
 
 ------------------------------------------------------------------------
 
-## O que é o acR?
+## O que o `acR` faz
 
-O `acR` é um pacote R para análise de conteúdo textual desenvolvido para
-pesquisadores em ciências sociais, ciência política e administração
-pública. Ele resolve um problema concreto: o processo de análise de
-conteúdo, desde a coleta de textos até a classificação, validação e
-visualização, envolve muitas etapas manuais, ferramentas dispersas e
-decisões metodológicas que raramente ficam documentadas de forma
-reproduzível.
+**Módulo qualitativo.** Você escreve um *codebook* (categorias +
+definições + exemplos), e a LLM classifica cada documento, reportando
+categoria, nível de confiança via *self-consistency* e um raciocínio
+estruturado. Uma amostra é exportada para revisão humana, e a
+concordância inter-codificador (percent agreement, Cohen’s/Fleiss’
+*kappa*, Krippendorff’s *alpha*, Gwet’s AC1, F1 macro) é calculada com
+IC via *bootstrap*.
 
-O `acR` integra essas etapas em um único pipeline coerente, seguindo as
-diretrizes contemporâneas de Sampaio e Lycarião (2021), referência atual
-para análise de conteúdo categorial no Brasil, e de Krippendorff (2018),
-aproveitando os avanços recentes em modelos de linguagem (LLMs) para
-automatizar a codificação qualitativa com validação humana. Bardin
-(2011) é reconhecida como uma das obras pioneiras da tradição, mas o
-pacote privilegia abordagens metodologicamente atualizadas.
+**Módulo quantitativo.** Ferramentas estatísticas clássicas de análise
+de conteúdo: frequência de termos e por grupo, TF-IDF, *keyness*
+(χ²/*log-likelihood*), redes de co-ocorrência com PMI, análise de
+sentimento em português (OpLexicon), modelagem de tópicos com LDA e
+seleção automática de *k*. Visualizações prontas para publicação em
+`ggplot2`, compatíveis com `ipeaplot`.
 
-O módulo qualitativo foi desenvolvido inspirado no `quallmer` (Maerz e
-Benoit, 2025), pacote precursor para codificação qualitativa com LLMs em
-R, do qual o `acR` é uma extensão voltada ao contexto brasileiro, com
-pipeline de coleta de dados parlamentares, corpora em português e
-integração com ferramentas de análise quantitativa. O ambiente de
-comunicação com LLMs é provido pelo pacote `ellmer` (Wickham et al.,
-2025), que oferece uma interface unificada para múltiplos provedores.
+**Coleta nativa** de discursos da Câmara dos Deputados (por período,
+partido, UF) e do Senado Federal (via `senatebR`).
 
-O pacote tem dois módulos principais:
+## Fundamentação metodológica
 
-**Módulo qualitativo**, que usa LLMs para classificar textos em
-categorias definidas por um codebook. O pesquisador define as categorias
-e suas definições, o modelo aplica o codebook a cada documento,
-reportando a categoria, o nível de certeza (via *self-consistency*) e um
-raciocínio justificando a classificação. Uma amostra pode ser exportada
-para validação humana e a concordância intercodificadores é calculada
-automaticamente.
+O pipeline segue Sampaio e Lycarião (2021) — referência atual para
+análise de conteúdo categorial no Brasil — e Krippendorff (2018). Bardin
+(2011) é reconhecida como pioneira, mas o pacote privilegia abordagens
+metodologicamente atualizadas. A camada de LLM é inspirada no `quallmer`
+(Maerz e Benoit, 2025) e comunica com múltiplos provedores via `ellmer`
+(Wickham et al., 2025).
 
-**Módulo quantitativo**, que oferece as ferramentas estatísticas
-clássicas de análise de conteúdo: frequência de termos, TF-IDF, keyness,
-análise de sentimento (OpLexicon), co-ocorrência e modelagem de tópicos
-via LDA. Todas as funções de visualização seguem o estilo do `ggplot2` e
-são compatíveis com o `ipeaplot`.
-
-> **Nota:** o `acR` está em desenvolvimento ativo. Novas
-> funcionalidades, melhorias metodológicas e suporte a novos formatos de
-> dados serão incorporados progressivamente. Contribuições e sugestões
-> são bem-vindas via
-> [issues](https://github.com/andersonheri/acR/issues) no GitHub.
+> **Status:** `acR` está em desenvolvimento ativo (submissão CRAN em
+> andamento). Contribuições e feedback via
+> [issues](https://github.com/andersonheri/acR/issues).
 
 ------------------------------------------------------------------------
 

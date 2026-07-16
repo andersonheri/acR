@@ -2,6 +2,8 @@
 
 ### Introducao
 
+- [Quickstart — acR em 5
+  minutos](https://andersonheri.github.io/acR/articles/quickstart.md):
 - [Introdução ao acR: pipeline integrado de análise de
   conteúdo](https://andersonheri.github.io/acR/articles/introducao-acR.md):
 
