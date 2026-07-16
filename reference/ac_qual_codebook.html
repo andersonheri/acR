@@ -180,7 +180,9 @@ manual de aplicação</em>. Brasília: ENAP.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook</span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Codebook manual com duas categorias, cada uma com exemplos positivos</span></span></span>
+<span class="r-in"><span><span class="co"># (o que E) e negativos (o que NAO e, para desambiguar categorias vizinhas)</span></span></span>
+<span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name         <span class="op">=</span> <span class="st">"tom_discurso"</span>,</span></span>
 <span class="r-in"><span>  instructions <span class="op">=</span> <span class="st">"Classifique o tom geral do discurso."</span>,</span></span>
 <span class="r-in"><span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -188,7 +190,7 @@ manual de aplicação</em>. Brasília: ENAP.</p>
 <span class="r-in"><span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom propositivo e colaborativo."</span>,</span></span>
 <span class="r-in"><span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Proponho que trabalhemos juntos nesta agenda."</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Este governo e um desastre completo."</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      weight       <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>      weight       <span class="op">=</span> <span class="fl">1</span>  <span class="co"># peso relativo no prompt; use &gt;1 para priorizar</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
 <span class="r-in"><span>    negativo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom critico ou confrontacional."</span>,</span></span>
@@ -198,14 +200,14 @@ manual de aplicação</em>. Brasília: ENAP.</p>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cb</span></span></span>
+<span class="r-in"><span><span class="va">cb</span>  <span class="co"># imprime resumo do codebook</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Codebook </span><span style="color: #0000BB; font-weight: bold;">acR</span><span style="font-weight: bold;">: </span><span style="color: #0000BB; font-weight: bold;">"tom_discurso"</span> <span style="color: #00BBBB;">────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Modo: <span style="color: #0000BB;">"manual"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias (2): <span style="color: #0000BB;">"positivo"</span> and <span style="color: #0000BB;">"negativo"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 16/07/2026 19:28</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 16/07/2026 20:01</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Instrução geral</span>:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Classifique o tom geral do discurso.</span>

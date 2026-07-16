@@ -62,6 +62,7 @@ Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
 
 ``` r
 if (FALSE) { # \dontrun{
+# 1. Corpus sintetico com 3 temas nitidos (democracia, economia, saude, educacao)
 df <- data.frame(
   id = paste0("d", 1:10),
   texto = c(
@@ -78,7 +79,9 @@ df <- data.frame(
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# 2. Ajustar LDA com k=3 topicos (o corpus tem ~4 temas; k=3 for a experimentacao)
 lda <- ac_lda(corpus, k = 3)
-lda
+lda  # imprime resumo do modelo
 } # }
 ```

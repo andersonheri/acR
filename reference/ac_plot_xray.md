@@ -55,6 +55,7 @@ Objeto `ggplot`.
 ## Examples
 
 ``` r
+# Dois documentos com repeticao de termos-alvo em posicoes diferentes
 df <- data.frame(
   id = c("d1", "d2"),
   texto = c(
@@ -63,6 +64,8 @@ df <- data.frame(
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# X-ray: pontos marcam a posicao relativa de cada termo dentro do texto
 ac_plot_xray(corpus, terms = c("democracia", "mercado", "liberdade"))
 
 ```

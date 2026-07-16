@@ -145,14 +145,20 @@ Workers for Text-Annotation Tasks. <em>PNAS</em>, 120(30).</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Requer internet (busca no OpenAlex) e credenciais da LLM (para sintese)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Chat via Groq (plano gratuito com llama-3.3-70b)</span></span></span>
 <span class="r-in"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma</span></span></span>
 <span class="r-in"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_search_literature</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  concept       <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span></span>
 <span class="r-in"><span>  n_refs        <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>  min_citations <span class="op">=</span> <span class="fl">50</span>,</span></span>
+<span class="r-in"><span>  min_citations <span class="op">=</span> <span class="fl">50</span>,  <span class="co"># filtra papers com pouca reverberacao</span></span></span>
 <span class="r-in"><span>  chat          <span class="op">=</span> <span class="va">chat_obj</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Colunas principais do resultado</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">lit</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"autor"</span>, <span class="st">"ano"</span>, <span class="st">"revista"</span>, <span class="st">"n_citacoes"</span>, <span class="st">"definicao_pt"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

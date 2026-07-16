@@ -31,6 +31,7 @@ Objeto `ac_codebook` atualizado.
 ## Examples
 
 ``` r
+# Codebook com 3 categorias
 cb <- ac_qual_codebook(
   name         = "tom",
   instructions = "Classifique o tom.",
@@ -52,9 +53,11 @@ cb <- ac_qual_codebook(
 #> ℹ Exemplos melhoram a precisão da classificação (Sampaio & Lycarião, 2021).
 #> ! Categoria "neutro": sem exemplos negativos (examples_neg).
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
+
+# Remover a categoria "neutro" (aceita tambem um vetor de nomes)
 cb <- ac_qual_codebook_remove(cb, "neutro")
 #> ✔ 1 categoria removida: "neutro".
 #> ℹ Codebook agora tem 2 categorias.
-names(cb$categories)
+names(cb$categories)  # "positivo" "negativo"
 #> [1] "positivo" "negativo"
 ```

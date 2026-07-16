@@ -94,6 +94,50 @@ em um único codebook, com controle de conflitos de nomes.</p>
     <p>Objeto <code>ac_codebook</code> fundido.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Dois codebooks pequenos que cobrem dimensoes distintas</span></span></span>
+<span class="r-in"><span><span class="va">cb_tom</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name         <span class="op">=</span> <span class="st">"tom"</span>,</span></span>
+<span class="r-in"><span>  instructions <span class="op">=</span> <span class="st">"Classifique o tom."</span>,</span></span>
+<span class="r-in"><span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    positivo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Tom positivo."</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    negativo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Tom negativo."</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"positivo"</span>: sem exemplos positivos (<span style="color: #00BB00;">examples_pos</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos melhoram a precisão da classificação (Sampaio &amp; Lycarião, 2021).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"positivo"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"negativo"</span>: sem exemplos positivos (<span style="color: #00BB00;">examples_pos</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos melhoram a precisão da classificação (Sampaio &amp; Lycarião, 2021).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"negativo"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span>
+<span class="r-in"><span><span class="va">cb_estilo</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name         <span class="op">=</span> <span class="st">"estilo"</span>,</span></span>
+<span class="r-in"><span>  instructions <span class="op">=</span> <span class="st">"Classifique o estilo retorico."</span>,</span></span>
+<span class="r-in"><span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    pathos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apelo emocional."</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    logos  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apelo racional."</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"pathos"</span>: sem exemplos positivos (<span style="color: #00BB00;">examples_pos</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos melhoram a precisão da classificação (Sampaio &amp; Lycarião, 2021).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"pathos"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"logos"</span>: sem exemplos positivos (<span style="color: #00BB00;">examples_pos</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos melhoram a precisão da classificação (Sampaio &amp; Lycarião, 2021).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"logos"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fundir em um unico codebook com 4 categorias</span></span></span>
+<span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook_merge</span><span class="op">(</span><span class="va">cb_tom</span>, <span class="va">cb_estilo</span>, name <span class="op">=</span> <span class="st">"tom_estilo"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Fundidos: 4 categorias.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cb</span><span class="op">$</span><span class="va">categories</span><span class="op">)</span>  <span class="co"># "positivo" "negativo" "pathos" "logos"</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "positivo" "negativo" "pathos"   "logos"   </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

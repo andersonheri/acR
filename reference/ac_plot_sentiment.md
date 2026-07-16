@@ -55,6 +55,7 @@ Objeto `ggplot`.
 ## Examples
 
 ``` r
+# Corpus com quatro documentos de valencias distintas
 df <- data.frame(
   id = c("a", "b", "c", "d"),
   texto = c(
@@ -65,6 +66,8 @@ df <- data.frame(
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# Calcular scores e visualizar em barras (positivo/neutro/negativo por doc)
 sent <- ac_sentiment(corpus)
 #> Baixando OpLexicon (primeira execução — será cacheado)...
 ac_plot_sentiment(sent)

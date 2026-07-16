@@ -94,7 +94,10 @@ probabilidade (beta) para cada tópico do modelo LDA.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Assumindo corpus preparado como em ?ac_lda</span></span></span>
 <span class="r-in"><span><span class="va">lda</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">corpus</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Grafico com os 8 termos mais probabilisticos por topico</span></span></span>
 <span class="r-in"><span><span class="fu">ac_plot_lda_topics</span><span class="op">(</span><span class="va">lda</span>, top_n <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

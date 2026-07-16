@@ -67,6 +67,7 @@ Tibble com colunas:
 ## Examples
 
 ``` r
+# 1. Corpus minimo com 3 documentos
 df <- data.frame(
   id = c("d1", "d2", "d3"),
   texto = c(
@@ -75,9 +76,14 @@ df <- data.frame(
     "cidadania direitos participacao"
   )
 )
+
+# 2. Preparar corpus e tokens (limpeza padrao)
 corpus <- ac_corpus(df, text = texto, docid = id) |>
   ac_clean()
 tokens <- ac_tokenize(corpus)
+
+# 3. Calcular co-ocorrencias em janelas de 3 tokens
+#    min_count = 1 mantem todos os pares (usar valor maior em corpora reais)
 ac_cooccurrence(tokens, window = 3, min_count = 1)
 #> # A tibble: 7 × 5
 #>   word1        word2         cooc   pmi  dice

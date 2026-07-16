@@ -81,7 +81,8 @@ ac_codebook existente."><meta property="og:image" content="https://andersonheri.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Codebook com 3 categorias</span></span></span>
+<span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name         <span class="op">=</span> <span class="st">"tom"</span>,</span></span>
 <span class="r-in"><span>  instructions <span class="op">=</span> <span class="st">"Classifique o tom."</span>,</span></span>
 <span class="r-in"><span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -102,10 +103,12 @@ ac_codebook existente."><meta property="og:image" content="https://andersonheri.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos melhoram a precisão da classificação (Sampaio &amp; Lycarião, 2021).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"neutro"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Remover a categoria "neutro" (aceita tambem um vetor de nomes)</span></span></span>
 <span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_codebook_remove</span><span class="op">(</span><span class="va">cb</span>, <span class="st">"neutro"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 1 categoria removida: <span style="color: #0000BB;">"neutro"</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Codebook agora tem 2 categorias.</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cb</span><span class="op">$</span><span class="va">categories</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cb</span><span class="op">$</span><span class="va">categories</span><span class="op">)</span>  <span class="co"># "positivo" "negativo"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "positivo" "negativo"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

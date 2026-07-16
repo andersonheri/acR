@@ -66,6 +66,7 @@ Um objeto `ggplot`.
 ## Examples
 
 ``` r
+# 1. Corpus fabricado com duas subamostras (Governo vs Oposicao)
 df <- data.frame(
   id    = c("d1", "d2", "d3", "d4"),
   texto = c(
@@ -78,10 +79,12 @@ df <- data.frame(
   stringsAsFactors = FALSE
 )
 
+# 2. Calcular termos-chave (sobre-representados no grupo alvo)
 corp <- ac_corpus(df, text = texto, docid = id, meta = lado)
 freq <- ac_count(corp, by = "lado")
 key <- ac_keyness(freq, group = "lado", target = "Governo")
 
+# 3. Grafico dos 5 termos com maior chi-quadrado
 ac_plot_keyness(key, n = 5)
 
 ```

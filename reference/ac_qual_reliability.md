@@ -70,8 +70,84 @@ for Categorical Data. *Biometrics*, 33(1), 159-174.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-rel <- ac_qual_reliability(llm = coded, human = humano_df)
+# Simular saidas: LLM (coded) e revisao humana (humano_df)
+# ambos com as colunas doc_id + categoria
+coded <- tibble::tibble(
+  doc_id    = paste0("d", 1:5),
+  categoria = c("favor", "contra", "favor", "contra", "favor")
+)
+humano_df <- tibble::tibble(
+  doc_id    = paste0("d", 1:5),
+  categoria = c("favor", "contra", "contra", "contra", "favor")
+)
+
+# Calcular metricas de confiabilidade (bootstrap curto so para demonstrar;
+# em uso real, deixe o padrao de 1000 replicas)
+rel <- ac_qual_reliability(
+  llm       = coded,
+  human     = humano_df,
+  bootstrap = 50
+)
+#> Calculando confiabilidade em 5 documentos comuns...
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> Warning: NAs introduced by coercion
+#> ℹ Interpretação baseada em Landis & Koch (1977) e Gwet (2014).
+#> ℹ IC 95% via bootstrap (n = 50).
 print(rel)
-} # }
+#> # A tibble: 4 × 5
+#>   metric             estimate ci_lower ci_upper interpretation                  
+#>   <chr>                 <dbl>    <dbl>    <dbl> <chr>                           
+#> 1 percent_agreement      0.8    0.6           1 boa (>= 80%)                    
+#> 2 krippendorff_alpha     0.64   0.0563        1 substancial (Landis & Koch, 197…
+#> 3 gwet_ac1               0.6   -0.163         1 moderada (Landis & Koch, 1977)  
+#> 4 f1_macro               0.8    0.306         1 quase perfeita (Landis & Koch, …
 ```

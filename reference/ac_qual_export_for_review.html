@@ -89,6 +89,31 @@ o texto completo de cada documento na planilha.</p></dd>
     <p>Invisível: caminho do arquivo gerado.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"openxlsx"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="co"># Amostra de documentos ja classificados pela LLM</span></span></span>
+<span class="r-in"><span>  <span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    doc_id           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    categoria        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favor"</span>, <span class="st">"contra"</span>, <span class="st">"favor"</span>, <span class="st">"contra"</span>, <span class="st">"favor"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    confidence_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.7</span>, <span class="fl">0.55</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">coded</span>, n <span class="op">=</span> <span class="fl">3</span>, strategy <span class="op">=</span> <span class="st">"uncertainty"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Exportar para revisao humana em arquivo temporario</span></span></span>
+<span class="r-in"><span>  <span class="va">arquivo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".xlsx"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">ac_qual_export_for_review</span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="va">arquivo</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">arquivo</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Amostra de 3 documentos selecionada (estratégia: <span style="color: #0000BB;">"uncertainty"</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `ac_qual_export_for_review()` para exportar para Excel.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ✅ Planilha exportada: <span style="color: #0000BB;">/tmp/RtmpMBoJEA/file1b6f303890f9.xlsx</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Preencha a coluna <span style="color: #0000BB;">"categoria_humano"</span> com a classificação.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `ac_qual_import_human()` para importar após preenchimento.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

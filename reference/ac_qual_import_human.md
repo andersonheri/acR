@@ -37,3 +37,30 @@ ac_qual_import_human(
 ## Value
 
 Tibble com colunas `doc_id` e `categoria`.
+
+## Examples
+
+``` r
+if (requireNamespace("openxlsx", quietly = TRUE)) {
+  # Simular uma planilha ja preenchida pelo codificador humano
+  arquivo <- tempfile(fileext = ".xlsx")
+  openxlsx::write.xlsx(
+    data.frame(
+      doc_id           = paste0("doc_", 1:3),
+      categoria_humano = c("favor", "contra", "favor")
+    ),
+    arquivo
+  )
+
+  # Importar de volta para o R para uso com ac_qual_reliability()
+  humano <- ac_qual_import_human(arquivo)
+  humano
+}
+#> ✅ 3 classificações humanas importadas de /tmp/RtmpMBoJEA/file1b6f796019b8.xlsx
+#> # A tibble: 3 × 2
+#>   doc_id categoria
+#>   <chr>  <chr>    
+#> 1 doc_1  favor    
+#> 2 doc_2  contra   
+#> 3 doc_3  favor    
+```

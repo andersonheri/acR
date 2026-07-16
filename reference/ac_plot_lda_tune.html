@@ -89,6 +89,8 @@ ideal para o modelo LDA.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Testar k de 2 a 10 e visualizar a curva de perplexidade</span></span></span>
+<span class="r-in"><span><span class="co"># (ponto de inflexao/"cotovelo" sugere um bom k)</span></span></span>
 <span class="r-in"><span><span class="va">tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_lda_tune.html">ac_lda_tune</a></span><span class="op">(</span><span class="va">corpus</span>, k_range <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_plot_lda_tune</span><span class="op">(</span><span class="va">tune</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>

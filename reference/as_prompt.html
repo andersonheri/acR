@@ -100,6 +100,54 @@ exemplos, pesos e, opcionalmente, raciocínio estruturado.</p>
     <p>String com o system prompt (invisível).</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Codebook base</span></span></span>
+<span class="r-in"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name         <span class="op">=</span> <span class="st">"tom"</span>,</span></span>
+<span class="r-in"><span>  instructions <span class="op">=</span> <span class="st">"Classifique o tom do texto."</span>,</span></span>
+<span class="r-in"><span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    formal   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Linguagem tecnica e impessoal."</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    informal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Linguagem coloquial ou emotiva."</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"formal"</span>: sem exemplos positivos (<span style="color: #00BB00;">examples_pos</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos melhoram a precisão da classificação (Sampaio &amp; Lycarião, 2021).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"formal"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"informal"</span>: sem exemplos positivos (<span style="color: #00BB00;">examples_pos</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos melhoram a precisão da classificação (Sampaio &amp; Lycarião, 2021).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"informal"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Gerar o system prompt para uso direto com objetos Chat do ellmer</span></span></span>
+<span class="r-in"><span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="fu">as_prompt</span><span class="op">(</span><span class="va">cb</span>, reasoning <span class="op">=</span> <span class="cn">TRUE</span>, reasoning_length <span class="op">=</span> <span class="st">"short"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">System prompt: </span><span style="color: #0000BB; font-weight: bold;">"tom"</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (347 caracteres)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Você é assistente de análise de conteúdo qualitativa.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Classifique o tom do texto.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cada texto deve ser classificado em EXATAMENTE UMA categoria.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CATEGORIAS:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - formal: Linguagem tecnica e impessoal.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - informal: Linguagem coloquial ou emotiva.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Responda SEMPRE em JSON válido:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "categoria": "formal|informal"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   "raciocinio": "1 frase curta",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> } </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────────────────────────</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">prompt</span>, <span class="fl">1</span>, <span class="fl">200</span><span class="op">)</span>  <span class="co"># inspecionar o comeco do prompt</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Você é assistente de análise de conteúdo qualitativa.\n\nClassifique o tom do texto.\n\nCada texto deve ser classificado em EXATAMENTE UMA categoria.\n\nCATEGORIAS:\n- formal: Linguagem tecnica e impessoal.\n"</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
