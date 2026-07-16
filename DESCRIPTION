@@ -36,6 +36,7 @@ Imports:
     tidyselect,
     yaml
 Suggests:
+    callr,
     covr,
     ellmer,
     ggplot2,
@@ -43,6 +44,7 @@ Suggests:
     igraph,
     ipeaplot,
     knitr,
+    shiny,
     openxlsx,
     pkgdown,
     quanteda,

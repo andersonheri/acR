@@ -14,6 +14,7 @@ ac_qual_code(
   temperature = 0.3,
   reasoning = TRUE,
   reasoning_length = c("short", "medium", "detailed"),
+  live = c("off", "terminal", "shiny"),
   ...
 )
 }
@@ -50,6 +51,15 @@ com justificativa da classificação.}
 
 \item{reasoning_length}{Tamanho do raciocínio: \code{"short"} (1 frase, padrão),
 \code{"medium"} (3 frases), \code{"detailed"} (parágrafo).}
+
+\item{live}{Visualização em tempo real da classificação:
+\itemize{
+\item \code{"off"} (padrão): sem live view;
+\item \code{"terminal"}: barra de progresso com doc atual, categoria, confiança e
+início do raciocínio a cada iteração;
+\item \code{"shiny"}: abre janela Shiny em background com tabela atualizando
+conforme documentos são classificados (requer \code{shiny} e \code{callr}).
+}}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.
 Permite uso de APIs OpenAI-compatible self-hosted via \code{base_url}.}

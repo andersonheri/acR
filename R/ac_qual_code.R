@@ -28,6 +28,12 @@
 #'   com justificativa da classificação.
 #' @param reasoning_length Tamanho do raciocínio: `"short"` (1 frase, padrão),
 #'   `"medium"` (3 frases), `"detailed"` (parágrafo).
+#' @param live Visualização em tempo real da classificação:
+#'   * `"off"` (padrão): sem live view;
+#'   * `"terminal"`: barra de progresso com doc atual, categoria, confiança e
+#'     início do raciocínio a cada iteração;
+#'   * `"shiny"`: abre janela Shiny em background com tabela atualizando
+#'     conforme documentos são classificados (requer `shiny` e `callr`).
 #' @param ... Argumentos adicionais passados a `ellmer::chat()`.
 #'   Permite uso de APIs OpenAI-compatible self-hosted via `base_url`.
 #'
@@ -94,6 +100,7 @@ ac_qual_code <- function(corpus,
                           temperature        = 0.3,
                           reasoning          = TRUE,
                           reasoning_length   = c("short", "medium", "detailed"),
+                          live               = c("off", "terminal", "shiny"),
                           ...) {
 
   # === Validacoes =============================================================
@@ -117,8 +124,17 @@ ac_qual_code <- function(corpus,
 
   confidence       <- match.arg(confidence)
   reasoning_length <- match.arg(reasoning_length)
+  live             <- match.arg(live)
   k_consistency    <- as.integer(k_consistency)
   do_confidence    <- confidence != "none"
+
+  if (live == "shiny" && !requireNamespace("shiny", quietly = TRUE)) {
+    cli::cli_warn(c(
+      "Pacote {.pkg shiny} nao encontrado; caindo para {.val terminal}.",
+      "i" = "Instale com {.code install.packages(\"shiny\")}."
+    ))
+    live <- "terminal"
+  }
 
   # chat tem prioridade sobre model
   effective_model <- if (!is.null(chat)) chat else model
@@ -139,6 +155,9 @@ ac_qual_code <- function(corpus,
   ))
 
   results <- vector("list", n_docs)
+
+  live_ctx <- .ac_live_start(live, n_docs)
+  on.exit(.ac_live_finish(live_ctx), add = TRUE)
 
   for (i in seq_len(n_docs)) {
     texto  <- corpus$text[i]
@@ -184,6 +203,8 @@ ac_qual_code <- function(corpus,
       main        = main_result,
       conf_scores = conf_scores
     )
+
+    .ac_live_update(live_ctx, i, n_docs, doc_id, main_result, conf_scores)
   }
 
   # === Montar tibble final ====================================================
