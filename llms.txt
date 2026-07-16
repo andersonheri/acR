@@ -59,7 +59,10 @@ são compatíveis com o `ipeaplot`.
 
 ``` r
 
-# Instalar a versão de desenvolvimento do GitHub
+# Após aprovação na CRAN (submissão em andamento):
+install.packages("acR")
+
+# Versão de desenvolvimento do GitHub:
 # install.packages("remotes")
 remotes::install_github("andersonheri/acR")
 
@@ -388,8 +391,8 @@ verificação prévia de disponibilidade.
 citation("acR")
 ```
 
-    Henrique, A. (2025). acR: Análise de Conteúdo em R.
-    R package version 0.2.0. ORCID: 0000-0002-1842-2725.
+    Henrique, A. (2026). acR: Análise de Conteúdo em R.
+    R package version 0.2.2. ORCID: 0000-0002-1842-2725.
     Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
     https://andersonheri.github.io/acR/
 
