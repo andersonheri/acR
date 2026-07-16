@@ -3,6 +3,7 @@
 ## 1. Corpus
 
 ``` r
+
 library(acR)
 textos <- c(
   "O governo anunciou nova politica fiscal para reduzir o deficit.",
@@ -41,6 +42,7 @@ print(corpus)
 ## 2. Limpeza
 
 ``` r
+
 corpus_limpo <- ac_clean(corpus)
 print(corpus_limpo)
 #> 
@@ -64,6 +66,7 @@ print(corpus_limpo)
 ## 3. Tokenizacao
 
 ``` r
+
 tokens <- ac_tokenize(corpus_limpo, n = 1L)
 print(head(tokens, 20))
 #> # A tibble: 20 × 3
@@ -94,6 +97,7 @@ print(head(tokens, 20))
 ## 4. Frequencia
 
 ``` r
+
 contagem <- ac_count(corpus_limpo)
 print(contagem)
 #> # A tibble: 71 × 3
@@ -115,6 +119,7 @@ print(contagem)
 ## 5. Top termos
 
 ``` r
+
 top <- ac_top_terms(contagem, n = 15)
 ac_plot_top_terms(top)
 ```
@@ -124,6 +129,7 @@ ac_plot_top_terms(top)
 ## 6. Nuvem de palavras
 
 ``` r
+
 ac_wordcloud(contagem, max_words = 50)
 #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
 #> empresas could not be fit on page. It will not be plotted.
@@ -155,6 +161,7 @@ ac_wordcloud(contagem, max_words = 50)
 ## 7. TF-IDF
 
 ``` r
+
 tfidf <- ac_tf_idf(contagem)
 ac_plot_tf_idf(tfidf, n = 10)
 ```
@@ -164,6 +171,7 @@ ac_plot_tf_idf(tfidf, n = 10)
 ## 8. Keyness
 
 ``` r
+
 freq_tema <- ac_count(corpus_limpo, by = "tema")
 freq_2grupos <- freq_tema[freq_tema$tema %in% c("fiscal", "tributario"), ]
 kn <- ac_keyness(freq_2grupos, group = "tema", target = "fiscal")
@@ -175,6 +183,7 @@ ac_plot_keyness(kn, n = 15)
 ## 9. Coocorrencia
 
 ``` r
+
 cooc <- ac_cooccurrence(corpus_limpo, window = 5L)
 ac_plot_cooccurrence(cooc, top_n = 20)
 ```

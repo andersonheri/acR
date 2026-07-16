@@ -2,7 +2,8 @@
 
 ### Introducao
 
-- [introducao-acR](https://andersonheri.github.io/acR/articles/introducao-acR.md):
+- [Introdução ao acR: pipeline integrado de análise de
+  conteúdo](https://andersonheri.github.io/acR/articles/introducao-acR.md):
 
 ### Pipeline qualitativo
 

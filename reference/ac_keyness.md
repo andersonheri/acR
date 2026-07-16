@@ -3,8 +3,8 @@
 `ac_keyness()` calcula estatisticas de "keyness" para comparar a
 distribuicao de termos entre dois grupos (por exemplo, governo vs
 oposicao, partidos, periodos). A funcao e inspirada em
-[`quanteda.textstats::textstat_keyness()`](https://quanteda.io/reference/textstat_keyness.html)
-e utiliza tabelas 2x2 por termo.
+`quanteda.textstats::textstat_keyness()` e utiliza tabelas 2x2 por
+termo.
 
 A entrada tipica e uma tabela de frequencias gerada por
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),

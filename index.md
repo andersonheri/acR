@@ -58,6 +58,7 @@ são compatíveis com o `ipeaplot`.
 ## Instalação
 
 ``` r
+
 # Instalar a versão de desenvolvimento do GitHub
 # install.packages("remotes")
 remotes::install_github("andersonheri/acR")
@@ -81,6 +82,7 @@ Santos (UERJ), cujas funções o `acR` estende com uma interface
 padronizada ao restante do pipeline.
 
 ``` r
+
 library(acR)
 library(ellmer)
 library(dplyr)
@@ -101,6 +103,7 @@ os metadados e o idioma do corpus, aceito por todas as funções de
 análise.
 
 ``` r
+
 corpus <- ac_corpus(
   corpus_raw,
   text  = texto,
@@ -116,6 +119,7 @@ inspecionar e editar as stopwords com
 [`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md):
 
 ``` r
+
 # Construir vetor de stopwords customizado a partir do preset legislativo
 sw <- ac_clean_stopwords(
   preset = "pt-legislativo",
@@ -155,6 +159,7 @@ pipeline completo.
 ### Passo 3 — Definir o codebook
 
 ``` r
+
 codebook <- ac_qual_codebook(
   name         = "temas_plenario",
   instructions = "Classifique o tema principal do discurso parlamentar.",
@@ -182,6 +187,7 @@ codebook <- ac_qual_codebook(
 ### Passo 4 — Classificar com LLM
 
 ``` r
+
 chat_obj <- chat_groq(
   model = "llama-3.3-70b-versatile",
   echo  = "none"
@@ -201,6 +207,7 @@ resultado <- ac_qual_code(
 ### Passo 5 — Validar com codificadores humanos
 
 ``` r
+
 amostra <- ac_qual_sample(resultado, n = 15, strategy = "uncertainty")
 ac_qual_export_for_review(sample = amostra, path = "revisao.xlsx", corpus = corpus_limpo)
 
@@ -225,6 +232,7 @@ Ollama, e qualquer serviço que implemente a interface compatível com a
 API da OpenAI, como instâncias privadas ou servidores institucionais.
 
 ``` r
+
 chat_obj <- chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
 chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
 chat_obj <- chat_ollama(model = "llama3.2", echo = "none")
@@ -240,6 +248,7 @@ As chaves de API devem ser configuradas no `.Renviron` com
 ## Busca de literatura via OpenAlex
 
 ``` r
+
 lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
   n_refs        = 5,
@@ -254,6 +263,7 @@ lit <- ac_qual_search_literature(
 ## Pipeline quantitativo
 
 ``` r
+
 tokens  <- ac_tokenize(corpus_limpo)
 contagem <- ac_count(tokens)
 ac_plot_top_terms(ac_top_terms(contagem, n = 15))
@@ -374,6 +384,7 @@ verificação prévia de disponibilidade.
 ## Como citar
 
 ``` r
+
 citation("acR")
 ```
 

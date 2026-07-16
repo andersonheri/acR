@@ -11,6 +11,7 @@ pipeline e nao supervisionado: nao requer treinamento nem chave de API.
 ## 1. Corpus: pronunciamentos sobre reforma previdenciaria
 
 ``` r
+
 textos <- c(
   "Esta reforma e um retrocesso que prejudica os trabalhadores mais pobres.",
   "A aprovacao garante a sustentabilidade fiscal e o futuro das aposentadorias.",
@@ -38,6 +39,7 @@ print(corpus)
 ## 2. Calcular sentimento
 
 ``` r
+
 sent_oplexicon <- ac_sentiment(
   corpus,
   lexicon = "oplexicon",   # "oplexicon" | "sentilex" | "ambos"
@@ -62,6 +64,7 @@ print(sent_oplexicon)
 ## 3. Comparar lexicos
 
 ``` r
+
 sent_oplexicon <- ac_sentiment(corpus, lexicon = "oplexicon")
 # Comparacao visual entre lexicos
 ac_plot_sentiment(sent_oplexicon)
@@ -74,6 +77,7 @@ ac_plot_sentiment(sent_oplexicon)
 ## 4. Visualizacoes
 
 ``` r
+
 # Distribuicao geral de sentimento
 ac_plot_sentiment(sent_oplexicon)
 ```
@@ -81,6 +85,7 @@ ac_plot_sentiment(sent_oplexicon)
     # Grafico: distribuicao de scores | positivo/neutro/negativo
 
 ``` r
+
 # Sentimento medio por partido
 ac_plot_sentiment(sent_oplexicon, por_grupo = TRUE, grupo = "partido")
 ```
@@ -93,6 +98,7 @@ ac_plot_sentiment(sent_oplexicon, por_grupo = TRUE, grupo = "partido")
     # PDT  media: -0.55 (negativo)
 
 ``` r
+
 # Xray: visualizar onde termos-chave aparecem no corpus
 ac_plot_xray(corpus, terms = c("politica", "fiscal", "reforma"))
 ```
@@ -105,6 +111,7 @@ ac_plot_xray(corpus, terms = c("politica", "fiscal", "reforma"))
 ## 5. Sentimento por partido — tabela ABNT
 
 ``` r
+
 library(dplyr)
 resumo <- sent_oplexicon |>
   group_by(doc_id) |>
@@ -131,6 +138,7 @@ ac_export(resumo, path = "sentimento_resumo.tex", format = "latex")
 ## 6. Exportar
 
 ``` r
+
 ac_export(sent_oplexicon,   format = "csv",  path = "sentimento.csv")
 ac_export(sent_oplexicon,   format = "xlsx", path = "sentimento.xlsx")
 ac_export(resumo, format = "csv",  path = "sentimento_resumo.csv")

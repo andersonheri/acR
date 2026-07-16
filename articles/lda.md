@@ -15,6 +15,7 @@ otimo de topicos (K), treinamento, interpretacao e visualizacao.
 ## 1. Corpus: agenda legislativa da 57a legislatura
 
 ``` r
+
 textos <- c(
   "Reforma tributaria simplifica impostos e reduz carga para empresas.",
   "IVA dual substitui PIS, COFINS e ICMS no novo modelo fiscal.",
@@ -61,6 +62,7 @@ print(corpus)
     ## # ℹ 6 more rows
 
 ``` r
+
 summary(corpus)
 ```
 
@@ -98,6 +100,7 @@ summary(corpus)
 ## 2. Preparar a DFM (Document-Feature Matrix)
 
 ``` r
+
 corpus_limpo <- ac_clean(corpus)
 print(corpus_limpo)
 ```
@@ -133,6 +136,7 @@ print(corpus_limpo)
 ## 3. Selecionar o numero de topicos (K)
 
 ``` r
+
 tune <- ac_lda_tune(
   corpus_limpo,
   k_range = 2:8,
@@ -158,6 +162,7 @@ tune <- ac_lda_tune(
 ## 4. Treinar o modelo LDA
 
 ``` r
+
 modelo <- ac_lda(
   corpus_limpo,
   k    = 4L,
@@ -168,6 +173,7 @@ modelo <- ac_lda(
     ## Ajustando LDA com k = 4 tópicos...
 
 ``` r
+
 print(modelo)
 ```
 
@@ -180,6 +186,7 @@ print(modelo)
     ## • Documentos: 12
 
 ``` r
+
 summary(modelo)
 ```
 
@@ -204,6 +211,7 @@ summary(modelo)
 ## 5. Termos por topico (beta)
 
 ``` r
+
 beta <- modelo$terms
 print(head(beta, 10))
 ```
@@ -223,6 +231,7 @@ print(head(beta, 10))
     ## 10     1 tributaria 5.88e- 2
 
 ``` r
+
 ac_plot_lda_topics(modelo, top_n = 10L)
 ```
 
@@ -244,6 +253,7 @@ ac_plot_lda_topics(modelo, top_n = 10L)
 ## 6. Distribuicao de topicos por documento (gamma)
 
 ``` r
+
 gamma <- modelo$documents
 print(head(gamma, 10))
 ```
@@ -277,6 +287,7 @@ print(head(gamma, 10))
 ## 7. Visualizacoes
 
 ``` r
+
 beta_top <- dplyr::slice_max(dplyr::group_by(beta, topic), beta, n = 20)
 print(beta_top)
 ```
@@ -298,6 +309,7 @@ print(beta_top)
     ## # ℹ 91 more rows
 
 ``` r
+
 ac_plot_lda_topics(modelo)
 ```
 
@@ -308,6 +320,7 @@ ac_plot_lda_topics(modelo)
 ## 8. Nomear os topicos
 
 ``` r
+
 print(modelo)
 ```
 
@@ -336,12 +349,14 @@ print(modelo)
 ## 9. Exportar
 
 ``` r
+
 ac_export(beta,  path = "lda_beta.csv",  format = "csv")
 ```
 
     ## ✔ Exportado para lda_beta.csv (csv).
 
 ``` r
+
 ac_export(gamma, path = "lda_gamma.csv", format = "csv")
 ```
 

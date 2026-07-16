@@ -32,6 +32,7 @@ OpenRouter — sem alterar a lógica de análise.
 ## Instalação e configuração
 
 ``` r
+
 # Instalar acR
 remotes::install_github("andersonheri/acR")
 
@@ -51,6 +52,7 @@ categorias analíticas, suas definições operacionais, exemplos positivos
 e negativos, e pesos relativos para instrução da LLM.
 
 ``` r
+
 library(acR)
 
 cb <- ac_qual_codebook(
@@ -85,6 +87,7 @@ print(cb)
 ### Adicionar e remover categorias
 
 ``` r
+
 # Adicionar categoria iterativamente
 cb <- ac_qual_codebook_add(cb,
   tecnico = list(
@@ -109,6 +112,7 @@ re-ancora as definições manuais em referências bibliográficas buscadas
 via LLM, preservando os exemplos originais:
 
 ``` r
+
 cb_hybrid <- ac_qual_codebook_hybrid(
   codebook = cb,
   model    = "anthropic/claude-sonnet-4-5",
@@ -126,6 +130,7 @@ print(cb_hybrid$categories$negativo$references)
 ### Modo literature: construção inteiramente baseada em literatura
 
 ``` r
+
 cb_lit <- ac_qual_codebook(
   name         = "frames_politicos",
   instructions = "Identifique o frame predominante no discurso.",
@@ -147,6 +152,7 @@ cb_lit <- ac_qual_codebook(
 ### Fundir dois codebooks
 
 ``` r
+
 cb_estilo <- ac_qual_codebook(
   name         = "estilo_retórico",
   instructions = "Classifique o estilo retórico dominante.",
@@ -170,6 +176,7 @@ cb_completo <- ac_qual_codebook_merge(
 ### Traduzir para inglês
 
 ``` r
+
 cb_en <- ac_qual_codebook_translate(
   codebook          = cb_completo,
   to                = "en",
@@ -183,11 +190,13 @@ cb_en <- ac_qual_codebook_translate(
 ## Etapa 4 — Inspecionar histórico e gerar system prompt
 
 ``` r
+
 # Ver todas as modificações feitas no codebook
 ac_qual_codebook_history(cb_completo)
 ```
 
 ``` r
+
 # Gerar system prompt para uso direto com ellmer
 prompt <- as_prompt(
   cb_completo,
@@ -204,6 +213,7 @@ prompt <- as_prompt(
 ## Etapa 5 — Classificar o corpus
 
 ``` r
+
 library(ellmer)
 
 # Coletar e estruturar corpus
@@ -216,6 +226,7 @@ corpus <- ac_corpus(discursos, text_col = "transcricao", id_col = "id")
 ```
 
 ``` r
+
 # Classificar
 chat <- chat_anthropic(model = "claude-sonnet-4-5")
 
@@ -236,6 +247,7 @@ head(resultado)
 ## Etapa 6 — Salvar e carregar
 
 ``` r
+
 # Salvar em YAML para replicabilidade
 ac_qual_save_codebook(cb_completo, path = "codebook_discurso.yaml")
 
@@ -248,6 +260,7 @@ cb_recarregado <- ac_qual_load_codebook("codebook_discurso.yaml")
 ## Etapa 7 — Validação e confiabilidade
 
 ``` r
+
 # Amostrar 30 documentos para revisão humana (amostragem estratificada)
 amostra <- ac_qual_sample(resultado, n = 30, method = "stratified")
 ac_qual_export_for_review(amostra, path = "revisao.xlsx")

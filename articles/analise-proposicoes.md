@@ -18,6 +18,7 @@ revisão humana.
 ## 1. Instalar e configurar
 
 ``` r
+
 remotes::install_github("andersonheri/acR")
 install.packages("ellmer")
 
@@ -35,6 +36,7 @@ Cada proposição tem três documentos: a ementa técnica, um discurso
 favorável e um discurso contrário.
 
 ``` r
+
 library(acR)
 library(ellmer)
 library(dplyr)
@@ -85,6 +87,7 @@ distinção importante para a análise de discursos parlamentares
 brasileiros.
 
 ``` r
+
 codebook <- ac_qual_codebook(
   name         = "posicionamento_proposicoes",
   instructions = paste(
@@ -126,6 +129,7 @@ especialmente em categorias limítrofes como `populista` e `ambiguo`
 (Sampaio & Lycarião, 2021):
 
 ``` r
+
 # Recriar com exemplos explícitos para as categorias mais difíceis
 codebook <- ac_qual_codebook(
   name         = "posicionamento_proposicoes",
@@ -172,6 +176,7 @@ re-ancora as definições em referências bibliográficas buscadas via LLM,
 preservando os exemplos manuais:
 
 ``` r
+
 chat_obj <- chat_groq(
   model = "llama-3.3-70b-versatile",
   echo  = "none"
@@ -197,6 +202,7 @@ adicionamos uma dimensão de estilo retórico ao codebook de
 posicionamento:
 
 ``` r
+
 codebook_retorico <- ac_qual_codebook(
   name         = "estilo_retorico",
   instructions = "Identifique o estilo retórico dominante.",
@@ -228,6 +234,7 @@ codebook_completo <- ac_qual_codebook_merge(
 ### Gerar system prompt e inspecionar histórico
 
 ``` r
+
 # Gerar system prompt para uso com ellmer
 prompt <- as_prompt(
   codebook_enriquecido,
@@ -248,6 +255,7 @@ ac_qual_codebook_history(codebook_enriquecido)
 ### Salvar o codebook para replicabilidade
 
 ``` r
+
 ac_qual_save_codebook(
   codebook_enriquecido,
   path = "codebook_proposicoes_v1.yaml"
@@ -266,6 +274,7 @@ usamos o Groq com `llama-3.3-70b-versatile`, que oferece plano gratuito
 e latência baixa — ideal para corpora de tamanho médio como este.
 
 ``` r
+
 chat_obj <- chat_groq(
   model = "llama-3.3-70b-versatile",
   echo  = "none"
@@ -312,6 +321,7 @@ A amostragem por `strategy = "uncertainty"` prioriza documentos com
 menor confiança, otimizando o esforço do codificador humano.
 
 ``` r
+
 # Exportar amostra priorizando casos incertos
 amostra <- ac_qual_sample(
   resultado,
@@ -363,6 +373,7 @@ adequados para publicação (Landis & Koch, 1977).
 ## 6. Análise por tema e tipo
 
 ``` r
+
 # Distribuição de categorias por tema
 resultado |>
   count(tema, categoria) |>
@@ -390,6 +401,7 @@ desses textos.
 ## 7. Exportar resultados
 
 ``` r
+
 # CSV para análise posterior
 ac_export(resultado, formato = "csv", arquivo = "proposicoes_codificadas.csv")
 
