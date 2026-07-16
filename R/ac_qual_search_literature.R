@@ -152,35 +152,39 @@ ac_qual_search_literature <- function(concept,
     )
   }
 
-  syntheses <- purrr::map(seq_len(nrow(raw_results)), function(i) {
-    abstract <- raw_results$abstract_original[i]
-    if (is.na(abstract) || nchar(trimws(abstract)) == 0L) {
-      return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
-    }
+  syntheses <- purrr::map(
+    seq_len(nrow(raw_results)),
+    function(i) {
+      abstract <- raw_results$abstract_original[i]
+      if (is.na(abstract) || nchar(trimws(abstract)) == 0L) {
+        return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
+      }
 
-    user_msg <- paste0(
-      "Conceito: '", concept, "'\n\nAbstract:\n", abstract, "\n\n",
-      "Responda com:\n{\"trecho_original\": \"trecho de 1-2 frases\", \"definicao_pt\": \"sintese ", lang_instruction, "\"}"
-    )
+      user_msg <- paste0(
+        "Conceito: '", concept, "'\n\nAbstract:\n", abstract, "\n\n",
+        "Responda com:\n{\"trecho_original\": \"trecho de 1-2 frases\", \"definicao_pt\": \"sintese ", lang_instruction, "\"}"
+      )
 
-    resposta <- tryCatch(chat_obj$chat(user_msg), error = function(e) {
-      cli::cli_warn("Erro ao sintetizar referencia {i}: {conditionMessage(e)}")
-      NULL
-    })
+      resposta <- tryCatch(chat_obj$chat(user_msg), error = function(e) {
+        cli::cli_warn("Erro ao sintetizar referencia {i}: {conditionMessage(e)}")
+        NULL
+      })
 
-    if (is.null(resposta)) return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
+      if (is.null(resposta)) return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
 
-    json_str <- stringr::str_extract(resposta, "\\{[^\\{\\}]*\\}")
-    if (is.na(json_str)) json_str <- resposta
+      json_str <- stringr::str_extract(resposta, "\\{[^\\{\\}]*\\}")
+      if (is.na(json_str)) json_str <- resposta
 
-    parsed <- tryCatch(jsonlite::fromJSON(json_str), error = function(e) NULL)
-    if (is.null(parsed)) return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
+      parsed <- tryCatch(jsonlite::fromJSON(json_str), error = function(e) NULL)
+      if (is.null(parsed)) return(list(trecho_original = NA_character_, definicao_pt = NA_character_))
 
-    list(
-      trecho_original = parsed$trecho_original %||% NA_character_,
-      definicao_pt    = parsed$definicao_pt    %||% NA_character_
-    )
-  })
+      list(
+        trecho_original = parsed$trecho_original %||% NA_character_,
+        definicao_pt    = parsed$definicao_pt    %||% NA_character_
+      )
+    },
+    .progress = if (interactive()) "Sintetizando abstracts" else FALSE
+  )
 
   result <- raw_results |>
     dplyr::mutate(

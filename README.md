@@ -370,9 +370,11 @@ stopwords em português.
 
 ## Cobertura de testes
 
-Suite de 541 testes unitários e de integração, cobrindo **56%** do código.
-Testes de integração com APIs externas usam `skip_on_cran()` e verificação
-prévia de disponibilidade.
+Suite de **360 blocos `test_that`** com 655 assertions, cobrindo
+**~55%** do código (medido com `covr::package_coverage()`). Testes de
+integração com APIs externas (Câmara, Senado, LLM) usam `skip_on_cran()`
+e verificação prévia de disponibilidade — não bloqueiam CI offline nem
+o `R CMD check` da CRAN.
 
 ---
 

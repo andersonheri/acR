@@ -204,16 +204,20 @@ ac_lda_tune <- function(corpus,
 
   cli::cli_inform("Testando k = {min(k_range)} a {max(k_range)}...")
 
-  results <- purrr::map(k_range, function(k) {
-    model <- topicmodels::LDA(
-      dtm, k = k, method = method,
-      control = list(seed = seed)
-    )
-    tibble::tibble(
-      k           = k,
-      perplexity  = topicmodels::perplexity(model)
-    )
-  })
+  results <- purrr::map(
+    k_range,
+    function(k) {
+      model <- topicmodels::LDA(
+        dtm, k = k, method = method,
+        control = list(seed = seed)
+      )
+      tibble::tibble(
+        k           = k,
+        perplexity  = topicmodels::perplexity(model)
+      )
+    },
+    .progress = if (interactive()) "Ajustando LDA" else FALSE
+  )
 
   dplyr::bind_rows(results)
 }
