@@ -72,6 +72,7 @@ da LLM para cada documento.</p>
 <span>  temperature <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  reasoning <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  reasoning_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"short"</span>, <span class="st">"medium"</span>, <span class="st">"detailed"</span><span class="op">)</span>,</span>
+<span>  live <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"off"</span>, <span class="st">"terminal"</span>, <span class="st">"shiny"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -127,6 +128,15 @@ com justificativa da classificação.</p></dd>
 <dt id="arg-reasoning-length">reasoning_length<a class="anchor" aria-label="anchor" href="#arg-reasoning-length"></a></dt>
 <dd><p>Tamanho do raciocínio: <code>"short"</code> (1 frase, padrão),
 <code>"medium"</code> (3 frases), <code>"detailed"</code> (parágrafo).</p></dd>
+
+
+<dt id="arg-live">live<a class="anchor" aria-label="anchor" href="#arg-live"></a></dt>
+<dd><p>Visualização em tempo real da classificação:</p><ul><li><p><code>"off"</code> (padrão): sem live view;</p></li>
+<li><p><code>"terminal"</code>: barra de progresso com doc atual, categoria, confiança e
+início do raciocínio a cada iteração;</p></li>
+<li><p><code>"shiny"</code>: abre janela Shiny em background com tabela atualizando
+conforme documentos são classificados (requer <code>shiny</code> e <code>callr</code>).</p></li>
+</ul></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -49,6 +49,19 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.2" id="acr-022">acR 0.2.2<a class="anchor" aria-label="anchor" href="#acr-022"></a></h2>
 <div class="section level3">
+<h3 id="novas-funcionalidades--replicabilidade-e-transparência-0-2-2">Novas funcionalidades — Replicabilidade e transparência<a class="anchor" aria-label="anchor" href="#novas-funcionalidades--replicabilidade-e-transpar%C3%AAncia-0-2-2"></a></h3>
+<ul><li><p><strong><code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code></strong> — gera relatório de replicabilidade em Markdown ou HTML autocontido (bilíngue PT/EN), documentando codebook completo, histórico de modificações, configuração da LLM, distribuição de resultados, métricas de confiabilidade (opcional) e referências metodológicas. Pronto para colar em artigo/relatório.</p></li>
+<li>
+<p><strong><code>ac_qual_code(live = ...)</code></strong> — novo argumento com três modos:</p>
+<ul><li>
+<code>"off"</code> (padrão): sem live view;</li>
+<li>
+<code>"terminal"</code>: barra de progresso com doc atual, categoria, confiança e início do raciocínio a cada iteração (via <code><a href="https://cli.r-lib.org/reference/cli_progress_bar.html" class="external-link">cli::cli_progress_bar</a></code>);</li>
+<li>
+<code>"shiny"</code>: janela Shiny em background com tabela atualizando em tempo real (requer <code>shiny</code> e <code>callr</code> em <code>Suggests</code>).</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
 <h3 id="compatibilidade-0-2-2">Compatibilidade<a class="anchor" aria-label="anchor" href="#compatibilidade-0-2-2"></a></h3>
 <ul><li><p>Migrado o acesso ao <code>ellmer</code> para a nova API baseada em <code>chat_&lt;provider&gt;()</code> (<code><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic()</a></code>, <code><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq()</a></code>, <code><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai()</a></code>, etc.). A função <code><a href="https://ellmer.tidyverse.org/reference/chat-any.html" class="external-link">ellmer::chat()</a></code> foi removida em versões recentes do <code>ellmer</code>; o novo helper interno <code>.ac_ellmer_chat()</code> roteia strings no formato <code>"provider/model"</code> para o dispatcher correto, mantendo fallback para <code><a href="https://ellmer.tidyverse.org/reference/chat-any.html" class="external-link">ellmer::chat()</a></code> quando disponível (retrocompatível).</p></li>
 <li><p><code>ellmer</code> movido de <code>Imports</code> para <code>Suggests</code>: o pacote agora carrega o <code>ellmer</code> apenas quando o usuário chama uma função qualitativa, reduzindo a superfície de dependência para quem usa apenas os módulos quantitativos.</p></li>

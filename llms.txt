@@ -589,6 +589,14 @@ Amostragem, concordancia inter-codificador e importacao/exportacao.
 - [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md)
   : Importar classificação humana de Excel
 
+## Replicabilidade
+
+Relatorio automatico das decisoes metodologicas para artigos e
+relatorios.
+
+- [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
+  : Gerar relatorio de replicabilidade da analise qualitativa
+
 ## Selecao de modelos LLM
 
 Listagem e recomendacao de modelos LLM.

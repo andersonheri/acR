@@ -2,6 +2,24 @@
 
 ## acR 0.2.2
 
+### Novas funcionalidades — Replicabilidade e transparência
+
+- **[`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)**
+  — gera relatório de replicabilidade em Markdown ou HTML autocontido
+  (bilíngue PT/EN), documentando codebook completo, histórico de
+  modificações, configuração da LLM, distribuição de resultados,
+  métricas de confiabilidade (opcional) e referências metodológicas.
+  Pronto para colar em artigo/relatório.
+
+- **`ac_qual_code(live = ...)`** — novo argumento com três modos:
+
+  - `"off"` (padrão): sem live view;
+  - `"terminal"`: barra de progresso com doc atual, categoria, confiança
+    e início do raciocínio a cada iteração (via
+    [`cli::cli_progress_bar`](https://cli.r-lib.org/reference/cli_progress_bar.html));
+  - `"shiny"`: janela Shiny em background com tabela atualizando em
+    tempo real (requer `shiny` e `callr` em `Suggests`).
+
 ### Compatibilidade
 
 - Migrado o acesso ao `ellmer` para a nova API baseada em

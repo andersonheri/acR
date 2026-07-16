@@ -18,6 +18,7 @@ ac_qual_code(
   temperature = 0.3,
   reasoning = TRUE,
   reasoning_length = c("short", "medium", "detailed"),
+  live = c("off", "terminal", "shiny"),
   ...
 )
 ```
@@ -80,6 +81,18 @@ ac_qual_code(
 
   Tamanho do raciocínio: `"short"` (1 frase, padrão), `"medium"` (3
   frases), `"detailed"` (parágrafo).
+
+- live:
+
+  Visualização em tempo real da classificação:
+
+  - `"off"` (padrão): sem live view;
+
+  - `"terminal"`: barra de progresso com doc atual, categoria, confiança
+    e início do raciocínio a cada iteração;
+
+  - `"shiny"`: abre janela Shiny em background com tabela atualizando
+    conforme documentos são classificados (requer `shiny` e `callr`).
 
 - ...:
 
