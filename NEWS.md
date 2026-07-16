@@ -1,3 +1,43 @@
+# acR 0.2.2
+
+## Compatibilidade
+
+* Migrado o acesso ao `ellmer` para a nova API baseada em `chat_<provider>()`
+  (`chat_anthropic()`, `chat_groq()`, `chat_openai()`, etc.). A função
+  `ellmer::chat()` foi removida em versões recentes do `ellmer`; o novo
+  helper interno `.ac_ellmer_chat()` roteia strings no formato
+  `"provider/model"` para o dispatcher correto, mantendo fallback para
+  `ellmer::chat()` quando disponível (retrocompatível).
+
+* `ellmer` movido de `Imports` para `Suggests`: o pacote agora carrega o
+  `ellmer` apenas quando o usuário chama uma função qualitativa, reduzindo
+  a superfície de dependência para quem usa apenas os módulos quantitativos.
+
+## Preparação para CRAN
+
+* `Language: en-US` adicionado ao `DESCRIPTION`.
+* `inst/WORDLIST` semeado com termos técnicos e nomes próprios; teste de
+  ortografia não-bloqueante em `tests/spelling.R`.
+* Vinhetas voltam a ser empacotadas no tarball (`^vignettes$` removido do
+  `.Rbuildignore`); as 6 vinhetas compilam sem rede/LLM (chunks LLM com
+  `eval=FALSE`).
+* `vignettes/introducao-acR.Rmd` reescrita como tutorial offline completo.
+* Removida a linha inválida `Additional_repositories` (apontava para URL
+  `github.com`, não aceita pela CRAN).
+
+## Testes
+
+* +16 testes cobrindo I/O Excel (`ac_qual_export_for_review`,
+  `ac_qual_import_human`, roundtrip com `tempfile()`) e helpers internos
+  de modelos (`.ac_models_db`, `.ac_score_models`,
+  `.ac_model_justification`, `.ac_list_models_live`).
+* Testes online de `ac_qual_codebook_translate()` e
+  `ac_qual_codebook_hybrid()` ganham `skip_if()` defensivo para versões do
+  `ellmer` sem `chat()`.
+* Total: 688 pass, 4 skips justificados.
+
+* `R CMD check`: 0 errors, 0 warnings, 1 note inofensiva (clock).
+
 # acR 0.2.1
 
 ## Novas funções
