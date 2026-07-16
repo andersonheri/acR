@@ -4,8 +4,7 @@ Title: Content Analysis in R: Integrated Qualitative (LLMs) and Quantitative Pip
 Version: 0.2.2
 Authors@R: person("Anderson Henrique", email = "anderson.henrique@usp.br",
     role = c("aut", "cre"),
-    comment = c(ORCID = "0000-0002-1842-2725",
-                affiliation = "Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao Paulo"))
+    comment = c(ORCID = "0000-0002-1842-2725"))
 Description: Provides an integrated pipeline for content analysis in R,
     combining qualitative coding assisted by large language models ('LLMs')
     with classical quantitative text analysis. Includes modules for
@@ -21,6 +20,8 @@ License: MIT + file LICENSE
 URL: https://github.com/andersonheri/acR,
     https://andersonheri.github.io/acR/
 BugReports: https://github.com/andersonheri/acR/issues
+Depends:
+    R (>= 4.1)
 Imports:
     cli,
     dplyr,
