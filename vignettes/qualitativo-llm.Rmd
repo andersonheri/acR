@@ -290,14 +290,15 @@ prompt <- as_prompt(
 ## Etapa 5 — Classificar o corpus
 
 Com codebook pronto e corpus estruturado, `ac_qual_code()` faz a
-classificação em lotes. Dois parâmetros são chave:
+classificação em lotes. Três parâmetros são chave:
 
-* `n_rep`: número de repetições de *self-consistency*. O mesmo texto é
-  classificado 3× (padrão) com pequena variação de temperatura, e a categoria
-  final é a moda. O `confidence_score` sai daí — 1.0 = todas as 3 rodadas
-  concordaram; 0.67 = 2 de 3.
-* `batch`: quantos documentos vão por requisição. Depende do modelo — 10–20
-  é seguro para corpora legislativos.
+* `k_consistency`: número de repetições de *self-consistency* (Wang et al.,
+  2022). O mesmo texto é classificado k× (padrão 3) com pequena variação de
+  temperatura, e a categoria final é a moda. O `confidence_score` sai daí —
+  1.0 = todas as k rodadas concordaram; 0.67 = 2 de 3.
+* `reasoning`: pede raciocínio estruturado em JSON.
+* `live`: **visualização em tempo real** da classificação, tirando o processo
+  do "caixa-preta". Ver blockquote abaixo.
 
 ```{r corpus}
 library(ellmer)
@@ -316,12 +317,11 @@ corpus <- ac_corpus(discursos, text_col = "transcricao", id_col = "id")
 chat <- chat_anthropic(model = "claude-sonnet-4-5")
 
 resultado <- ac_qual_code(
-  corpus   = corpus,
-  codebook = cb_completo,
-  chat     = chat,
-  n_rep    = 3,       # self-consistency
-  batch    = 10,      # documentos por lote
-  verbose  = TRUE
+  corpus        = corpus,
+  codebook      = cb_completo,
+  chat          = chat,
+  k_consistency = 3,               # self-consistency
+  live          = "terminal"       # ver a maquina classificando ao vivo
 )
 
 head(resultado)
@@ -330,6 +330,35 @@ head(resultado)
 O tibble de saída traz: `doc_id`, `categoria`, `confidence_score` (via
 *self-consistency*), `reasoning` (raciocínio do modelo, se pedido) e os
 metadados originais do corpus.
+
+### Live view: tirando o LLM do caixa-preta
+
+O argumento `live` de `ac_qual_code()` mostra a máquina classificando em
+tempo real. Três modos:
+
+* `live = "off"` (padrão) — sem visualização.
+* `live = "terminal"` — barra de progresso `cli` com doc atual, categoria,
+  confiança e início do raciocínio. Zero dependências, roda em qualquer
+  setup (batch, CI, servidor sem interface gráfica).
+* `live = "shiny"` — janela Shiny em background com tabela atualizando a
+  cada 500 ms, destaque para casos de baixa confiança. Requer `shiny` e
+  `callr`. Ideal para apresentações e demonstrações.
+
+```{r live-terminal}
+resultado <- ac_qual_code(
+  corpus, cb_completo, chat = chat,
+  live = "terminal"
+)
+# 42/120 | ============>              35% | ETA 2m10s
+#   doc_042 -> populista  (conf 1.00) "Apela ao povo contra elite..."
+```
+
+> **Por que isso importa?** Numa rodada de 500 documentos, sem `live` você
+> não sabe se o modelo travou, se está devolvendo lixo, ou se está indo
+> bem — só descobre no fim, depois de gastar todo o orçamento de tokens.
+> Com `live = "terminal"`, você vê nos primeiros 10 docs se o raciocínio
+> faz sentido e a distribuição de categorias está plausível. Se algo
+> estiver errado, `Ctrl+C` e ajusta.
 
 ---
 
@@ -393,6 +422,76 @@ Interpretação (Landis & Koch, 1977 / Gwet, 2014):
 Para análises publicáveis, valores acima de **0.67** (Krippendorff) ou
 **0.61** (Landis-Koch) são geralmente aceitos, com discussão dos casos
 divergentes na seção de método.
+
+---
+
+## Etapa 8 — Replicabilidade e transparência
+
+Análises com LLM têm um risco de comunicação: **o revisor ou leitor não
+consegue reproduzir a rodada** sem saber exatamente que modelo, que
+codebook, que parâmetros e que amostra foram usados. `ac_qual_report()`
+gera um documento estruturado com **todas essas decisões**, pronto para
+anexar como material suplementar de um artigo ou como apêndice
+metodológico.
+
+O relatório cobre oito seções:
+
+1. **Metadados** — data, versão do `acR`, autor(es), método
+2. **Codebook completo** — categorias, definições, exemplos ± e pesos
+3. **Histórico de modificações** — auditoria das alterações no codebook
+4. **Configuração da LLM** — provedor, modelo, temperatura, k, reasoning
+5. **Resultados** — distribuição por categoria, quartis de
+   `confidence_score`, contagem de casos com confiança < 0.80
+6. **Confiabilidade inter-codificador** — se `ac_qual_reliability()` foi
+   rodado, tabela completa com IC 95%
+7. **Referências metodológicas** — Krippendorff, Landis-Koch, Gilardi,
+   Wang, Gwet
+8. **Sugestão de citação** — formatada em ABNT (PT) ou APA (EN)
+
+Uso mínimo:
+
+```{r report-minimal}
+# Apos ter o resultado da classificacao
+ac_qual_report(
+  coded     = resultado,
+  codebook  = cb_completo,
+  chat      = chat,                     # opcional: extrai provedor/modelo
+  author    = "Anderson Henrique",
+  path      = "relatorio_metodo.md"
+)
+```
+
+Uso completo (com IRR e HTML autocontido):
+
+```{r report-full}
+irr <- ac_qual_reliability(llm = resultado, human = revisado)
+
+ac_qual_report(
+  coded       = resultado,
+  codebook    = cb_completo,
+  reliability = irr,
+  chat        = chat,
+  title       = "Codificação do posicionamento parlamentar - 57ª legislatura",
+  author      = "Silva, A.; Souza, B.",
+  method      = "Discursos coletados via API da Câmara (jan-jun/2023, n=847).",
+  format      = "html",
+  path        = "metodo_apendice.html",
+  lang        = "pt"       # ou "en" para submissao internacional
+)
+```
+
+O arquivo gerado é **autocontido** (HTML embute todos os estilos; MD é
+Markdown puro versionável em Git). Pode ser anexado como material
+suplementar do artigo, incluído como apêndice, ou publicado num
+repositório de dados junto com o codebook em YAML
+(`ac_qual_save_codebook()`) e a saída bruta da LLM.
+
+> **Nota metodológica.** A prática de publicar codebook + rodada da LLM +
+> métricas IRR num único documento é a **transparência mínima** para
+> análise assistida por LLM em ciências sociais. Sem isso, o leitor tem
+> que confiar no autor — algo que a tradição de análise de conteúdo
+> (Krippendorff, 2018) sempre rejeitou. O `ac_qual_report()` empacota
+> essa transparência num único comando.
 
 ---
 
