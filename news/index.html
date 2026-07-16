@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,32 @@
       <small>Source: <a href="https://github.com/andersonheri/acR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.2" id="acr-022">acR 0.2.2<a class="anchor" aria-label="anchor" href="#acr-022"></a></h2>
+<div class="section level3">
+<h3 id="compatibilidade-0-2-2">Compatibilidade<a class="anchor" aria-label="anchor" href="#compatibilidade-0-2-2"></a></h3>
+<ul><li><p>Migrado o acesso ao <code>ellmer</code> para a nova API baseada em <code>chat_&lt;provider&gt;()</code> (<code><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic()</a></code>, <code><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq()</a></code>, <code><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai()</a></code>, etc.). A função <code><a href="https://ellmer.tidyverse.org/reference/chat-any.html" class="external-link">ellmer::chat()</a></code> foi removida em versões recentes do <code>ellmer</code>; o novo helper interno <code>.ac_ellmer_chat()</code> roteia strings no formato <code>"provider/model"</code> para o dispatcher correto, mantendo fallback para <code><a href="https://ellmer.tidyverse.org/reference/chat-any.html" class="external-link">ellmer::chat()</a></code> quando disponível (retrocompatível).</p></li>
+<li><p><code>ellmer</code> movido de <code>Imports</code> para <code>Suggests</code>: o pacote agora carrega o <code>ellmer</code> apenas quando o usuário chama uma função qualitativa, reduzindo a superfície de dependência para quem usa apenas os módulos quantitativos.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="preparação-para-cran-0-2-2">Preparação para CRAN<a class="anchor" aria-label="anchor" href="#prepara%C3%A7%C3%A3o-para-cran-0-2-2"></a></h3>
+<ul><li>
+<code>Language: en-US</code> adicionado ao <code>DESCRIPTION</code>.</li>
+<li>
+<code>inst/WORDLIST</code> semeado com termos técnicos e nomes próprios; teste de ortografia não-bloqueante em <code>tests/spelling.R</code>.</li>
+<li>Vinhetas voltam a ser empacotadas no tarball (<code>^vignettes$</code> removido do <code>.Rbuildignore</code>); as 6 vinhetas compilam sem rede/LLM (chunks LLM com <code>eval=FALSE</code>).</li>
+<li>
+<code>vignettes/introducao-acR.Rmd</code> reescrita como tutorial offline completo.</li>
+<li>Removida a linha inválida <code>Additional_repositories</code> (apontava para URL <code>github.com</code>, não aceita pela CRAN).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="testes-0-2-2">Testes<a class="anchor" aria-label="anchor" href="#testes-0-2-2"></a></h3>
+<ul><li><p>+16 testes cobrindo I/O Excel (<code>ac_qual_export_for_review</code>, <code>ac_qual_import_human</code>, roundtrip com <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile()</a></code>) e helpers internos de modelos (<code>.ac_models_db</code>, <code>.ac_score_models</code>, <code>.ac_model_justification</code>, <code>.ac_list_models_live</code>).</p></li>
+<li><p>Testes online de <code><a href="../reference/ac_qual_codebook_translate.html">ac_qual_codebook_translate()</a></code> e <code><a href="../reference/ac_qual_codebook_hybrid.html">ac_qual_codebook_hybrid()</a></code> ganham <code>skip_if()</code> defensivo para versões do <code>ellmer</code> sem <code><a href="https://ellmer.tidyverse.org/reference/chat-any.html" class="external-link">chat()</a></code>.</p></li>
+<li><p>Total: 688 pass, 4 skips justificados.</p></li>
+<li><p><code>R CMD check</code>: 0 errors, 0 warnings, 1 note inofensiva (clock).</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="acr-021">acR 0.2.1<a class="anchor" aria-label="anchor" href="#acr-021"></a></h2>
 <div class="section level3">
