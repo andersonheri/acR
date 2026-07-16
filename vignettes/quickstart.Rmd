@@ -1,0 +1,83 @@
+---
+title: "Quickstart — acR em 5 minutos"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quickstart — acR em 5 minutos}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.width  = 7,
+  fig.height = 4
+)
+```
+
+Quer entender o `acR` sem ler nada longo? Este é o menor caminho ponta-a-ponta
+usando apenas as funções que rodam **offline e sem chave de API**. Copie e cole.
+
+```{r setup}
+library(acR)
+```
+
+## 1 · Um corpus mínimo
+
+```{r corpus}
+df <- data.frame(
+  id       = paste0("d", 1:6),
+  texto    = c(
+    "Sou favoravel a reforma tributaria que simplifica os impostos.",
+    "Voto contra a proposta, ela vai destruir o setor produtivo.",
+    "Apoio integralmente a reforma, ha ganhos claros de eficiencia.",
+    "Esta reforma e um retrocesso, vamos rejeitar em plenario.",
+    "Defendo a proposta que corrige distorcoes historicas do sistema.",
+    "Somos contra, o texto beneficia apenas grandes corporacoes."
+  ),
+  posicao  = c("favor", "contra", "favor", "contra", "favor", "contra"),
+  stringsAsFactors = FALSE
+)
+
+corpus <- ac_corpus(df, text = texto, docid = id, meta = posicao)
+corpus
+```
+
+## 2 · Termos mais frequentes por grupo
+
+```{r frequencia}
+freq_por_grupo <- ac_count(corpus, by = "posicao")
+ac_top_terms(freq_por_grupo, n = 5, by = "posicao")
+```
+
+## 3 · Palavras distintivas de cada lado (*keyness*)
+
+```{r keyness}
+key <- ac_keyness(freq_por_grupo, group = "posicao", target = "favor")
+head(key, 5)
+```
+
+## 4 · Sentimento por documento (OpLexicon PT-BR)
+
+```{r sentimento}
+ac_sentiment(corpus)
+```
+
+## 5 · Escolher um modelo LLM para a próxima etapa
+
+Se você **for** usar a etapa qualitativa, o pacote sugere modelos com base em
+custo, idioma e tipo de tarefa. Consulta 100% offline (banco interno).
+
+```{r modelos}
+ac_qual_recommend_model(task = "coding", budget = "medium", lang = "pt", n = 3)
+```
+
+## O que vem depois?
+
+* **[Comece aqui](introducao-acR.html)** — visão geral com codificação humana e IRR.
+* **[Codificação com LLMs](qualitativo-llm.html)** — codebook, `ellmer`, *self-consistency*.
+* **[LDA](lda.html)** — modelagem de tópicos.
+* **[Sentimento](sentimento.html)** — pipeline completo com OpLexicon.
+
+Cada uma das funções acima tem exemplos executáveis em `?nome_da_funcao`.

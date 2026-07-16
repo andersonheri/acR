@@ -55,10 +55,12 @@ navbar:
   components:
     intro:
       text: Comece aqui
-      href: articles/introducao-acR.html
+      href: articles/quickstart.html
     articles:
       text: Vignettes
       menu:
+      - text: "Quickstart (5 min)"
+        href: articles/quickstart.html
       - text: "Visao geral do pacote"
         href: articles/introducao-acR.html
       - text: "---"
@@ -78,6 +80,7 @@ navbar:
 articles:
   - title: "Introducao"
     contents:
+      - quickstart
       - introducao-acR
   - title: "Pipeline qualitativo"
     contents:
