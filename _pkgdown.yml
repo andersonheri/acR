@@ -1,15 +1,40 @@
 url: https://andersonheri.github.io/acR/
 template:
   bootstrap: 5
-  bootswatch: cosmo
+  light-switch: true
   bslib:
-    primary: "#0072B2"
+    primary: "#0F3D5C"
+    secondary: "#D97706"
+    success: "#166534"
+    info: "#0F766E"
+    warning: "#B45309"
+    danger: "#991B1B"
     base_font:
-      google: "Inter"
+      google: {family: "Inter", wght: [400, 500, 600, 700]}
     heading_font:
-      google: "Inter"
+      google: {family: "Inter Tight", wght: [500, 600, 700, 800]}
     code_font:
-      google: "JetBrains Mono"
+      google: {family: "JetBrains Mono", wght: [400, 500]}
+    bg: "#FBFAF7"
+    fg: "#1F2937"
+    border-radius: "0.5rem"
+    btn-border-radius: "0.5rem"
+    navbar-brand-font-weight: 700
+    headings-font-weight: 700
+  includes:
+    in_header: |
+      <meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros.">
+      <meta property="og:title" content="acR — Analise de Conteudo em R">
+      <meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento.">
+      <meta property="og:type" content="website">
+      <meta name="twitter:card" content="summary_large_image">
+    after_body: |
+      <style>
+        .contents h1, .contents h2, .contents h3 { letter-spacing: -0.01em; }
+        .navbar-brand { letter-spacing: -0.02em; }
+        pre { border-radius: 0.5rem; }
+        .badge { font-weight: 500; }
+      </style>
 development:
   mode: auto
 home:
@@ -64,6 +89,16 @@ articles:
       - sentimento
       - lda
 reference:
+- title: "Comece aqui — funcoes principais"
+  desc: >
+    Os cinco pontos de entrada mais usados do pacote. Se voce esta comecando,
+    aprenda estas primeiro; o resto do pipeline se conecta em torno delas.
+  contents:
+  - ac_corpus
+  - ac_count
+  - ac_qual_codebook
+  - ac_qual_code
+  - ac_qual_reliability
 - title: "Coleta de dados"
   desc: "Importacao de textos de fontes abertas brasileiras."
   contents:
