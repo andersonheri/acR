@@ -116,3 +116,55 @@ test_that("justificativa e uma string nao vazia", {
   result <- ac_qual_recommend_model(n = 3)
   expect_true(all(nchar(result$justificativa) > 0))
 })
+
+
+# ============================================================
+# Auxiliares internos (offline, sem API)
+# ============================================================
+
+test_that(".ac_models_db() traz todos os provedores esperados", {
+  db <- acR:::.ac_models_db()
+  expect_s3_class(db, "tbl_df")
+  expect_true(all(c("anthropic","openai","google","groq",
+                    "deepseek","mistral","ollama") %in% unique(db$provider)))
+})
+
+test_that(".ac_score_models() retorna vetor no intervalo plausivel", {
+  db <- acR:::.ac_models_db()
+  s  <- acR:::.ac_score_models(db, task = "coding", lang = "pt")
+  expect_length(s, nrow(db))
+  expect_true(all(s > 0 & s <= 100))
+})
+
+test_that(".ac_model_justification() cobre coding + balanced", {
+  row <- acR:::.ac_models_db(); row <- row[row$tier == "balanced", ][1, ]
+  txt <- acR:::.ac_model_justification(row, task = "coding", lang = "pt", budget = "medium")
+  expect_type(txt, "character"); expect_true(nchar(txt) > 0)
+})
+
+test_that(".ac_model_justification() cobre literature + reasoning", {
+  row <- acR:::.ac_models_db(); row <- row[grepl("reasoning", tolower(row$name)), ][1, ]
+  txt <- acR:::.ac_model_justification(row, task = "literature", lang = "pt", budget = "high")
+  expect_true(grepl("raciocinio|literatura|definicoes", txt))
+})
+
+test_that(".ac_model_justification() cobre ramo local (privacidade)", {
+  row <- acR:::.ac_models_db(); row <- row[row$tier == "local", ][1, ]
+  txt <- acR:::.ac_model_justification(row, task = "coding", lang = "pt", budget = "free")
+  expect_true(grepl("privacidade|local", txt))
+})
+
+test_that(".ac_model_justification() em ingles omite mencao a portugues", {
+  row <- acR:::.ac_models_db()[1, ]
+  txt <- acR:::.ac_model_justification(row, task = "coding", lang = "en", budget = "high")
+  expect_false(grepl("portugues", txt))
+})
+
+test_that(".ac_list_models_live() aborta com provedor nao suportado", {
+  skip_if_not_installed("ellmer")
+  expect_error(
+    acR:::.ac_list_models_live(provider = "provedor_inexistente",
+                               filter = NULL, sort_by = "cost"),
+    regexp = "suportado"
+  )
+})

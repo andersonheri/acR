@@ -238,3 +238,86 @@ test_that("ac_qual_sample() sem confidence_score cai para random em 'uncertainty
   )
   expect_equal(nrow(result), 3L)
 })
+
+
+# ============================================================
+# ac_qual_export_for_review() e ac_qual_import_human()
+# I/O Excel: usa tempfile(); requer openxlsx
+# ============================================================
+
+test_that("ac_qual_export_for_review() cria arquivo e retorna o path", {
+  skip_if_not_installed("openxlsx")
+  amostra <- ac_qual_sample(make_llm_df(), n = 5L, strategy = "random", seed = 1L)
+  path <- tempfile(fileext = ".xlsx"); on.exit(unlink(path), add = TRUE)
+  ret <- suppressMessages(ac_qual_export_for_review(amostra, path = path))
+  expect_true(file.exists(path))
+  expect_identical(ret, path)
+})
+
+test_that("ac_qual_export_for_review() adiciona colunas de preenchimento humano", {
+  skip_if_not_installed("openxlsx")
+  amostra <- ac_qual_sample(make_llm_df(), n = 4L, strategy = "random", seed = 2L)
+  path <- tempfile(fileext = ".xlsx"); on.exit(unlink(path), add = TRUE)
+  suppressMessages(ac_qual_export_for_review(amostra, path = path))
+  df <- openxlsx::read.xlsx(path)
+  expect_true(all(c("categoria_humano", "notas_humano") %in% names(df)))
+})
+
+test_that("ac_qual_export_for_review() inclui texto quando corpus e fornecido", {
+  skip_if_not_installed("openxlsx")
+  amostra <- ac_qual_sample(make_llm_df(), n = 3L, strategy = "random", seed = 3L)
+  corpus  <- ac_corpus(
+    data.frame(id = paste0("d", 1:10), texto = paste("Documento", 1:10)),
+    text = texto, docid = id
+  )
+  path <- tempfile(fileext = ".xlsx"); on.exit(unlink(path), add = TRUE)
+  suppressMessages(ac_qual_export_for_review(amostra, path = path, corpus = corpus))
+  df <- openxlsx::read.xlsx(path)
+  expect_true("text" %in% names(df))
+})
+
+test_that("roundtrip export -> preenchimento -> import recupera classificacoes", {
+  skip_if_not_installed("openxlsx")
+  amostra <- ac_qual_sample(make_llm_df(), n = 5L, strategy = "random", seed = 7L)
+  path <- tempfile(fileext = ".xlsx"); on.exit(unlink(path), add = TRUE)
+  suppressMessages(ac_qual_export_for_review(amostra, path = path))
+  df <- openxlsx::read.xlsx(path)
+  df$categoria_humano <- df$categoria            # humano concorda com a LLM
+  openxlsx::write.xlsx(df, path, overwrite = TRUE)
+  human <- suppressMessages(ac_qual_import_human(path))
+  expect_s3_class(human, "tbl_df")
+  expect_true(all(c("doc_id", "categoria") %in% names(human)))
+  expect_equal(nrow(human), 5L)
+})
+
+test_that("ac_qual_import_human() aborta se arquivo nao existe", {
+  skip_if_not_installed("openxlsx")
+  expect_error(ac_qual_import_human(tempfile(fileext = ".xlsx")), regexp = "encontrado")
+})
+
+test_that("ac_qual_import_human() aborta se falta id_col", {
+  skip_if_not_installed("openxlsx")
+  path <- tempfile(fileext = ".xlsx"); on.exit(unlink(path), add = TRUE)
+  openxlsx::write.xlsx(data.frame(categoria_humano = "pos"), path)
+  expect_error(suppressMessages(ac_qual_import_human(path)), regexp = "doc_id")
+})
+
+test_that("ac_qual_import_human() aborta se falta cat_col", {
+  skip_if_not_installed("openxlsx")
+  path <- tempfile(fileext = ".xlsx"); on.exit(unlink(path), add = TRUE)
+  openxlsx::write.xlsx(data.frame(doc_id = "d1"), path)
+  expect_error(suppressMessages(ac_qual_import_human(path)), regexp = "categoria_humano")
+})
+
+test_that("ac_qual_import_human() avisa e remove linhas sem classificacao", {
+  skip_if_not_installed("openxlsx")
+  path <- tempfile(fileext = ".xlsx"); on.exit(unlink(path), add = TRUE)
+  openxlsx::write.xlsx(
+    data.frame(doc_id = c("d1","d2","d3"),
+               categoria_humano = c("pos", "", NA)),
+    path
+  )
+  expect_warning(human <- suppressMessages(ac_qual_import_human(path)),
+                 regexp = "sem classifica")
+  expect_equal(nrow(human), 1L)
+})

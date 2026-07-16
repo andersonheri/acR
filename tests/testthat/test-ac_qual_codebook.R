@@ -423,6 +423,10 @@ test_that("ac_qual_codebook_translate() traduz PT->EN com LLM (online)", {
   skip_if_not_installed("ellmer")
   skip_if_not_installed("jsonlite")
   skip_if(
+    !"chat" %in% getNamespaceExports("ellmer"),
+    "ellmer::chat() indisponivel nesta versao do ellmer (API mudou)"
+  )
+  skip_if(
     nchar(Sys.getenv("ANTHROPIC_API_KEY")) == 0 &&
       nchar(Sys.getenv("GROQ_API_KEY")) == 0,
     "Nenhuma API key configurada"
@@ -469,6 +473,10 @@ test_that("ac_qual_codebook_hybrid() enriquece definicoes com LLM (online)", {
   skip_if_offline()
   skip_if_not_installed("ellmer")
   skip_if_not_installed("jsonlite")
+  skip_if(
+    !"chat" %in% getNamespaceExports("ellmer"),
+    "ellmer::chat() indisponivel nesta versao do ellmer (API mudou)"
+  )
   skip_if(
     nchar(Sys.getenv("ANTHROPIC_API_KEY")) == 0 &&
       nchar(Sys.getenv("GROQ_API_KEY")) == 0,

@@ -1,8 +1,8 @@
 ---
-title: "introducao-acR"
+title: "Introdução ao acR: pipeline integrado de análise de conteúdo"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{introducao-acR}
+  %\VignetteIndexEntry{Introdução ao acR: pipeline integrado de análise de conteúdo}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,10 +10,139 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment  = "#>"
 )
 ```
 
 ```{r setup}
 library(acR)
 ```
+
+## Objetivo
+
+O `acR` integra, em um único fluxo reprodutível, a análise quantitativa
+clássica de texto (frequências, *keyness*, coocorrência, LDA, sentimento) e a
+codificação qualitativa assistida por modelos de linguagem (LLMs) via `ellmer`.
+Esta vignette apresenta o caminho mínimo do dado bruto ao resultado, usando
+apenas funções que rodam sem chave de API. O módulo de LLM é demonstrado ao
+final, com execução desativada.
+
+O objeto central é o `ac_corpus`, um `tibble` com colunas padronizadas
+`doc_id` e `text`, sobre o qual todas as demais funções operam.
+
+## 1. Construir um corpus
+
+```{r corpus}
+df <- data.frame(
+  id      = c("d1", "d2", "d3", "d4"),
+  texto   = c(
+    "O deputado do PT defendeu a reforma na CCJ.",
+    "O deputado do PL criticou a reforma novamente.",
+    "A senadora do PT relatou o projeto na comissão.",
+    "O senador do PL obstruiu a votação do projeto."
+  ),
+  partido = c("PT", "PL", "PT", "PL"),
+  stringsAsFactors = FALSE
+)
+
+corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
+corp
+```
+
+## 2. Frequências e termos mais salientes
+
+```{r contagem}
+# Frequência de unigramas no corpus inteiro
+freq <- ac_count(corp)
+ac_top_terms(freq, n = 8)
+
+# Frequência por partido
+freq_partido <- ac_count(corp, by = "partido")
+ac_top_terms(freq_partido, n = 5, by = "partido")
+```
+
+## 3. Escolher um modelo LLM para a etapa qualitativa
+
+Antes de codificar qualitativamente, o `acR` ajuda a selecionar um modelo
+adequado ao orçamento e ao idioma do corpus. A consulta usa um banco interno
+curado e funciona offline.
+
+```{r modelos}
+# Modelos recomendados para classificação em português, orçamento médio
+ac_qual_recommend_model(task = "coding", budget = "medium", lang = "pt", n = 3)
+```
+
+A recomendação é baseada em benchmarks de anotação de texto em Ciências
+Sociais (Gilardi, Alizadeh e Kubli, 2023; Törnberg, 2023) combinados com custo,
+janela de contexto e suporte estimado ao português.
+
+## 4. Codificação qualitativa assistida por LLM
+
+Esta etapa requer uma chave de API configurada e, por isso, não é executada na
+construção da vignette. O padrão de uso é o seguinte.
+
+```{r coding, eval = FALSE}
+# Requer chave de API (ex.: ANTHROPIC_API_KEY) configurada no ambiente
+codebook <- ac_qual_codebook(
+  name         = "posicionamento",
+  instructions = "Classifique o posicionamento do parlamentar sobre a reforma.",
+  categories   = list(
+    apoio   = "manifestação favorável à reforma",
+    critica = "manifestação contrária à reforma",
+    neutro  = "sem posicionamento claro"
+  ),
+  mode = "manual"
+)
+
+codificado <- ac_qual_code(
+  corpus   = corp,
+  codebook = codebook,
+  model    = "anthropic/claude-sonnet-4-5"
+)
+
+codificado
+```
+
+## 5. Validar com codificação humana
+
+O `acR` fecha o ciclo com validação humana e métricas de confiabilidade entre
+codificadores. O fluxo abaixo é offline após a codificação.
+
+```{r validacao, eval = FALSE}
+# Amostra estratificada para revisão humana
+amostra <- ac_qual_sample(codificado, n = 50, strategy = "stratified")
+
+# Exporta planilha para o codificador humano preencher
+ac_qual_export_for_review(amostra, path = "validacao_humana.xlsx", corpus = corp)
+
+# Após o preenchimento, reimporta e calcula confiabilidade
+humano <- ac_qual_import_human("validacao_humana.xlsx")
+ac_qual_reliability(llm = codificado, human = humano)
+```
+
+As métricas incluem *percent agreement*, *alpha* de Krippendorff, AC1 de Gwet e
+F1 macro, com intervalos de confiança por *bootstrap* e interpretação segundo
+Landis e Koch (1977) e Gwet (2014).
+
+## Próximos passos
+
+Consulte as vignettes específicas para aprofundamento: análise de proposições,
+LDA, sentimento e o fluxo qualitativo completo com LLMs.
+
+## Referências
+
+GILARDI, F.; ALIZADEH, M.; KUBLI, M. ChatGPT outperforms crowd workers for
+text-annotation tasks. *PNAS*, v. 120, n. 30, 2023.
+
+GWET, K. L. *Handbook of inter-rater reliability*. 4. ed. Gaithersburg:
+Advanced Analytics, 2014.
+
+KRIPPENDORFF, K. *Content analysis: an introduction to its methodology*.
+4. ed. Thousand Oaks: SAGE, 2018.
+
+LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
+categorical data. *Biometrics*, v. 33, n. 1, p. 159-174, 1977.
+
+TÖRNBERG, P. ChatGPT-4 outperforms experts and crowd workers in annotating
+political Twitter messages with zero-shot learning. *PLOS ONE*, v. 18, n. 4,
+2023.
