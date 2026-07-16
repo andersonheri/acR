@@ -58,47 +58,53 @@ corpus
 
 ## 1. Frequências e termos salientes
 
+Antes de contar, precisamos **remover stopwords**. Sem essa etapa, os
+termos mais frequentes seriam `o`, `a`, `de`, `que` — carregam pouca
+informação temática e mascaram os padrões reais do corpus.
+
 ``` r
 
+corpus_limpo <- ac_clean(corpus, remove_stopwords = "pt")
+
 # Frequência global
-freq <- ac_count(corpus)
+freq <- ac_count(corpus_limpo)
 ac_top_terms(freq, n = 8)
-#> # A tibble: 81 × 3
-#>    doc_id token       n
-#>    <chr>  <chr>   <int>
-#>  1 d8     os          2
-#>  2 d3     Apoio       1
-#>  3 d5     Defendo     1
-#>  4 d4     Rejeito     1
-#>  5 d6     Somos       1
-#>  6 d1     Sou         1
-#>  7 d2     Voto        1
-#>  8 d7     Voto        1
-#>  9 d8     Voto        1
-#> 10 d1     a           1
-#> # ℹ 71 more rows
+#> # A tibble: 57 × 3
+#>    doc_id token             n
+#>    <chr>  <chr>         <int>
+#>  1 d3     adesao            1
+#>  2 d6     apenas            1
+#>  3 d3     apoio             1
+#>  4 d3     arrecadatoria     1
+#>  5 d6     beneficia         1
+#>  6 d2     brasileiro        1
+#>  7 d3     claros            1
+#>  8 d2     contra            1
+#>  9 d6     contrarios        1
+#> 10 d4     corporacoes       1
+#> # ℹ 47 more rows
 ```
 
 Agora quebrando por lado (`favor` vs `contra`):
 
 ``` r
 
-freq_lado <- ac_count(corpus, by = "posicao")
+freq_lado <- ac_count(corpus_limpo, by = "posicao")
 ac_top_terms(freq_lado, n = 5, by = "posicao")
-#> # A tibble: 72 × 3
+#> # A tibble: 51 × 3
 #>    posicao token           n
 #>    <chr>   <chr>       <int>
-#>  1 contra  o               3
-#>  2 contra  os              3
-#>  3 contra  Voto            2
-#>  4 contra  grandes         2
-#>  5 contra  Rejeito         1
-#>  6 contra  Somos           1
-#>  7 contra  apenas          1
-#>  8 contra  beneficia       1
-#>  9 contra  brasileiro.     1
-#> 10 contra  contra:         1
-#> # ℹ 62 more rows
+#>  1 contra  grandes         2
+#>  2 contra  voto            2
+#>  3 contra  apenas          1
+#>  4 contra  beneficia       1
+#>  5 contra  brasileiro      1
+#>  6 contra  contra          1
+#>  7 contra  contrarios      1
+#>  8 contra  corporacoes     1
+#>  9 contra  destruir        1
+#> 10 contra  empresarios     1
+#> # ℹ 41 more rows
 ```
 
 ## 2. Termos distintivos com *keyness*
@@ -113,12 +119,12 @@ head(key, 6)
 #> # A tibble: 6 × 10
 #>   token group target reference n_target n_reference total_target total_reference
 #>   <chr> <chr> <chr>  <chr>        <dbl>       <dbl>        <dbl>           <dbl>
-#> 1 a     posi… favor  contra           4           0           42              40
-#> 2 Apoio posi… favor  contra           1           0           42              40
-#> 3 Defe… posi… favor  contra           1           0           42              40
-#> 4 Sou   posi… favor  contra           1           0           42              40
-#> 5 ades… posi… favor  contra           1           0           42              40
-#> 6 arre… posi… favor  contra           1           0           42              40
+#> 1 dist… posi… favor  contra           2           0           29              28
+#> 2 sist… posi… favor  contra           2           0           29              28
+#> 3 trib… posi… favor  contra           2           0           29              28
+#> 4 ades… posi… favor  contra           1           0           29              28
+#> 5 apoio posi… favor  contra           1           0           29              28
+#> 6 arre… posi… favor  contra           1           0           29              28
 #> # ℹ 2 more variables: keyness <dbl>, direction <chr>
 ```
 

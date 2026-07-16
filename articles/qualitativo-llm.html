@@ -94,9 +94,11 @@
 <p>O módulo qualitativo do <strong>acR</strong> implementa um pipeline
 completo de análise de conteúdo assistida por modelos de linguagem
 (LLMs), seguindo as diretrizes metodológicas de Krippendorff (2018) e as
-recomendações empíricas de Gilardi, Alizadeh e Kubli (2023) sobre uso de
-LLMs para anotação de textos políticos.</p>
-<p>O pipeline tem cinco etapas:</p>
+recomendações empíricas de Gilardi, Alizadeh e Kubli (2023), que
+mostraram que LLMs modernas superam trabalhadores de plataformas em
+várias tarefas de anotação de textos políticos, desde que guiadas por um
+codebook bem construído e validadas por revisão humana.</p>
+<p>O pipeline tem cinco etapas encadeadas:</p>
 <pre><code>ac_fetch_camara() / ac_fetch_senado()        ← coleta
          ↓
 ac_corpus()                                  ← estruturação
@@ -110,12 +112,27 @@ ac_qual_code()                               ← classificação com LLM</code><
 <code>chat =</code>, que recebe qualquer objeto <code>Chat</code> do
 pacote <strong>ellmer</strong> (Wickham et al., 2025). Isso permite usar
 qualquer provedor — Groq, OpenAI, Anthropic, Google Gemini, Ollama,
-Mistral, DeepSeek, OpenRouter — sem alterar a lógica de análise.</p>
+Mistral, DeepSeek, OpenRouter — sem alterar a lógica de análise. Também
+suporta modelos locais via Ollama para pesquisas com dados
+sensíveis.</p>
+<blockquote>
+<p><strong>Por que um codebook explícito?</strong> A alternativa naïve
+seria pedir para o modelo “classificar o texto como positivo ou
+negativo”. Isso funciona mal porque cada LLM tem prior próprio sobre o
+que essas palavras significam. Um codebook transforma a classificação em
+<strong>operacionalização reproduzível</strong>: outro pesquisador
+(humano ou LLM) chega aos mesmos rótulos aplicando as mesmas definições
+e exemplos.</p>
+</blockquote>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="instalação-e-configuração">Instalação e configuração<a class="anchor" aria-label="anchor" href="#instala%C3%A7%C3%A3o-e-configura%C3%A7%C3%A3o"></a>
 </h2>
+<p>Antes de começar, garanta que o <code>ellmer</code> está instalado e
+que a chave da API do seu provedor está no ambiente
+(<code>.Renviron</code> é o local usual — nunca no código
+versionado):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Instalar acR</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
@@ -125,14 +142,28 @@ Mistral, DeepSeek, OpenRouter — sem alterar a lógica de análise.</p>
 <span></span>
 <span><span class="co"># Configurar chave de API (exemplo: Anthropic)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"sk-ant-..."</span><span class="op">)</span></span></code></pre></div>
+<p>Se você não sabe qual provedor escolher, use
+<code><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code> — a função consulta um banco
+interno com custo, contexto e qualidade estimada por tipo de tarefa, sem
+precisar de rede.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="etapa-1-criar-o-codebook">Etapa 1 — Criar o codebook<a class="anchor" aria-label="anchor" href="#etapa-1-criar-o-codebook"></a>
 </h2>
 <p>O codebook é o instrumento central da análise de conteúdo. Ele define
-as categorias analíticas, suas definições operacionais, exemplos
-positivos e negativos, e pesos relativos para instrução da LLM.</p>
+as <strong>categorias analíticas</strong>, suas <strong>definições
+operacionais</strong>, <strong>exemplos</strong> positivos (o que É a
+categoria) e negativos (o que NÃO é, para desambiguar categorias
+vizinhas), e <strong>pesos</strong> relativos que orientam a LLM em
+fronteiras difíceis.</p>
+<blockquote>
+<p><strong>Dica metodológica:</strong> exemplos negativos são
+frequentemente subestimados. Um exemplo negativo para “populista” — como
+“Apresento esta emenda técnica” — ajuda muito mais que dois positivos
+adicionais. Eles servem de contraste, reduzindo confusões entre
+categorias similares.</p>
+</blockquote>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
 <span></span>
@@ -150,7 +181,7 @@ positivos e negativos, e pesos relativos para instrução da LLM.</p>
 <span>      definition   <span class="op">=</span> <span class="st">"Discurso com tom crítico ou confrontacional."</span>,</span>
 <span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta proposta vai arruinar o país."</span><span class="op">)</span>,</span>
 <span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apresento esta emenda para melhorar o texto."</span><span class="op">)</span>,</span>
-<span>      weight       <span class="op">=</span> <span class="fl">1.5</span>  <span class="co"># categoria mais difícil: peso maior</span></span>
+<span>      weight       <span class="op">=</span> <span class="fl">1.5</span>  <span class="co"># categoria mais difícil: peso maior no prompt</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    neutro <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      definition   <span class="op">=</span> <span class="st">"Discurso descritivo, sem posicionamento claro."</span>,</span>
@@ -158,7 +189,7 @@ positivos e negativos, e pesos relativos para instrução da LLM.</p>
 <span>      weight       <span class="op">=</span> <span class="fl">1</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,   <span class="co"># cada doc recebe UMA categoria</span></span>
 <span>  lang       <span class="op">=</span> <span class="st">"pt"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -166,6 +197,14 @@ positivos e negativos, e pesos relativos para instrução da LLM.</p>
 <div class="section level3">
 <h3 id="adicionar-e-remover-categorias">Adicionar e remover categorias<a class="anchor" aria-label="anchor" href="#adicionar-e-remover-categorias"></a>
 </h3>
+<p>Codebooks quase nunca ficam corretos na primeira tentativa. As
+funções <code><a href="../reference/ac_qual_codebook_add.html">ac_qual_codebook_add()</a></code> e
+<code><a href="../reference/ac_qual_codebook_remove.html">ac_qual_codebook_remove()</a></code> permitem <strong>refinamento
+iterativo</strong> — comum quando você roda o codebook numa amostra
+piloto e percebe que faltou uma categoria (“técnico”) ou que duas se
+sobrepõem.</p>
+<p>Todas as modificações ficam registradas em
+<code>codebook$history</code> para reprodutibilidade metodológica.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Adicionar categoria iterativamente</span></span>
 <span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_add.html">ac_qual_codebook_add</a></span><span class="op">(</span><span class="va">cb</span>,</span>
@@ -184,6 +223,22 @@ positivos e negativos, e pesos relativos para instrução da LLM.</p>
 <div class="section level2">
 <h2 id="etapa-2-enriquecer-o-codebook-com-literatura">Etapa 2 — Enriquecer o codebook com literatura<a class="anchor" aria-label="anchor" href="#etapa-2-enriquecer-o-codebook-com-literatura"></a>
 </h2>
+<p>Definir categorias apenas com base no conhecimento do pesquisador
+funciona, mas ancorar as definições em literatura publicada aumenta a
+<strong>validade de construto</strong>. O <code>acR</code> oferece dois
+modos automatizados:</p>
+<ul>
+<li>
+<strong>Híbrido</strong> (<code>ac_qual_codebook_hybrid</code>):
+parte do seu codebook manual e <strong>enriquece</strong> cada categoria
+com citações teóricas relevantes, sem alterar os exemplos que você já
+validou.</li>
+<li>
+<strong>Literature</strong> (<code>mode = "literature"</code>):
+constrói o codebook <strong>do zero</strong> a partir da literatura
+sobre um conceito. Útil quando você tem clareza do conceito teórico mas
+quer que o pacote extraia as dimensões operacionais.</li>
+</ul>
 <div class="section level3">
 <h3 id="modo-híbrido-definições-ancoradas-em-referências">Modo híbrido: definições ancoradas em referências<a class="anchor" aria-label="anchor" href="#modo-h%C3%ADbrido-defini%C3%A7%C3%B5es-ancoradas-em-refer%C3%AAncias"></a>
 </h3>
@@ -207,6 +262,9 @@ exemplos originais:</p>
 <div class="section level3">
 <h3 id="modo-literature-construção-inteiramente-baseada-em-literatura">Modo literature: construção inteiramente baseada em literatura<a class="anchor" aria-label="anchor" href="#modo-literature-constru%C3%A7%C3%A3o-inteiramente-baseada-em-literatura"></a>
 </h3>
+<p>Aqui você fornece o <strong>conceito</strong> que quer capturar (em
+inglês, para melhor recall na base OpenAlex) e o pacote gera categoria,
+definição e exemplos.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cb_lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
 <span>  name         <span class="op">=</span> <span class="st">"frames_politicos"</span>,</span>
@@ -226,6 +284,14 @@ exemplos originais:</p>
 <div class="section level2">
 <h2 id="etapa-3-fundir-e-traduzir-codebooks">Etapa 3 — Fundir e traduzir codebooks<a class="anchor" aria-label="anchor" href="#etapa-3-fundir-e-traduzir-codebooks"></a>
 </h2>
+<p>Análises multidimensionais frequentemente combinam duas ou mais
+tipologias (tom + estilo, posicionamento + tema, etc.).
+<code><a href="../reference/ac_qual_codebook_merge.html">ac_qual_codebook_merge()</a></code> faz essa combinação, com controle
+de conflitos entre categorias de mesmo nome.</p>
+<p>Traduzir codebooks é útil para: <strong>replicabilidade
+internacional</strong> (publicar versão em inglês do instrumento),
+<strong>corpora bilíngues</strong>, ou apenas para checar se as
+definições sobrevivem sem ambiguidade em outra língua.</p>
 <div class="section level3">
 <h3 id="fundir-dois-codebooks">Fundir dois codebooks<a class="anchor" aria-label="anchor" href="#fundir-dois-codebooks"></a>
 </h3>
@@ -240,7 +306,7 @@ exemplos originais:</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Fundir: tom + estilo retórico em um único codebook multilabel</span></span>
+<span><span class="co"># Fundir: tom + estilo retórico em um único codebook</span></span>
 <span><span class="va">cb_completo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_merge.html">ac_qual_codebook_merge</a></span><span class="op">(</span></span>
 <span>  cb1          <span class="op">=</span> <span class="va">cb_hybrid</span>,</span>
 <span>  cb2          <span class="op">=</span> <span class="va">cb_estilo</span>,</span>
@@ -254,9 +320,9 @@ exemplos originais:</p>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cb_en</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_translate.html">ac_qual_codebook_translate</a></span><span class="op">(</span></span>
-<span>  codebook          <span class="op">=</span> <span class="va">cb_completo</span>,</span>
-<span>  to                <span class="op">=</span> <span class="st">"en"</span>,</span>
-<span>  model             <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
+<span>  codebook           <span class="op">=</span> <span class="va">cb_completo</span>,</span>
+<span>  to                 <span class="op">=</span> <span class="st">"en"</span>,</span>
+<span>  model              <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span>
 <span>  translate_examples <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <hr>
@@ -265,6 +331,14 @@ exemplos originais:</p>
 <div class="section level2">
 <h2 id="etapa-4-inspecionar-histórico-e-gerar-system-prompt">Etapa 4 — Inspecionar histórico e gerar system prompt<a class="anchor" aria-label="anchor" href="#etapa-4-inspecionar-hist%C3%B3rico-e-gerar-system-prompt"></a>
 </h2>
+<p>Todo codebook mantém um <code>history</code> das modificações — quem
+alterou, quando e o quê. Isso é essencial para publicação: o revisor
+pode auditar exatamente como o instrumento foi construído.</p>
+<p>O <code><a href="../reference/as_prompt.html">as_prompt()</a></code> converte o objeto <code>ac_codebook</code>
+em uma string de <strong>system prompt</strong> formatada, pronta para
+ser injetada num objeto <code>Chat</code> do <code>ellmer</code>. Você
+pode usar essa string diretamente se quiser rodar a classificação com
+sua própria lógica de retry/paralelismo.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Ver todas as modificações feitas no codebook</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_codebook_history.html">ac_qual_codebook_history</a></span><span class="op">(</span><span class="va">cb_completo</span><span class="op">)</span></span></code></pre></div>
@@ -272,17 +346,38 @@ exemplos originais:</p>
 <code class="sourceCode R"><span><span class="co"># Gerar system prompt para uso direto com ellmer</span></span>
 <span><span class="va">prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_prompt.html">as_prompt</a></span><span class="op">(</span></span>
 <span>  <span class="va">cb_completo</span>,</span>
-<span>  reasoning        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  reasoning_length <span class="op">=</span> <span class="st">"medium"</span>  <span class="co"># "short" | "medium" | "detailed"</span></span>
+<span>  reasoning        <span class="op">=</span> <span class="cn">TRUE</span>,           <span class="co"># pede raciocinio estruturado</span></span>
+<span>  reasoning_length <span class="op">=</span> <span class="st">"medium"</span>        <span class="co"># "short" | "medium" | "detailed"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># O prompt pode ser passado diretamente a um objeto Chat:</span></span>
 <span><span class="co"># chat$set_system_prompt(prompt)</span></span></code></pre></div>
+<blockquote>
+<p><strong>Sobre <code>reasoning</code>:</strong> pedir raciocínio
+<em>aumenta</em> a qualidade da classificação em casos difíceis (o
+modelo “pensa antes de responder”), mas <strong>dobra o custo</strong>
+por documento (mais tokens gerados). Use <code>"short"</code> como
+padrão; <code>"detailed"</code> só quando você planeja auditar decisões
+individualmente.</p>
+</blockquote>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="etapa-5-classificar-o-corpus">Etapa 5 — Classificar o corpus<a class="anchor" aria-label="anchor" href="#etapa-5-classificar-o-corpus"></a>
 </h2>
+<p>Com codebook pronto e corpus estruturado, <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>
+faz a classificação em lotes. Dois parâmetros são chave:</p>
+<ul>
+<li>
+<code>n_rep</code>: número de repetições de
+<em>self-consistency</em>. O mesmo texto é classificado 3× (padrão) com
+pequena variação de temperatura, e a categoria final é a moda. O
+<code>confidence_score</code> sai daí — 1.0 = todas as 3 rodadas
+concordaram; 0.67 = 2 de 3.</li>
+<li>
+<code>batch</code>: quantos documentos vão por requisição. Depende
+do modelo — 10–20 é seguro para corpora legislativos.</li>
+</ul>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
 <span></span>
@@ -307,11 +402,18 @@ exemplos originais:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span></code></pre></div>
+<p>O tibble de saída traz: <code>doc_id</code>, <code>categoria</code>,
+<code>confidence_score</code> (via <em>self-consistency</em>),
+<code>reasoning</code> (raciocínio do modelo, se pedido) e os metadados
+originais do corpus.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="etapa-6-salvar-e-carregar">Etapa 6 — Salvar e carregar<a class="anchor" aria-label="anchor" href="#etapa-6-salvar-e-carregar"></a>
 </h2>
+<p>Codebook e resultados devem ser <strong>serializados</strong> para
+replicabilidade. YAML foi escolhido por ser legível por humanos e
+versionável em Git.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Salvar em YAML para replicabilidade</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb_completo</span>, path <span class="op">=</span> <span class="st">"codebook_discurso.yaml"</span><span class="op">)</span></span>
@@ -323,15 +425,76 @@ exemplos originais:</p>
 <div class="section level2">
 <h2 id="etapa-7-validação-e-confiabilidade">Etapa 7 — Validação e confiabilidade<a class="anchor" aria-label="anchor" href="#etapa-7-valida%C3%A7%C3%A3o-e-confiabilidade"></a>
 </h2>
+<p><strong>Sem validação humana, não há análise de conteúdo
+publicável.</strong> LLM é uma ferramenta poderosa, mas nenhuma
+referência metodológica aceita hoje um estudo de análise categorial sem
+um subconjunto codificado por humano e métricas de concordância entre
+codificadores.</p>
+<p>O fluxo mínimo:</p>
+<ol style="list-style-type: decimal">
+<li>
+<code><a href="../reference/ac_qual_sample.html">ac_qual_sample()</a></code>: seleciona uma amostra representativa
+(estratificada, ou priorizando casos incertos via
+<code>strategy = "uncertainty"</code>).</li>
+<li>
+<code><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>: exporta para
+<code>.xlsx</code> com a coluna <code>categoria_humano</code> em branco
+para o revisor preencher.</li>
+<li>
+<code><a href="../reference/ac_qual_import_human.html">ac_qual_import_human()</a></code>: reimporta o Excel
+preenchido.</li>
+<li>
+<code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>: calcula percent agreement,
+<em>alpha</em> de Krippendorff, AC1 de Gwet e F1 macro, com IC 95% via
+<em>bootstrap</em>.</li>
+</ol>
+<blockquote>
+<p><strong>Quanto amostrar?</strong> Regra prática (Krippendorff 2018):
+pelo menos 10% do corpus, no mínimo 30 documentos, priorizando os casos
+com <code>confidence_score &lt; 0.8</code> (é onde o modelo mais tende a
+errar).</p>
+</blockquote>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Amostrar 30 documentos para revisão humana (amostragem estratificada)</span></span>
-<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">30</span>, method <span class="op">=</span> <span class="st">"stratified"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="st">"revisao.xlsx"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Amostrar 30 documentos priorizando os incertos</span></span>
+<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">30</span>, strategy <span class="op">=</span> <span class="st">"uncertainty"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="st">"revisao.xlsx"</span>, corpus <span class="op">=</span> <span class="va">corpus</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Após preenchimento manual, calcular IRR</span></span>
 <span><span class="va">revisado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_preenchida.xlsx"</span><span class="op">)</span></span>
-<span><span class="va">irr</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">revisado</span><span class="op">)</span></span>
+<span><span class="va">irr</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span>llm <span class="op">=</span> <span class="va">resultado</span>, human <span class="op">=</span> <span class="va">revisado</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">irr</span><span class="op">)</span></span></code></pre></div>
+<p>Interpretação (Landis &amp; Koch, 1977 / Gwet, 2014):</p>
+<table class="table">
+<thead><tr class="header">
+<th align="center">Alpha/Kappa</th>
+<th align="left">Interpretação</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">&lt; 0.20</td>
+<td align="left">Baixa concordância</td>
+</tr>
+<tr class="even">
+<td align="center">0.21 – 0.40</td>
+<td align="left">Razoável</td>
+</tr>
+<tr class="odd">
+<td align="center">0.41 – 0.60</td>
+<td align="left">Moderada</td>
+</tr>
+<tr class="even">
+<td align="center">0.61 – 0.80</td>
+<td align="left">Substancial</td>
+</tr>
+<tr class="odd">
+<td align="center">&gt; 0.80</td>
+<td align="left">Quase perfeita</td>
+</tr>
+</tbody>
+</table>
+<p>Para análises publicáveis, valores acima de <strong>0.67</strong>
+(Krippendorff) ou <strong>0.61</strong> (Landis-Koch) são geralmente
+aceitos, com discussão dos casos divergentes na seção de método.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -340,8 +503,12 @@ exemplos originais:</p>
 <p>Gilardi, F., Alizadeh, M., &amp; Kubli, M. (2023). ChatGPT
 outperforms crowd workers for text-annotation tasks. <em>PNAS</em>,
 120(30). <a href="https://doi.org/10.1073/pnas.2305016120" class="external-link uri">https://doi.org/10.1073/pnas.2305016120</a></p>
+<p>Gwet, K. L. (2014). <em>Handbook of Inter-Rater Reliability</em> (4th
+ed.). Advanced Analytics.</p>
 <p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its
 Methodology</em> (4th ed.). SAGE.</p>
+<p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer
+agreement for categorical data. <em>Biometrics</em>, 33(1), 159-174.</p>
 <p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer: Qualitative
 Analysis with Large Language Models in R</em>. GitHub. <a href="https://github.com/quallmer/quallmer" class="external-link uri">https://github.com/quallmer/quallmer</a></p>
 <p>Sampaio, R. C., &amp; Lycarião, D. (2021). <em>Análise de conteúdo

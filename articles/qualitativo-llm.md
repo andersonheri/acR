@@ -5,10 +5,12 @@
 O módulo qualitativo do **acR** implementa um pipeline completo de
 análise de conteúdo assistida por modelos de linguagem (LLMs), seguindo
 as diretrizes metodológicas de Krippendorff (2018) e as recomendações
-empíricas de Gilardi, Alizadeh e Kubli (2023) sobre uso de LLMs para
-anotação de textos políticos.
+empíricas de Gilardi, Alizadeh e Kubli (2023), que mostraram que LLMs
+modernas superam trabalhadores de plataformas em várias tarefas de
+anotação de textos políticos, desde que guiadas por um codebook bem
+construído e validadas por revisão humana.
 
-O pipeline tem cinco etapas:
+O pipeline tem cinco etapas encadeadas:
 
     ac_fetch_camara() / ac_fetch_senado()        ← coleta
              ↓
@@ -25,11 +27,23 @@ A função
 aceita o argumento `chat =`, que recebe qualquer objeto `Chat` do pacote
 **ellmer** (Wickham et al., 2025). Isso permite usar qualquer provedor —
 Groq, OpenAI, Anthropic, Google Gemini, Ollama, Mistral, DeepSeek,
-OpenRouter — sem alterar a lógica de análise.
+OpenRouter — sem alterar a lógica de análise. Também suporta modelos
+locais via Ollama para pesquisas com dados sensíveis.
+
+> **Por que um codebook explícito?** A alternativa naïve seria pedir
+> para o modelo “classificar o texto como positivo ou negativo”. Isso
+> funciona mal porque cada LLM tem prior próprio sobre o que essas
+> palavras significam. Um codebook transforma a classificação em
+> **operacionalização reproduzível**: outro pesquisador (humano ou LLM)
+> chega aos mesmos rótulos aplicando as mesmas definições e exemplos.
 
 ------------------------------------------------------------------------
 
 ## Instalação e configuração
+
+Antes de começar, garanta que o `ellmer` está instalado e que a chave da
+API do seu provedor está no ambiente (`.Renviron` é o local usual —
+nunca no código versionado):
 
 ``` r
 
@@ -43,13 +57,26 @@ install.packages("ellmer")
 Sys.setenv(ANTHROPIC_API_KEY = "sk-ant-...")
 ```
 
+Se você não sabe qual provedor escolher, use
+[`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md)
+— a função consulta um banco interno com custo, contexto e qualidade
+estimada por tipo de tarefa, sem precisar de rede.
+
 ------------------------------------------------------------------------
 
 ## Etapa 1 — Criar o codebook
 
 O codebook é o instrumento central da análise de conteúdo. Ele define as
-categorias analíticas, suas definições operacionais, exemplos positivos
-e negativos, e pesos relativos para instrução da LLM.
+**categorias analíticas**, suas **definições operacionais**,
+**exemplos** positivos (o que É a categoria) e negativos (o que NÃO é,
+para desambiguar categorias vizinhas), e **pesos** relativos que
+orientam a LLM em fronteiras difíceis.
+
+> **Dica metodológica:** exemplos negativos são frequentemente
+> subestimados. Um exemplo negativo para “populista” — como “Apresento
+> esta emenda técnica” — ajuda muito mais que dois positivos adicionais.
+> Eles servem de contraste, reduzindo confusões entre categorias
+> similares.
 
 ``` r
 
@@ -69,7 +96,7 @@ cb <- ac_qual_codebook(
       definition   = "Discurso com tom crítico ou confrontacional.",
       examples_pos = c("Esta proposta vai arruinar o país."),
       examples_neg = c("Apresento esta emenda para melhorar o texto."),
-      weight       = 1.5  # categoria mais difícil: peso maior
+      weight       = 1.5  # categoria mais difícil: peso maior no prompt
     ),
     neutro = list(
       definition   = "Discurso descritivo, sem posicionamento claro.",
@@ -77,7 +104,7 @@ cb <- ac_qual_codebook(
       weight       = 1
     )
   ),
-  multilabel = FALSE,
+  multilabel = FALSE,   # cada doc recebe UMA categoria
   lang       = "pt"
 )
 
@@ -85,6 +112,17 @@ print(cb)
 ```
 
 ### Adicionar e remover categorias
+
+Codebooks quase nunca ficam corretos na primeira tentativa. As funções
+[`ac_qual_codebook_add()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.md)
+e
+[`ac_qual_codebook_remove()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_remove.md)
+permitem **refinamento iterativo** — comum quando você roda o codebook
+numa amostra piloto e percebe que faltou uma categoria (“técnico”) ou
+que duas se sobrepõem.
+
+Todas as modificações ficam registradas em `codebook$history` para
+reprodutibilidade metodológica.
 
 ``` r
 
@@ -104,6 +142,18 @@ cb <- ac_qual_codebook_remove(cb, "tecnico")
 ------------------------------------------------------------------------
 
 ## Etapa 2 — Enriquecer o codebook com literatura
+
+Definir categorias apenas com base no conhecimento do pesquisador
+funciona, mas ancorar as definições em literatura publicada aumenta a
+**validade de construto**. O `acR` oferece dois modos automatizados:
+
+- **Híbrido** (`ac_qual_codebook_hybrid`): parte do seu codebook manual
+  e **enriquece** cada categoria com citações teóricas relevantes, sem
+  alterar os exemplos que você já validou.
+- **Literature** (`mode = "literature"`): constrói o codebook **do
+  zero** a partir da literatura sobre um conceito. Útil quando você tem
+  clareza do conceito teórico mas quer que o pacote extraia as dimensões
+  operacionais.
 
 ### Modo híbrido: definições ancoradas em referências
 
@@ -129,6 +179,10 @@ print(cb_hybrid$categories$negativo$references)
 
 ### Modo literature: construção inteiramente baseada em literatura
 
+Aqui você fornece o **conceito** que quer capturar (em inglês, para
+melhor recall na base OpenAlex) e o pacote gera categoria, definição e
+exemplos.
+
 ``` r
 
 cb_lit <- ac_qual_codebook(
@@ -149,6 +203,17 @@ cb_lit <- ac_qual_codebook(
 
 ## Etapa 3 — Fundir e traduzir codebooks
 
+Análises multidimensionais frequentemente combinam duas ou mais
+tipologias (tom + estilo, posicionamento + tema, etc.).
+[`ac_qual_codebook_merge()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_merge.md)
+faz essa combinação, com controle de conflitos entre categorias de mesmo
+nome.
+
+Traduzir codebooks é útil para: **replicabilidade internacional**
+(publicar versão em inglês do instrumento), **corpora bilíngues**, ou
+apenas para checar se as definições sobrevivem sem ambiguidade em outra
+língua.
+
 ### Fundir dois codebooks
 
 ``` r
@@ -163,7 +228,7 @@ cb_estilo <- ac_qual_codebook(
   )
 )
 
-# Fundir: tom + estilo retórico em um único codebook multilabel
+# Fundir: tom + estilo retórico em um único codebook
 cb_completo <- ac_qual_codebook_merge(
   cb1          = cb_hybrid,
   cb2          = cb_estilo,
@@ -178,9 +243,9 @@ cb_completo <- ac_qual_codebook_merge(
 ``` r
 
 cb_en <- ac_qual_codebook_translate(
-  codebook          = cb_completo,
-  to                = "en",
-  model             = "anthropic/claude-sonnet-4-5",
+  codebook           = cb_completo,
+  to                 = "en",
+  model              = "anthropic/claude-sonnet-4-5",
   translate_examples = TRUE
 )
 ```
@@ -188,6 +253,17 @@ cb_en <- ac_qual_codebook_translate(
 ------------------------------------------------------------------------
 
 ## Etapa 4 — Inspecionar histórico e gerar system prompt
+
+Todo codebook mantém um `history` das modificações — quem alterou,
+quando e o quê. Isso é essencial para publicação: o revisor pode auditar
+exatamente como o instrumento foi construído.
+
+O
+[`as_prompt()`](https://andersonheri.github.io/acR/reference/as_prompt.md)
+converte o objeto `ac_codebook` em uma string de **system prompt**
+formatada, pronta para ser injetada num objeto `Chat` do `ellmer`. Você
+pode usar essa string diretamente se quiser rodar a classificação com
+sua própria lógica de retry/paralelismo.
 
 ``` r
 
@@ -200,17 +276,34 @@ ac_qual_codebook_history(cb_completo)
 # Gerar system prompt para uso direto com ellmer
 prompt <- as_prompt(
   cb_completo,
-  reasoning        = TRUE,
-  reasoning_length = "medium"  # "short" | "medium" | "detailed"
+  reasoning        = TRUE,           # pede raciocinio estruturado
+  reasoning_length = "medium"        # "short" | "medium" | "detailed"
 )
 
 # O prompt pode ser passado diretamente a um objeto Chat:
 # chat$set_system_prompt(prompt)
 ```
 
+> **Sobre `reasoning`:** pedir raciocínio *aumenta* a qualidade da
+> classificação em casos difíceis (o modelo “pensa antes de responder”),
+> mas **dobra o custo** por documento (mais tokens gerados). Use
+> `"short"` como padrão; `"detailed"` só quando você planeja auditar
+> decisões individualmente.
+
 ------------------------------------------------------------------------
 
 ## Etapa 5 — Classificar o corpus
+
+Com codebook pronto e corpus estruturado,
+[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+faz a classificação em lotes. Dois parâmetros são chave:
+
+- `n_rep`: número de repetições de *self-consistency*. O mesmo texto é
+  classificado 3× (padrão) com pequena variação de temperatura, e a
+  categoria final é a moda. O `confidence_score` sai daí — 1.0 = todas
+  as 3 rodadas concordaram; 0.67 = 2 de 3.
+- `batch`: quantos documentos vão por requisição. Depende do modelo —
+  10–20 é seguro para corpora legislativos.
 
 ``` r
 
@@ -242,9 +335,16 @@ resultado <- ac_qual_code(
 head(resultado)
 ```
 
+O tibble de saída traz: `doc_id`, `categoria`, `confidence_score` (via
+*self-consistency*), `reasoning` (raciocínio do modelo, se pedido) e os
+metadados originais do corpus.
+
 ------------------------------------------------------------------------
 
 ## Etapa 6 — Salvar e carregar
+
+Codebook e resultados devem ser **serializados** para replicabilidade.
+YAML foi escolhido por ser legível por humanos e versionável em Git.
 
 ``` r
 
@@ -259,17 +359,54 @@ cb_recarregado <- ac_qual_load_codebook("codebook_discurso.yaml")
 
 ## Etapa 7 — Validação e confiabilidade
 
+**Sem validação humana, não há análise de conteúdo publicável.** LLM é
+uma ferramenta poderosa, mas nenhuma referência metodológica aceita hoje
+um estudo de análise categorial sem um subconjunto codificado por humano
+e métricas de concordância entre codificadores.
+
+O fluxo mínimo:
+
+1.  [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md):
+    seleciona uma amostra representativa (estratificada, ou priorizando
+    casos incertos via `strategy = "uncertainty"`).
+2.  [`ac_qual_export_for_review()`](https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.md):
+    exporta para `.xlsx` com a coluna `categoria_humano` em branco para
+    o revisor preencher.
+3.  [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md):
+    reimporta o Excel preenchido.
+4.  [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md):
+    calcula percent agreement, *alpha* de Krippendorff, AC1 de Gwet e F1
+    macro, com IC 95% via *bootstrap*.
+
+> **Quanto amostrar?** Regra prática (Krippendorff 2018): pelo menos 10%
+> do corpus, no mínimo 30 documentos, priorizando os casos com
+> `confidence_score < 0.8` (é onde o modelo mais tende a errar).
+
 ``` r
 
-# Amostrar 30 documentos para revisão humana (amostragem estratificada)
-amostra <- ac_qual_sample(resultado, n = 30, method = "stratified")
-ac_qual_export_for_review(amostra, path = "revisao.xlsx")
+# Amostrar 30 documentos priorizando os incertos
+amostra <- ac_qual_sample(resultado, n = 30, strategy = "uncertainty")
+ac_qual_export_for_review(amostra, path = "revisao.xlsx", corpus = corpus)
 
 # Após preenchimento manual, calcular IRR
 revisado <- ac_qual_import_human("revisao_preenchida.xlsx")
-irr      <- ac_qual_irr(resultado, revisado)
+irr      <- ac_qual_reliability(llm = resultado, human = revisado)
 print(irr)
 ```
+
+Interpretação (Landis & Koch, 1977 / Gwet, 2014):
+
+| Alpha/Kappa | Interpretação      |
+|:-----------:|:-------------------|
+|   \< 0.20   | Baixa concordância |
+| 0.21 – 0.40 | Razoável           |
+| 0.41 – 0.60 | Moderada           |
+| 0.61 – 0.80 | Substancial        |
+|   \> 0.80   | Quase perfeita     |
+
+Para análises publicáveis, valores acima de **0.67** (Krippendorff) ou
+**0.61** (Landis-Koch) são geralmente aceitos, com discussão dos casos
+divergentes na seção de método.
 
 ------------------------------------------------------------------------
 
@@ -279,8 +416,14 @@ Gilardi, F., Alizadeh, M., & Kubli, M. (2023). ChatGPT outperforms crowd
 workers for text-annotation tasks. *PNAS*, 120(30).
 <https://doi.org/10.1073/pnas.2305016120>
 
+Gwet, K. L. (2014). *Handbook of Inter-Rater Reliability* (4th ed.).
+Advanced Analytics.
+
 Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
 Methodology* (4th ed.). SAGE.
+
+Landis, J. R., & Koch, G. G. (1977). The measurement of observer
+agreement for categorical data. *Biometrics*, 33(1), 159-174.
 
 Maerz, S., & Benoit, K. (2025). *quallmer: Qualitative Analysis with
 Large Language Models in R*. GitHub.

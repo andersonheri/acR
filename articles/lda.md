@@ -101,7 +101,7 @@ summary(corpus)
 
 ``` r
 
-corpus_limpo <- ac_clean(corpus)
+corpus_limpo <- ac_clean(corpus, remove_stopwords = "pt")
 print(corpus_limpo)
 ```
 
@@ -118,14 +118,14 @@ print(corpus_limpo)
     ## 
 
     ## # A tibble: 12 × 2
-    ##   doc_id text                                                              
-    ##   <chr>  <chr>                                                             
-    ## 1 doc_1  reforma tributaria simplifica impostos e reduz carga para empresas
-    ## 2 doc_2  iva dual substitui pis cofins e icms no novo modelo fiscal        
-    ## 3 doc_3  congresso debate aliquotas e excecoes para setores economicos     
-    ## 4 doc_4  marco legal da inteligencia artificial regulamenta uso de dados   
-    ## 5 doc_5  privacidade e seguranca de dados sao prioridades na nova lei      
-    ## 6 doc_6  algoritmos de ia precisam de transparencia e auditoria publica    
+    ##   doc_id text                                                       
+    ##   <chr>  <chr>                                                      
+    ## 1 doc_1  reforma tributaria simplifica impostos reduz carga empresas
+    ## 2 doc_2  iva dual substitui pis cofins icms novo modelo fiscal      
+    ## 3 doc_3  congresso debate aliquotas excecoes setores economicos     
+    ## 4 doc_4  marco legal inteligencia artificial regulamenta uso dados  
+    ## 5 doc_5  privacidade seguranca dados sao prioridades nova lei       
+    ## 6 doc_6  algoritmos ia precisam transparencia auditoria publica     
     ## # ℹ 6 more rows
 
     # DFM: 12 documentos x 87 features
@@ -182,7 +182,7 @@ print(modelo)
     ## • Tópicos (k): 4
     ## • Método: "VEM"
     ## • Semente: 42
-    ## • Termos únicos: 82
+    ## • Termos únicos: 73
     ## • Documentos: 12
 
 ``` r
@@ -217,18 +217,18 @@ print(head(beta, 10))
 ```
 
     ## # A tibble: 10 × 3
-    ##    topic term           beta
-    ##    <int> <chr>         <dbl>
-    ##  1     1 de         5.88e-82
-    ##  2     1 carga      5.88e- 2
-    ##  3     1 e          1.18e- 1
-    ##  4     1 empresas   5.88e- 2
-    ##  5     1 impostos   5.88e- 2
-    ##  6     1 para       1.18e- 1
-    ##  7     1 reduz      5.88e- 2
-    ##  8     1 reforma    5.88e- 2
-    ##  9     1 simplifica 5.88e- 2
-    ## 10     1 tributaria 5.88e- 2
+    ##    topic term            beta
+    ##    <int> <chr>          <dbl>
+    ##  1     1 carga      4.76e-  2
+    ##  2     1 empresas   4.76e-  2
+    ##  3     1 impostos   4.76e-  2
+    ##  4     1 reduz      4.76e-  2
+    ##  5     1 reforma    4.76e-  2
+    ##  6     1 simplifica 4.76e-  2
+    ##  7     1 tributaria 4.76e-  2
+    ##  8     1 ampliado   7.10e-269
+    ##  9     1 basica     7.10e-269
+    ## 10     1 educacao   7.10e-269
 
 ``` r
 
@@ -261,16 +261,16 @@ print(head(gamma, 10))
     ## # A tibble: 10 × 3
     ##    doc_id topic   gamma
     ##    <chr>  <int>   <dbl>
-    ##  1 doc_6      1 0.00125
-    ##  2 doc_6      2 0.00125
-    ##  3 doc_6      3 0.996  
-    ##  4 doc_6      4 0.00125
-    ##  5 doc_1      1 0.996  
-    ##  6 doc_1      2 0.00125
-    ##  7 doc_1      3 0.00125
-    ##  8 doc_1      4 0.00125
-    ##  9 doc_10     1 0.00141
-    ## 10 doc_10     2 0.996
+    ##  1 doc_1      1 0.995  
+    ##  2 doc_1      2 0.00155
+    ##  3 doc_1      3 0.00155
+    ##  4 doc_1      4 0.00155
+    ##  5 doc_10     1 0.00155
+    ##  6 doc_10     2 0.995  
+    ##  7 doc_10     3 0.00155
+    ##  8 doc_10     4 0.00155
+    ##  9 doc_11     1 0.00181
+    ## 10 doc_11     2 0.00181
 
     # A tibble: 48 x 3
     #   doc_id  topico  gamma
@@ -292,21 +292,21 @@ beta_top <- dplyr::slice_max(dplyr::group_by(beta, topic), beta, n = 20)
 print(beta_top)
 ```
 
-    ## # A tibble: 101 × 3
+    ## # A tibble: 83 × 3
     ## # Groups:   topic [4]
     ##    topic term         beta
     ##    <int> <chr>       <dbl>
-    ##  1     1 e          0.118 
-    ##  2     1 para       0.118 
-    ##  3     1 carga      0.0588
-    ##  4     1 empresas   0.0588
-    ##  5     1 impostos   0.0588
-    ##  6     1 reduz      0.0588
-    ##  7     1 reforma    0.0588
-    ##  8     1 simplifica 0.0588
-    ##  9     1 tributaria 0.0588
-    ## 10     1 aliquotas  0.0588
-    ## # ℹ 91 more rows
+    ##  1     1 dados      0.0952
+    ##  2     1 carga      0.0476
+    ##  3     1 empresas   0.0476
+    ##  4     1 impostos   0.0476
+    ##  5     1 reduz      0.0476
+    ##  6     1 reforma    0.0476
+    ##  7     1 simplifica 0.0476
+    ##  8     1 tributaria 0.0476
+    ##  9     1 sao        0.0476
+    ## 10     1 artificial 0.0476
+    ## # ℹ 73 more rows
 
 ``` r
 
@@ -334,7 +334,7 @@ print(modelo)
 
     ## • Semente: 42
 
-    ## • Termos únicos: 82
+    ## • Termos únicos: 73
 
     ## • Documentos: 12
 

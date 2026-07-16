@@ -48,24 +48,28 @@ corpus
 
 ## 2 · Termos mais frequentes por grupo
 
+Removemos *stopwords* antes de contar — sem isso, “de”, “a”, “o”
+dominariam qualquer contagem em português.
+
 ``` r
 
+corpus <- ac_clean(corpus, remove_stopwords = "pt")
 freq_por_grupo <- ac_count(corpus, by = "posicao")
 ac_top_terms(freq_por_grupo, n = 5, by = "posicao")
-#> # A tibble: 50 × 3
-#>    posicao token            n
-#>    <chr>   <chr>        <int>
-#>  1 contra  o                2
-#>  2 contra  Esta             1
-#>  3 contra  Somos            1
-#>  4 contra  Voto             1
-#>  5 contra  a                1
-#>  6 contra  apenas           1
-#>  7 contra  beneficia        1
-#>  8 contra  contra           1
-#>  9 contra  contra,          1
-#> 10 contra  corporacoes.     1
-#> # ℹ 40 more rows
+#> # A tibble: 34 × 3
+#>    posicao token           n
+#>    <chr>   <chr>       <int>
+#>  1 contra  contra          2
+#>  2 contra  apenas          1
+#>  3 contra  beneficia       1
+#>  4 contra  corporacoes     1
+#>  5 contra  destruir        1
+#>  6 contra  grandes         1
+#>  7 contra  plenario        1
+#>  8 contra  produtivo       1
+#>  9 contra  proposta        1
+#> 10 contra  reforma         1
+#> # ℹ 24 more rows
 ```
 
 ## 3 · Palavras distintivas de cada lado (*keyness*)
@@ -77,11 +81,11 @@ head(key, 5)
 #> # A tibble: 5 × 10
 #>   token group target reference n_target n_reference total_target total_reference
 #>   <chr> <chr> <chr>  <chr>        <dbl>       <dbl>        <dbl>           <dbl>
-#> 1 que   posi… favor  contra           2           0           27              27
-#> 2 a     posi… favor  contra           3           1           27              27
-#> 3 Apoio posi… favor  contra           1           0           27              27
-#> 4 Defe… posi… favor  contra           1           0           27              27
-#> 5 Sou   posi… favor  contra           1           0           27              27
+#> 1 apoio posi… favor  contra           1           0           18              18
+#> 2 clar… posi… favor  contra           1           0           18              18
+#> 3 corr… posi… favor  contra           1           0           18              18
+#> 4 defe… posi… favor  contra           1           0           18              18
+#> 5 dist… posi… favor  contra           1           0           18              18
 #> # ℹ 2 more variables: keyness <dbl>, direction <chr>
 ```
 
@@ -93,12 +97,12 @@ ac_sentiment(corpus)
 #> # A tibble: 6 × 6
 #>   doc_id n_pos n_neg n_neu score sentiment
 #>   <chr>  <int> <int> <int> <int> <chr>    
-#> 1 d1         0     1     8    -1 negativo 
-#> 2 d2         1     0     9     1 positivo 
-#> 3 d3         1     0     8     1 positivo 
-#> 4 d4         0     0     9     0 neutro   
-#> 5 d5         0     0     9     0 neutro   
-#> 6 d6         0     0     8     0 neutro
+#> 1 d1         0     1     4    -1 negativo 
+#> 2 d2         1     0     6     1 positivo 
+#> 3 d3         1     0     6     1 positivo 
+#> 4 d4         0     0     5     0 neutro   
+#> 5 d5         0     0     6     0 neutro   
+#> 6 d6         0     0     6     0 neutro
 ```
 
 ## 5 · Escolher um modelo LLM para a próxima etapa

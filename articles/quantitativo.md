@@ -1,191 +1,334 @@
 # Analise quantitativa de texto
 
-## 1. Corpus
+Esta vignette percorre o **módulo quantitativo** do `acR` em cima de um
+corpus de discursos parlamentares fabricado para o exemplo. Cada etapa é
+apresentada com uma pergunta metodológica — *por que faço isso?* — antes
+do código e do gráfico.
+
+O caminho é o clássico da análise de conteúdo estatística: **corpus →
+limpeza → tokenização → frequências → distintividade → visualização**.
 
 ``` r
 
 library(acR)
-textos <- c(
-  "O governo anunciou nova politica fiscal para reduzir o deficit.",
-  "A oposicao critica o aumento dos gastos publicos no orcamento.",
-  "Parlamentares debatem reforma tributaria e imposto de renda.",
-  "O presidente vetou o projeto que ampliava beneficios sociais.",
-  "Senado aprova marco legal para investimentos em infraestrutura.",
-  "Deputados votam pela reducao da carga tributaria para empresas.",
-  "Politica monetaria do Banco Central eleva a taxa de juros.",
-  "Inflacao acima da meta preocupa economistas e mercado financeiro."
-)
-corpus <- ac_corpus(data.frame(
-  text = textos,
-  tema = c("fiscal","fiscal","tributario","social","infraestrutura","tributario","monetario","monetario"),
-  stringsAsFactors = FALSE
-))
-print(corpus)
-#> 
-#> ── Corpus acR ──────────────────────────────────────────────────────────────────
-#> • Documentos: 8
-#> • Metadados: 1 coluna
-#> • Idioma: "pt"
-#> 
-#> # A tibble: 8 × 3
-#>   doc_id text                                                            tema   
-#>   <chr>  <chr>                                                           <chr>  
-#> 1 doc_1  O governo anunciou nova politica fiscal para reduzir o deficit. fiscal 
-#> 2 doc_2  A oposicao critica o aumento dos gastos publicos no orcamento.  fiscal 
-#> 3 doc_3  Parlamentares debatem reforma tributaria e imposto de renda.    tribut…
-#> 4 doc_4  O presidente vetou o projeto que ampliava beneficios sociais.   social 
-#> 5 doc_5  Senado aprova marco legal para investimentos em infraestrutura. infrae…
-#> 6 doc_6  Deputados votam pela reducao da carga tributaria para empresas. tribut…
-#> # ℹ 2 more rows
 ```
 
-## 2. Limpeza
+## 1. Construir o corpus
+
+O
+[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+padroniza qualquer `data.frame` em um objeto com colunas fixas `doc_id`
+e `text`, mantendo os metadados que você quiser preservar para
+comparações posteriores.
 
 ``` r
 
-corpus_limpo <- ac_clean(corpus)
-print(corpus_limpo)
+textos <- c(
+  "O governo anunciou nova politica fiscal para reduzir o deficit publico.",
+  "A oposicao critica o aumento dos gastos e da divida publica no orcamento.",
+  "Parlamentares debatem a reforma tributaria e o imposto de renda das familias.",
+  "O presidente vetou o projeto que ampliava beneficios sociais para os pobres.",
+  "O Senado aprovou o marco legal para investimentos em infraestrutura logistica.",
+  "Deputados votam pela reducao da carga tributaria para pequenas empresas.",
+  "A politica monetaria do Banco Central eleva a taxa de juros para conter inflacao.",
+  "A inflacao acima da meta preocupa economistas e o mercado financeiro.",
+  "O relator defendeu emendas ao texto do orcamento com foco em saude e educacao.",
+  "A comissao aprovou o projeto que amplia beneficios sociais no interior.",
+  "O ministro afirmou que a reforma tributaria simplifica o sistema para empresas.",
+  "Lideres da oposicao pediram vistas ao projeto na comissao de constituicao."
+)
+
+meta <- data.frame(
+  text = textos,
+  tema = c("fiscal","fiscal","tributario","social","infraestrutura",
+           "tributario","monetario","monetario","fiscal","social",
+           "tributario","fiscal"),
+  stringsAsFactors = FALSE
+)
+
+corpus <- ac_corpus(meta)
+corpus
 #> 
 #> ── Corpus acR ──────────────────────────────────────────────────────────────────
-#> • Documentos: 8
+#> • Documentos: 12
 #> • Metadados: 1 coluna
 #> • Idioma: "pt"
 #> 
-#> # A tibble: 8 × 3
-#>   doc_id text                                                           tema    
-#>   <chr>  <chr>                                                          <chr>   
-#> 1 doc_1  o governo anunciou nova politica fiscal para reduzir o deficit fiscal  
-#> 2 doc_2  a oposicao critica o aumento dos gastos publicos no orcamento  fiscal  
-#> 3 doc_3  parlamentares debatem reforma tributaria e imposto de renda    tributa…
-#> 4 doc_4  o presidente vetou o projeto que ampliava beneficios sociais   social  
-#> 5 doc_5  senado aprova marco legal para investimentos em infraestrutura infraes…
-#> 6 doc_6  deputados votam pela reducao da carga tributaria para empresas tributa…
-#> # ℹ 2 more rows
+#> # A tibble: 12 × 3
+#>   doc_id text                                                              tema 
+#>   <chr>  <chr>                                                             <chr>
+#> 1 doc_1  O governo anunciou nova politica fiscal para reduzir o deficit p… fisc…
+#> 2 doc_2  A oposicao critica o aumento dos gastos e da divida publica no o… fisc…
+#> 3 doc_3  Parlamentares debatem a reforma tributaria e o imposto de renda … trib…
+#> 4 doc_4  O presidente vetou o projeto que ampliava beneficios sociais par… soci…
+#> 5 doc_5  O Senado aprovou o marco legal para investimentos em infraestrut… infr…
+#> 6 doc_6  Deputados votam pela reducao da carga tributaria para pequenas e… trib…
+#> # ℹ 6 more rows
 ```
 
-## 3. Tokenizacao
+## 2. Limpeza: por que remover *stopwords*?
+
+Sem remoção de *stopwords*, os termos mais frequentes de qualquer corpus
+em português são artigos, preposições e conjunções (`o`, `a`, `de`,
+`que`, `para`…). Eles carregam pouquíssima informação temática e sufocam
+qualquer padrão real de vocabulário. A regra prática em análise de
+conteúdo (Sampaio & Lycarião, 2021) é sempre remover *stopwords* antes
+de contar frequências ou calcular distintividade.
+
+O
+[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+aceita o parâmetro `remove_stopwords = "pt"` para aplicar uma lista de
+*stopwords* portuguesas curada. Você pode adicionar seu próprio
+glossário via `extra_stopwords`.
+
+``` r
+
+corpus_limpo <- ac_clean(
+  corpus,
+  remove_stopwords = "pt",
+  extra_stopwords  = c("pra", "pro")  # opcional: coloquiais
+)
+corpus_limpo
+#> 
+#> ── Corpus acR ──────────────────────────────────────────────────────────────────
+#> • Documentos: 12
+#> • Metadados: 1 coluna
+#> • Idioma: "pt"
+#> 
+#> # A tibble: 12 × 3
+#>   doc_id text                                                              tema 
+#>   <chr>  <chr>                                                             <chr>
+#> 1 doc_1  governo anunciou nova politica fiscal reduzir deficit publico     fisc…
+#> 2 doc_2  oposicao critica aumento gastos divida publica orcamento          fisc…
+#> 3 doc_3  parlamentares debatem reforma tributaria imposto renda familias   trib…
+#> 4 doc_4  presidente vetou projeto ampliava beneficios sociais pobres       soci…
+#> 5 doc_5  senado aprovou marco legal investimentos infraestrutura logistica infr…
+#> 6 doc_6  deputados votam reducao carga tributaria pequenas empresas        trib…
+#> # ℹ 6 more rows
+```
+
+## 3. Tokenização
+
+[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+quebra cada documento em unidades de análise. Com `n = 1L` são unigramas
+(palavras); com `n = 2L`, bigramas (“reforma tributária”). Bigramas são
+úteis quando você quer capturar **expressões compostas** que perdem
+sentido tokenizadas separadamente.
 
 ``` r
 
 tokens <- ac_tokenize(corpus_limpo, n = 1L)
-print(head(tokens, 20))
-#> # A tibble: 20 × 3
-#>    doc_id token_id token    
-#>    <chr>     <int> <chr>    
-#>  1 doc_1         1 o        
-#>  2 doc_1         2 governo  
-#>  3 doc_1         3 anunciou 
-#>  4 doc_1         4 nova     
-#>  5 doc_1         5 politica 
-#>  6 doc_1         6 fiscal   
-#>  7 doc_1         7 para     
-#>  8 doc_1         8 reduzir  
-#>  9 doc_1         9 o        
-#> 10 doc_1        10 deficit  
-#> 11 doc_2         1 a        
-#> 12 doc_2         2 oposicao 
-#> 13 doc_2         3 critica  
-#> 14 doc_2         4 o        
-#> 15 doc_2         5 aumento  
-#> 16 doc_2         6 dos      
-#> 17 doc_2         7 gastos   
-#> 18 doc_2         8 publicos 
-#> 19 doc_2         9 no       
-#> 20 doc_2        10 orcamento
+head(tokens, 12)
+#> # A tibble: 12 × 3
+#>    doc_id token_id token   
+#>    <chr>     <int> <chr>   
+#>  1 doc_1         1 governo 
+#>  2 doc_1         2 anunciou
+#>  3 doc_1         3 nova    
+#>  4 doc_1         4 politica
+#>  5 doc_1         5 fiscal  
+#>  6 doc_1         6 reduzir 
+#>  7 doc_1         7 deficit 
+#>  8 doc_1         8 publico 
+#>  9 doc_2         1 oposicao
+#> 10 doc_2         2 critica 
+#> 11 doc_2         3 aumento 
+#> 12 doc_2         4 gastos
 ```
 
-## 4. Frequencia
+## 4. Frequência
+
+Contagem de ocorrências por documento e depois agregação.
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
+já retorna no formato *tidy* pronto para pipeline com `dplyr` e
+`ggplot2`.
 
 ``` r
 
 contagem <- ac_count(corpus_limpo)
-print(contagem)
-#> # A tibble: 71 × 3
+contagem
+#> # A tibble: 88 × 3
 #>    doc_id token        n
 #>    <chr>  <chr>    <int>
-#>  1 doc_1  o            2
-#>  2 doc_4  o            2
-#>  3 doc_1  anunciou     1
-#>  4 doc_1  deficit      1
-#>  5 doc_1  fiscal       1
-#>  6 doc_1  governo      1
-#>  7 doc_1  nova         1
-#>  8 doc_1  para         1
-#>  9 doc_1  politica     1
-#> 10 doc_1  reduzir      1
-#> # ℹ 61 more rows
+#>  1 doc_1  anunciou     1
+#>  2 doc_1  deficit      1
+#>  3 doc_1  fiscal       1
+#>  4 doc_1  governo      1
+#>  5 doc_1  nova         1
+#>  6 doc_1  politica     1
+#>  7 doc_1  publico      1
+#>  8 doc_1  reduzir      1
+#>  9 doc_10 amplia       1
+#> 10 doc_10 aprovou      1
+#> # ℹ 78 more rows
 ```
 
-## 5. Top termos
+## 5. Top termos: o vocabulário do corpus
+
+O gráfico abaixo mostra as **15 palavras mais frequentes** — agora, com
+*stopwords* removidas, é possível ler os *temas* dominantes: reforma,
+projeto, tributária, orçamento, etc.
 
 ``` r
 
 top <- ac_top_terms(contagem, n = 15)
-ac_plot_top_terms(top)
+ac_plot_top_terms(top) +
+  ggplot2::labs(
+    title    = "Termos mais frequentes no corpus",
+    subtitle = "Discursos legislativos - 12 documentos fabricados",
+    caption  = "acR - vignette Analise Quantitativa"
+  )
 ```
 
 ![](quantitativo_files/figure-html/top-termos-1.png)
 
 ## 6. Nuvem de palavras
 
+Uma nuvem funciona como **panorama visual** rápido, útil para relatórios
+e apresentações. Não substitui análise numérica: o tamanho da palavra é
+proporcional à frequência, mas a posição no plot é aleatória.
+
 ``` r
 
-ac_wordcloud(contagem, max_words = 50)
+if (requireNamespace("wordcloud", quietly = TRUE)) {
+  ac_wordcloud(contagem, max_words = 40)
+}
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> central could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> comissao could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> comissao could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> constituicao could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> critica could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> debatem could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> defendeu could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> deficit could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> deputados could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> divida could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> economistas could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> educacao could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> eleva could not be fit on page. It will not be plotted.
+#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+#> emendas could not be fit on page. It will not be plotted.
 #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
 #> empresas could not be fit on page. It will not be plotted.
 #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> financeiro could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> imposto could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> inflacao could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> infraestrutura could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> investimentos could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> mercado could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> monetaria could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> oposicao could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> orcamento could not be fit on page. It will not be plotted.
+#> empresas could not be fit on page. It will not be plotted.
 ```
 
 ![](quantitativo_files/figure-html/wordcloud-1.png)
 
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, : para
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> financeiro could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> fiscal could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, : foco
     #> could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> gastos could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> governo could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> imposto could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> inflacao could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> inflacao could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> infraestrutura could not be fit on page. It will not be plotted.
+    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
+    #> interior could not be fit on page. It will not be plotted.
 
-## 7. TF-IDF
+## 7. TF-IDF: o que é *distintivo* em cada documento?
+
+Frequência bruta favorece palavras que aparecem em quase todos os
+documentos (mesmo depois de *stopwords*). O **TF-IDF** (*term frequency
+× inverse document frequency*) penaliza termos comuns e destaca
+vocabulário próprio de cada documento — útil quando o corpus é composto
+por textos com propostas ou temas distintos.
 
 ``` r
 
 tfidf <- ac_tf_idf(contagem)
-ac_plot_tf_idf(tfidf, n = 10)
+ac_plot_tf_idf(tfidf, n = 10) +
+  ggplot2::labs(
+    title    = "Termos mais distintivos por documento (TF-IDF)",
+    subtitle = "Alta pontuacao = palavra frequente no doc E rara no corpus"
+  )
 ```
 
 ![](quantitativo_files/figure-html/tfidf-1.png)
 
-## 8. Keyness
+## 8. *Keyness*: o que é distintivo entre **grupos**?
+
+Enquanto TF-IDF compara documento vs. corpus, ***keyness*** compara
+**grupos** (por partido, por tema, por período). É a métrica clássica
+para pergunta comparativa do tipo *“o que o Governo diz que a Oposição
+não diz?”*.
+
+Aqui comparamos os temas **fiscal** e **tributário** — quais palavras
+marcam cada lado?
 
 ``` r
 
-freq_tema <- ac_count(corpus_limpo, by = "tema")
-freq_2grupos <- freq_tema[freq_tema$tema %in% c("fiscal", "tributario"), ]
+freq_tema     <- ac_count(corpus_limpo, by = "tema")
+freq_2grupos  <- freq_tema[freq_tema$tema %in% c("fiscal", "tributario"), ]
+
 kn <- ac_keyness(freq_2grupos, group = "tema", target = "fiscal")
-ac_plot_keyness(kn, n = 15)
+
+ac_plot_keyness(kn, n = 10) +
+  ggplot2::labs(
+    title    = "Palavras distintivas: 'fiscal' vs. 'tributario'",
+    subtitle = "Barras positivas = distintivas do tema 'fiscal'"
+  )
 ```
 
 ![](quantitativo_files/figure-html/keyness-1.png)
 
-## 9. Coocorrencia
+Interpretação: chi-quadrado alto indica **sobre-representação
+estatística**. Termos como *deficit* e *orçamento* marcam o eixo fiscal;
+*carga* e *renda* o tributário — resultado consistente com o corpus de
+exemplo.
+
+## 9. Rede de co-ocorrência
+
+Palavras que aparecem próximas com frequência formam **agrupamentos
+semânticos**. A rede de coocorrência mostra essas vizinhanças com base
+numa **janela** de tokens (aqui, 5 palavras à esquerda e à direita).
+
+Útil para: identificar frames, mapear associações conceituais e
+encontrar combinações de palavras que definem sub-temas dentro do
+corpus.
 
 ``` r
 
-cooc <- ac_cooccurrence(corpus_limpo, window = 5L)
-ac_plot_cooccurrence(cooc, top_n = 20)
+if (requireNamespace("ggraph", quietly = TRUE)) {
+  cooc <- ac_cooccurrence(corpus_limpo, window = 5L, min_count = 2L)
+  ac_plot_cooccurrence(cooc, top_n = 25) +
+    ggplot2::labs(
+      title    = "Rede de coocorrencia (janela = 5, freq minima = 2)",
+      subtitle = "Arestas conectam termos que co-ocorrem no mesmo contexto"
+    )
+}
 ```
 
 ![](quantitativo_files/figure-html/coocorrencia-1.png)
+
+## Referências
+
+- Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
+  Methodology*. 4. ed. SAGE.
+- Sampaio, R. C.; Lycarião, D. (2021). *Análise de conteúdo categorial:
+  manual de aplicação*. ENAP.
+- Silge, J.; Robinson, D. (2017). *Text Mining with R*. O’Reilly.

@@ -166,7 +166,7 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <h2 id="preparar-a-dfm-document-feature-matrix">2. Preparar a DFM (Document-Feature Matrix)<a class="anchor" aria-label="anchor" href="#preparar-a-dfm-document-feature-matrix"></a>
 </h2>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">corpus_limpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">corpus_limpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="va">corpus</span>, remove_stopwords <span class="op">=</span> <span class="st">"pt"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span></code></pre>
@@ -175,14 +175,14 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 12 × 2</span></span></span>
-<span><span class="co">##   doc_id text                                                              </span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                             </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> doc_1  reforma tributaria simplifica impostos e reduz carga para empresas</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> doc_2  iva dual substitui pis cofins e icms no novo modelo fiscal        </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> doc_3  congresso debate aliquotas e excecoes para setores economicos     </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> doc_4  marco legal da inteligencia artificial regulamenta uso de dados   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> doc_5  privacidade e seguranca de dados sao prioridades na nova lei      </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> doc_6  algoritmos de ia precisam de transparencia e auditoria publica    </span></span>
+<span><span class="co">##   doc_id text                                                       </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                      </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> doc_1  reforma tributaria simplifica impostos reduz carga empresas</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> doc_2  iva dual substitui pis cofins icms novo modelo fiscal      </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> doc_3  congresso debate aliquotas excecoes setores economicos     </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> doc_4  marco legal inteligencia artificial regulamenta uso dados  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> doc_5  privacidade seguranca dados sao prioridades nova lei       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> doc_6  algoritmos ia precisam transparencia auditoria publica     </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 6 more rows</span></span></span></code></pre>
 <pre><code><span><span class="co"># DFM: 12 documentos x 87 features</span></span>
 <span><span class="co"># Sparsidade: 72%</span></span></code></pre>
@@ -227,7 +227,7 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <span><span class="co">## <span style="color: #00BBBB;">•</span> Tópicos (k): <span style="color: #0000BB;">4</span></span></span>
 <span><span class="co">## <span style="color: #00BBBB;">•</span> Método: <span style="color: #0000BB;">"VEM"</span></span></span>
 <span><span class="co">## <span style="color: #00BBBB;">•</span> Semente: <span style="color: #0000BB;">42</span></span></span>
-<span><span class="co">## <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">82</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">73</span></span></span>
 <span><span class="co">## <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">12</span></span></span></code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
@@ -254,18 +254,18 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <code class="sourceCode R"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">modelo</span><span class="op">$</span><span class="va">terms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">beta</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
-<span><span class="co">##    topic term           beta</span></span>
-<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 de         5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">-82</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>     1 carga      5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>     1 e          1.18<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>     1 empresas   5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>     1 impostos   5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>     1 para       1.18<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>     1 reduz      5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>     1 reforma    5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>     1 simplifica 5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>     1 tributaria 5.88<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span></code></pre>
+<span><span class="co">##    topic term            beta</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 carga      4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-  2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>     1 empresas   4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-  2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>     1 impostos   4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-  2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>     1 reduz      4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-  2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>     1 reforma    4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-  2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>     1 simplifica 4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-  2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>     1 tributaria 4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-  2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>     1 ampliado   7.10<span style="color: #949494;">e</span><span style="color: #BB0000;">-269</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>     1 basica     7.10<span style="color: #949494;">e</span><span style="color: #BB0000;">-269</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>     1 educacao   7.10<span style="color: #949494;">e</span><span style="color: #BB0000;">-269</span></span></span></code></pre>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span>, top_n <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/beta-1.png" class="r-plt" alt="" width="700"></p>
@@ -290,16 +290,16 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
 <span><span class="co">##    doc_id topic   gamma</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> doc_6      1 0.001<span style="text-decoration: underline;">25</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> doc_6      2 0.001<span style="text-decoration: underline;">25</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> doc_6      3 0.996  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> doc_6      4 0.001<span style="text-decoration: underline;">25</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> doc_1      1 0.996  </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> doc_1      2 0.001<span style="text-decoration: underline;">25</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> doc_1      3 0.001<span style="text-decoration: underline;">25</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> doc_1      4 0.001<span style="text-decoration: underline;">25</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> doc_10     1 0.001<span style="text-decoration: underline;">41</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> doc_10     2 0.996</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> doc_1      1 0.995  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> doc_1      2 0.001<span style="text-decoration: underline;">55</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> doc_1      3 0.001<span style="text-decoration: underline;">55</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> doc_1      4 0.001<span style="text-decoration: underline;">55</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> doc_10     1 0.001<span style="text-decoration: underline;">55</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> doc_10     2 0.995  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> doc_10     3 0.001<span style="text-decoration: underline;">55</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> doc_10     4 0.001<span style="text-decoration: underline;">55</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> doc_11     1 0.001<span style="text-decoration: underline;">81</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> doc_11     2 0.001<span style="text-decoration: underline;">81</span></span></span></code></pre>
 <pre><code><span><span class="co"># A tibble: 48 x 3</span></span>
 <span><span class="co">#   doc_id  topico  gamma</span></span>
 <span><span class="co">#   doc_1   1       0.861  # tributario dominante</span></span>
@@ -317,21 +317,21 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">beta_top</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">beta</span>, <span class="va">topic</span><span class="op">)</span>, <span class="va">beta</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">beta_top</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 101 × 3</span></span></span>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 83 × 3</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># Groups:   topic [4]</span></span></span>
 <span><span class="co">##    topic term         beta</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 e          0.118 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>     1 para       0.118 </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>     1 carga      0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>     1 empresas   0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>     1 impostos   0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>     1 reduz      0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>     1 reforma    0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>     1 simplifica 0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>     1 tributaria 0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span>     1 aliquotas  0.058<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 91 more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>     1 dados      0.095<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>     1 carga      0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>     1 empresas   0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>     1 impostos   0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>     1 reduz      0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>     1 reforma    0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>     1 simplifica 0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>     1 tributaria 0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>     1 sao        0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>     1 artificial 0.047<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 73 more rows</span></span></span></code></pre>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span><span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/viz-heatmap-1.png" class="r-plt" alt="" width="700"></p>
@@ -347,7 +347,7 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Tópicos (k): <span style="color: #0000BB;">4</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Método: <span style="color: #0000BB;">"VEM"</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Semente: <span style="color: #0000BB;">42</span></span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">82</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">73</span></span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">12</span></span></span></code></pre>
 <pre><code><span><span class="co"># Modelo LDA: 4 topicos (rotulados)</span></span>
 <span><span class="co"># Topico 1: Reforma Tributaria</span></span>
