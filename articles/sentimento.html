@@ -89,174 +89,358 @@
     
     
 <div class="section level2">
-<h2 id="visao-geral">Visao geral<a class="anchor" aria-label="anchor" href="#visao-geral"></a>
+<h2 id="o-que-é-análise-de-sentimento-com-léxico">O que é análise de sentimento com léxico<a class="anchor" aria-label="anchor" href="#o-que-%C3%A9-an%C3%A1lise-de-sentimento-com-l%C3%A9xico"></a>
 </h2>
-<p>O modulo de sentimento do <code>acR</code> classifica textos em
-positivo, negativo e neutro usando lexicos em portugues (OpLexicon e
-SentiLex-PT). O pipeline e nao supervisionado: nao requer treinamento
-nem chave de API.</p>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="corpus-pronunciamentos-sobre-reforma-previdenciaria">1. Corpus: pronunciamentos sobre reforma previdenciaria<a class="anchor" aria-label="anchor" href="#corpus-pronunciamentos-sobre-reforma-previdenciaria"></a>
-</h2>
+<p>Análise de sentimento baseada em <strong>léxico</strong> classifica
+textos em positivo, negativo ou neutro <strong>contando
+palavras</strong> de listas curadas: palavras que carregam valência
+positiva (<em>excelente</em>, <em>aprovar</em>, <em>conquista</em>)
+contra palavras de valência negativa (<em>péssimo</em>,
+<em>fracasso</em>, <em>retrocesso</em>).</p>
+<p>O <code>acR</code> usa por padrão o <strong>OpLexicon</strong> (Souza
+&amp; Vieira, 2012), o mais usado para português brasileiro, com cerca
+de 30 mil palavras rotuladas.</p>
+<div class="section level3">
+<h3 id="quando-usar-léxico-vs--llm">Quando usar léxico vs. LLM?<a class="anchor" aria-label="anchor" href="#quando-usar-l%C3%A9xico-vs--llm"></a>
+</h3>
+<table class="table">
+<thead><tr class="header">
+<th>Cenário</th>
+<th>Léxico</th>
+<th>LLM</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Sinal grosso em milhares de docs</td>
+<td>✅</td>
+<td>❌ caro</td>
+</tr>
+<tr class="even">
+<td>Ironia, sarcasmo, contexto</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr class="odd">
+<td>Sem chave de API, sem rede</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr class="even">
+<td>Precisa reprodutibilidade exata</td>
+<td>✅</td>
+<td>⚠️ estocástico</td>
+</tr>
+<tr class="odd">
+<td>Documentos muito curtos (tweets)</td>
+<td>⚠️</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p>Regra prática: use léxico para <strong>panorama rápido</strong> e
+<strong>filtragem de casos extremos</strong>, depois use codificação
+qualitativa (via <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>) na amostra que
+interessa.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="corpus-pronunciamentos-sobre-uma-reforma-polêmica">1. Corpus: pronunciamentos sobre uma reforma polêmica<a class="anchor" aria-label="anchor" href="#corpus-pronunciamentos-sobre-uma-reforma-pol%C3%AAmica"></a>
+</h2>
+<p>Corpus fabricado de 14 pronunciamentos, com metadados de partido e
+posição declarada. Serve para exercitar visualizações; em corpora reais,
+substitua pela coleta via <code><a href="../reference/ac_fetch_camara.html">ac_fetch_camara()</a></code> ou
+<code><a href="../reference/ac_fetch_senado.html">ac_fetch_senado()</a></code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Esta reforma e um retrocesso que prejudica os trabalhadores mais pobres."</span>,</span>
-<span>  <span class="st">"A aprovacao garante a sustentabilidade fiscal e o futuro das aposentadorias."</span>,</span>
-<span>  <span class="st">"O texto substitutivo altera o artigo 201 da Constituicao Federal."</span>,</span>
-<span>  <span class="st">"Uma vergonha nacional: estao roubando os direitos dos aposentados."</span>,</span>
-<span>  <span class="st">"Com responsabilidade, aprovamos uma reforma necessaria e equilibrada."</span>,</span>
-<span>  <span class="st">"Votamos contra esse projeto que ataca os mais vulneraveis."</span>,</span>
-<span>  <span class="st">"O relatorio final incorporou emendas de diferentes partidos."</span>,</span>
-<span>  <span class="st">"Excelente proposta que moderniza o sistema e protege as geracoes futuras."</span></span>
+<span>  <span class="co"># Favoráveis</span></span>
+<span>  <span class="st">"Excelente proposta que moderniza o sistema e protege as geracoes futuras."</span>,</span>
+<span>  <span class="st">"Aprovamos com convicção esta reforma responsável e necessária ao país."</span>,</span>
+<span>  <span class="st">"Vitória histórica para a economia: reforma corrige distorções antigas."</span>,</span>
+<span>  <span class="st">"Reforma equilibrada garante sustentabilidade fiscal e futuro promissor."</span>,</span>
+<span>  <span class="st">"Conquista importante que beneficia trabalhadores e empresas do Brasil."</span>,</span>
+<span>  <span class="co"># Contrários</span></span>
+<span>  <span class="st">"Esta reforma é um retrocesso vergonhoso que prejudica os trabalhadores."</span>,</span>
+<span>  <span class="st">"Voto contra: proposta desastrosa ataca os mais pobres e vulneráveis."</span>,</span>
+<span>  <span class="st">"Uma tragédia nacional: estão roubando direitos duramente conquistados."</span>,</span>
+<span>  <span class="st">"Rejeitamos com indignação essa proposta injusta e cruel com o povo."</span>,</span>
+<span>  <span class="st">"Reforma péssima que aprofunda desigualdades e destrói a proteção social."</span>,</span>
+<span>  <span class="co"># Neutros / técnicos</span></span>
+<span>  <span class="st">"O texto substitutivo altera o artigo 201 da Constituição Federal."</span>,</span>
+<span>  <span class="st">"O relatório final incorporou emendas apresentadas em plenário."</span>,</span>
+<span>  <span class="st">"A comissão aprovou o parecer com dez votos a favor e oito contra."</span>,</span>
+<span>  <span class="st">"A proposta segue para votação na próxima sessão ordinária."</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
-<span>  <span class="va">textos</span>,</span>
-<span>  id        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">textos</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  parlamentar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"C"</span>,<span class="st">"D"</span>,<span class="st">"E"</span>,<span class="st">"F"</span>,<span class="st">"G"</span>,<span class="st">"H"</span><span class="op">)</span>,</span>
-<span>  partido   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>,<span class="st">"PL"</span>,<span class="st">"MDB"</span>,<span class="st">"PSOL"</span>,<span class="st">"PP"</span>,<span class="st">"PDT"</span>,<span class="st">"MDB"</span>,<span class="st">"PL"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  text     <span class="op">=</span> <span class="va">textos</span>,</span>
+<span>  posicao  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"favor"</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"contra"</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"neutro"</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  partido  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>,<span class="st">"PSD"</span>,<span class="st">"PL"</span>,<span class="st">"MDB"</span>,<span class="st">"PSDB"</span>,</span>
+<span>               <span class="st">"PSOL"</span>,<span class="st">"PT"</span>,<span class="st">"PDT"</span>,<span class="st">"PSOL"</span>,<span class="st">"PCdoB"</span>,</span>
+<span>               <span class="st">"MDB"</span>,<span class="st">"PSDB"</span>,<span class="st">"PL"</span>,<span class="st">"MDB"</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Corpus acR: 8 documentos</span></span>
-<span><span class="co"># Variaveis: parlamentar, partido</span></span></code></pre>
-<hr>
+<span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="va">corpus</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Corpus </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">14</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Metadados: <span style="color: #0000BB;">2</span> colunas</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 14 × 4</span></span></span>
+<span><span class="co">#&gt;   doc_id text                                                    posicao partido</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  Excelente proposta que moderniza o sistema e protege a… favor   PT     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  Aprovamos com convicção esta reforma responsável e nec… favor   PSD    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  Vitória histórica para a economia: reforma corrige dis… favor   PL     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  Reforma equilibrada garante sustentabilidade fiscal e … favor   MDB    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  Conquista importante que beneficia trabalhadores e emp… favor   PSDB   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  Esta reforma é um retrocesso vergonhoso que prejudica … contra  PSOL   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="calcular-sentimento">2. Calcular sentimento<a class="anchor" aria-label="anchor" href="#calcular-sentimento"></a>
+<h2 id="sentimento-por-documento">2. Sentimento por documento<a class="anchor" aria-label="anchor" href="#sentimento-por-documento"></a>
 </h2>
+<p><code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code> retorna um tibble com contagens de
+palavras positivas (<code>n_pos</code>), negativas (<code>n_neg</code>)
+e neutras (<code>n_neu</code>), o <code>score</code> (n_pos − n_neg pelo
+método padrão <code>sum</code>) e o rótulo categórico
+<code>sentiment</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sent_oplexicon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span></span>
-<span>  <span class="va">corpus</span>,</span>
-<span>  lexicon <span class="op">=</span> <span class="st">"oplexicon"</span>,   <span class="co"># "oplexicon" | "sentilex" | "ambos"</span></span>
-<span>  metodo  <span class="op">=</span> <span class="st">"media"</span>        <span class="co"># "media" | "soma" | "proporcao"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sent_oplexicon</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># A tibble: 8 x 6</span></span>
-<span><span class="co">#   doc_id  texto_trunc             score  polaridade  pos   neg</span></span>
-<span><span class="co">#   doc_1   Esta reforma e um re.. -0.62   negativo    0.08  0.70</span></span>
-<span><span class="co">#   doc_2   A aprovacao garante..   0.54   positivo    0.62  0.08</span></span>
-<span><span class="co">#   doc_3   O texto substitutivo..  0.01   neutro      0.10  0.09</span></span>
-<span><span class="co">#   doc_4   Uma vergonha nacional.. -0.81   negativo    0.05  0.86</span></span>
-<span><span class="co">#   doc_5   Com responsabilidade..  0.61   positivo    0.69  0.08</span></span>
-<span><span class="co">#   doc_6   Votamos contra esse..  -0.55   negativo    0.09  0.64</span></span>
-<span><span class="co">#   doc_7   O relatorio final inc..  0.03   neutro      0.11  0.08</span></span>
-<span><span class="co">#   doc_8   Excelente proposta...   0.73   positivo    0.80  0.07</span></span></code></pre>
-<hr>
+<code class="sourceCode R"><span><span class="va">sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span>
+<span><span class="va">sent</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 14 × 6</span></span></span>
+<span><span class="co">#&gt;    doc_id n_pos n_neg n_neu score sentiment</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> doc_1      1     0    10     1 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> doc_10     0     1     9    -<span style="color: #BB0000;">1</span> negativo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> doc_11     0     0    10     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_12     0     1     7    -<span style="color: #BB0000;">1</span> negativo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_13     1     0    12     1 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_14     0     1     8    -<span style="color: #BB0000;">1</span> negativo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_2      1     0     9     1 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_3      0     0     9     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_4      2     0     6     2 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_5      2     0     7     2 positivo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_6      1     1     8     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_7      0     3     7    -<span style="color: #BB0000;">3</span> negativo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> doc_8      0     0     8     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> doc_9      0     3     9    -<span style="color: #BB0000;">3</span> negativo</span></span></code></pre></div>
+<p>Cruzando com a posição declarada — o léxico “acerta”?</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sent</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">df</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                   by <span class="op">=</span> <span class="st">"doc_id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">posicao</span>, <span class="va">sentiment</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">sentiment</span>, values_from <span class="op">=</span> <span class="va">n</span>, values_fill <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 4</span></span></span>
+<span><span class="co">#&gt;   posicao negativo neutro positivo</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> contra         3      2        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> favor          0      1        4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> neutro         2      1        1</span></span></code></pre></div>
+<p>Léxico funciona bem para <strong>posições explícitas</strong>
+(favor/contra) com vocabulário emotivo. Falha em textos
+técnicos-neutros, que tipicamente misturam palavras positivas e
+negativas em proporção baixa.</p>
 </div>
 <div class="section level2">
-<h2 id="comparar-lexicos">3. Comparar lexicos<a class="anchor" aria-label="anchor" href="#comparar-lexicos"></a>
+<h2 id="comparar-métodos-de-agregação">3. Comparar métodos de agregação<a class="anchor" aria-label="anchor" href="#comparar-m%C3%A9todos-de-agrega%C3%A7%C3%A3o"></a>
 </h2>
+<p>Três métodos alteram como o <code>score</code> é calculado a partir
+das contagens:</p>
+<ul>
+<li>
+<strong><code>sum</code></strong> (padrão):
+<code>score = n_pos − n_neg</code>. Depende do tamanho do texto.</li>
+<li>
+<strong><code>mean</code></strong>: normaliza pelo número total de
+palavras. Comparável entre textos curtos e longos.</li>
+<li>
+<strong><code>ratio</code></strong>:
+<code>(n_pos − n_neg) / (n_pos + n_neg)</code>. Ignora palavras neutras,
+foca só na intensidade emotiva relativa.</li>
+</ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sent_oplexicon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, lexicon <span class="op">=</span> <span class="st">"oplexicon"</span><span class="op">)</span></span>
-<span><span class="co"># Comparacao visual entre lexicos</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent_oplexicon</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#  0.87  — alta concordancia entre os dois lexicos</span></span></code></pre>
-<hr>
+<code class="sourceCode R"><span><span class="va">sent_sum</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"sum"</span><span class="op">)</span></span>
+<span><span class="va">sent_mean</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
+<span><span class="va">sent_ratio</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"ratio"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">comparacao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  doc_id <span class="op">=</span> <span class="va">sent_sum</span><span class="op">$</span><span class="va">doc_id</span>,</span>
+<span>  sum    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sent_sum</span><span class="op">$</span><span class="va">score</span>,   <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  mean   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sent_mean</span><span class="op">$</span><span class="va">score</span>,  <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  ratio  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sent_ratio</span><span class="op">$</span><span class="va">score</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">comparacao</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    doc_id sum  mean ratio</span></span>
+<span><span class="co">#&gt; 1   doc_1   1  0.09     1</span></span>
+<span><span class="co">#&gt; 2  doc_10  -1 -0.10    -1</span></span>
+<span><span class="co">#&gt; 3  doc_11   0  0.00     0</span></span>
+<span><span class="co">#&gt; 4  doc_12  -1 -0.12    -1</span></span>
+<span><span class="co">#&gt; 5  doc_13   1  0.08     1</span></span>
+<span><span class="co">#&gt; 6  doc_14  -1 -0.11    -1</span></span>
+<span><span class="co">#&gt; 7   doc_2   1  0.10     1</span></span>
+<span><span class="co">#&gt; 8   doc_3   0  0.00     0</span></span>
+<span><span class="co">#&gt; 9   doc_4   2  0.25     1</span></span>
+<span><span class="co">#&gt; 10  doc_5   2  0.22     1</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="visualizacoes">4. Visualizacoes<a class="anchor" aria-label="anchor" href="#visualizacoes"></a>
+<h2 id="visualização-barras-por-documento">4. Visualização: barras por documento<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o-barras-por-documento"></a>
 </h2>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span>, type <span class="op">=</span> <span class="st">"bar"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Sentimento por documento"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Contagem de palavras positivas vs. negativas (OpLexicon)"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"acR - ac_plot_sentiment(type = \"bar\")"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="sentimento_files/figure-html/plot-bar-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>Padrão claro: os 5 primeiros documentos (favoráveis)
+verdes/positivos, os 5 seguintes (contrários) vermelhos/negativos, os 4
+últimos (neutros/técnicos) cinza.</p>
+</div>
+<div class="section level2">
+<h2 id="visualização-distribuição-densidade">5. Visualização: distribuição (densidade)<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o-distribui%C3%A7%C3%A3o-densidade"></a>
+</h2>
+<p>Útil para ver <strong>a forma da distribuição</strong> — sentimento é
+bimodal (dois picos, favor e contra) ou tem uma cauda longa?</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Distribuicao geral de sentimento</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent_oplexicon</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Grafico: distribuicao de scores | positivo/neutro/negativo</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span>, type <span class="op">=</span> <span class="st">"density"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Distribuição de scores de sentimento"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Bimodalidade sugere polarização; unimodal sugere consenso"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="sentimento_files/figure-html/plot-density-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="visualização-série-ordenada">6. Visualização: série ordenada<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o-s%C3%A9rie-ordenada"></a>
+</h2>
+<p>Se seus documentos têm ordem temporal (discursos ao longo do ano), a
+série mostra tendência.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span>, type <span class="op">=</span> <span class="st">"line"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Sentimento ao longo dos documentos (ordem de entrada)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Substitua a ordem por data em corpora reais"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="sentimento_files/figure-html/plot-line-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="agregação-por-grupo-partido">7. Agregação por grupo (partido)<a class="anchor" aria-label="anchor" href="#agrega%C3%A7%C3%A3o-por-grupo-partido"></a>
+</h2>
+<p>A análise mais útil raramente é doc-a-doc: é comparar
+<strong>grupos</strong>. Vamos agregar por partido:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Sentimento medio por partido</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent_oplexicon</span>, por_grupo <span class="op">=</span> <span class="cn">TRUE</span>, grupo <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># PT   media: -0.72 (negativo)</span></span>
-<span><span class="co"># PL   media:  0.64 (positivo)</span></span>
-<span><span class="co"># MDB  media:  0.02 (neutro)</span></span>
-<span><span class="co"># PSOL media: -0.81 (negativo)</span></span>
-<span><span class="co"># PP   media:  0.61 (positivo)</span></span>
-<span><span class="co"># PDT  media: -0.55 (negativo)</span></span></code></pre>
+<code class="sourceCode R"><span><span class="va">por_partido</span> <span class="op">&lt;-</span> <span class="va">sent</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">df</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                   by <span class="op">=</span> <span class="st">"doc_id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">partido</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    n_docs     <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    score_med  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">score</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    score_dp   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">score</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    n_positivo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">==</span> <span class="st">"positivo"</span><span class="op">)</span>,</span>
+<span>    n_negativo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">==</span> <span class="st">"negativo"</span><span class="op">)</span>,</span>
+<span>    n_neutro   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">==</span> <span class="st">"neutro"</span><span class="op">)</span>,</span>
+<span>    .groups    <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">score_med</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">por_partido</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 7</span></span></span>
+<span><span class="co">#&gt;   partido n_docs score_med score_dp n_positivo n_negativo n_neutro</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> PSD          1      1       <span style="color: #BB0000;">NA</span>             1          0        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PL           2      0.5      0.71          1          0        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PSDB         2      0.5      2.12          1          1        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> MDB          3      0.33     1.53          1          1        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> PDT          1      0       <span style="color: #BB0000;">NA</span>             0          0        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> PCdoB        1     -<span style="color: #BB0000;">1</span>       <span style="color: #BB0000;">NA</span>             0          1        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> PT           2     -<span style="color: #BB0000;">1</span>        2.83          1          1        0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> PSOL         2     -<span style="color: #BB0000;">1.5</span>      2.12          0          1        1</span></span></code></pre></div>
+<p>Visualização (ranqueando partidos pelo score médio):</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>    <span class="va">por_partido</span>,</span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">partido</span>, <span class="va">score_med</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">score_med</span>,</span>
+<span>                 fill <span class="op">=</span> <span class="va">score_med</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.85</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TRUE"</span> <span class="op">=</span> <span class="st">"#166534"</span>, <span class="st">"FALSE"</span> <span class="op">=</span> <span class="st">"#991B1B"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>      title    <span class="op">=</span> <span class="st">"Sentimento médio por partido"</span>,</span>
+<span>      subtitle <span class="op">=</span> <span class="st">"Score médio agregando pronunciamentos por sigla partidária"</span>,</span>
+<span>      x        <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>      y        <span class="op">=</span> <span class="st">"Score médio (positivo = verde, negativo = vermelho)"</span>,</span>
+<span>      caption  <span class="op">=</span> <span class="st">"acR"</span></span>
+<span>    <span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>      plot.title    <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>      plot.subtitle <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey40"</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>      panel.grid.major.y <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="sentimento_files/figure-html/plot-partidos-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="termos-chave-dentro-do-texto-x-ray">8. Termos-chave dentro do texto (X-ray)<a class="anchor" aria-label="anchor" href="#termos-chave-dentro-do-texto-x-ray"></a>
+</h2>
+<p><code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code> mostra <strong>onde</strong> termos-alvo
+aparecem dentro de cada documento. Útil para ver se palavras negativas
+se concentram no começo, meio ou fim — sinal de estrutura retórica.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Xray: visualizar onde termos-chave aparecem no corpus</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_xray.html">ac_plot_xray</a></span><span class="op">(</span><span class="va">corpus</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"politica"</span>, <span class="st">"fiscal"</span>, <span class="st">"reforma"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># Grafico de linhas: score por posicao no texto</span></span>
-<span><span class="co"># Mostra onde o texto concentra termos negativos/positivos</span></span></code></pre>
-<hr>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_xray.html">ac_plot_xray</a></span><span class="op">(</span><span class="va">corpus</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reforma"</span>, <span class="st">"trabalhadores"</span>, <span class="st">"aprovar"</span>, <span class="st">"vergonha"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Onde os termos-chave aparecem no corpus"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Cada ponto marca uma ocorrência do termo (posição relativa no texto)"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="sentimento_files/figure-html/plot-xray-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
-<h2 id="sentimento-por-partido-tabela-abnt">5. Sentimento por partido — tabela ABNT<a class="anchor" aria-label="anchor" href="#sentimento-por-partido-tabela-abnt"></a>
+<h2 id="exportar-para-artigorelatório">9. Exportar para artigo/relatório<a class="anchor" aria-label="anchor" href="#exportar-para-artigorelat%C3%B3rio"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="va">resumo</span> <span class="op">&lt;-</span> <span class="va">sent_oplexicon</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    n        <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    media    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">score</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    dp       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">score</span>,   na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    .groups  <span class="op">=</span> <span class="st">"drop"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">resumo</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resumo</span>, path <span class="op">=</span> <span class="st">"sentimento_resumo.tex"</span>, format <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co"># partido  n  media   dp    positivo  neutro  negativo</span></span>
-<span><span class="co"># MDB      2   0.02  0.01       0%     100%        0%</span></span>
-<span><span class="co"># PDT      1  -0.55  —          0%       0%      100%</span></span>
-<span><span class="co"># PL       2   0.64  0.13     100%       0%        0%</span></span>
-<span><span class="co"># PP       1   0.61  —        100%       0%        0%</span></span>
-<span><span class="co"># PSOL     1  -0.81  —          0%       0%      100%</span></span>
-<span><span class="co"># PT       1  -0.62  —          0%       0%      100%</span></span></code></pre>
-<hr>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Tabela por partido pronta para colar no LaTeX</span></span>
+<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">por_partido</span>, arquivo <span class="op">=</span> <span class="st">"sentimento_por_partido.tex"</span>, formato <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># CSV para Excel/planilha</span></span>
+<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">sent</span>, arquivo <span class="op">=</span> <span class="st">"sentimento.csv"</span>, formato <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Se quiser passar para a etapa qualitativa (LLM):</span></span>
+<span><span class="co"># amostrar documentos ambíguos (perto de score = 0) para revisão humana</span></span>
+<span><span class="va">casos_limitrofes</span> <span class="op">&lt;-</span> <span class="va">sent</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">score</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="exportar">6. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
+<h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
 </h2>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">sent_oplexicon</span>,   format <span class="op">=</span> <span class="st">"csv"</span>,  path <span class="op">=</span> <span class="st">"sentimento.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">sent_oplexicon</span>,   format <span class="op">=</span> <span class="st">"xlsx"</span>, path <span class="op">=</span> <span class="st">"sentimento.xlsx"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">resumo</span>, format <span class="op">=</span> <span class="st">"csv"</span>,  path <span class="op">=</span> <span class="st">"sentimento_resumo.csv"</span><span class="op">)</span></span></code></pre></div>
-<hr>
-<hr>
-</div>
-<div class="section level2">
-<h2 id="referencias">Referencias<a class="anchor" aria-label="anchor" href="#referencias"></a>
-</h2>
-<p><strong>Pacote</strong></p>
-<p>Henrique, A. (2025). <em>acR: Analise de Conteudo em R</em>. R
-package version 0.1.0. Centro de Estudos da Metropole (CEM-Cepid) —
-Universidade de Sao Paulo. Disponivel em: <a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></p>
-<p><strong>Pacotes utilizados</strong></p>
-<p>Santos, V. (2026). <em>senatebR: Collect Data from the Brazilian
-Federal Senate Open Data API</em>. R package version 0.1.0. <a href="https://CRAN.R-project.org/package=senatebR" class="external-link uri">https://CRAN.R-project.org/package=senatebR</a></p>
-<p>Ferreira, P., Jorge, P., Lima, D., Coelho, G., Pereira, R. H. M.,
-&amp; Mation, L. (2026). <em>ipeaplot: Add Ipea Editorial Standards to
-ggplot2 Graphics</em>. R package version 0.5.1. Instituto de Pesquisa
-Economica Aplicada (Ipea). <a href="doi:10.32614/CRAN.package.ipeaplot" class="uri">doi:10.32614/CRAN.package.ipeaplot</a></p>
-<p><strong>Inspiracao e dialogo</strong></p>
-<p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer: Qualitative and
-LLM-Assisted Text Analysis in R</em>. — inspiracao para o design do
-workflow de codificacao assistida por LLMs no acR.</p>
-<p>Benoit, K., Watanabe, K., Wang, H., Nulty, P., Obeng, A., Muller, S.,
-&amp; Matsuo, A. (2018). quanteda: An R package for the quantitative
-analysis of textual data. <em>Journal of Open Source Software</em>,
-3(30), 774. <a href="doi:10.21105/joss.00774" class="uri">doi:10.21105/joss.00774</a> — infraestrutura de analise
-textual quantitativa.</p>
-<p>Wickham, H., et al. (Posit). <em>ellmer: A unified interface to large
-language models in R</em>. <a href="https://ellmer.tidyverse.org/" class="external-link uri">https://ellmer.tidyverse.org/</a> — backend unificado de
-LLMs.</p>
-<p>Souza, M., &amp; Vieira, R. (2012). Sentiment Analysis on Twitter
-with Portuguese Language. In <em>4th Workshop on Computational
-Approaches to Subjectivity, Sentiment and Social Media Analysis</em>.
-PUCRS. — OpLexicon: lexico de sentimento para portugues brasileiro.</p>
-<p><strong>Fundamentacao teorica</strong></p>
-<p>Bardin, L. (2011). <em>Analise de conteudo</em>. Edicoes 70.</p>
-<p>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet
-Allocation. <em>Journal of Machine Learning Research</em>, 3,
-993-1022.</p>
-<p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its
-Methodology</em> (4a ed.). SAGE.</p>
-<p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer
-agreement for categorical data. <em>Biometrics</em>, 33(1), 159-174.</p>
-<p>Laver, M., Benoit, K., &amp; Garry, J. (2003). Extracting policy
-positions from political texts using words as data. <em>American
-Political Science Review</em>, 97(2), 311-331.</p>
-<p>Sampaio, R. C., &amp; Lycariao, D. (2021). <em>Analise de conteudo
-categorial: manual de aplicacao</em>. Enap. Disponivel em: <a href="https://repositorio.enap.gov.br" class="external-link uri">https://repositorio.enap.gov.br</a></p>
-<p>R Core Team. (2024). <em>R: A language and environment for
-statistical computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="external-link uri">https://www.R-project.org/</a></p>
+<ul>
+<li>Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter with
+Portuguese Language. <em>4th Workshop on Computational Approaches to
+Subjectivity, Sentiment and Social Media Analysis</em>, PUCRS.</li>
+<li>Pang, B.; Lee, L. (2008). Opinion Mining and Sentiment Analysis.
+<em>Foundations and Trends in Information Retrieval</em>, 2(1-2),
+1-135.</li>
+<li>Silge, J.; Robinson, D. (2017). <em>Text Mining with R</em>.
+O’Reilly.</li>
+<li>Sampaio, R. C.; Lycarião, D. (2021). <em>Análise de conteúdo
+categorial: manual de aplicação</em>. ENAP.</li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
