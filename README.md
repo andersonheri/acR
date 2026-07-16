@@ -6,7 +6,7 @@
 [![pkgdown](https://github.com/andersonheri/acR/actions/workflows/pkgdown.yaml/badge.svg)](https://andersonheri.github.io/acR/)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Codecov](https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg)](https://codecov.io/gh/andersonheri/acR)
+[![Codecov](https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/andersonheri/acR)
 <!-- badges: end -->
 
 > **Análise de Conteúdo em R**, um pipeline integrado qualitativo (LLMs) e
