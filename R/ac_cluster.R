@@ -86,8 +86,8 @@ ac_cluster_documents <- function(corpus,
   }
 
   # -- construir matriz documento-termo -------------------------------------
-  tokens <- corpus |> ac_clean() |> ac_tokenize()
-  counts <- ac_count(tokens, by = "doc_id")
+  corpus_clean <- ac_clean(corpus)
+  counts <- ac_count(corpus_clean)
 
   if (features == "tfidf") {
     tfidf <- ac_tf_idf(counts)
