@@ -2,6 +2,15 @@
 
 ## Novidades
 
+* **`ac_cluster_documents()`** (novo) — clustering nao supervisionado de
+  documentos com hierarquico (Ward.D2), k-means ou PAM. Features
+  configuraveis (TF-IDF ou contagens), distancias `cosine`/`euclidean`,
+  escolha automatica de `k` por silhueta (usa `cluster` de `Suggests`).
+  Retorna S3 `ac_cluster` com metodo `print`.
+* **`ac_plot_cluster()`** (novo) — tres tipos de visualizacao para
+  objetos `ac_cluster`: `dendrogram` (default para hclust), `scatter`
+  (projecao PCA 2D com labels) e `heatmap` (matriz de dissimilaridade
+  ordenada pelo dendrograma).
 * **`ac_plot_wordcloud_comparative()`** agora aceita **N grupos** (>= 2)
   em vez de somente 2. Cada grupo vira uma faceta; nas duas
   implementacoes (`backend = "ggwordcloud"` e `backend = "ggplot"`) o

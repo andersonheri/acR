@@ -37,6 +37,7 @@ Imports:
     yaml
 Suggests:
     callr,
+    cluster,
     covr,
     ellmer,
     ggplot2,

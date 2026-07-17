@@ -78,6 +78,8 @@ navbar:
         href: articles/quantitativo.html
       - text: "  ↳ Nuvens de palavras (ggwordcloud) e comparativa"
         href: articles/quantitativo.html#nuvem-de-palavras
+      - text: "  ↳ Cluster de documentos (hclust/k-means)"
+        href: reference/ac_cluster_documents.html
       - text: "Analise de sentimento (OpLexicon)"
         href: articles/sentimento.html
       - text: "Modelagem de topicos (LDA)"
@@ -141,6 +143,7 @@ reference:
   - ac_sentiment
   - ac_lda
   - ac_lda_tune
+  - ac_cluster_documents
 - title: "Codificacao qualitativa via LLM"
   desc: >
     Pipeline de analise de conteudo qualitativa assistida por LLMs:
