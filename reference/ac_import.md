@@ -102,7 +102,7 @@ corpus <- ac_import('relatorio.pdf')
 # Pasta inteira de Word
 corpus <- ac_import('proposicoes/*.docx')
 
-# Excel — indicar a coluna de texto
+# Excel -- indicar a coluna de texto
 corpus <- ac_import('respostas.xlsx', text_field = 'resposta')
 
 # PDF escaneado (OCR em portugues)

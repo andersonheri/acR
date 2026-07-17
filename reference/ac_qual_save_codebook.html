@@ -25,19 +25,19 @@ YAML foi escolhido por ser legivel por humanos e versionavel em Git."><meta prop
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><h6 class="dropdown-header" data-toc-skip>COMECE POR AQUI</h6></li>
     <li><a class="dropdown-item" href="../articles/quickstart.html">Quickstart (5 min)</a></li>
-    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visao geral do pacote</a></li>
+    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visão geral do pacote</a></li>
     <li><a class="dropdown-item" href="../articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
-    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs — guia completo</a></li>
-    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposicoes legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
+    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
-    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
-    <li><a class="dropdown-item" href="../reference/ac_cluster_documents.html">  ↳ Cluster de documentos (hclust/k-means)</a></li>
-    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
-    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
+    <li><a class="dropdown-item" href="../articles/cluster.html">Agrupamento não supervisionado de documentos</a></li>
+    <li><a class="dropdown-item" href="../articles/sentimento.html">Análise de sentimento (OpLexicon)</a></li>
+    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de tópicos (LDA)</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -110,7 +110,7 @@ YAML foi escolhido por ser legivel por humanos e versionavel em Git.</p>
 <span class="r-in"><span><span class="co"># Salvar em arquivo temporario (usar caminho real fora de exemplos)</span></span></span>
 <span class="r-in"><span><span class="va">arquivo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_qual_save_codebook</span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/Rtmpc8MEcG/file1b6d7657693f.yaml</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpBWylrM/file1b664535ccff.yaml</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Reabrir para conferir</span></span></span>
 <span class="r-in"><span><span class="va">cb_recarregado</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_load_codebook.html">ac_qual_load_codebook</a></span><span class="op">(</span><span class="va">arquivo</span><span class="op">)</span></span></span>

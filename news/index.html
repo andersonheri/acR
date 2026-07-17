@@ -21,19 +21,19 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><h6 class="dropdown-header" data-toc-skip>COMECE POR AQUI</h6></li>
     <li><a class="dropdown-item" href="../articles/quickstart.html">Quickstart (5 min)</a></li>
-    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visao geral do pacote</a></li>
+    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visão geral do pacote</a></li>
     <li><a class="dropdown-item" href="../articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
-    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs — guia completo</a></li>
-    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposicoes legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
+    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
-    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
-    <li><a class="dropdown-item" href="../reference/ac_cluster_documents.html">  ↳ Cluster de documentos (hclust/k-means)</a></li>
-    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
-    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
+    <li><a class="dropdown-item" href="../articles/cluster.html">Agrupamento não supervisionado de documentos</a></li>
+    <li><a class="dropdown-item" href="../articles/sentimento.html">Análise de sentimento (OpLexicon)</a></li>
+    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de tópicos (LDA)</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -58,6 +58,10 @@
 <strong><code><a href="../reference/ac_cluster_documents.html">ac_cluster_documents()</a></code></strong> (novo) — clustering nao supervisionado de documentos com hierarquico (Ward.D2), k-means ou PAM. Features configuraveis (TF-IDF ou contagens), distancias <code>cosine</code>/<code>euclidean</code>, escolha automatica de <code>k</code> por silhueta (usa <code>cluster</code> de <code>Suggests</code>). Retorna S3 <code>ac_cluster</code> com metodo <code>print</code>.</li>
 <li>
 <strong><code><a href="../reference/ac_plot_cluster.html">ac_plot_cluster()</a></code></strong> (novo) — tres tipos de visualizacao para objetos <code>ac_cluster</code>: <code>dendrogram</code> (default para hclust), <code>scatter</code> (projecao PCA 2D com labels) e <code>heatmap</code> (matriz de dissimilaridade ordenada pelo dendrograma).</li>
+<li>
+<strong>Nova vignette</strong> — <code><a href="../articles/cluster.html">vignette("cluster")</a></code>: “Agrupamento nao supervisionado de documentos”. Explica as tres familias (hard/soft clustering e LDA) com tabela de quando usar cada uma, apresenta seis visualizacoes complementares (dendrograma, PCA, heatmap, top termos por cluster, curva de silhueta e comparacao lado-a-lado hard vs. LDA/gamma), valida a particao contra um <code>tema_real</code> mantido fora do modelo e integra o clustering ao pipeline qualitativo.</li>
+<li>
+<strong>Documentacao</strong> — README, <code>_pkgdown.yml</code> (menu de vignettes e secao “Pipeline quantitativo”) apontam para a nova vignette; acentos corrigidos nas entradas visiveis do menu.</li>
 <li>
 <strong><code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code></strong> agora aceita <strong>N grupos</strong> (&gt;= 2) em vez de somente 2. Cada grupo vira uma faceta; nas duas implementacoes (<code>backend = "ggwordcloud"</code> e <code>backend = "ggplot"</code>) o layout usa <code>facet_wrap()</code>. Cores padrao passam a vir de <code>ac_palette(N)</code>. A validacao antiga (<code>length(grupos) != 2L</code>) foi substituida por <code>length(grupos) &lt; 2L</code>.</li>
 </ul></div>

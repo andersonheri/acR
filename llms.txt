@@ -329,14 +329,14 @@ variações ou utilitários — veja **[Funções disponíveis
 | Contar tokens | [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Top termos + gráfico | [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md) → [`ac_plot_top_terms()`](https://andersonheri.github.io/acR/reference/ac_plot_top_terms.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Termos distintivos por documento | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Comparar grupos (governo × oposição) | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
+| Comparar grupos (partido, período, tema, região…) | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Nuvem de palavras (ggwordcloud) | [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md) | [Quantitativo §6](https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras) |
 | Nuvem comparativa entre 2 grupos | [`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md) | [Quantitativo §6.1](https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras) |
 | Mapear onde termos aparecem no texto | [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Rede de coocorrência | [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Análise de sentimento (OpLexicon) | [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md) → [`ac_plot_sentiment()`](https://andersonheri.github.io/acR/reference/ac_plot_sentiment.md) | [Sentimento](https://andersonheri.github.io/acR/articles/sentimento.html) |
 | Modelagem de tópicos (LDA) | [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md) → [`ac_plot_lda_topics()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.md) | [LDA](https://andersonheri.github.io/acR/articles/lda.html) |
-| Cluster de documentos (hclust, k-means, PAM) | [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md) → [`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
+| Cluster de documentos (hclust, k-means, PAM) | [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md) → [`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md) | [Cluster](https://andersonheri.github.io/acR/articles/cluster.html) |
 | Criar codebook para LLM | [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md) | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
 | Classificar textos com LLM | [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md) | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
 | Amostrar documentos para revisão humana | [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md) · [`ac_qual_export_for_review()`](https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.md) | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
@@ -390,6 +390,10 @@ navegáveis, referência de todas as funções e changelog.
   coocorrência](https://andersonheri.github.io/acR/articles/quantitativo.html)
   — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos,
   TF-IDF por tema, coocorrência com PMI/heatmap.
+- [Agrupamento não supervisionado de
+  documentos](https://andersonheri.github.io/acR/articles/cluster.html)
+  — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com
+  LDA.
 - [Análise de sentimento
   (OpLexicon)](https://andersonheri.github.io/acR/articles/sentimento.html)
   — polaridade e sentimento agregado por documento.
@@ -664,7 +668,7 @@ Do zero ao pipeline completo em 5 minutos ou uma hora de estudo.
 
 ### Pipeline qualitativo (LLMs)
 
-Codebook, self-consistency, revisao humana e casos aplicados.
+Codebook, self-consistency, revisão humana e casos aplicados.
 
 - [Análise de Conteúdo Qualitativa com
   LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md):
@@ -673,10 +677,12 @@ Codebook, self-consistency, revisao humana e casos aplicados.
 
 ### Pipeline quantitativo
 
-Analises estatisticas classicas de conteudo textual.
+Análises estatísticas clássicas de conteúdo textual.
 
 - [Analise quantitativa de
   texto](https://andersonheri.github.io/acR/articles/quantitativo.md):
+- [Agrupamento não supervisionado de
+  documentos](https://andersonheri.github.io/acR/articles/cluster.md):
 - [Analise de
   sentimento](https://andersonheri.github.io/acR/articles/sentimento.md):
 - [Modelagem de topicos com

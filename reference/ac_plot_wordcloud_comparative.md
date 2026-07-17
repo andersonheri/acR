@@ -5,7 +5,9 @@ entre N grupos de documentos, dispostas em facets lado a lado. Usa
 TF-IDF (calculado tratando cada grupo como um "documento") para
 identificar os termos mais distintivos de cada grupo.
 
-Aceita 2, 3, 4+ grupos: cada grupo vira uma faceta.
+Aceita 2, 3, 4+ grupos: cada grupo vira uma faceta. Para dois grupos a
+leitura fica naturalmente lado a lado; para mais, o layout se organiza
+em uma linha (ou grade, se muitos grupos).
 
 ## Usage
 
@@ -31,7 +33,7 @@ ac_plot_wordcloud_comparative(
 - group:
 
   Coluna de agrupamento (nome sem aspas ou string). Deve ter pelo menos
-  2 valores unicos.
+  2 valores únicos.
 
 - max_words:
 
@@ -39,9 +41,10 @@ ac_plot_wordcloud_comparative(
 
 - colors:
 
-  Vetor de cores (uma por grupo, na ordem alfabetica dos grupos).
-  Padrao: as primeiras N cores de
-  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md).
+  Vetor de cores (uma por grupo, na ordem alfabética dos grupos).
+  Padrão: as primeiras N cores de
+  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+  (Okabe-Ito).
 
 - title:
 
@@ -55,8 +58,8 @@ ac_plot_wordcloud_comparative(
 - backend:
 
   Motor de renderizacao: `"auto"` (padrao, prefere `ggwordcloud` com
-  facets), `"ggwordcloud"` ou `"ggplot"` (facets com geom_text + jitter
-  reproduzivel).
+  facets), `"ggwordcloud"` ou `"ggplot"` (facets com `geom_text` +
+  jitter reproduzivel).
 
 - ...:
 

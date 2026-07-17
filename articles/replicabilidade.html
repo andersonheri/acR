@@ -49,19 +49,19 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes">
 <li><h6 class="dropdown-header" data-toc-skip>COMECE POR AQUI</h6></li>
     <li><a class="dropdown-item" href="../articles/quickstart.html">Quickstart (5 min)</a></li>
-    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visao geral do pacote</a></li>
+    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visão geral do pacote</a></li>
     <li><a class="dropdown-item" href="../articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
-    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs — guia completo</a></li>
-    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposicoes legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
+    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
-    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
-    <li><a class="dropdown-item" href="../reference/ac_cluster_documents.html">  ↳ Cluster de documentos (hclust/k-means)</a></li>
-    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
-    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
+    <li><a class="dropdown-item" href="../articles/cluster.html">Agrupamento não supervisionado de documentos</a></li>
+    <li><a class="dropdown-item" href="../articles/sentimento.html">Análise de sentimento (OpLexicon)</a></li>
+    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de tópicos (LDA)</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -219,7 +219,7 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"favor"</span>, <span style="color: #0000BB;">"contra"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 17/07/2026 20:48</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 17/07/2026 21:23</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique a posicao do parlamentar sobre a reforma tributaria com base no</span></span>
@@ -238,9 +238,9 @@ análise em outra sessão:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arquivo_cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo_cb</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpePBDN5/file21702fdad552.yaml</span></span></span>
+<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/Rtmpr39cDT/file21a121a2f447.yaml</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Codebook salvo em:"</span>, <span class="va">arquivo_cb</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpePBDN5/file21702fdad552.yaml</span></span></code></pre></div>
+<span><span class="co">#&gt; Codebook salvo em: /tmp/Rtmpr39cDT/file21a121a2f447.yaml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classificação-com-live-view">3. Classificação com live view<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-live-view"></a>
@@ -615,13 +615,13 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Unknown or uninitialised column: `metrics`.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Relatorio salvo em</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpePBDN5/relatorio-2170512d3fd4.md</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/Rtmpr39cDT/relatorio-21a163bdb7e2.md</span></span></span></code></pre></div>
 <p>Primeiras 40 linhas do relatório gerado:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">arquivo_md</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Classificacao de posicionamento na reforma tributaria</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - **Gerado em:** 2026-07-17 20:48:43 UTC</span></span>
+<span><span class="co">#&gt; - **Gerado em:** 2026-07-17 21:23:13 UTC</span></span>
 <span><span class="co">#&gt; - **Versao do acR:** 0.3.1</span></span>
 <span><span class="co">#&gt; - **Autor(es):** Silva, A.; Souza, B.</span></span>
 <span><span class="co">#&gt; - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).</span></span>
@@ -637,7 +637,7 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="co">#&gt; | Idioma        | `pt` |</span></span>
 <span><span class="co">#&gt; | Modo        | `manual` |</span></span>
 <span><span class="co">#&gt; | Multilabel  | `FALSE` |</span></span>
-<span><span class="co">#&gt; | Criado em     | 2026-07-17 20:48:41 |</span></span>
+<span><span class="co">#&gt; | Criado em     | 2026-07-17 21:23:12 |</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; **Instrucoes ao codificador:**</span></span>
 <span><span class="co">#&gt; </span></span>

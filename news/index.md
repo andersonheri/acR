@@ -15,6 +15,18 @@
   `dendrogram` (default para hclust), `scatter` (projecao PCA 2D com
   labels) e `heatmap` (matriz de dissimilaridade ordenada pelo
   dendrograma).
+- **Nova vignette** —
+  [`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md):
+  “Agrupamento nao supervisionado de documentos”. Explica as tres
+  familias (hard/soft clustering e LDA) com tabela de quando usar cada
+  uma, apresenta seis visualizacoes complementares (dendrograma, PCA,
+  heatmap, top termos por cluster, curva de silhueta e comparacao
+  lado-a-lado hard vs. LDA/gamma), valida a particao contra um
+  `tema_real` mantido fora do modelo e integra o clustering ao pipeline
+  qualitativo.
+- **Documentacao** — README, `_pkgdown.yml` (menu de vignettes e secao
+  “Pipeline quantitativo”) apontam para a nova vignette; acentos
+  corrigidos nas entradas visiveis do menu.
 - **[`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md)**
   agora aceita **N grupos** (\>= 2) em vez de somente 2. Cada grupo vira
   uma faceta; nas duas implementacoes (`backend = "ggwordcloud"` e

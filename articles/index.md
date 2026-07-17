@@ -13,7 +13,7 @@ Do zero ao pipeline completo em 5 minutos ou uma hora de estudo.
 
 ### Pipeline qualitativo (LLMs)
 
-Codebook, self-consistency, revisao humana e casos aplicados.
+Codebook, self-consistency, revisão humana e casos aplicados.
 
 - [Análise de Conteúdo Qualitativa com
   LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md):
@@ -22,10 +22,12 @@ Codebook, self-consistency, revisao humana e casos aplicados.
 
 ### Pipeline quantitativo
 
-Analises estatisticas classicas de conteudo textual.
+Análises estatísticas clássicas de conteúdo textual.
 
 - [Analise quantitativa de
   texto](https://andersonheri.github.io/acR/articles/quantitativo.md):
+- [Agrupamento não supervisionado de
+  documentos](https://andersonheri.github.io/acR/articles/cluster.md):
 - [Analise de
   sentimento](https://andersonheri.github.io/acR/articles/sentimento.md):
 - [Modelagem de topicos com

@@ -28,24 +28,24 @@ por documento.'><meta property="og:image" content="https://andersonheri.github.i
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/quickstart.html">Comece aqui</a></li>
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes"><li><h6 class="dropdown-header" data-toc-skip>COMECE POR AQUI</h6></li>
     <li><a class="dropdown-item" href="../articles/quickstart.html">Quickstart (5 min)</a></li>
-    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visao geral do pacote</a></li>
+    <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visão geral do pacote</a></li>
     <li><a class="dropdown-item" href="../articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
-    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs — guia completo</a></li>
-    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposicoes legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
+    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
-    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
-    <li><a class="dropdown-item" href="../reference/ac_cluster_documents.html">  ↳ Cluster de documentos (hclust/k-means)</a></li>
-    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
-    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
+    <li><a class="dropdown-item" href="../articles/cluster.html">Agrupamento não supervisionado de documentos</a></li>
+    <li><a class="dropdown-item" href="../articles/sentimento.html">Análise de sentimento (OpLexicon)</a></li>
+    <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de tópicos (LDA)</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -106,9 +106,9 @@ por TF-IDF; <code>"count"</code> usa contagens brutas.</p></dd>
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>Numero de grupos. Se <code>NULL</code> (padrao) e <code>method %in% c("hclust","kmeans")</code>,
-tenta escolher automaticamente por silhouette entre 2 e 8; requer <code>cluster</code>.
-Se <code>cluster</code> nao estiver instalado, <code>k = 3</code> e o fallback.</p></dd>
+<dd><p>Numero de grupos. Se <code>NULL</code> (padrao) e <code>method %in% c("hclust","kmeans")</code>, tenta escolher automaticamente por silhouette
+entre 2 e 8; requer <code>cluster</code>. Se <code>cluster</code> nao estiver instalado,
+<code>k = 3</code> e o fallback.</p></dd>
 
 
 <dt id="arg-distance">distance<a class="anchor" aria-label="anchor" href="#arg-distance"></a></dt>
@@ -127,19 +127,19 @@ pequeno. Padrao: <code>15L</code>.</p></dd>
     <p>Objeto de classe <code>ac_cluster</code> com:</p><dl><dt><code>assignments</code></dt>
 <dd><p><code>tibble</code> com <code>doc_id</code> e <code>cluster</code> (integer).</p></dd>
 
-  <dt><code>fit</code></dt>
+<dt><code>fit</code></dt>
 <dd><p>Objeto bruto do algoritmo (<code>hclust</code>, <code>kmeans</code> ou <code>pam</code>).</p></dd>
 
-  <dt><code>k</code></dt>
+<dt><code>k</code></dt>
 <dd><p>Numero final de grupos.</p></dd>
 
-  <dt><code>method</code>, <code>features</code>, <code>distance</code></dt>
+<dt><code>method</code>, <code>features</code>, <code>distance</code></dt>
 <dd><p>Parametros usados.</p></dd>
 
-  <dt><code>silhouette</code></dt>
+<dt><code>silhouette</code></dt>
 <dd><p>Silhueta media (NA se <code>cluster</code> nao instalado).</p></dd>
 
-  <dt><code>dtm</code></dt>
+<dt><code>dtm</code></dt>
 <dd><p>Matriz documento-termo usada (para plotagem).</p></dd>
 
 
