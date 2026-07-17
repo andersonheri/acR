@@ -193,62 +193,11 @@ proporcional à frequência, mas a posição no plot é aleatória.
 if (requireNamespace("wordcloud", quietly = TRUE)) {
   ac_wordcloud(contagem, max_words = 40)
 }
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> central could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> comissao could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> comissao could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> constituicao could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> critica could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> debatem could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> defendeu could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> deficit could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> deputados could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> divida could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> economistas could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> educacao could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> eleva could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> emendas could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> empresas could not be fit on page. It will not be plotted.
-#> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-#> empresas could not be fit on page. It will not be plotted.
+#> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
+#> Some words could not fit on page. They have been removed.
 ```
 
 ![](quantitativo_files/figure-html/wordcloud-1.png)
-
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> financeiro could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> fiscal could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, : foco
-    #> could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> gastos could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> governo could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> imposto could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> inflacao could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> inflacao could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> infraestrutura could not be fit on page. It will not be plotted.
-    #> Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :
-    #> interior could not be fit on page. It will not be plotted.
 
 ## 7. TF-IDF: o que é *distintivo* em cada documento?
 

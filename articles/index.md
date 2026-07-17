@@ -1,6 +1,8 @@
 # Articles
 
-### Introducao
+### Comece por aqui
+
+Do zero ao pipeline completo em 5 minutos ou uma hora de estudo.
 
 - [Quickstart — acR em 5
   minutos](https://andersonheri.github.io/acR/articles/quickstart.md):
@@ -9,7 +11,9 @@
 - [Replicabilidade ponta-a-ponta — do codebook ao relatório de
   método](https://andersonheri.github.io/acR/articles/replicabilidade.md):
 
-### Pipeline qualitativo
+### Pipeline qualitativo (LLMs)
+
+Codebook, self-consistency, revisao humana e casos aplicados.
 
 - [Análise de Conteúdo Qualitativa com
   LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md):
@@ -17,6 +21,8 @@
   legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.md):
 
 ### Pipeline quantitativo
+
+Analises estatisticas classicas de conteudo textual.
 
 - [Analise quantitativa de
   texto](https://andersonheri.github.io/acR/articles/quantitativo.md):

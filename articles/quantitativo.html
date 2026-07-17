@@ -47,17 +47,18 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-vignettes" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Vignettes</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-vignettes">
-<li><a class="dropdown-item" href="../articles/quickstart.html">Quickstart (5 min)</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>COMECE POR AQUI</h6></li>
+    <li><a class="dropdown-item" href="../articles/quickstart.html">Quickstart (5 min)</a></li>
     <li><a class="dropdown-item" href="../articles/introducao-acR.html">Visao geral do pacote</a></li>
     <li><a class="dropdown-item" href="../articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Pipeline qualitativo</h6></li>
-    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs</a></li>
-    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">Analise de proposicoes com qwen3.6</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificacao com LLMs — guia completo</a></li>
+    <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposicoes legislativas</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Pipeline quantitativo</h6></li>
-    <li><a class="dropdown-item" href="../articles/quantitativo.html">Analise de frequencias e keyness</a></li>
-    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul>
 </li>
@@ -267,59 +268,9 @@ aleatória.</p>
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"wordcloud"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/ac_wordcloud.html">ac_wordcloud</a></span><span class="op">(</span><span class="va">contagem</span>, max_words <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; central could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; comissao could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; comissao could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; constituicao could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; critica could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; debatem could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; defendeu could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; deficit could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; deputados could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; divida could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; economistas could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; educacao could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; eleva could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; emendas could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; empresas could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; empresas could not be fit on page. It will not be plotted.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
+<span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/wordcloud-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<pre><code><span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; financeiro could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; fiscal could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, : foco</span></span>
-<span><span class="co">#&gt; could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; gastos could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; governo could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; imposto could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; inflacao could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; inflacao could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; infraestrutura could not be fit on page. It will not be plotted.</span></span>
-<span><span class="co">#&gt; Warning in wordcloud::wordcloud(words = df_plot$token, freq = df_plot$n, :</span></span>
-<span><span class="co">#&gt; interior could not be fit on page. It will not be plotted.</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="tf-idf-o-que-é-distintivo-em-cada-documento">7. TF-IDF: o que é <em>distintivo</em> em cada documento?<a class="anchor" aria-label="anchor" href="#tf-idf-o-que-%C3%A9-distintivo-em-cada-documento"></a>
@@ -330,7 +281,7 @@ documentos (mesmo depois de <em>stopwords</em>). O
 frequency</em>) penaliza termos comuns e destaca vocabulário próprio de
 cada documento — útil quando o corpus é composto por textos com
 propostas ou temas distintos.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">contagem</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
@@ -350,7 +301,7 @@ comparativa do tipo <em>“o que o Governo diz que a Oposição não
 diz?”</em>.</p>
 <p>Aqui comparamos os temas <strong>fiscal</strong> e
 <strong>tributário</strong> — quais palavras marcam cada lado?</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freq_tema</span>     <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span>
 <span><span class="va">freq_2grupos</span>  <span class="op">&lt;-</span> <span class="va">freq_tema</span><span class="op">[</span><span class="va">freq_tema</span><span class="op">$</span><span class="va">tema</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>, <span class="st">"tributario"</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
@@ -377,7 +328,7 @@ essas vizinhanças com base numa <strong>janela</strong> de tokens (aqui,
 <p>Útil para: identificar frames, mapear associações conceituais e
 encontrar combinações de palavras que definem sub-temas dentro do
 corpus.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_cooccurrence.html">ac_cooccurrence</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, window <span class="op">=</span> <span class="fl">5L</span>, min_count <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">+</span></span>

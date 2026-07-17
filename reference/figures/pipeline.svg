@@ -134,27 +134,27 @@
     <text class="step-fn"    x="16" y="86">ac_qual_reliability()</text>
   </g>
 
-  <!-- Arrow 4 -> 5: desce e vai para a Etapa 5 -->
-  <path class="arrow" d="M1002,282 L1002,470 L830,470" marker-end="url(#arrow)"/>
+  <!-- Arrow 4 -> 5: desce e vai para a Etapa 5 (topo do box) -->
+  <path class="arrow" d="M1002,282 L1002,470 L735,470" marker-end="url(#arrow)"/>
 
-  <!-- Row 2: Reportar & Exportar (embaixo, bem separadas) -->
+  <!-- Row 2: Reportar (embaixo direita) + Exportar (embaixo esquerda) -->
 
   <!-- Step 5: Reportar & replicar -->
-  <g transform="translate(430, 450)">
-    <rect class="box-shell report" width="400" height="50" rx="10"/>
-    <text class="step-num"           x="16" y="20">ETAPA 5</text>
-    <text class="step-title report"  x="16" y="40" font-size="13">Reportar &amp; replicar</text>
-    <text class="step-fn report"     x="200" y="30">ac_qual_report(format = "md" | "html")</text>
+  <g transform="translate(475, 450)">
+    <rect class="box-shell report" width="260" height="80" rx="12"/>
+    <text class="step-num"           x="16" y="22">ETAPA 5</text>
+    <text class="step-title report"  x="16" y="45">Reportar &amp; replicar</text>
+    <text class="step-fn report"     x="16" y="63">ac_qual_report()</text>
   </g>
 
-  <!-- Arrow 5 -> 6: caminho em L pela lateral esquerda -->
-  <path class="arrow" d="M430,475 L380,475 L380,528 L410,528" marker-end="url(#arrow)"/>
+  <!-- Arrow 5 -> 6 -->
+  <path class="arrow" d="M475,490 L440,490 L440,510 L295,510" marker-end="url(#arrow)"/>
 
-  <!-- Step 6: Exportar -->
-  <g transform="translate(20, 505)">
-    <rect class="box-shell export" width="390" height="45" rx="10"/>
-    <text class="step-num"          x="16" y="18">ETAPA 6</text>
-    <text class="step-title export" x="16" y="36" font-size="13">Exportar &amp; visualizar</text>
-    <text class="step-fn export"    x="200" y="28">ac_export() · ac_plot_*() · ac_wordcloud()</text>
+  <!-- Step 6: Exportar & visualizar -->
+  <g transform="translate(120, 450)">
+    <rect class="box-shell export" width="290" height="80" rx="12"/>
+    <text class="step-num"          x="16" y="22">ETAPA 6</text>
+    <text class="step-title export" x="16" y="45">Exportar &amp; visualizar</text>
+    <text class="step-fn export"    x="16" y="63">ac_export() · ac_plot_*()</text>
   </g>
 </svg>
