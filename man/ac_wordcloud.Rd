@@ -8,68 +8,75 @@ ac_wordcloud(
   x,
   max_words = 100,
   min_n = 1,
-  scale = c(4, 0.8),
-  random_order = FALSE,
-  colors = c("#2C7FB8", "#7FCDBB", "#EDF8B1", "#253494"),
+  colors = NULL,
+  backend = c("auto", "ggwordcloud", "wordcloud"),
+  title = NULL,
   ...
 )
 }
 \arguments{
-\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no minimo,
-as colunas \code{token} e \code{n}.}
+\item{x}{Um \code{data.frame} ou tibble contendo, no mínimo, as colunas
+\code{token} e \code{n}.}
 
-\item{max_words}{Numero maximo de palavras a desenhar. Padrao: \code{100}.}
+\item{max_words}{Número máximo de palavras a desenhar. Padrão: \code{100}.}
 
-\item{min_n}{Frequencia minima para incluir um termo. Padrao: \code{1}.}
+\item{min_n}{Frequência mínima para incluir um termo. Padrão: \code{1}.}
 
-\item{scale}{Vetor numerico de comprimento 2 indicando o intervalo de
-tamanhos das palavras. Padrao: \code{c(4, 0.8)}.}
+\item{colors}{Vetor de cores usado no gráfico. Padrão: paleta
+\code{\link[=ac_palette]{ac_palette()}}.}
 
-\item{random_order}{Logico. Se \code{TRUE}, plota em ordem aleatoria.
-Se \code{FALSE} (padrao), as palavras mais frequentes tendem a aparecer
-mais ao centro.}
+\item{backend}{Motor a usar: \code{"auto"} (padrão, prefere
+\code{ggwordcloud}), \code{"ggwordcloud"} ou \code{"wordcloud"}.}
 
-\item{colors}{Vetor de cores usado no grafico. Padrao:
-\code{c("#2C7FB8", "#7FCDBB", "#EDF8B1", "#253494")}.}
+\item{title}{Título opcional (apenas em modo \code{ggwordcloud}).}
 
-\item{...}{Argumentos adicionais encaminhados para
-\code{\link[wordcloud:wordcloud]{wordcloud::wordcloud()}}.}
+\item{...}{Argumentos adicionais encaminhados para o motor escolhido
+(\code{ggwordcloud::geom_text_wordcloud} ou \code{wordcloud::wordcloud}).}
 }
 \value{
-Invisivelmente, o \code{data.frame} filtrado usado para desenhar
-a nuvem de palavras.
+Um objeto \code{ggplot} (backend \code{ggwordcloud}) ou, invisivelmente,
+o \code{data.frame} filtrado (backend \code{wordcloud}).
 }
 \description{
 \code{ac_wordcloud()} cria uma nuvem de palavras a partir de uma tabela de
-frequencias, tipicamente gerada por \code{\link[=ac_count]{ac_count()}}.
+frequências, tipicamente gerada por \code{\link[=ac_count]{ac_count()}}.
 
-A funcao usa o pacote \code{wordcloud} para desenhar a nuvem e trabalha
-com as colunas \code{token} e \code{n}.
-}
-\details{
-Como \code{wordcloud::wordcloud()} desenha diretamente no dispositivo
-grafico ativo, esta funcao nao retorna um objeto \code{ggplot}. Em vez
-disso, produz o grafico como efeito colateral e retorna
-invisivelmente a tabela usada no desenho.
+Por padrão prefere \code{ggwordcloud} (retorna \code{ggplot}, layout mais
+agradável, tipografia melhor); cai para \code{wordcloud} clássico se
+o primeiro não estiver instalado.
 }
 \examples{
-# Corpus minimo (usando so as letras A, B, C como tokens)
+# Corpus pequeno para demonstrar
 df <- data.frame(
-  id    = c("d1", "d2", "d3"),
-  texto = c("A A B", "B C", "A C"),
+  id    = paste0("d", 1:8),
+  texto = c(
+    "reforma tributaria simplifica sistema empresas",
+    "reforma reduz distorcoes fiscais brasileiras",
+    "sistema tributario complexo prejudica empresas",
+    "reforma modernizacao arrecadacao federal",
+    "IVA substitui impostos indiretos federais",
+    "reforma tributaria arrecadacao IVA aliquotas",
+    "simplificacao impostos aliquotas empresas",
+    "reforma federal moderniza sistema tributario"
+  ),
   stringsAsFactors = FALSE
 )
-
-# Frequencia -> nuvem (requer pacote wordcloud instalado)
-corp <- ac_corpus(df, text = texto, docid = id)
+corp <- ac_corpus(df, text = texto, docid = id) |>
+  ac_clean(remove_stopwords = "pt")
 freq <- ac_count(corp)
 
+# Motor ggplot moderno (recomendado)
+if (requireNamespace("ggwordcloud", quietly = TRUE)) {
+  ac_wordcloud(freq, max_words = 30, title = "Termos frequentes")
+}
+
+# Motor classico (fallback)
 if (requireNamespace("wordcloud", quietly = TRUE)) {
-  ac_wordcloud(freq, max_words = 20)
+  ac_wordcloud(freq, max_words = 30, backend = "wordcloud")
 }
 
 }
 \seealso{
-\code{\link[=ac_count]{ac_count()}}, \code{\link[=ac_top_terms]{ac_top_terms()}}
+\code{\link[=ac_count]{ac_count()}}, \code{\link[=ac_top_terms]{ac_top_terms()}}, \code{\link[=ac_palette]{ac_palette()}}
 }
-\concept{corpus}
+\concept{visualization}

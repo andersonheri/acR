@@ -236,10 +236,9 @@ ac_plot_xray <- function(corpus,
     dplyr::left_join(n_tokens_doc, by = "doc_id") |>
     dplyr::mutate(pos_rel = (token_id - 1L) / (n_total - 1L))
 
-  # Cores dos termos
+  # Cores dos termos: default = ac_palette (Okabe-Ito adaptada)
   if (is.null(colors)) {
-    colors <- c("#0072B2", "#D55E00", "#009E73", "#CC79A7",
-                "#F0E442", "#56B4E9", "#E69F00")[seq_along(terms)]
+    colors <- ac_palette(min(length(terms), 8L))
   }
   color_map <- stats::setNames(colors[seq_along(terms)], terms)
 
@@ -247,35 +246,41 @@ ac_plot_xray <- function(corpus,
     hits,
     ggplot2::aes(x = pos_rel, y = 0, color = term_label)
   ) +
+    # Barrinha vertical destacando cada ocorrencia
     ggplot2::geom_segment(
-      ggplot2::aes(xend = pos_rel, yend = 0.8),
-      alpha = 0.7, linewidth = 0.6
+      ggplot2::aes(xend = pos_rel, yend = 1),
+      alpha = 0.85, linewidth = 1.2, lineend = "round"
     ) +
-    ggplot2::facet_grid(doc_id ~ term_label) +
+    ggplot2::facet_grid(doc_id ~ term_label, switch = "y") +
     ggplot2::scale_x_continuous(
       labels = scales::percent_format(accuracy = 1),
       limits = c(0, 1),
-      expand = c(0.01, 0.01)
+      expand = c(0.01, 0.01),
+      breaks = c(0, 0.25, 0.5, 0.75, 1)
     ) +
+    ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
     ggplot2::scale_color_manual(values = color_map, guide = "none") +
     ggplot2::labs(
-      title    = title,
-      subtitle = paste0("Dispers\u00e3o lexical: ",
-                        paste(terms, collapse = ", ")),
-      x        = "Posi\u00e7\u00e3o relativa no documento",
+      title    = title %||% "Dispersao lexical (X-ray)",
+      subtitle = paste0(
+        "Onde cada termo aparece dentro dos documentos: ",
+        paste(terms, collapse = ", ")
+      ),
+      x        = "Posicao relativa no texto",
       y        = NULL,
       caption  = "acR \u2022 ac_plot_xray()"
     ) +
-    ggplot2::theme_minimal() +
+    theme_ac() +
     ggplot2::theme(
-      axis.text.y      = ggplot2::element_blank(),
-      axis.ticks.y     = ggplot2::element_blank(),
+      axis.text.y        = ggplot2::element_blank(),
+      axis.ticks.y       = ggplot2::element_blank(),
       panel.grid.major.y = ggplot2::element_blank(),
       panel.grid.minor   = ggplot2::element_blank(),
-      strip.text         = ggplot2::element_text(face = "bold", size = 9),
-      plot.title         = ggplot2::element_text(face = "bold"),
-      plot.subtitle      = ggplot2::element_text(color = "grey40", size = 9),
-      plot.caption       = ggplot2::element_text(color = "grey60", size = 8)
+      strip.text.x       = ggplot2::element_text(face = "bold", size = 10.5),
+      strip.text.y.left  = ggplot2::element_text(size = 9, angle = 0,
+                                                  hjust = 1, color = "grey30"),
+      strip.background   = ggplot2::element_blank(),
+      panel.spacing      = ggplot2::unit(0.4, "lines")
     )
 
   p

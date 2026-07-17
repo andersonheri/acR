@@ -59,6 +59,7 @@ navbar:
     articles:
       text: Vignettes
       menu:
+      - text: "COMECE POR AQUI"
       - text: "Quickstart (5 min)"
         href: articles/quickstart.html
       - text: "Visao geral do pacote"
@@ -66,30 +67,36 @@ navbar:
       - text: "Replicabilidade ponta-a-ponta"
         href: articles/replicabilidade.html
       - text: "---"
-      - text: "Pipeline qualitativo"
-      - text: Codificacao com LLMs
+      - text: "PIPELINE QUALITATIVO (LLMs)"
+      - text: "Codificacao com LLMs — guia completo"
         href: articles/qualitativo-llm.html
-      - text: Analise de proposicoes com qwen3.6
+      - text: "  ↳ Estudo de caso: proposicoes legislativas"
         href: articles/analise-proposicoes.html
       - text: "---"
-      - text: "Pipeline quantitativo"
-      - text: Analise de frequencias e keyness
+      - text: "PIPELINE QUANTITATIVO"
+      - text: "Frequencias, keyness e coocorrencia"
         href: articles/quantitativo.html
-      - text: Analise de sentimento
+      - text: "Analise de sentimento (OpLexicon)"
         href: articles/sentimento.html
-      - text: Modelagem de topicos (LDA)
+      - text: "Modelagem de topicos (LDA)"
         href: articles/lda.html
 articles:
-  - title: "Introducao"
+  - title: "Comece por aqui"
+    desc: >
+      Do zero ao pipeline completo em 5 minutos ou uma hora de estudo.
     contents:
       - quickstart
       - introducao-acR
       - replicabilidade
-  - title: "Pipeline qualitativo"
+  - title: "Pipeline qualitativo (LLMs)"
+    desc: >
+      Codebook, self-consistency, revisao humana e casos aplicados.
     contents:
       - qualitativo-llm
       - analise-proposicoes
   - title: "Pipeline quantitativo"
+    desc: >
+      Analises estatisticas classicas de conteudo textual.
     contents:
       - quantitativo
       - sentimento

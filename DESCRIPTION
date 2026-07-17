@@ -41,6 +41,7 @@ Suggests:
     ellmer,
     ggplot2,
     ggraph,
+    ggwordcloud,
     igraph,
     ipeaplot,
     knitr,

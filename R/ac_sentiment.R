@@ -247,13 +247,12 @@ ac_plot_sentiment <- function(sentiment_tbl,
   } else if (type == "line") {
     p <- ggplot2::ggplot(
       sentiment_tbl,
-      ggplot2::aes(x = .data[[x_col]], y = score,
-                   color = score > 0, group = 1)
+      ggplot2::aes(x = .data[[x_col]], y = score, group = 1)
     ) +
-      ggplot2::geom_line(linewidth = 0.8) +
+      ggplot2::geom_line(linewidth = 0.6, color = "grey60") +
       ggplot2::geom_point(
         ggplot2::aes(color = .data[[fill_col]]),
-        size = 2.5
+        size = 3
       ) +
       ggplot2::geom_hline(yintercept = 0, linewidth = 0.4,
                           linetype = "dashed", color = "grey50") +
