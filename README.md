@@ -371,14 +371,30 @@ o `R CMD check` da CRAN.
 
 ## Documentação
 
-**<https://andersonheri.github.io/acR/>**
+Site completo: **<https://andersonheri.github.io/acR/>** — vignettes navegáveis,
+referência de todas as funções e changelog.
 
-- [Introdução ao acR](https://andersonheri.github.io/acR/articles/introducao-acR.html)
-- [Codificação qualitativa com LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.html)
-- [Análise de proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html)
-- [Análise quantitativa](https://andersonheri.github.io/acR/articles/quantitativo.html)
-- [Análise de sentimento](https://andersonheri.github.io/acR/articles/sentimento.html)
-- [Modelagem de tópicos LDA](https://andersonheri.github.io/acR/articles/lda.html)
+### Comece por aqui
+
+- [Quickstart (5 min)](https://andersonheri.github.io/acR/articles/quickstart.html) — do zero ao primeiro gráfico.
+- [Visão geral do pacote](https://andersonheri.github.io/acR/articles/introducao-acR.html) — pipeline em uma hora.
+- [Replicabilidade ponta-a-ponta](https://andersonheri.github.io/acR/articles/replicabilidade.html) — do dado bruto ao relatório reprodutível.
+
+### Pipeline qualitativo (LLMs)
+
+- [Codificação com LLMs — guia completo](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) — codebook, self-consistency, revisão humana e concordância.
+- [Estudo de caso: proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) — aplicação real com dados da Câmara.
+
+### Pipeline quantitativo
+
+- [Frequências, keyness e coocorrência](https://andersonheri.github.io/acR/articles/quantitativo.html) — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.
+- [Análise de sentimento (OpLexicon)](https://andersonheri.github.io/acR/articles/sentimento.html) — polaridade e sentimento agregado por documento.
+- [Modelagem de tópicos (LDA)](https://andersonheri.github.io/acR/articles/lda.html) — escolha de `k`, interpretação de tópicos e visualização.
+
+### Referência de funções
+
+- [Índice completo por área](https://andersonheri.github.io/acR/reference/) — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
+- [Notícias / changelog](https://andersonheri.github.io/acR/news/) — histórico de versões (atual: **0.3.1**).
 
 ---
 
@@ -390,7 +406,7 @@ citation("acR")
 
 ```
 Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.3.0. ORCID: 0000-0002-1842-2725.
+R package version 0.3.1. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/
 ```
