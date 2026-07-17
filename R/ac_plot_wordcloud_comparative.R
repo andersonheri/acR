@@ -1,21 +1,26 @@
 #' Nuvem de palavras comparativa entre grupos
 #'
 #' @description
-#' `ac_plot_wordcloud_comparative()` gera uma nuvem de palavras comparativa
-#' entre dois grupos de documentos, posicionando termos mais associados a
-#' cada grupo em lados opostos. Usa TF-IDF para identificar os termos
-#' mais distintivos de cada grupo.
+#' `ac_plot_wordcloud_comparative()` gera nuvens de palavras comparativas
+#' entre N grupos de documentos, dispostas em facets lado a lado. Usa
+#' TF-IDF (calculado tratando cada grupo como um "documento") para
+#' identificar os termos mais distintivos de cada grupo.
+#'
+#' Aceita 2, 3, 4+ grupos: cada grupo vira uma faceta. Para dois grupos
+#' a leitura fica naturalmente lado a lado; para mais, o layout se
+#' organiza em uma linha (ou grade, se muitos grupos).
 #'
 #' @param corpus Objeto `ac_corpus` com coluna de metadado de grupo.
-#' @param group Coluna de agrupamento (nome sem aspas ou string).
+#' @param group Coluna de agrupamento (nome sem aspas ou string). Deve
+#'   ter pelo menos 2 valores únicos.
 #' @param max_words Número máximo de palavras por grupo. Padrão: `50`.
-#' @param colors Vetor com duas cores (uma por grupo). Padrão: duas
-#'   primeiras cores de [ac_palette()] (Okabe-Ito).
+#' @param colors Vetor de cores (uma por grupo, na ordem alfabética dos
+#'   grupos). Padrão: as primeiras N cores de [ac_palette()] (Okabe-Ito).
 #' @param seed Semente para o posicionamento aleatorio dos termos. Padrao
 #'   `42L` (garante layout reproduzivel entre chamadas).
 #' @param backend Motor de renderizacao: `"auto"` (padrao, prefere
-#'   `ggwordcloud` com facets), `"ggwordcloud"` ou `"ggplot"` (layout
-#'   original com jitter).
+#'   `ggwordcloud` com facets), `"ggwordcloud"` ou `"ggplot"` (facets
+#'   com `geom_text` + jitter reproduzivel).
 #' @param title Título do gráfico. Padrão: `NULL`.
 #' @param ... Ignorado.
 #'
@@ -55,11 +60,6 @@ ac_plot_wordcloud_comparative <- function(corpus,
 
   backend <- match.arg(backend)
 
-  if (is.null(colors)) colors <- ac_palette(2L)
-  if (length(colors) < 2L) {
-    cli::cli_abort("{.arg colors} deve ter pelo menos 2 cores.")
-  }
-
   if (!is_ac_corpus(corpus)) {
     cli::cli_abort("{.arg corpus} deve ser um {.cls ac_corpus}.")
   }
@@ -76,11 +76,20 @@ ac_plot_wordcloud_comparative <- function(corpus,
     ))
   }
 
-  grupos <- unique(corpus[[group_col]])
-  if (length(grupos) != 2L) {
+  grupos <- sort(unique(corpus[[group_col]]))
+  if (length(grupos) < 2L) {
     cli::cli_abort(c(
-      "{.fn ac_plot_wordcloud_comparative} requer exatamente 2 grupos.",
-      "x" = "Encontrados {length(grupos)} grupos: {.val {grupos}}."
+      "{.fn ac_plot_wordcloud_comparative} requer pelo menos 2 grupos.",
+      "x" = "Encontrados {length(grupos)} grupo(s): {.val {grupos}}."
+    ))
+  }
+
+  # Resolver cores a partir do numero real de grupos
+  if (is.null(colors)) colors <- ac_palette(min(length(grupos), 8L))
+  if (length(colors) < length(grupos)) {
+    cli::cli_abort(c(
+      "{.arg colors} deve ter ao menos {length(grupos)} cores.",
+      "x" = "Recebidas {length(colors)} para {length(grupos)} grupos."
     ))
   }
 
@@ -177,12 +186,8 @@ ac_plot_wordcloud_comparative <- function(corpus,
     return(p)
   }
 
-  # Fallback: layout ggplot2 base com jitter reproduzivel
-  top_grp$x_jitter <- ifelse(
-    top_grp$grp == grupos[1],
-    stats::runif(nrow(top_grp), -1, -0.1),
-    stats::runif(nrow(top_grp), 0.1, 1)
-  )
+  # Fallback ggplot: geom_text com jitter reproduzivel dentro de cada facet
+  top_grp$x_jitter <- stats::runif(nrow(top_grp), -1, 1)
   top_grp$y_jitter <- stats::runif(nrow(top_grp), -1, 1)
 
   p <- ggplot2::ggplot(
@@ -191,31 +196,22 @@ ac_plot_wordcloud_comparative <- function(corpus,
                  label = token, size = size_norm, color = grp)
   ) +
     ggplot2::geom_text(alpha = 0.85) +
-    ggplot2::scale_color_manual(
-      values = color_map,
-      name   = group_col
-    ) +
+    ggplot2::facet_wrap(~ grp, nrow = 1L) +
+    ggplot2::scale_color_manual(values = color_map, guide = "none") +
     ggplot2::scale_size(range = c(3, 10), guide = "none") +
-    ggplot2::geom_vline(xintercept = 0, color = "grey80", linewidth = 0.5) +
-    ggplot2::annotate("text", x = -0.55, y = 1.05,
-                      label = as.character(grupos[1]),
-                      fontface = "bold", color = colors[1], size = 4) +
-    ggplot2::annotate("text", x = 0.55, y = 1.05,
-                      label = as.character(grupos[2]),
-                      fontface = "bold", color = colors[2], size = 4) +
     ggplot2::labs(
       title    = title,
       subtitle = paste0("Termos distintivos por grupo (TF-IDF) \u2022 top ",
                         max_words, " por grupo"),
       caption  = "acR \u2022 ac_plot_wordcloud_comparative()"
     ) +
-    ggplot2::theme_void() +
+    theme_ac() +
     ggplot2::theme(
-      plot.title    = ggplot2::element_text(face = "bold", hjust = 0.5),
-      plot.subtitle = ggplot2::element_text(color = "grey40",
-                                            hjust = 0.5, size = 9),
-      plot.caption  = ggplot2::element_text(color = "grey60", size = 8,
-                                            hjust = 1),
+      panel.grid  = ggplot2::element_blank(),
+      axis.text   = ggplot2::element_blank(),
+      axis.title  = ggplot2::element_blank(),
+      axis.ticks  = ggplot2::element_blank(),
+      strip.text  = ggplot2::element_text(face = "bold", size = 11),
       legend.position = "none"
     )
 

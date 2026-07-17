@@ -54,17 +54,39 @@ test_that("ac_plot_wordcloud_comparative() rejeita coluna de grupo inexistente",
   )
 })
 
-test_that("ac_plot_wordcloud_comparative() rejeita mais de 2 grupos", {
+test_that("ac_plot_wordcloud_comparative() aceita 3+ grupos via facets", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("scales")
+
+  df <- data.frame(
+    id    = paste0("d", 1:6),
+    texto = c("democracia participacao voto",
+              "cidadania direitos liberdade",
+              "mercado economia privatizacao",
+              "eficiencia mercado livre",
+              "estado welfare politicas",
+              "seguridade previdencia social"),
+    grp   = c("A","A","B","B","C","C"),
+    stringsAsFactors = FALSE
+  )
+  corp <- ac_corpus(df, text = texto, docid = id)
+  p <- ac_plot_wordcloud_comparative(corp, group = grp,
+                                     backend = "ggplot")
+  expect_s3_class(p, "ggplot")
+  expect_true(inherits(p$facet, "FacetWrap"))
+})
+
+test_that("ac_plot_wordcloud_comparative() rejeita 1 unico grupo", {
   df <- data.frame(
     id    = paste0("d", 1:3),
     texto = c("texto a", "texto b", "texto c"),
-    grp   = c("A","B","C"),
+    grp   = c("A","A","A"),
     stringsAsFactors = FALSE
   )
   corp <- ac_corpus(df, text = texto, docid = id)
   expect_error(
     ac_plot_wordcloud_comparative(corp, group = grp),
-    regexp = "2 grupos"
+    regexp = "pelo menos 2"
   )
 })
 

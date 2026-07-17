@@ -18,12 +18,13 @@ ac_plot_wordcloud_comparative(
 \arguments{
 \item{corpus}{Objeto \code{ac_corpus} com coluna de metadado de grupo.}
 
-\item{group}{Coluna de agrupamento (nome sem aspas ou string).}
+\item{group}{Coluna de agrupamento (nome sem aspas ou string). Deve ter
+pelo menos 2 valores unicos.}
 
 \item{max_words}{Número máximo de palavras por grupo. Padrão: \code{50}.}
 
-\item{colors}{Vetor com duas cores (uma por grupo). Padrão: duas
-primeiras cores de \code{\link[=ac_palette]{ac_palette()}} (Okabe-Ito).}
+\item{colors}{Vetor de cores (uma por grupo, na ordem alfabetica dos
+grupos). Padrao: as primeiras N cores de \code{\link[=ac_palette]{ac_palette()}}.}
 
 \item{title}{Título do gráfico. Padrão: \code{NULL}.}
 
@@ -32,7 +33,7 @@ primeiras cores de \code{\link[=ac_palette]{ac_palette()}} (Okabe-Ito).}
 
 \item{backend}{Motor de renderizacao: \code{"auto"} (padrao, prefere
 \code{ggwordcloud} com facets), \code{"ggwordcloud"} ou \code{"ggplot"}
-(layout original com jitter).}
+(facets com geom_text + jitter reproduzivel).}
 
 \item{...}{Ignorado.}
 }
@@ -40,10 +41,12 @@ primeiras cores de \code{\link[=ac_palette]{ac_palette()}} (Okabe-Ito).}
 Objeto \code{ggplot}.
 }
 \description{
-\code{ac_plot_wordcloud_comparative()} gera uma nuvem de palavras comparativa
-entre dois grupos de documentos, posicionando termos mais associados a
-cada grupo em lados opostos. Usa TF-IDF para identificar os termos
-mais distintivos de cada grupo.
+\code{ac_plot_wordcloud_comparative()} gera nuvens de palavras comparativas
+entre N grupos de documentos, dispostas em facets lado a lado. Usa
+TF-IDF (calculado tratando cada grupo como um "documento") para
+identificar os termos mais distintivos de cada grupo.
+
+Aceita 2, 3, 4+ grupos: cada grupo vira uma faceta.
 }
 \examples{
 # Corpus dividido em dois grupos com vocabulario contrastante
