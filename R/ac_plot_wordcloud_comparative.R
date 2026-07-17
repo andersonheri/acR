@@ -161,9 +161,9 @@ ac_plot_wordcloud_comparative <- function(corpus,
       ggplot2::scale_size_area(max_size = 18) +
       ggplot2::labs(
         title    = title,
-        subtitle = paste0("Termos distintivos por grupo (TF-IDF) • top ",
+        subtitle = paste0("Termos distintivos por grupo (TF-IDF) \u2022 top ",
                           max_words, " por grupo"),
-        caption  = "acR • ac_plot_wordcloud_comparative()"
+        caption  = "acR \u2022 ac_plot_wordcloud_comparative()"
       ) +
       theme_ac() +
       ggplot2::theme(
