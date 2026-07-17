@@ -76,6 +76,8 @@ navbar:
       - text: "PIPELINE QUANTITATIVO"
       - text: "Frequencias, keyness e coocorrencia"
         href: articles/quantitativo.html
+      - text: "  ↳ Nuvens de palavras (ggwordcloud) e comparativa"
+        href: articles/quantitativo.html#nuvem-de-palavras
       - text: "Analise de sentimento (OpLexicon)"
         href: articles/sentimento.html
       - text: "Modelagem de topicos (LDA)"
