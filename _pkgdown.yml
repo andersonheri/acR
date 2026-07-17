@@ -104,9 +104,10 @@ articles:
 reference:
 - title: "Comece aqui — funcoes principais"
   desc: >
-    Os cinco pontos de entrada mais usados do pacote. Se voce esta comecando,
+    Os seis pontos de entrada mais usados do pacote. Se voce esta comecando,
     aprenda estas primeiro; o resto do pipeline se conecta em torno delas.
   contents:
+  - ac_import
   - ac_corpus
   - ac_count
   - ac_qual_codebook
