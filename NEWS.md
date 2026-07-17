@@ -1,3 +1,62 @@
+# acR 0.3.0
+
+## Novas funcionalidades — Visualização e Tema
+
+* **`theme_ac()`** — tema `ggplot2` minimalista e consistente, usado
+  por todos os `ac_plot_*()`. Deriva de `theme_minimal()` com ajustes
+  editoriais: títulos em negrito, gridlines suaves, tipografia compacta.
+
+* **`ac_palette()`** — paleta categórica de 8 cores (adaptada de
+  Okabe-Ito para compatibilidade WCAG AA e daltonismo).
+
+* **`ac_wordcloud(backend = ...)`** — reescrita para preferir
+  `ggwordcloud` (retorna `ggplot`, layout mais agradável, tipografia
+  editorial), com fallback para `wordcloud` clássico. Novos argumentos
+  `backend` e `title`.
+
+* **`ac_plot_xray()`** — refinada com `theme_ac()` + `ac_palette()`,
+  facet_grid com label do documento à esquerda, barras verticais mais
+  espessas e arredondadas.
+
+## Menu e navegação
+
+* Vignettes do site pkgdown reorganizadas em 3 blocos ("Comece por
+  aqui", "Pipeline qualitativo (LLMs)", "Pipeline quantitativo").
+  "Análise de proposições" agora aparece como sub-item de "Codificação
+  com LLMs", esclarecendo a relação entre guia e estudo de caso.
+
+* Diagrama SVG do pipeline redesenhado: Etapas 5 e 6 em layout de duas
+  linhas (título + funções empilhados) resolvendo vazamento de texto.
+
+## Testes e cobertura
+
+* +87 assertions em 4 arquivos novos (`test-ac_ellmer_chat`,
+  `test-ac_qual_report`, `test-ac_qual_live`, `test-ac_qual_code-live`).
+* Cobertura global: **55% → ~64%**.
+* Total agora: 741+ testes pass, 5 skips justificados.
+
+## Documentação
+
+* Nova vignette **`replicabilidade.Rmd`** — pipeline completo em 6
+  etapas (corpus → codebook → code + live → sample → reliability →
+  report), com exemplo executável de `ac_qual_report()`.
+
+* Todas as vignettes usam `ac_clean(remove_stopwords = "pt")` — antes
+  top-terms e keyness apareciam poluídos por artigos e preposições.
+
+* Vignettes `lda.Rmd` e `sentimento.Rmd` reescritas com corpus real e
+  chunks 100% executáveis (antes usavam `eval=FALSE` + outputs falsos).
+
+## Bug fixes
+
+* `ac_plot_sentiment(type = "line")`: conflito de escala de cor
+  resolvido (linha em cinza neutro, pontos coloridos por sentimento).
+
+* `.ac_ellmer_chat()`: sempre usa dispatch direto ao invés de delegar a
+  `ellmer::chat()`, garantindo resolução consistente de aliases
+  (`gemini → chat_google_gemini`, `claude → chat_anthropic`,
+  `azure → chat_azure_openai`, `bedrock → chat_aws_bedrock`).
+
 # acR 0.2.2
 
 ## Novas funcionalidades — Replicabilidade e transparência

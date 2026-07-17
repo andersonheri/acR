@@ -399,7 +399,7 @@ citation("acR")
 
 ```
 Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.2.2. ORCID: 0000-0002-1842-2725.
+R package version 0.3.0. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/
 ```

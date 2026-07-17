@@ -1,6 +1,6 @@
 ## Submission summary
 
-This is the initial CRAN submission of `acR` (version 0.2.2). The package
+This is the initial CRAN submission of `acR` (version 0.3.0). The package
 provides an integrated pipeline for content analysis in R, combining
 qualitative coding assisted by large language models (LLMs) with classical
 quantitative text analysis. Special focus on Brazilian corpora and
