@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,6 +30,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
     <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul></li>
@@ -48,6 +49,22 @@
       <small>Source: <a href="https://github.com/andersonheri/acR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.1" id="acr-031">acR 0.3.1<a class="anchor" aria-label="anchor" href="#acr-031"></a></h2>
+<div class="section level3">
+<h3 id="ajustes-0-3-1">Ajustes<a class="anchor" aria-label="anchor" href="#ajustes-0-3-1"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code></strong> — layout reproduzivel via novo argumento <code>seed</code> (padrao <code>42L</code>), com salvaguarda do RNG global; cores padrao agora vem de <code>ac_palette(2L)</code> em vez de codigos fixos. Novo argumento <code>backend</code> (<code>"auto"</code>/<code>"ggwordcloud"</code>/<code>"ggplot"</code>): quando <code>ggwordcloud</code> esta instalado, usa <code>geom_text_wordcloud</code> com facets lado a lado; caso contrario, mantem o layout jitter original.</li>
+<li>
+<strong><code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code></strong> — corrigido caso de divisao por zero em documentos com apenas 1 token (posicao passa a ser <code>0.5</code>); warning agora identifica quais termos ficaram sem ocorrencia, nao apenas o caso extremo de nenhum encontrado.</li>
+<li>
+<strong><code><a href="../reference/ac_import.html">ac_import()</a></code></strong> — a ordem dos documentos no corpus resultante agora preserva a ordem de entrada em <code>path</code>, mesmo misturando arquivos OCR e texto; <code>doc_id</code> duplicados sao desambiguados automaticamente com sufixos (<code>_2</code>, <code>_3</code>, …) e um aviso; erros migrados para <code><a href="https://cli.r-lib.org/reference/cli_abort.html" class="external-link">cli::cli_abort</a></code> (padrao do pacote). Loop de OCR ganhou barra de progresso via <code><a href="https://cli.r-lib.org/reference/cli_progress_bar.html" class="external-link">cli::cli_progress_bar()</a></code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="testes-0-3-1">Testes<a class="anchor" aria-label="anchor" href="#testes-0-3-1"></a></h3>
+<ul><li>Nova cobertura para <code><a href="../reference/ac_export.html">ac_export()</a></code>, <code><a href="../reference/ac_qual_irr.html">ac_qual_irr()</a></code>, <code><a href="../reference/theme_ac.html">theme_ac()</a></code>, <code><a href="../reference/ac_palette.html">ac_palette()</a></code> e <code><a href="../reference/is_ac_corpus.html">is_ac_corpus()</a></code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="acr-030">acR 0.3.0<a class="anchor" aria-label="anchor" href="#acr-030"></a></h2>
 <div class="section level3">

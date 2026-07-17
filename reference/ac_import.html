@@ -11,7 +11,7 @@ Suporta caminhos individuais, vetores de arquivos e globs (dados/*.pdf)."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@ Suporta caminhos individuais, vetores de arquivos e globs (dados/*.pdf)."><meta 
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
     <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul></li>
@@ -110,8 +111,13 @@ aciona o parser correto:</p><ul><li><p><strong>PDF com texto selecionavel</stron
 <li><p><strong>CSV</strong>: <code>readtext</code> (requer <code>text_field</code>)</p></li>
 <li><p><strong>TXT / JSON</strong>: <code>readtext</code></p></li>
 <li><p><strong>Pasta inteira / glob</strong>: todos os arquivos compativeis de uma vez</p></li>
-</ul><p><strong>Dependencias opcionais</strong>: <code>readtext</code> e <code>tesseract</code> nao sao importados
-automaticamente — o <code>ac_import()</code> verifica se estao instalados e
+</ul><p>A ordem dos documentos no corpus resultante segue a ordem de entrada em
+<code>path</code> (ou a ordem alfabetica retornada por <code><a href="https://rdrr.io/r/base/Sys.glob.html" class="external-link">Sys.glob()</a></code>), independente
+de o parser ser OCR ou readtext. IDs duplicados (dois arquivos com o
+mesmo <code>basename</code>) sao desambiguados automaticamente com um sufixo <code>_2</code>,
+<code>_3</code>, ... e um aviso e emitido.</p>
+<p><strong>Dependencias opcionais</strong>: <code>readtext</code> e <code>tesseract</code> nao sao importados
+automaticamente – o <code>ac_import()</code> verifica se estao instalados e
 orienta a instalacao caso necessario.</p>
     </div>
     <div class="section level2">

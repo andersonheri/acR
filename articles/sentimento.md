@@ -319,6 +319,8 @@ ac_plot_xray(corpus, terms = c("reforma", "trabalhadores", "aprovar", "vergonha"
     title    = "Onde os termos-chave aparecem no corpus",
     subtitle = "Cada ponto marca uma ocorrência do termo (posição relativa no texto)"
   )
+#> Warning: Termo(s) sem ocorrencia: "aprovar" and "vergonha".
+#> ℹ Verifique ortografia/acentuacao ou o efeito de `ac_clean()`.
 ```
 
 ![](sentimento_files/figure-html/plot-xray-1.png)

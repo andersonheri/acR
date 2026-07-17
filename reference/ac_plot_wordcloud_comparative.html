@@ -13,7 +13,7 @@ mais distintivos de cada grupo."><meta property="og:image" content="https://ande
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,7 @@ mais distintivos de cada grupo."><meta property="og:image" content="https://ande
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
     <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul></li>
@@ -68,8 +69,10 @@ mais distintivos de cada grupo.</p>
 <span>  <span class="va">corpus</span>,</span>
 <span>  <span class="va">group</span>,</span>
 <span>  max_words <span class="op">=</span> <span class="fl">50L</span>,</span>
-<span>  colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span><span class="op">)</span>,</span>
+<span>  colors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>  backend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"ggwordcloud"</span>, <span class="st">"ggplot"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -91,12 +94,23 @@ mais distintivos de cada grupo.</p>
 
 
 <dt id="arg-colors">colors<a class="anchor" aria-label="anchor" href="#arg-colors"></a></dt>
-<dd><p>Vetor com duas cores (uma por grupo). Padrão: paleta
-acessível Okabe-Ito.</p></dd>
+<dd><p>Vetor com duas cores (uma por grupo). Padrão: duas
+primeiras cores de <code><a href="ac_palette.html">ac_palette()</a></code> (Okabe-Ito).</p></dd>
 
 
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
 <dd><p>Título do gráfico. Padrão: <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
+<dd><p>Semente para o posicionamento aleatorio dos termos. Padrao
+<code>42L</code> (garante layout reproduzivel entre chamadas).</p></dd>
+
+
+<dt id="arg-backend">backend<a class="anchor" aria-label="anchor" href="#arg-backend"></a></dt>
+<dd><p>Motor de renderizacao: <code>"auto"</code> (padrao, prefere
+<code>ggwordcloud</code> com facets), <code>"ggwordcloud"</code> ou <code>"ggplot"</code>
+(layout original com jitter).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -131,6 +145,7 @@ acessível Okabe-Ito.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Nuvem comparativa: termos distintivos de cada grupo</span></span></span>
 <span class="r-in"><span><span class="fu">ac_plot_wordcloud_comparative</span><span class="op">(</span><span class="va">corpus</span>, group <span class="op">=</span> <span class="va">grupo</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Some words could not fit on page. They have been removed.</span>
 <span class="r-plt img"><img src="ac_plot_wordcloud_comparative-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

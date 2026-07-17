@@ -1,5 +1,40 @@
 # Changelog
 
+## acR 0.3.1
+
+### Ajustes
+
+- **[`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md)**
+  — layout reproduzivel via novo argumento `seed` (padrao `42L`), com
+  salvaguarda do RNG global; cores padrao agora vem de `ac_palette(2L)`
+  em vez de codigos fixos. Novo argumento `backend`
+  (`"auto"`/`"ggwordcloud"`/`"ggplot"`): quando `ggwordcloud` esta
+  instalado, usa `geom_text_wordcloud` com facets lado a lado; caso
+  contrario, mantem o layout jitter original.
+- **[`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)**
+  — corrigido caso de divisao por zero em documentos com apenas 1 token
+  (posicao passa a ser `0.5`); warning agora identifica quais termos
+  ficaram sem ocorrencia, nao apenas o caso extremo de nenhum
+  encontrado.
+- **[`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)**
+  — a ordem dos documentos no corpus resultante agora preserva a ordem
+  de entrada em `path`, mesmo misturando arquivos OCR e texto; `doc_id`
+  duplicados sao desambiguados automaticamente com sufixos (`_2`, `_3`,
+  …) e um aviso; erros migrados para
+  [`cli::cli_abort`](https://cli.r-lib.org/reference/cli_abort.html)
+  (padrao do pacote). Loop de OCR ganhou barra de progresso via
+  [`cli::cli_progress_bar()`](https://cli.r-lib.org/reference/cli_progress_bar.html).
+
+### Testes
+
+- Nova cobertura para
+  [`ac_export()`](https://andersonheri.github.io/acR/reference/ac_export.md),
+  [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md),
+  [`theme_ac()`](https://andersonheri.github.io/acR/reference/theme_ac.md),
+  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+  e
+  [`is_ac_corpus()`](https://andersonheri.github.io/acR/reference/is_ac_corpus.md).
+
 ## acR 0.3.0
 
 ### Novas funcionalidades — Visualização e Tema

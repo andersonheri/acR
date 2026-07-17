@@ -12,8 +12,10 @@ ac_plot_wordcloud_comparative(
   corpus,
   group,
   max_words = 50L,
-  colors = c("#0072B2", "#D55E00"),
+  colors = NULL,
   title = NULL,
+  seed = 42L,
+  backend = c("auto", "ggwordcloud", "ggplot"),
   ...
 )
 ```
@@ -34,12 +36,23 @@ ac_plot_wordcloud_comparative(
 
 - colors:
 
-  Vetor com duas cores (uma por grupo). Padrão: paleta acessível
-  Okabe-Ito.
+  Vetor com duas cores (uma por grupo). Padrão: duas primeiras cores de
+  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+  (Okabe-Ito).
 
 - title:
 
   Título do gráfico. Padrão: `NULL`.
+
+- seed:
+
+  Semente para o posicionamento aleatorio dos termos. Padrao `42L`
+  (garante layout reproduzivel entre chamadas).
+
+- backend:
+
+  Motor de renderizacao: `"auto"` (padrao, prefere `ggwordcloud` com
+  facets), `"ggwordcloud"` ou `"ggplot"` (layout original com jitter).
 
 - ...:
 
@@ -73,5 +86,6 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 
 # Nuvem comparativa: termos distintivos de cada grupo
 ac_plot_wordcloud_comparative(corpus, group = grupo)
+#> Warning: Some words could not fit on page. They have been removed.
 
 ```

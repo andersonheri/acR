@@ -188,16 +188,51 @@ Uma nuvem funciona como **panorama visual** rápido, útil para relatórios
 e apresentações. Não substitui análise numérica: o tamanho da palavra é
 proporcional à frequência, mas a posição no plot é aleatória.
 
+Desde a versão 0.3.1 o
+[`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
+prefere automaticamente o motor `ggwordcloud` (retorna um `ggplot`, com
+tipografia mais legível e layout consistente com o tema do pacote); se
+ele não estiver instalado, cai para o `wordcloud` clássico. Você pode
+forçar via `backend = "ggwordcloud"` ou `backend = "wordcloud"`.
+
 ``` r
 
-if (requireNamespace("wordcloud", quietly = TRUE)) {
-  ac_wordcloud(contagem, max_words = 40)
-}
+ac_wordcloud(contagem, max_words = 40, title = "Panorama do corpus")
 #> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
 #> Some words could not fit on page. They have been removed.
 ```
 
 ![](quantitativo_files/figure-html/wordcloud-1.png)
+
+### 6.1 Nuvem comparativa entre grupos
+
+Quando o corpus tem uma variável de agrupamento (partido, período,
+tribunal, etc.), a nuvem comparativa mostra lado a lado os termos mais
+**distintivos** de cada grupo — pontuados por TF-IDF calculado entre os
+dois lados. Requer exatamente dois grupos.
+
+``` r
+
+# Nosso corpus tem 4 temas; comparativa exige exatamente 2. Filtrando:
+corpus_2 <- corpus[corpus$tema %in% c("fiscal", "tributario"), ]
+
+ac_plot_wordcloud_comparative(
+  corpus_2,
+  group     = tema,
+  max_words = 40,
+  title     = "Termos distintivos: fiscal vs. tributario"
+)
+#> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
+#> Some words could not fit on page. They have been removed.
+#> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
+#> Some words could not fit on page. They have been removed.
+```
+
+![](quantitativo_files/figure-html/wordcloud-comp-1.png)
+
+O layout usa `ggwordcloud` com facets quando disponível
+(`backend = "auto"`), e cai no scatter jitter reproduzível quando não. A
+semente do posicionamento é controlada por `seed = 42L`.
 
 ## 7. TF-IDF: o que é *distintivo* em cada documento?
 

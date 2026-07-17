@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,6 +58,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
     <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul>
@@ -264,13 +265,45 @@ orçamento, etc.</p>
 para relatórios e apresentações. Não substitui análise numérica: o
 tamanho da palavra é proporcional à frequência, mas a posição no plot é
 aleatória.</p>
+<p>Desde a versão 0.3.1 o <code><a href="../reference/ac_wordcloud.html">ac_wordcloud()</a></code> prefere
+automaticamente o motor <code>ggwordcloud</code> (retorna um
+<code>ggplot</code>, com tipografia mais legível e layout consistente
+com o tema do pacote); se ele não estiver instalado, cai para o
+<code>wordcloud</code> clássico. Você pode forçar via
+<code>backend = "ggwordcloud"</code> ou
+<code>backend = "wordcloud"</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"wordcloud"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/ac_wordcloud.html">ac_wordcloud</a></span><span class="op">(</span><span class="va">contagem</span>, max_words <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_wordcloud.html">ac_wordcloud</a></span><span class="op">(</span><span class="va">contagem</span>, max_words <span class="op">=</span> <span class="fl">40</span>, title <span class="op">=</span> <span class="st">"Panorama do corpus"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
 <span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/wordcloud-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<div class="section level3">
+<h3 id="nuvem-comparativa-entre-grupos">6.1 Nuvem comparativa entre grupos<a class="anchor" aria-label="anchor" href="#nuvem-comparativa-entre-grupos"></a>
+</h3>
+<p>Quando o corpus tem uma variável de agrupamento (partido, período,
+tribunal, etc.), a nuvem comparativa mostra lado a lado os termos mais
+<strong>distintivos</strong> de cada grupo — pontuados por TF-IDF
+calculado entre os dois lados. Requer exatamente dois grupos.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Nosso corpus tem 4 temas; comparativa exige exatamente 2. Filtrando:</span></span>
+<span><span class="va">corpus_2</span> <span class="op">&lt;-</span> <span class="va">corpus</span><span class="op">[</span><span class="va">corpus</span><span class="op">$</span><span class="va">tema</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>, <span class="st">"tributario"</span><span class="op">)</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative</a></span><span class="op">(</span></span>
+<span>  <span class="va">corpus_2</span>,</span>
+<span>  group     <span class="op">=</span> <span class="va">tema</span>,</span>
+<span>  max_words <span class="op">=</span> <span class="fl">40</span>,</span>
+<span>  title     <span class="op">=</span> <span class="st">"Termos distintivos: fiscal vs. tributario"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
+<span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
+<span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/wordcloud-comp-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>O layout usa <code>ggwordcloud</code> com facets quando disponível
+(<code>backend = "auto"</code>), e cai no scatter jitter reproduzível
+quando não. A semente do posicionamento é controlada por
+<code>seed = 42L</code>.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="tf-idf-o-que-é-distintivo-em-cada-documento">7. TF-IDF: o que é <em>distintivo</em> em cada documento?<a class="anchor" aria-label="anchor" href="#tf-idf-o-que-%C3%A9-distintivo-em-cada-documento"></a>
@@ -281,7 +314,7 @@ documentos (mesmo depois de <em>stopwords</em>). O
 frequency</em>) penaliza termos comuns e destaca vocabulário próprio de
 cada documento — útil quando o corpus é composto por textos com
 propostas ou temas distintos.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">contagem</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
@@ -301,7 +334,7 @@ comparativa do tipo <em>“o que o Governo diz que a Oposição não
 diz?”</em>.</p>
 <p>Aqui comparamos os temas <strong>fiscal</strong> e
 <strong>tributário</strong> — quais palavras marcam cada lado?</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freq_tema</span>     <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span>
 <span><span class="va">freq_2grupos</span>  <span class="op">&lt;-</span> <span class="va">freq_tema</span><span class="op">[</span><span class="va">freq_tema</span><span class="op">$</span><span class="va">tema</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>, <span class="st">"tributario"</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
@@ -328,7 +361,7 @@ essas vizinhanças com base numa <strong>janela</strong> de tokens (aqui,
 <p>Útil para: identificar frames, mapear associações conceituais e
 encontrar combinações de palavras que definem sub-temas dentro do
 corpus.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_cooccurrence.html">ac_cooccurrence</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, window <span class="op">=</span> <span class="fl">5L</span>, min_count <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">+</span></span>
