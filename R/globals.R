@@ -28,5 +28,5 @@ utils::globalVariables(c(
   # ac_qual_models
   "rank", "justificativa", "model_id", "input", "output",
   # ac_cluster / ac_plot_cluster
-  "PC1", "PC2", "cluster", "dist", "sil_width", "xend", "yend"
+  "PC1", "PC2", "cluster", "dist", "sil_width", "x", "y", "xend", "yend"
 ))

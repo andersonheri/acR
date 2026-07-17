@@ -140,3 +140,67 @@ test_that("ac_plot_cluster() 'auto' escolhe dendrograma para hclust", {
 test_that("ac_plot_cluster() rejeita input errado", {
   expect_error(ac_plot_cluster(list(x = 1)), regexp = "ac_cluster")
 })
+
+
+# ============================================================
+# Cobertura adicional -- pam, k automatico, print, edge cases
+# ============================================================
+
+test_that("ac_cluster_documents() aceita method = 'pam' quando cluster disponivel", {
+  skip_if_not_installed("cluster")
+  corp <- make_cluster_corpus()
+  cl <- suppressWarnings(ac_cluster_documents(corp, method = "pam",
+                                              k = 2, min_docs = 1L))
+  expect_s3_class(cl, "ac_cluster")
+  expect_equal(cl$method, "pam")
+  expect_setequal(unique(cl$assignments$cluster), c(1L, 2L))
+})
+
+test_that("ac_cluster_documents() escolhe k automaticamente por silhueta", {
+  skip_if_not_installed("cluster")
+  corp <- make_cluster_corpus()
+  cl <- suppressWarnings(ac_cluster_documents(corp, k = NULL, min_docs = 1L))
+  expect_s3_class(cl, "ac_cluster")
+  expect_true(cl$k >= 2L && cl$k <= 7L)  # limite superior = n_docs - 1
+  expect_false(is.na(cl$silhouette))
+})
+
+test_that("ac_cluster_documents() aborta para corpus com < 2 documentos", {
+  df <- data.frame(id = "d1", texto = "unico documento",
+                   stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = texto, docid = id)
+  expect_error(
+    suppressWarnings(ac_cluster_documents(corp, k = 2, min_docs = 1L)),
+    regexp = "clustering exige"
+  )
+})
+
+test_that("print.ac_cluster() imprime resumo e retorna x invisivelmente", {
+  corp <- make_cluster_corpus()
+  cl <- suppressWarnings(ac_cluster_documents(corp, k = 2, min_docs = 1L))
+  out <- capture.output(res <- print(cl))
+  expect_identical(res, cl)
+  # cli::cli_* escreve em stderr; a tabela final vai a stdout via cat()
+  expect_true(any(grepl("Documentos por cluster", out)))
+})
+
+test_that("ac_plot_cluster(kind='dendrogram') sobre kmeans avisa e usa scatter", {
+  skip_if_not_installed("ggplot2")
+  corp <- make_cluster_corpus()
+  cl <- suppressWarnings(ac_cluster_documents(corp, method = "kmeans",
+                                              k = 2, min_docs = 1L))
+  expect_warning(
+    p <- ac_plot_cluster(cl, kind = "dendrogram"),
+    regexp = "dendrogram"
+  )
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("ac_plot_cluster(kind='heatmap') funciona para kmeans", {
+  skip_if_not_installed("ggplot2")
+  corp <- make_cluster_corpus()
+  cl <- suppressWarnings(ac_cluster_documents(corp, method = "kmeans",
+                                              k = 2, min_docs = 1L))
+  p <- ac_plot_cluster(cl, kind = "heatmap")
+  expect_s3_class(p, "ggplot")
+})

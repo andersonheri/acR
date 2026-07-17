@@ -505,3 +505,50 @@ test_that("ac_qual_codebook_hybrid() enriquece definicoes com LLM (online)", {
   hist <- ac_qual_codebook_history(cb_hybrid)
   expect_true(any(hist$action == "hybrid"))
 })
+
+
+# ============================================================
+# Helpers internos: overlap check e string similarity (nao-LLM)
+# ============================================================
+
+test_that(".ac_string_similarity() e 1 para strings iguais e 0 para disjuntas", {
+  sim_igual <- acR:::.ac_string_similarity("democracia liberal", "democracia liberal")
+  sim_zero  <- acR:::.ac_string_similarity("abc def", "xyz uvw")
+  expect_equal(sim_igual, 1)
+  expect_lt(sim_zero, 0.1)
+})
+
+test_that(".ac_string_similarity() lida com strings vazias", {
+  expect_equal(acR:::.ac_string_similarity("", "qualquer"), 0)
+  expect_equal(acR:::.ac_string_similarity("a", ""), 0)
+})
+
+test_that("ac_qual_codebook(check_overlap = TRUE) avisa quando definicoes sao similares", {
+  expect_warning(
+    ac_qual_codebook(
+      name          = "overlap_test",
+      instructions  = "Classifique.",
+      check_overlap = TRUE,
+      categories    = list(
+        favoravel = list(definition = "Apoio explicito e substantivo a proposta."),
+        favoravel2 = list(definition = "Apoio explicito e substantivo a proposta politica.")
+      )
+    ),
+    regexp = "sobreposi"
+  )
+})
+
+test_that("ac_qual_codebook(check_overlap = TRUE) roda silente quando definicoes sao distintas", {
+  # Nao deve emitir warning porque as definicoes sao bem diferentes
+  expect_no_warning(
+    ac_qual_codebook(
+      name          = "sem_overlap",
+      instructions  = "Classifique.",
+      check_overlap = TRUE,
+      categories    = list(
+        economico = list(definition = "Discurso sobre mercado, inflacao e juros."),
+        cultural  = list(definition = "Discurso sobre educacao, arte e identidade nacional.")
+      )
+    )
+  )
+})

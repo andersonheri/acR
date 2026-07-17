@@ -202,7 +202,7 @@ print.ac_cluster <- function(x, ...) {
   norm[norm == 0] <- 1
   mat_n <- mat / norm
   sim   <- mat_n %*% t(mat_n)
-  as.dist(1 - sim)
+  stats::as.dist(1 - sim)
 }
 
 #' @noRd
