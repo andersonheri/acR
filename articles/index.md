@@ -6,6 +6,8 @@
   minutos](https://andersonheri.github.io/acR/articles/quickstart.md):
 - [Introdução ao acR: pipeline integrado de análise de
   conteúdo](https://andersonheri.github.io/acR/articles/introducao-acR.md):
+- [Replicabilidade ponta-a-ponta — do codebook ao relatório de
+  método](https://andersonheri.github.io/acR/articles/replicabilidade.md):
 
 ### Pipeline qualitativo
 
