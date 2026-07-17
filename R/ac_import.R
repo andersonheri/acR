@@ -33,8 +33,14 @@
 #' - **TXT / JSON**: `readtext`
 #' - **Pasta inteira / glob**: todos os arquivos compativeis de uma vez
 #'
+#' A ordem dos documentos no corpus resultante segue a ordem de entrada em
+#' `path` (ou a ordem alfabetica retornada por `Sys.glob()`), independente
+#' de o parser ser OCR ou readtext. IDs duplicados (dois arquivos com o
+#' mesmo `basename`) sao desambiguados automaticamente com um sufixo `_2`,
+#' `_3`, ... e um aviso e emitido.
+#'
 #' **Dependencias opcionais**: `readtext` e `tesseract` nao sao importados
-#' automaticamente — o `ac_import()` verifica se estao instalados e
+#' automaticamente -- o `ac_import()` verifica se estao instalados e
 #' orienta a instalacao caso necessario.
 #'
 #' @examples
@@ -45,7 +51,7 @@
 #' # Pasta inteira de Word
 #' corpus <- ac_import('proposicoes/*.docx')
 #'
-#' # Excel — indicar a coluna de texto
+#' # Excel -- indicar a coluna de texto
 #' corpus <- ac_import('respostas.xlsx', text_field = 'resposta')
 #'
 #' # PDF escaneado (OCR em portugues)
@@ -76,73 +82,98 @@ ac_import <- function(path,
                       id_from    = 'filename',
                       ...) {
 
-  # ── verificar dependencias ──────────────────────────────────────────────
+  # -- verificar dependencias -----------------------------------------------
   .check_pkg <- function(pkg) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
-      stop(
-        'Pacote necessario nao instalado: ', pkg, '\n',
-        'Instale com: install.packages("', pkg, '")',
-        call. = FALSE
-      )
+      cli::cli_abort(c(
+        "Pacote {.pkg {pkg}} necessario mas nao instalado.",
+        "i" = "Instale com {.code install.packages(\"{pkg}\")}."
+      ))
     }
   }
 
-  # ── detectar extensoes dos arquivos ────────────────────────────────────
-  arquivos <- Sys.glob(path)
-  if (length(arquivos) == 0) arquivos <- path
+  # -- expandir globs preservando a ordem de entrada ------------------------
+  arquivos <- unlist(lapply(path, function(p) {
+    m <- Sys.glob(p)
+    if (length(m) == 0L) p else m
+  }), use.names = FALSE)
 
-  exts <- unique(tolower(tools::file_ext(arquivos)))
+  exts <- tolower(tools::file_ext(arquivos))
 
   formatos_ocr    <- c('png', 'jpg', 'jpeg', 'tiff', 'bmp', 'gif')
   formatos_texto  <- c('pdf', 'doc', 'docx', 'xlsx', 'xls',
                        'csv', 'txt', 'json', 'odt', 'rtf')
 
-  e_ocr   <- any(exts %in% formatos_ocr)
-  e_texto <- any(exts %in% formatos_texto)
+  is_ocr   <- exts %in% formatos_ocr
+  is_texto <- exts %in% formatos_texto
 
-  textos <- character(0)
-  ids    <- character(0)
+  if (!any(is_ocr | is_texto)) {
+    cli::cli_abort(c(
+      "Nenhum arquivo compativel encontrado em: {.path {path}}.",
+      "i" = paste0(
+        "Formatos suportados: ",
+        paste(c(formatos_texto, formatos_ocr), collapse = ', '), "."
+      )
+    ))
+  }
 
-  # ── branch OCR (imagens e PDFs escaneados) ──────────────────────────────
-  if (e_ocr) {
+  # -- processar cada arquivo mantendo a ordem original ---------------------
+  # (OCR item-a-item; texto em lote com readtext, depois reordenado)
+  textos <- character(length(arquivos))
+  ids    <- character(length(arquivos))
+
+  if (any(is_ocr)) {
     .check_pkg('tesseract')
-    arq_ocr <- arquivos[tolower(tools::file_ext(arquivos)) %in% formatos_ocr]
-    engine  <- tesseract::tesseract(lang_ocr)
-    for (a in arq_ocr) {
-      t <- paste(tesseract::ocr(a, engine = engine), collapse = ' ')
-      textos <- c(textos, t)
-      ids    <- c(ids, tools::file_path_sans_ext(basename(a)))
+    engine <- tesseract::tesseract(lang_ocr)
+    idx_ocr <- which(is_ocr)
+    for (i in idx_ocr) {
+      textos[i] <- paste(tesseract::ocr(arquivos[i], engine = engine),
+                         collapse = ' ')
+      ids[i]    <- tools::file_path_sans_ext(basename(arquivos[i]))
     }
   }
 
-  # ── branch readtext (todos os formatos de texto) ────────────────────────
-  if (e_texto) {
+  if (any(is_texto)) {
     .check_pkg('readtext')
-    arq_txt <- arquivos[tolower(tools::file_ext(arquivos)) %in% formatos_texto]
+    arq_txt <- arquivos[is_texto]
 
     args <- list(file = arq_txt, ...)
     if (!is.null(text_field)) args$text_field <- text_field
 
-    rt      <- do.call(readtext::readtext, args)
-    textos  <- c(textos, rt$text)
-    ids_rt  <- tools::file_path_sans_ext(basename(rt$doc_id))
-    ids     <- c(ids, ids_rt)
+    rt <- do.call(readtext::readtext, args)
+
+    # readtext pode reordenar; realinhar pela chave basename
+    key_rt   <- tools::file_path_sans_ext(basename(rt$doc_id))
+    key_want <- tools::file_path_sans_ext(basename(arq_txt))
+    ord <- match(key_want, key_rt)
+    if (anyNA(ord)) {
+      cli::cli_warn(
+        "Alguns arquivos foram descartados por {.pkg readtext} (formato invalido?)."
+      )
+      ord <- ord[!is.na(ord)]
+    }
+
+    idx_texto <- which(is_texto)[seq_along(ord)]
+    textos[idx_texto] <- rt$text[ord]
+    ids[idx_texto]    <- key_rt[ord]
   }
 
-  if (length(textos) == 0) {
-    stop(
-      'Nenhum arquivo compativel encontrado em: ', path, '\n',
-      'Formatos suportados: pdf, doc, docx, xlsx, xls, csv, txt, ',
-      'json, odt, rtf, png, jpg, jpeg, tiff',
-      call. = FALSE
-    )
+  # -- filtrar posicoes descartadas -----------------------------------------
+  keep <- nzchar(ids)
+  textos <- textos[keep]
+  ids    <- ids[keep]
+
+  if (length(textos) == 0L) {
+    cli::cli_abort("Nenhum documento foi importado com sucesso.")
   }
 
-  # ── gerar IDs ───────────────────────────────────────────────────────────
+  # -- gerar IDs finais -----------------------------------------------------
   ids_finais <- if (is.character(id_from) && length(id_from) != 1L) {
-    if (length(id_from) != length(textos))
-      stop('`id_from` deve ter o mesmo comprimento que o numero de arquivos.',
-           call. = FALSE)
+    if (length(id_from) != length(textos)) {
+      cli::cli_abort(
+        "{.arg id_from} deve ter o mesmo comprimento que o numero de arquivos importados ({length(textos)})."
+      )
+    }
     id_from
   } else if (identical(id_from, 'rownum')) {
     paste0('doc_', seq_along(textos))
@@ -150,7 +181,17 @@ ac_import <- function(path,
     ids
   }
 
-  # ── retornar ac_corpus ───────────────────────────────────────────────────
+  # -- desambiguar IDs duplicados -------------------------------------------
+  if (anyDuplicated(ids_finais)) {
+    dup <- ids_finais[duplicated(ids_finais)]
+    cli::cli_warn(c(
+      "IDs duplicados detectados; adicionando sufixos {.val _2}, {.val _3}, ...",
+      "i" = "IDs afetados: {.val {unique(dup)}}."
+    ))
+    ids_finais <- make.unique(ids_finais, sep = '_')
+  }
+
+  # -- retornar ac_corpus ----------------------------------------------------
   ac_corpus(
     data.frame(doc_id = ids_finais, text = textos, stringsAsFactors = FALSE),
     text  = text,

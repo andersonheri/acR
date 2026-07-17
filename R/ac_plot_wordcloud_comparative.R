@@ -9,8 +9,10 @@
 #' @param corpus Objeto `ac_corpus` com coluna de metadado de grupo.
 #' @param group Coluna de agrupamento (nome sem aspas ou string).
 #' @param max_words Número máximo de palavras por grupo. Padrão: `50`.
-#' @param colors Vetor com duas cores (uma por grupo). Padrão: paleta
-#'   acessível Okabe-Ito.
+#' @param colors Vetor com duas cores (uma por grupo). Padrão: duas
+#'   primeiras cores de [ac_palette()] (Okabe-Ito).
+#' @param seed Semente para o posicionamento aleatorio dos termos. Padrao
+#'   `42L` (garante layout reproduzivel entre chamadas).
 #' @param title Título do gráfico. Padrão: `NULL`.
 #' @param ... Ignorado.
 #'
@@ -41,9 +43,15 @@
 ac_plot_wordcloud_comparative <- function(corpus,
                                            group,
                                            max_words = 50L,
-                                           colors    = c("#0072B2", "#D55E00"),
+                                           colors    = NULL,
                                            title     = NULL,
+                                           seed      = 42L,
                                            ...) {
+
+  if (is.null(colors)) colors <- ac_palette(2L)
+  if (length(colors) < 2L) {
+    cli::cli_abort("{.arg colors} deve ter pelo menos 2 cores.")
+  }
 
   if (!is_ac_corpus(corpus)) {
     cli::cli_abort("{.arg corpus} deve ser um {.cls ac_corpus}.")
@@ -107,7 +115,17 @@ ac_plot_wordcloud_comparative <- function(corpus,
     ) |>
     dplyr::ungroup()
 
-  # Posicionar grupo A à esquerda, B à direita
+  # Posicionar grupo A a esquerda, B a direita (layout reproduzivel:
+  # salva/restaura o RNG global para nao afetar a sessao do usuario)
+  old_seed <- if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
+    get(".Random.seed", envir = .GlobalEnv, inherits = FALSE) else NULL
+  on.exit({
+    if (is.null(old_seed))
+      suppressWarnings(rm(".Random.seed", envir = .GlobalEnv))
+    else
+      assign(".Random.seed", old_seed, envir = .GlobalEnv)
+  }, add = TRUE)
+  set.seed(seed)
   top_grp$x_jitter <- ifelse(
     top_grp$grp == grupos[1],
     stats::runif(nrow(top_grp), -1, -0.1),
@@ -220,6 +238,16 @@ ac_plot_xray <- function(corpus,
   term_map <- stats::setNames(terms, terms_lookup)
   hits$term_label <- term_map[hits$term]
 
+  # Aviso especifico para termos que nao ocorrem no corpus
+  # (so quando ha pelo menos algum hit; se nenhum, o warning geral abaixo cobre)
+  missing_terms <- setdiff(terms_lookup, unique(hits$term))
+  if (length(missing_terms) > 0L && nrow(hits) > 0L) {
+    cli::cli_warn(c(
+      "Termo(s) sem ocorrencia: {.val {unname(term_map[missing_terms])}}.",
+      "i" = "Verifique ortografia/acentuacao ou o efeito de {.fn ac_clean}."
+    ))
+  }
+
   if (nrow(hits) == 0L) {
     cli::cli_warn("Nenhum dos termos foi encontrado no corpus ap\u00f3s tokeniza\u00e7\u00e3o.")
     return(ggplot2::ggplot() +
@@ -234,7 +262,13 @@ ac_plot_xray <- function(corpus,
 
   hits <- hits |>
     dplyr::left_join(n_tokens_doc, by = "doc_id") |>
-    dplyr::mutate(pos_rel = (token_id - 1L) / (n_total - 1L))
+    dplyr::mutate(
+      pos_rel = dplyr::if_else(
+        n_total > 1L,
+        (token_id - 1L) / pmax(n_total - 1L, 1L),
+        0.5
+      )
+    )
 
   # Cores dos termos: default = ac_palette (Okabe-Ito adaptada)
   if (is.null(colors)) {
