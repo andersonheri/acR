@@ -1,3 +1,14 @@
+# acR 0.3.2 (em desenvolvimento)
+
+## Novidades
+
+* **`ac_plot_wordcloud_comparative()`** agora aceita **N grupos** (>= 2)
+  em vez de somente 2. Cada grupo vira uma faceta; nas duas
+  implementacoes (`backend = "ggwordcloud"` e `backend = "ggplot"`) o
+  layout usa `facet_wrap()`. Cores padrao passam a vir de
+  `ac_palette(N)`. A validacao antiga (`length(grupos) != 2L`) foi
+  substituida por `length(grupos) < 2L`.
+
 # acR 0.3.1
 
 ## Ajustes
