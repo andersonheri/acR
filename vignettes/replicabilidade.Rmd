@@ -1,0 +1,315 @@
+---
+title: "Replicabilidade ponta-a-ponta — do codebook ao relatório de método"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Replicabilidade ponta-a-ponta — do codebook ao relatório de método}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 8.5,
+  fig.height = 5.5,
+  fig.align  = "center",
+  out.width  = "100%",
+  dpi        = 140
+)
+library(acR)
+library(dplyr)
+```
+
+Esta vignette demonstra o pipeline **completo** de análise de conteúdo
+qualitativa assistida por LLM, com foco na **replicabilidade**: cada
+decisão metodológica é documentada de forma que outro pesquisador possa
+reproduzir a análise apenas com o codebook em YAML e o relatório
+gerado por `ac_qual_report()`.
+
+A demonstração usa dados sintéticos (`ac_qual_code()` requer chave de LLM
+paga); a estrutura, formatos e sequência são idênticos a uma rodada real.
+
+## O pipeline em 6 etapas
+
+1. **Coleta** — corpus real ou fabricado
+2. **Codebook** — instrumento analítico (`ac_qual_codebook`)
+3. **Classificação** — LLM com `live view` (`ac_qual_code(live = ...)`)
+4. **Amostragem para revisão** — `ac_qual_sample()`
+5. **Confiabilidade inter-codificador** — `ac_qual_reliability()`
+6. **Relatório de método** — `ac_qual_report()`
+
+## 1. Corpus
+
+Corpus fabricado de 12 pronunciamentos com posição declarada
+(favor/contra/neutro) — em uso real, este data.frame viria de
+`ac_fetch_camara()`, `ac_fetch_senado()` ou de importação de PDFs.
+
+```{r corpus}
+df <- data.frame(
+  doc_id = paste0("d", sprintf("%02d", 1:12)),
+  text = c(
+    "Apoio integralmente esta reforma que simplifica o sistema tributario.",
+    "Sou favoravel a proposta: reduz distorcoes historicas do setor.",
+    "Voto sim com plena adesao: precisamos modernizar a estrutura fiscal.",
+    "Aprovo a reforma tributaria, e uma conquista para o desenvolvimento.",
+    "Rejeito esta proposta, e um retrocesso para os trabalhadores.",
+    "Voto contra: a reforma prejudica os mais pobres e as pequenas empresas.",
+    "Sou contrario a essa proposta, ela beneficia apenas grandes corporacoes.",
+    "Nao apoio o texto atual, precisa de revisao profunda antes da votacao.",
+    "O texto substitutivo altera o artigo 145 da Constituicao Federal.",
+    "O relatorio incorporou 47 emendas apresentadas em plenario.",
+    "A comissao aprovou o parecer com 15 votos a favor e 8 contra.",
+    "O projeto seguira para votacao na proxima sessao ordinaria."
+  ),
+  partido = c("PT","PSD","PL","MDB","PSOL","PT","PDT","PSOL",
+              "MDB","PSDB","PL","MDB"),
+  stringsAsFactors = FALSE
+)
+
+corpus <- ac_corpus(df)
+corpus
+```
+
+## 2. Codebook
+
+O codebook é o instrumento central. Aqui usamos três categorias
+(favor, contra, neutro/técnico) com definições operacionais e
+exemplos positivos e negativos para desambiguar categorias vizinhas.
+
+```{r codebook}
+cb <- ac_qual_codebook(
+  name         = "posicao_reforma_tributaria",
+  instructions = paste(
+    "Classifique a posicao do parlamentar sobre a reforma tributaria",
+    "com base no discurso apresentado."
+  ),
+  categories = list(
+    favor = list(
+      definition   = "Apoio explicito a aprovacao da reforma tributaria.",
+      examples_pos = c("Sou a favor desta reforma que simplifica o sistema."),
+      examples_neg = c("O texto altera o artigo 145 da Constituicao Federal."),
+      weight       = 1
+    ),
+    contra = list(
+      definition   = "Oposicao explicita a reforma, com argumentos de rejeicao.",
+      examples_pos = c("Voto contra: prejudica os trabalhadores."),
+      examples_neg = c("Precisa de ajustes antes da votacao."),
+      weight       = 1.2  # categoria com mais dificuldade retorica
+    ),
+    neutro = list(
+      definition   = "Discurso tecnico ou processual, sem posicionamento claro.",
+      examples_pos = c("O relatorio incorporou emendas apresentadas."),
+      examples_neg = c("Sou totalmente contra esta proposta.")
+    )
+  ),
+  lang = "pt"
+)
+
+cb
+```
+
+Salvar o codebook em YAML permite versionamento em Git e retomada da
+análise em outra sessão:
+
+```{r save-codebook}
+arquivo_cb <- tempfile(fileext = ".yaml")
+ac_qual_save_codebook(cb, path = arquivo_cb)
+cat("Codebook salvo em:", arquivo_cb, "\n")
+```
+
+## 3. Classificação com live view
+
+Em uma rodada real, o comando seria:
+
+```r
+library(ellmer)
+chat <- chat_anthropic(model = "claude-sonnet-4-5")
+
+resultado <- ac_qual_code(
+  corpus        = corpus,
+  codebook      = cb,
+  chat          = chat,
+  k_consistency = 3,           # 3 rodadas de self-consistency
+  reasoning     = TRUE,        # pede raciocinio estruturado
+  live          = "terminal"   # ver o LLM classificando ao vivo
+)
+```
+
+Com `live = "terminal"`, cada documento aparece na hora:
+
+```
+1/12 | =>                    8% | ETA 45s | d01 -> favor  (conf 1.00) "Apoio integralmente..."
+2/12 | ==>                  17% | ETA 40s | d02 -> favor  (conf 1.00) "Sou favoravel a..."
+3/12 | ====>                25% | ETA 35s | d03 -> favor  (conf 0.67) "Voto sim com conviccao..."
+...
+```
+
+Para esta vignette, simulamos o resultado que o LLM retornaria (formato
+idêntico ao real):
+
+```{r simular-resultado}
+set.seed(42)
+resultado <- tibble::tibble(
+  doc_id = df$doc_id,
+  categoria = c(rep("favor", 4), rep("contra", 4), rep("neutro", 4)),
+  confidence_score = c(1.00, 1.00, 0.67, 1.00,
+                       1.00, 1.00, 1.00, 0.67,
+                       1.00, 1.00, 0.67, 1.00),
+  reasoning = c(
+    "Apoio explicito com 'apoio integralmente'.",
+    "Uso do adjetivo 'favoravel' e 'reduz distorcoes'.",
+    "Voto declarado, mas ambivalente entre favor e neutro.",
+    "'Aprovo' e 'conquista' marcam adesao.",
+    "'Rejeito' e 'retrocesso' marcam oposicao.",
+    "'Voto contra' e argumento distributivo.",
+    "'Sou contrario' com justificativa.",
+    "'Nao apoio' + pede revisao (borderline neutro/contra).",
+    "Descreve alteracao normativa sem posicionar.",
+    "Descreve processo legislativo.",
+    "Numeros do resultado, sem opiniao. Borderline.",
+    "Encaminhamento processual."
+  )
+)
+resultado
+```
+
+Distribuição dos resultados:
+
+```{r distribuicao}
+resultado |>
+  dplyr::count(categoria) |>
+  dplyr::mutate(pct = round(100 * n / sum(n), 1))
+```
+
+Casos com baixa confiança (candidatos prioritários para revisão humana):
+
+```{r low-conf}
+resultado |>
+  dplyr::filter(confidence_score < 1.0) |>
+  dplyr::select(doc_id, categoria, confidence_score, reasoning)
+```
+
+## 4. Amostra para revisão humana
+
+`ac_qual_sample(strategy = "uncertainty")` prioriza documentos com menor
+`confidence_score` — foca o esforço humano onde o LLM mais errou.
+
+```{r amostra}
+amostra <- ac_qual_sample(
+  resultado,
+  n        = 4,
+  strategy = "uncertainty"
+)
+amostra |> dplyr::select(doc_id, categoria, confidence_score, sample_reason)
+```
+
+Em uma rodada real, você exportaria essa amostra para Excel, um
+codificador humano preencheria a coluna `categoria_humano`, e o
+resultado seria reimportado:
+
+```{r export-excel, eval=FALSE}
+ac_qual_export_for_review(amostra, path = "revisao.xlsx", corpus = corpus)
+# ... revisor humano preenche a coluna categoria_humano no Excel ...
+revisado <- ac_qual_import_human("revisao.xlsx")
+```
+
+## 5. Confiabilidade inter-codificador
+
+Simulamos a revisão humana (com 1 discordância em 12) e calculamos as
+métricas de concordância — no artigo, essas métricas aparecem na seção
+de método:
+
+```{r reliability}
+humano <- tibble::tibble(
+  doc_id    = resultado$doc_id,
+  categoria = c(rep("favor", 4), rep("contra", 4),
+                "neutro","neutro","favor","neutro")  # 1 discordancia
+)
+
+irr <- ac_qual_reliability(
+  llm       = resultado,
+  human     = humano,
+  bootstrap = 100L
+)
+irr
+```
+
+## 6. Relatório de método — replicabilidade automática
+
+Aqui está o **coração desta vignette**: `ac_qual_report()` empacota
+tudo — codebook, config LLM, distribuição de resultados, métricas de
+IRR — em um documento único, pronto para anexar como material
+suplementar de um artigo.
+
+```{r report}
+arquivo_md <- tempfile(pattern = "relatorio-", fileext = ".md")
+
+ac_qual_report(
+  coded       = resultado,
+  codebook    = cb,
+  reliability = irr,
+  chat        = "anthropic/claude-sonnet-4-5",  # ou objeto Chat
+  title       = "Classificacao de posicionamento na reforma tributaria",
+  author      = "Silva, A.; Souza, B.",
+  method      = "Corpus de 12 pronunciamentos parlamentares (2023-2024).",
+  format      = "md",
+  path        = arquivo_md,
+  lang        = "pt"
+)
+```
+
+Primeiras 40 linhas do relatório gerado:
+
+```{r preview-report}
+cat(head(readLines(arquivo_md), 40), sep = "\n")
+```
+
+O relatório completo cobre 8 seções: metadados, codebook completo,
+histórico de modificações, configuração da LLM, distribuição de
+resultados, confiabilidade (com IC 95%), referências metodológicas e
+sugestão de citação.
+
+Para gerar em HTML autocontido (com CSS embutido, pronto para publicação
+web):
+
+```{r html, eval=FALSE}
+ac_qual_report(
+  coded       = resultado,
+  codebook    = cb,
+  reliability = irr,
+  format      = "html",
+  path        = "apendice_metodo.html",
+  lang        = "pt"      # ou "en" para submissao internacional
+)
+```
+
+## Fluxo completo em 6 linhas
+
+Recapitulando toda a vignette em código executável:
+
+```r
+library(acR); library(ellmer)
+corpus    <- ac_corpus(meu_data_frame)
+cb        <- ac_qual_codebook(name = "...", instructions = "...", categories = list(...))
+resultado <- ac_qual_code(corpus, cb, chat = chat_anthropic("..."), live = "terminal")
+amostra   <- ac_qual_sample(resultado, n = 30, strategy = "uncertainty")
+# ... revisao humana ...
+irr       <- ac_qual_reliability(llm = resultado, human = revisado)
+ac_qual_report(resultado, cb, reliability = irr, path = "metodo.md")
+```
+
+Seis funções principais, um pipeline reproduzível, um relatório
+automático — do texto bruto ao apêndice metodológico do artigo.
+
+## Referências
+
+* Gilardi, F.; Alizadeh, M.; Kubli, M. (2023). ChatGPT outperforms crowd
+  workers for text-annotation tasks. *PNAS*, 120(30).
+* Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
+  Methodology* (4th ed.). SAGE.
+* Wang, X. et al. (2022). Self-consistency improves chain-of-thought
+  reasoning in language models. *arXiv:2203.11171*.

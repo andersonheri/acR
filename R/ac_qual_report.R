@@ -391,14 +391,20 @@ ac_qual_report <- function(coded,
     add("|---|---:|---:|")
     rel <- reliability
     if (inherits(rel, "ac_reliability") || is.list(rel)) {
-      m <- rel$metrics %||% rel
+      m <- if (!is.null(rel$metrics)) rel$metrics else rel
       if (is.data.frame(m)) {
+        has_ci <- all(c("ci_low", "ci_high") %in% names(m))
+        est_col  <- if ("estimate" %in% names(m)) "estimate" else
+                    if ("value"    %in% names(m)) "value"    else NA_character_
+        name_col <- if ("metric"   %in% names(m)) "metric"   else
+                    if ("name"     %in% names(m)) "name"     else NA_character_
         for (i in seq_len(nrow(m))) {
-          ic <- if (all(c("ci_low", "ci_high") %in% names(m)))
+          ic <- if (has_ci)
             paste0("[", round(m$ci_low[i], 3), ", ", round(m$ci_high[i], 3), "]")
           else "-"
-          est <- m$estimate[i] %||% m$value[i] %||% NA
-          add(paste0("| ", m$metric[i] %||% m$name[i],
+          est <- if (!is.na(est_col)) m[[est_col]][i] else NA_real_
+          nm  <- if (!is.na(name_col)) m[[name_col]][i] else paste0("metric_", i)
+          add(paste0("| ", nm,
                      " | ", round(est, 3),
                      " | ", ic, " |"))
         }

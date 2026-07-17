@@ -63,6 +63,8 @@ navbar:
         href: articles/quickstart.html
       - text: "Visao geral do pacote"
         href: articles/introducao-acR.html
+      - text: "Replicabilidade ponta-a-ponta"
+        href: articles/replicabilidade.html
       - text: "---"
       - text: "Pipeline qualitativo"
       - text: Codificacao com LLMs
@@ -82,6 +84,7 @@ articles:
     contents:
       - quickstart
       - introducao-acR
+      - replicabilidade
   - title: "Pipeline qualitativo"
     contents:
       - qualitativo-llm
