@@ -29,6 +29,34 @@ uma pergunta metodológica — *por que faço isso?* — antes do código e do g
 O caminho é o clássico da análise de conteúdo estatística: **corpus → limpeza →
 tokenização → frequências → distintividade → visualização**.
 
+## Qual métrica responde qual pergunta?
+
+O módulo quantitativo tem seis técnicas centrais. Aprender qual usar em cada
+situação vale mais que decorar sintaxe:
+
+| Pergunta                                                             | Técnica         | Função                                     |
+|----------------------------------------------------------------------|-----------------|--------------------------------------------|
+| Que palavras dominam o corpus como um todo?                          | Frequência bruta| `ac_count()` → `ac_top_terms()`            |
+| Que palavras são **distintivas** de cada documento vs. o resto?      | TF-IDF          | `ac_tf_idf()` → `ac_plot_tf_idf()`         |
+| Que palavras separam **um grupo** do outro estatisticamente?         | *Keyness*       | `ac_keyness()` → `ac_plot_keyness()`       |
+| Que palavras **andam juntas** (associação sintagmática)?             | Coocorrência    | `ac_cooccurrence()` → `ac_plot_cooccurrence()` |
+| **Onde no texto** um termo aparece com mais frequência?              | X-ray plot      | `ac_plot_xray()`                           |
+| Panorama visual rápido para relatório ou apresentação                | Nuvem de palavras | `ac_wordcloud()` (`ggwordcloud`)         |
+
+**Não é redundância.** As três métricas de frequência respondem perguntas
+diferentes:
+
+- **Frequência bruta** conta ocorrências. É a primeira olhada, mas os termos
+  no topo tendem a ser genéricos (mesmo depois de tirar *stopwords*).
+- **TF-IDF** penaliza termos que aparecem em muitos documentos: destaca o
+  vocabulário **próprio** de cada texto. Sem grupo definido a priori.
+- **Keyness** compara **grupos** com um teste estatístico (χ² ou log-likelihood).
+  Precisa de uma variável categórica no corpus.
+
+Para descobrir tipologias emergentes sem categoria a priori, veja
+`vignette("cluster")` e `vignette("lda")` (não supervisionado). Para rotular
+com categorias teóricas, veja `vignette("qualitativo-llm")` (assistido).
+
 ```{r pkg}
 library(acR)
 ```
