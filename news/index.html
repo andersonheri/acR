@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,38 @@
       <small>Source: <a href="https://github.com/andersonheri/acR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="acr-030">acR 0.3.0<a class="anchor" aria-label="anchor" href="#acr-030"></a></h2>
+<div class="section level3">
+<h3 id="novas-funcionalidades--visualização-e-tema-0-3-0">Novas funcionalidades — Visualização e Tema<a class="anchor" aria-label="anchor" href="#novas-funcionalidades--visualiza%C3%A7%C3%A3o-e-tema-0-3-0"></a></h3>
+<ul><li><p><strong><code><a href="../reference/theme_ac.html">theme_ac()</a></code></strong> — tema <code>ggplot2</code> minimalista e consistente, usado por todos os <code>ac_plot_*()</code>. Deriva de <code>theme_minimal()</code> com ajustes editoriais: títulos em negrito, gridlines suaves, tipografia compacta.</p></li>
+<li><p><strong><code><a href="../reference/ac_palette.html">ac_palette()</a></code></strong> — paleta categórica de 8 cores (adaptada de Okabe-Ito para compatibilidade WCAG AA e daltonismo).</p></li>
+<li><p><strong><code>ac_wordcloud(backend = ...)</code></strong> — reescrita para preferir <code>ggwordcloud</code> (retorna <code>ggplot</code>, layout mais agradável, tipografia editorial), com fallback para <code>wordcloud</code> clássico. Novos argumentos <code>backend</code> e <code>title</code>.</p></li>
+<li><p><strong><code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code></strong> — refinada com <code><a href="../reference/theme_ac.html">theme_ac()</a></code> + <code><a href="../reference/ac_palette.html">ac_palette()</a></code>, facet_grid com label do documento à esquerda, barras verticais mais espessas e arredondadas.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="menu-e-navegação-0-3-0">Menu e navegação<a class="anchor" aria-label="anchor" href="#menu-e-navega%C3%A7%C3%A3o-0-3-0"></a></h3>
+<ul><li><p>Vignettes do site pkgdown reorganizadas em 3 blocos (“Comece por aqui”, “Pipeline qualitativo (LLMs)”, “Pipeline quantitativo”). “Análise de proposições” agora aparece como sub-item de “Codificação com LLMs”, esclarecendo a relação entre guia e estudo de caso.</p></li>
+<li><p>Diagrama SVG do pipeline redesenhado: Etapas 5 e 6 em layout de duas linhas (título + funções empilhados) resolvendo vazamento de texto.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="testes-e-cobertura-0-3-0">Testes e cobertura<a class="anchor" aria-label="anchor" href="#testes-e-cobertura-0-3-0"></a></h3>
+<ul><li>+87 assertions em 4 arquivos novos (<code>test-ac_ellmer_chat</code>, <code>test-ac_qual_report</code>, <code>test-ac_qual_live</code>, <code>test-ac_qual_code-live</code>).</li>
+<li>Cobertura global: <strong>55% → ~64%</strong>.</li>
+<li>Total agora: 741+ testes pass, 5 skips justificados.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentação-0-3-0">Documentação<a class="anchor" aria-label="anchor" href="#documenta%C3%A7%C3%A3o-0-3-0"></a></h3>
+<ul><li><p>Nova vignette <strong><code>replicabilidade.Rmd</code></strong> — pipeline completo em 6 etapas (corpus → codebook → code + live → sample → reliability → report), com exemplo executável de <code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code>.</p></li>
+<li><p>Todas as vignettes usam <code>ac_clean(remove_stopwords = "pt")</code> — antes top-terms e keyness apareciam poluídos por artigos e preposições.</p></li>
+<li><p>Vignettes <code>lda.Rmd</code> e <code>sentimento.Rmd</code> reescritas com corpus real e chunks 100% executáveis (antes usavam <code>eval=FALSE</code> + outputs falsos).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
+<ul><li><p><code>ac_plot_sentiment(type = "line")</code>: conflito de escala de cor resolvido (linha em cinza neutro, pontos coloridos por sentimento).</p></li>
+<li><p><code>.ac_ellmer_chat()</code>: sempre usa dispatch direto ao invés de delegar a <code><a href="https://ellmer.tidyverse.org/reference/chat-any.html" class="external-link">ellmer::chat()</a></code>, garantindo resolução consistente de aliases (<code>gemini → chat_google_gemini</code>, <code>claude → chat_anthropic</code>, <code>azure → chat_azure_openai</code>, <code>bedrock → chat_aws_bedrock</code>).</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.2" id="acr-022">acR 0.2.2<a class="anchor" aria-label="anchor" href="#acr-022"></a></h2>
 <div class="section level3">

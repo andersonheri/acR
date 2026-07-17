@@ -11,14 +11,14 @@ Source:
 [`inst/CITATION`](https://github.com/andersonheri/acR/blob/main/inst/CITATION)
 
 Henrique, A. (2026). acR: Analise de Conteudo em R. R package version
-0.2.2. Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao
+0.3.0. Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao
 Paulo. https://andersonheri.github.io/acR/
 
     @Manual{,
       title = {acR: Analise de Conteudo em R},
       author = {Anderson Henrique},
       year = {2026},
-      note = {R package version 0.2.2},
+      note = {R package version 0.3.0},
       url = {https://andersonheri.github.io/acR/},
     }
 
