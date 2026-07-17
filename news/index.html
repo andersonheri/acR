@@ -31,6 +31,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequencias, keyness e coocorrencia</a></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
+    <li><a class="dropdown-item" href="../reference/ac_cluster_documents.html">  ↳ Cluster de documentos (hclust/k-means)</a></li>
     <li><a class="dropdown-item" href="../articles/sentimento.html">Analise de sentimento (OpLexicon)</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de topicos (LDA)</a></li>
   </ul></li>
@@ -54,6 +55,10 @@
 <div class="section level3">
 <h3 id="novidades-0-3-2">Novidades<a class="anchor" aria-label="anchor" href="#novidades-0-3-2"></a></h3>
 <ul><li>
+<strong><code><a href="../reference/ac_cluster_documents.html">ac_cluster_documents()</a></code></strong> (novo) — clustering nao supervisionado de documentos com hierarquico (Ward.D2), k-means ou PAM. Features configuraveis (TF-IDF ou contagens), distancias <code>cosine</code>/<code>euclidean</code>, escolha automatica de <code>k</code> por silhueta (usa <code>cluster</code> de <code>Suggests</code>). Retorna S3 <code>ac_cluster</code> com metodo <code>print</code>.</li>
+<li>
+<strong><code><a href="../reference/ac_plot_cluster.html">ac_plot_cluster()</a></code></strong> (novo) — tres tipos de visualizacao para objetos <code>ac_cluster</code>: <code>dendrogram</code> (default para hclust), <code>scatter</code> (projecao PCA 2D com labels) e <code>heatmap</code> (matriz de dissimilaridade ordenada pelo dendrograma).</li>
+<li>
 <strong><code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code></strong> agora aceita <strong>N grupos</strong> (&gt;= 2) em vez de somente 2. Cada grupo vira uma faceta; nas duas implementacoes (<code>backend = "ggwordcloud"</code> e <code>backend = "ggplot"</code>) o layout usa <code>facet_wrap()</code>. Cores padrao passam a vir de <code>ac_palette(N)</code>. A validacao antiga (<code>length(grupos) != 2L</code>) foi substituida por <code>length(grupos) &lt; 2L</code>.</li>
 </ul></div>
 </div>

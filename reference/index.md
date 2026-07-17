@@ -72,6 +72,8 @@ Frequencias, associacoes e modelagem estatistica de textos.
   Ajustar modelo LDA (Latent Dirichlet Allocation)
 - [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
   : Ajustar múltiplos modelos LDA para selecionar k
+- [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)
+  : Agrupamento nao supervisionado de documentos
 
 ## Codificacao qualitativa via LLM
 
@@ -141,6 +143,8 @@ Listagem e recomendacao de modelos LLM.
 
 Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 
+- [`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md)
+  : Visualiza um objeto ac_cluster
 - [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
   : Visualizar rede de co-ocorrência de termos
 - [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md)
