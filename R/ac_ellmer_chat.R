@@ -6,11 +6,7 @@
 
   ellmer_exports <- getNamespaceExports("ellmer")
 
-  if ("chat" %in% ellmer_exports) {
-    return(do.call(getExportedValue("ellmer", "chat"),
-                   c(list(name = name), list(...))))
-  }
-
+  # Parse "provider/model"
   parts <- strsplit(name, "/", fixed = TRUE)[[1]]
   if (length(parts) < 2L) {
     cli::cli_abort(c(
@@ -22,19 +18,23 @@
   provider <- parts[1]
   model_id <- paste(parts[-1], collapse = "/")
 
+  # Sempre dispatch direto para chat_<provider>() -- garantimos que
+  # aliases (gemini -> google_gemini, claude -> anthropic, etc.) sejam
+  # resolvidos ANTES de qualquer chamada. Nao delegamos a ellmer::chat()
+  # porque a resolucao de alias la varia entre versoes.
   fn_name <- switch(provider,
     "anthropic"  = "chat_anthropic",
-    "claude"     = "chat_claude",
+    "claude"     = "chat_anthropic",    # alias
     "groq"       = "chat_groq",
     "openai"     = "chat_openai",
     "google"     = "chat_google_gemini",
-    "gemini"     = "chat_google_gemini",
+    "gemini"     = "chat_google_gemini",  # alias
     "mistral"    = "chat_mistral",
     "ollama"     = "chat_ollama",
     "openrouter" = "chat_openrouter",
     "deepseek"   = "chat_deepseek",
-    "azure"      = "chat_azure",
-    "bedrock"    = "chat_bedrock",
+    "azure"      = "chat_azure_openai",
+    "bedrock"    = "chat_aws_bedrock",
     "databricks" = "chat_databricks",
     "github"     = "chat_github",
     "perplexity" = "chat_perplexity",
@@ -46,6 +46,12 @@
   )
 
   if (is.null(fn_name) || !fn_name %in% ellmer_exports) {
+    # Ultimo recurso: se ellmer::chat existir, tentamos delegar
+    # (usuario pode ter provider customizado nao mapeado no switch)
+    if ("chat" %in% ellmer_exports) {
+      return(do.call(getExportedValue("ellmer", "chat"),
+                     c(list(name = name), list(...))))
+    }
     cli::cli_abort(c(
       "Provider {.val {provider}} nao suportado por esta versao de {.pkg ellmer}.",
       "i" = "Providers disponiveis: {.val {grep('^chat_', ellmer_exports, value = TRUE)}}."
