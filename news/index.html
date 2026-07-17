@@ -51,7 +51,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.2" id="acr-032-em-desenvolvimento">acR 0.3.2 (em desenvolvimento)<a class="anchor" aria-label="anchor" href="#acr-032-em-desenvolvimento"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.2" id="acr-032">acR 0.3.2<a class="anchor" aria-label="anchor" href="#acr-032"></a></h2>
 <div class="section level3">
 <h3 id="novidades-0-3-2">Novidades<a class="anchor" aria-label="anchor" href="#novidades-0-3-2"></a></h3>
 <ul><li>
@@ -64,6 +64,12 @@
 <strong>Documentacao</strong> — README, <code>_pkgdown.yml</code> (menu de vignettes e secao “Pipeline quantitativo”) apontam para a nova vignette; acentos corrigidos nas entradas visiveis do menu.</li>
 <li>
 <strong><code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code></strong> agora aceita <strong>N grupos</strong> (&gt;= 2) em vez de somente 2. Cada grupo vira uma faceta; nas duas implementacoes (<code>backend = "ggwordcloud"</code> e <code>backend = "ggplot"</code>) o layout usa <code>facet_wrap()</code>. Cores padrao passam a vir de <code>ac_palette(N)</code>. A validacao antiga (<code>length(grupos) != 2L</code>) foi substituida por <code>length(grupos) &lt; 2L</code>.</li>
+<li>
+<strong>Polimento de documentacao</strong> — reescrita de <code>qualitativo-llm.Rmd</code> (nova secao “Quando usar LLM (e quando NAO usar)” com tabela decisoria, tabela de custo por modelo e “Diagnosticando problemas comuns” com 4 modos de falha); <code>quantitativo.Rmd</code> (nova secao “Qual metrica responde qual pergunta”); <code>lda.Rmd</code> (comparativo LDA vs. clustering vs. LLM e heatmap gamma com referencia cruzada ao cluster). Roxygen de <code><a href="../reference/ac_qual_codebook.html">ac_qual_codebook()</a></code>, <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>, <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>, <code><a href="../reference/ac_import.html">ac_import()</a></code>, <code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code>, <code><a href="../reference/ac_qual_irr.html">ac_qual_irr()</a></code>, <code><a href="../reference/ac_tokenize.html">ac_tokenize()</a></code> e <code><a href="../reference/ac_count.html">ac_count()</a></code> expandidos com framing teorico e faixas interpretativas. <code>@examples</code> mais realistas em <code><a href="../reference/ac_keyness.html">ac_keyness()</a></code>, <code><a href="../reference/ac_tf_idf.html">ac_tf_idf()</a></code>, <code><a href="../reference/ac_cooccurrence.html">ac_cooccurrence()</a></code> e <code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code>.</li>
+<li>
+<strong>Generalizacao do keyness</strong> — README, vignette <code>quantitativo</code> e roxygen de <code><a href="../reference/ac_keyness.html">ac_keyness()</a></code> descrevem grupos genericamente (qualquer variavel categorica: partido, periodo, tema, regiao, condicao experimental) em vez do exemplo “governo x oposicao” que havia ossificado como canonico.</li>
+<li>
+<strong>Cobertura de testes</strong> subiu de ~55% (0.3.1) para ~66%. Testes novos em <code>ac_cluster.R</code> (67% -&gt; 91%), <code>ac_qual_codebook.R</code> (43% -&gt; 48%) e <code>ac_qual_reliability.R</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">

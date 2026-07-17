@@ -1,6 +1,6 @@
 # Changelog
 
-## acR 0.3.2 (em desenvolvimento)
+## acR 0.3.2
 
 ### Novidades
 
@@ -33,6 +33,38 @@
   `backend = "ggplot"`) o layout usa `facet_wrap()`. Cores padrao passam
   a vir de `ac_palette(N)`. A validacao antiga (`length(grupos) != 2L`)
   foi substituida por `length(grupos) < 2L`.
+- **Polimento de documentacao** — reescrita de `qualitativo-llm.Rmd`
+  (nova secao “Quando usar LLM (e quando NAO usar)” com tabela
+  decisoria, tabela de custo por modelo e “Diagnosticando problemas
+  comuns” com 4 modos de falha); `quantitativo.Rmd` (nova secao “Qual
+  metrica responde qual pergunta”); `lda.Rmd` (comparativo LDA vs.
+  clustering vs. LLM e heatmap gamma com referencia cruzada ao cluster).
+  Roxygen de
+  [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md),
+  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md),
+  [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md),
+  [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md),
+  [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md),
+  [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md),
+  [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+  e
+  [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
+  expandidos com framing teorico e faixas interpretativas. `@examples`
+  mais realistas em
+  [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md),
+  [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md),
+  [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md)
+  e
+  [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md).
+- **Generalizacao do keyness** — README, vignette `quantitativo` e
+  roxygen de
+  [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+  descrevem grupos genericamente (qualquer variavel categorica: partido,
+  periodo, tema, regiao, condicao experimental) em vez do exemplo
+  “governo x oposicao” que havia ossificado como canonico.
+- **Cobertura de testes** subiu de ~55% (0.3.1) para ~66%. Testes novos
+  em `ac_cluster.R` (67% -\> 91%), `ac_qual_codebook.R` (43% -\> 48%) e
+  `ac_qual_reliability.R`.
 
 ## acR 0.3.1
 
