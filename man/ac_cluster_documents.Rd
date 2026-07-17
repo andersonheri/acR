@@ -24,9 +24,9 @@ com ligacao Ward.D2; \code{"kmeans"} usa k-means com \code{nstart = 25L};
 \item{features}{Como representar cada documento. \code{"tfidf"} (padrao) pesa
 por TF-IDF; \code{"count"} usa contagens brutas.}
 
-\item{k}{Numero de grupos. Se \code{NULL} (padrao) e \code{method \%in\% c("hclust","kmeans")},
-tenta escolher automaticamente por silhouette entre 2 e 8; requer \code{cluster}.
-Se \code{cluster} nao estiver instalado, \code{k = 3} e o fallback.}
+\item{k}{Numero de grupos. Se \code{NULL} (padrao) e \code{method \%in\% c("hclust","kmeans")}, tenta escolher automaticamente por silhouette
+entre 2 e 8; requer \code{cluster}. Se \code{cluster} nao estiver instalado,
+\code{k = 3} e o fallback.}
 
 \item{distance}{Metrica de dissimilaridade. \code{"cosine"} (padrao) e o
 classico em textos; \code{"euclidean"} funciona melhor com vetores
@@ -38,12 +38,12 @@ pequeno. Padrao: \code{15L}.}
 \value{
 Objeto de classe \code{ac_cluster} com:
 \describe{
-  \item{\code{assignments}}{\code{tibble} com \code{doc_id} e \code{cluster} (integer).}
-  \item{\code{fit}}{Objeto bruto do algoritmo (\code{hclust}, \code{kmeans} ou \code{pam}).}
-  \item{\code{k}}{Numero final de grupos.}
-  \item{\code{method}, \code{features}, \code{distance}}{Parametros usados.}
-  \item{\code{silhouette}}{Silhueta media (NA se \code{cluster} nao instalado).}
-  \item{\code{dtm}}{Matriz documento-termo usada (para plotagem).}
+\item{\code{assignments}}{\code{tibble} com \code{doc_id} e \code{cluster} (integer).}
+\item{\code{fit}}{Objeto bruto do algoritmo (\code{hclust}, \code{kmeans} ou \code{pam}).}
+\item{\code{k}}{Numero final de grupos.}
+\item{\code{method}, \code{features}, \code{distance}}{Parametros usados.}
+\item{\code{silhouette}}{Silhueta media (NA se \code{cluster} nao instalado).}
+\item{\code{dtm}}{Matriz documento-termo usada (para plotagem).}
 }
 }
 \description{

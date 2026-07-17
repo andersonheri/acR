@@ -49,8 +49,8 @@ aciona o parser correto:
 A ordem dos documentos no corpus resultante segue a ordem de entrada em
 \code{path} (ou a ordem alfabetica retornada por \code{Sys.glob()}), independente
 de o parser ser OCR ou readtext. IDs duplicados (dois arquivos com o
-mesmo \code{basename}) sao desambiguados automaticamente com um sufixo \code{_2},
-\code{_3}, ... e um aviso e emitido.
+mesmo \code{basename}) sao desambiguados automaticamente com um sufixo \verb{_2},
+\verb{_3}, ... e um aviso e emitido.
 
 \strong{Dependencias opcionais}: \code{readtext} e \code{tesseract} nao sao importados
 automaticamente -- o \code{ac_import()} verifica se estao instalados e
@@ -64,7 +64,7 @@ corpus <- ac_import('relatorio.pdf')
 # Pasta inteira de Word
 corpus <- ac_import('proposicoes/*.docx')
 
-# Excel — indicar a coluna de texto
+# Excel -- indicar a coluna de texto
 corpus <- ac_import('respostas.xlsx', text_field = 'resposta')
 
 # PDF escaneado (OCR em portugues)

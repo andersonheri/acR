@@ -28,11 +28,11 @@ Objeto \code{ggplot}.
 Tres formas complementares de olhar para o mesmo cluster:
 \itemize{
 \item \code{"dendrogram"} (padrao para \code{method = "hclust"}): arvore de fusoes
-  com cortes coloridos por grupo.
+com cortes coloridos por grupo.
 \item \code{"scatter"}: projecao 2D via PCA sobre a matriz documento-termo, com
-  pontos coloridos por cluster.
+pontos coloridos por cluster.
 \item \code{"heatmap"}: mapa de calor da matriz de dissimilaridade, ordenado
-  pelo dendrograma.
+pelo dendrograma.
 }
 }
 \examples{

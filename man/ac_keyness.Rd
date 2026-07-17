@@ -42,16 +42,17 @@ frequente)
 }
 \description{
 \code{ac_keyness()} calcula estatisticas de "keyness" para comparar a
-distribuicao de termos entre dois grupos (por exemplo, governo vs
-oposicao, partidos, periodos). A funcao e inspirada em
-\code{\link[quanteda.textstats:textstat_keyness]{quanteda.textstats::textstat_keyness()}} e utiliza tabelas 2x2 por
-termo.
+distribuicao de termos entre dois grupos. O criterio que define os
+grupos e do pesquisador: partido, periodo, tema, regiao, autor,
+condicao experimental ou qualquer variavel categorica no corpus. A
+funcao e inspirada em \code{\link[quanteda.textstats:textstat_keyness]{quanteda.textstats::textstat_keyness()}} e
+utiliza tabelas 2x2 por termo.
 
 A entrada tipica e uma tabela de frequencias gerada por
 \code{\link[=ac_count]{ac_count()}}, agregada por uma coluna de grupo:
 \itemize{
-\item \code{ac_count(corp, by = "lado")} seguido de
-\item \code{ac_keyness(freq, group = "lado", target = "Governo")}.
+\item \code{ac_count(corp, by = "grupo")} seguido de
+\item \code{ac_keyness(freq, group = "grupo", target = "A")}.
 }
 }
 \details{

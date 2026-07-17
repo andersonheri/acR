@@ -193,8 +193,10 @@ ac_plot_tf_idf(tfidf_tema, by = "tema", n = 6) +
 ## 8. *Keyness*: o que é distintivo entre **grupos**?
 
 Enquanto TF-IDF compara documento vs. corpus, ***keyness*** compara **grupos**
-(por partido, por tema, por período). É a métrica clássica para pergunta
-comparativa do tipo *"o que o Governo diz que a Oposição não diz?"*.
+— e o critério que define o grupo é seu, não do pacote. Pode ser partido,
+período histórico, tema, região, autor, condição experimental, faixa etária,
+qualquer variável categórica no seu corpus. É a métrica clássica para a
+pergunta comparativa: *"o que um grupo diz que o outro não diz?"*.
 
 Aqui comparamos os temas **fiscal** e **tributário** — quais palavras marcam
 cada lado?

@@ -342,7 +342,7 @@ utilitários — veja **[Funções disponíveis (completo)](https://andersonheri
 | Contar tokens | `ac_count()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Top termos + gráfico | `ac_top_terms()` → `ac_plot_top_terms()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Termos distintivos por documento | `ac_tf_idf()` → `ac_plot_tf_idf()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Comparar grupos (governo × oposição) | `ac_keyness()` → `ac_plot_keyness()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
+| Comparar grupos (partido, período, tema, região…) | `ac_keyness()` → `ac_plot_keyness()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Nuvem de palavras (ggwordcloud) | `ac_wordcloud()` | [Quantitativo §6](https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras) |
 | Nuvem comparativa entre 2 grupos | `ac_plot_wordcloud_comparative()` | [Quantitativo §6.1](https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras) |
 | Mapear onde termos aparecem no texto | `ac_plot_xray()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |

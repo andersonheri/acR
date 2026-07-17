@@ -2,15 +2,16 @@
 #'
 #' @description
 #' `ac_keyness()` calcula estatisticas de "keyness" para comparar a
-#' distribuicao de termos entre dois grupos (por exemplo, governo vs
-#' oposicao, partidos, periodos). A funcao e inspirada em
-#' [`quanteda.textstats::textstat_keyness()`] e utiliza tabelas 2x2 por
-#' termo.
+#' distribuicao de termos entre dois grupos. O criterio que define os
+#' grupos e do pesquisador: partido, periodo, tema, regiao, autor,
+#' condicao experimental ou qualquer variavel categorica no corpus. A
+#' funcao e inspirada em [`quanteda.textstats::textstat_keyness()`] e
+#' utiliza tabelas 2x2 por termo.
 #'
 #' A entrada tipica e uma tabela de frequencias gerada por
 #' [`ac_count()`], agregada por uma coluna de grupo:
-#' - `ac_count(corp, by = "lado")` seguido de
-#' - `ac_keyness(freq, group = "lado", target = "Governo")`.
+#' - `ac_count(corp, by = "grupo")` seguido de
+#' - `ac_keyness(freq, group = "grupo", target = "A")`.
 #'
 #' @param x Um `data.frame` ou [`tibble::tibble()`] contendo, no minimo,
 #'   as colunas `token`, `n` e uma coluna de grupo.
