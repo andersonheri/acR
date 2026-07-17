@@ -26,5 +26,7 @@ utils::globalVariables(c(
   "llm_cat", "human_cat", "sample_reason", "categoria_humano",
   "notas_humano", "coeff.val", "text",
   # ac_qual_models
-  "rank", "justificativa", "model_id", "input", "output"
+  "rank", "justificativa", "model_id", "input", "output",
+  # ac_cluster / ac_plot_cluster
+  "PC1", "PC2", "cluster", "dist", "sil_width", "xend", "yend"
 ))
