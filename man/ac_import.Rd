@@ -32,6 +32,13 @@ Um objeto \code{ac_corpus} pronto para uso com todas as funcoes do acR.
 Importa arquivos de texto em diferentes formatos (PDF, Word, Excel, CSV,
 TXT, JSON, imagens com OCR) e retorna diretamente um objeto \code{ac_corpus}.
 Suporta caminhos individuais, vetores de arquivos e globs (\verb{dados/*.pdf}).
+
+É a \strong{via de entrada principal} do pipeline quando você trabalha com
+arquivos em disco (relatórios, transcrições, PDFs escaneados). Faz o
+que \code{ac_corpus()} faria a partir de um \code{data.frame}, mas cobrindo o
+passo anterior: extração de texto de formatos heterogêneos com detecção
+automática pelo sufixo do arquivo. Para PDFs escaneados e imagens,
+aciona OCR via \code{tesseract} com português como padrão.
 }
 \details{
 O \code{ac_import()} detecta automaticamente o formato pelo extension e

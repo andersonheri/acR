@@ -39,6 +39,34 @@ Tibble com colunas: \code{metric}, \code{estimate}, \code{ci_lower}, \code{ci_up
 \code{ac_qual_reliability()} calcula métricas de concordância entre a
 classificação feita pela LLM e uma classificação humana de referência,
 com intervalos de confiança via bootstrap.
+
+É a \strong{última porta antes de publicar} um estudo de análise de conteúdo
+assistida por LLM. Nenhuma referência metodológica atual (Krippendorff,
+2018; Gwet, 2014; Gilardi et al., 2023) aceita rotulagem automática sem
+um subconjunto codificado por humano e concordância documentada.
+
+Quatro métricas são computadas por padrão, cada uma respondendo a uma
+pergunta diferente:
+\itemize{
+\item \strong{Percent agreement} (\code{percent_agreement}): fração de documentos em
+que LLM e humano concordam. Fácil de reportar, mas ignora concordância
+por acaso — infla para categorias binárias com distribuição desigual.
+\item \strong{Alpha de Krippendorff} (\code{krippendorff}): padrão-ouro em análise de
+conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
+número de categorias. Valores > 0,80 = quase perfeita; > 0,67 = aceitável
+para publicação; < 0,60 = codebook precisa ser refinado.
+\item \strong{AC1 de Gwet} (\code{gwet_ac1}): alternativa a Krippendorff mais estável
+quando as categorias são muito desbalanceadas (o "paradoxo do kappa"
+— kappa despenca com alta concordância se uma categoria domina).
+\item \strong{F1 macro} (\code{f1_macro}): média não ponderada dos F1 por categoria.
+Útil quando você quer garantir que a LLM está indo bem também nas
+categorias raras, não só nas frequentes.
+}
+
+Intervalos de confiança de 95\% vêm de \emph{bootstrap} não paramétrico
+(padrão: 1000 réplicas). Reporte pelo menos Krippendorff e F1 macro
+no artigo, com os ICs; discuta divergências humano × LLM em amostra
+de casos representativos.
 }
 \examples{
 # Simular saidas: LLM (coded) e revisao humana (humano_df)

@@ -66,16 +66,35 @@ Objeto de classe \code{ac_codebook}.
 }
 \description{
 \code{ac_qual_codebook()} cria um livro de códigos estruturado para classificação
-de textos via LLM. Suporta três modos:
+de textos via LLM. É o \strong{instrumento central} da análise de conteúdo
+assistida por IA: nenhum resultado publicável de codificação automática
+dispensa um codebook explícito, versionável e passível de revisão por
+pares (Krippendorff, 2018).
+
+Um codebook do \code{acR} operacionaliza cinco elementos por categoria:
+definição (o que é), exemplos positivos (o que é, concretamente),
+exemplos negativos (o que não é, para desambiguar categorias vizinhas),
+referências (ancorar a categoria em literatura publicada) e peso
+(indicação relativa de prioridade no prompt). Um codebook bem construído
+é a diferença entre a LLM adivinhar (com prior próprio, não replicável)
+e a LLM \strong{aplicar} uma operacionalização reproduzível (Gilardi et al.,
+2023).
+
+Suporta três modos de construção:
 \itemize{
 \item \strong{\code{"manual"}} (padrão): o pesquisador fornece definições, exemplos e
 referências diretamente.
 \item \strong{\code{"induced"}}: a LLM induz categorias automaticamente a partir de uma
-amostra do corpus, sugerindo nomes, definições e exemplos.
+amostra do corpus, sugerindo nomes, definições e exemplos. Útil como
+ponto de partida quando você não tem um esquema teórico a priori.
 \item \strong{\code{"literature"}}: a LLM busca definições na literatura acadêmica,
 gerando um banco estruturado com trecho original, tradução, autor, ano,
 revista e link. O pesquisador revisa e aprova interativamente.
 }
+
+Todo codebook mantém um \code{history} das modificações — quem alterou, quando
+e o quê. Essencial para auditoria metodológica quando o instrumento evolui
+entre a versão piloto e a versão final publicada.
 }
 \examples{
 # Codebook manual com duas categorias, cada uma com exemplos positivos
@@ -102,6 +121,9 @@ cb  # imprime resumo do codebook
 
 }
 \references{
+Gilardi, F., Alizadeh, M., & Kubli, M. (2023). ChatGPT outperforms
+crowd workers for text-annotation tasks. \emph{PNAS}, 120(30).
+
 Krippendorff, K. (2018). \emph{Content Analysis: An Introduction to Its
 Methodology} (4th ed.). SAGE.
 

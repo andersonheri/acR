@@ -46,11 +46,17 @@ Um \code{\link[tibble:tibble]{tibble::tibble()}} com colunas:
 \description{
 \code{ac_tokenize()} recebe um objeto \code{\link[=ac_corpus]{ac_corpus()}} e retorna um
 \code{tibble} em formato \emph{tidy}, com um token por linha, no estilo
-usado em analises de texto no ecossistema tidy.
+usado em análises de texto no ecossistema tidy.
 
-A funcao implementa tokenizacao em palavras (n = 1) ou
-n-gramas de tamanho arbitrario (n > 1), usando janelas
-contiguas de tokens dentro de cada documento.
+A função implementa tokenização em palavras (n = 1) ou
+n-gramas de tamanho arbitrário (n > 1), usando janelas
+contíguas de tokens dentro de cada documento.
+
+É o segundo passo canônico do pipeline quantitativo, geralmente entre
+\code{\link[=ac_clean]{ac_clean()}} e \code{\link[=ac_count]{ac_count()}}. Para análises que dependem de expressões
+compostas (\"reforma tributária\", \"desenvolvimento sustentável\"),
+use \code{n = 2L} para bigramas — cada n-grama vira uma unidade de contagem
+independente.
 }
 \examples{
 df <- data.frame(

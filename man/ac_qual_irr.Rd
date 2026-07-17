@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_qual_irr.R
 \name{ac_qual_irr}
 \alias{ac_qual_irr}
-\title{Calcula metricas de confiabilidade inter-anotador}
+\title{Calcular métricas de confiabilidade inter-anotador}
 \usage{
 ac_qual_irr(
   gold,
@@ -54,13 +54,19 @@ Um objeto de classe \code{ac_irr} (lista) com os elementos:
 }
 }
 \description{
-Compara as classificacoes de dois ou mais anotadores (humanos ou LLMs) e
-retorna metricas padronizadas de concordancia. Suporta Cohen's Kappa
+Compara as classificações de dois ou mais anotadores (humanos ou LLMs) e
+retorna métricas padronizadas de concordância. Suporta Cohen's Kappa
 (dois anotadores), Fleiss' Kappa (multi-anotador), Krippendorff's Alpha e
-percentual de concordancia simples.
+percentual de concordância simples.
 
-A funcao aceita dois formatos de entrada: (a) dois data.frames com colunas
-\code{id} e \code{categoria}, representando anotador 1 e anotador 2; ou (b) um unico
+Complementa \code{\link[=ac_qual_reliability]{ac_qual_reliability()}}: aquela compara \strong{um par} LLM ×
+humano com bootstrap; esta é o motor genérico para \strong{qualquer par ou
+painel} de anotadores. Use-a diretamente quando você tem duas rodadas
+humanas para calibrar entre codificadores antes de acender a LLM, ou
+quando quer comparar LLMs entre si sobre a mesma amostra.
+
+A função aceita dois formatos de entrada: (a) dois data.frames com colunas
+\code{id} e \code{categoria}, representando anotador 1 e anotador 2; ou (b) um único
 data.frame em formato largo com uma coluna por anotador.
 }
 \details{

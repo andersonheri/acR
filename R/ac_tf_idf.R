@@ -37,25 +37,34 @@
 #' documento/grupo e termo (isto e, uma linha por termo-em-documento).
 #'
 #' @examples
+#' # Corpus com discursos sobre tres agendas distintas.
+#' # TF-IDF vai destacar o vocabulario proprio de cada texto,
+#' # nao os termos comuns a todos (que a frequencia bruta mostraria).
 #' df <- data.frame(
-#'   id      = c("d1", "d2", "d3"),
-#'   texto   = c(
-#'     "O deputado do PT falou na CCJ.",
-#'     "O deputado do PL falou novamente.",
-#'     "O senador do PT falou na CCJ."
+#'   id    = paste0("d", 1:6),
+#'   texto = c(
+#'     "reforma tributaria simplifica sistema impostos empresas",
+#'     "IVA dual substitui PIS COFINS ICMS federal",
+#'     "programa habitacional amplia recursos moradia popular urbana",
+#'     "deficit habitacional afeta familias baixa renda cidades",
+#'     "educacao basica recebe recursos Fundeb Congresso",
+#'     "alfabetizacao idade certa meta Plano Nacional Educacao"
 #'   ),
-#'   partido = c("PT", "PL", "PT"),
+#'   tema  = rep(c("tributario", "habitacao", "educacao"), each = 2),
 #'   stringsAsFactors = FALSE
 #' )
 #'
-#' corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
+#' corp <- ac_corpus(df, text = texto, docid = id)
 #'
-#' freq <- ac_count(corp)
+#' # TF-IDF por documento
+#' freq  <- ac_count(corp)
 #' tfidf <- ac_tf_idf(freq)
+#' head(tfidf)
 #'
-#' # tf-idf por partido (tratando cada partido como "documento")
-#' freq_by <- ac_count(corp, by = "partido")
-#' tfidf_by <- ac_tf_idf(freq_by, by = "partido")
+#' # TF-IDF por tema (cada tema tratado como "documento agregado")
+#' freq_by  <- ac_count(corp, by = "tema")
+#' tfidf_by <- ac_tf_idf(freq_by, by = "tema")
+#' head(tfidf_by)
 #'
 #' @seealso [ac_count()], [ac_top_terms()], `tidytext::bind_tf_idf()`
 #' @concept corpus

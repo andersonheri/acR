@@ -11,7 +11,7 @@ e medidas de associação (PMI, Dice)."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,34 +120,52 @@ Padrão: <code>2</code>.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># 1. Corpus minimo com 3 documentos</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Corpus tematico: coocorrencia revela associacoes conceituais</span></span></span>
+<span class="r-in"><span><span class="co"># (que palavras "andam juntas" no discurso).</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d1"</span>, <span class="st">"d2"</span>, <span class="st">"d3"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="st">"democracia participacao cidadania"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"participacao politica democracia"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"cidadania direitos participacao"</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="st">"democracia participacao voto liberdade cidadania popular"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"cidadania direitos participacao democracia representacao politica"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"voto direitos liberdade cidadania soberania popular"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"mercado economia eficiencia privatizacao competicao livre"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"privatizacao mercado livre eficiencia produtividade lucro"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"economia crescimento investimento mercado capital juros"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># 2. Preparar corpus e tokens (limpeza padrao)</span></span></span>
 <span class="r-in"><span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># 3. Calcular co-ocorrencias em janelas de 3 tokens</span></span></span>
-<span class="r-in"><span><span class="co">#    min_count = 1 mantem todos os pares (usar valor maior em corpora reais)</span></span></span>
-<span class="r-in"><span><span class="fu">ac_cooccurrence</span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">3</span>, min_count <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   word1        word2         cooc   pmi  dice</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania    participacao     4  2.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> democracia   participacao     4  2.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania    democracia       2  2.17     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania    direitos         2  3.17     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> democracia   politica         2  3.17     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> direitos     participacao     2  2.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> participacao politica         2  2.58     1</span>
+<span class="r-in"><span><span class="co"># Janela de 3 tokens, sem filtro de frequencia minima</span></span></span>
+<span class="r-in"><span><span class="co"># (em corpora reais use min_count &gt;= 5 para reduzir ruido)</span></span></span>
+<span class="r-in"><span><span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu">ac_cooccurrence</span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">3L</span>, min_count <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cooc</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   word1      word2         cooc   pmi  dice</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         4  4.58     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        4  4.58     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     4  4.58     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          4  4.58     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             4  4.58     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     4  5.17     1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Coocorrencia com PMI (associacao normalizada por acaso)</span></span></span>
+<span class="r-in"><span><span class="va">cooc_pmi</span> <span class="op">&lt;-</span> <span class="fu">ac_cooccurrence</span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">3L</span>, measure <span class="op">=</span> <span class="st">"pmi"</span>,</span></span>
+<span class="r-in"><span>                            min_count <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cooc_pmi</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   word1      word2         cooc   pmi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         4  4.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        4  4.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     4  4.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          4  4.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             4  4.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     4  5.17</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

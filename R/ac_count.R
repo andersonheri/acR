@@ -1,14 +1,20 @@
-#' Contar frequencias de tokens ou n-gramas em um corpus
+#' Contar frequências de tokens ou n-gramas em um corpus
 #'
 #' @description
-#' `ac_count()` calcula frequencias de tokens ou n-gramas a partir de
+#' `ac_count()` calcula frequências de tokens ou n-gramas a partir de
 #' um objeto [`ac_corpus()`], usando internamente [`ac_tokenize()`]
-#' seguido de uma agregacao com [`dplyr::count()`].
+#' seguido de uma agregação com [`dplyr::count()`].
 #'
-#' Pode operar em dois niveis:
+#' É o insumo direto de quase toda análise quantitativa do pacote:
+#' [ac_top_terms()] pega o topo, [ac_tf_idf()] recalibra por
+#' distintividade, [ac_keyness()] compara grupos, [ac_wordcloud()]
+#' visualiza. O argumento `by` decide se a unidade de análise é o
+#' documento ou o grupo agregado.
+#'
+#' Pode operar em dois níveis:
 #' - por documento (`by = NULL`): contagens por `doc_id` e `token`;
 #' - por metadados (`by = c("partido", ...)`): contagens por
-#'   variaveis de agrupamento e `token` (agregando varios documentos).
+#'   variáveis de agrupamento e `token` (agregando vários documentos).
 #'
 #' @param corpus Objeto de classe [`ac_corpus()`].
 #' @param n Tamanho do n-grama a ser tokenizado. Encaminhado para

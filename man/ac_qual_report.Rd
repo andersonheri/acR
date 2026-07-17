@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_qual_report.R
 \name{ac_qual_report}
 \alias{ac_qual_report}
-\title{Gerar relatorio de replicabilidade da analise qualitativa}
+\title{Gerar relatório de replicabilidade da análise qualitativa}
 \usage{
 ac_qual_report(
   coded,
@@ -45,13 +45,23 @@ Invisivel: caminho do arquivo gerado.
 }
 \description{
 \code{ac_qual_report()} gera um documento estruturado, pronto para artigo ou
-relatorio, com todas as decisoes metodologicas da rodada de codificacao
-qualitativa: codebook completo, historico de modificacoes, configuracao
-da LLM, distribuicao de resultados, metricas de confiabilidade e
-referencias bibliograficas.
+relatório, com todas as decisões metodológicas da rodada de codificação
+qualitativa: codebook completo, histórico de modificações, configuração
+da LLM, distribuição de resultados, métricas de confiabilidade e
+referências bibliográficas.
 
-Suporta saida em Markdown (\code{.md}) ou HTML autocontido (\code{.html}),
-em portugues ou ingles.
+É a resposta do \code{acR} a um risco real de comunicação em análises
+assistidas por LLM: \strong{o revisor ou leitor não consegue reproduzir a
+rodada} sem saber exatamente qual modelo, qual codebook, quais
+parâmetros e qual amostra foram usados. Sem esse relatório, o leitor
+tem que confiar no autor — algo que a tradição de análise de conteúdo
+(Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido
+e pode ser anexado como material suplementar do artigo, publicado como
+apêndice ou depositado num repositório de dados junto com o codebook em
+YAML.
+
+Suporta saída em Markdown (\code{.md}) ou HTML autocontido (\code{.html}),
+em português ou inglês (para submissões internacionais).
 }
 \examples{
 # Simular resultado de ac_qual_code para o exemplo

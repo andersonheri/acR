@@ -47,19 +47,30 @@ Tibble com colunas:
 pontuações por documento e, opcionalmente, por grupo ou janela temporal.
 }
 \examples{
-# Corpus com um documento positivo, um negativo e um neutro
+# Discursos com valencia afetiva variada
 df <- data.frame(
-  id = c("a", "b", "c"),
+  id = paste0("d", 1:6),
   texto = c(
-    "governo excelente otimo resultado positivo",
-    "pessima gestao corrupta fracasso terrivel",
-    "aprovada proposta reuniao assembleia"
-  )
+    "A reforma tributaria e um passo excelente para o pais",
+    "Esta proposta e um desastre, um retrocesso terrivel",
+    "O relator apresentou o parecer na sessao ordinaria",
+    "Comemoramos essa vitoria historica com muita alegria",
+    "Rejeitamos com veemencia essa medida injusta e ilegal",
+    "A comissao encerra os trabalhos as 18h"
+  ),
+  partido = rep(c("A", "B"), 3),
+  stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 
-# Score por documento (soma de polaridade via OpLexicon PT-BR)
+# Polaridade agregada por documento (soma de scores OpLexicon)
 ac_sentiment(corpus)
+
+# Agregado por grupo (aqui, por partido)
+ac_sentiment(corpus, by = "partido")
+
+# Metodo alternativo: razao positivos/negativos
+ac_sentiment(corpus, method = "ratio")
 
 }
 \references{

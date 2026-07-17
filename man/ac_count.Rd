@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_count.R
 \name{ac_count}
 \alias{ac_count}
-\title{Contar frequencias de tokens ou n-gramas em um corpus}
+\title{Contar frequências de tokens ou n-gramas em um corpus}
 \usage{
 ac_count(corpus, n = 1L, drop_punct = FALSE, by = NULL, sort = TRUE, ...)
 }
@@ -35,15 +35,21 @@ Um \code{\link[tibble:tibble]{tibble::tibble()}}:
 }
 }
 \description{
-\code{ac_count()} calcula frequencias de tokens ou n-gramas a partir de
+\code{ac_count()} calcula frequências de tokens ou n-gramas a partir de
 um objeto \code{\link[=ac_corpus]{ac_corpus()}}, usando internamente \code{\link[=ac_tokenize]{ac_tokenize()}}
-seguido de uma agregacao com \code{\link[dplyr:count]{dplyr::count()}}.
+seguido de uma agregação com \code{\link[dplyr:count]{dplyr::count()}}.
 
-Pode operar em dois niveis:
+É o insumo direto de quase toda análise quantitativa do pacote:
+\code{\link[=ac_top_terms]{ac_top_terms()}} pega o topo, \code{\link[=ac_tf_idf]{ac_tf_idf()}} recalibra por
+distintividade, \code{\link[=ac_keyness]{ac_keyness()}} compara grupos, \code{\link[=ac_wordcloud]{ac_wordcloud()}}
+visualiza. O argumento \code{by} decide se a unidade de análise é o
+documento ou o grupo agregado.
+
+Pode operar em dois níveis:
 \itemize{
 \item por documento (\code{by = NULL}): contagens por \code{doc_id} e \code{token};
 \item por metadados (\code{by = c("partido", ...)}): contagens por
-variaveis de agrupamento e \code{token} (agregando varios documentos).
+variáveis de agrupamento e \code{token} (agregando vários documentos).
 }
 }
 \examples{
