@@ -53,7 +53,7 @@ cb <- ac_qual_codebook(
 # Salvar em arquivo temporario (usar caminho real fora de exemplos)
 arquivo <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo)
-#> ✅ Codebook salvo em /tmp/RtmpigmqAp/file1b6449cff5cf.yaml
+#> ✅ Codebook salvo em /tmp/RtmpHUN2Eb/file1b7054cdee9b.yaml
 
 # Reabrir para conferir
 cb_recarregado <- ac_qual_load_codebook(arquivo)
