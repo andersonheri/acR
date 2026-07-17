@@ -171,15 +171,23 @@ A semente do posicionamento é controlada por `seed = 42L`.
 Frequência bruta favorece palavras que aparecem em quase todos os documentos
 (mesmo depois de *stopwords*). O **TF-IDF** (*term frequency × inverse document
 frequency*) penaliza termos comuns e destaca vocabulário próprio de cada
-documento — útil quando o corpus é composto por textos com propostas ou temas
+grupo — útil quando o corpus é composto por textos com propostas ou temas
 distintos.
 
+Com **12 discursos curtos** e cada palavra aparecendo em 1–2 documentos,
+o TF-IDF *por documento* resulta em barras quase todas iguais (todo termo
+único vale o mesmo). O padrão fica mais legível **agregando por tema**:
+tratamos cada tema como um "documento" e o TF-IDF revela o vocabulário
+característico de cada eixo temático do corpus.
+
 ```{r tfidf, fig.height=6}
-tfidf <- ac_tf_idf(contagem)
-ac_plot_tf_idf(tfidf, n = 10) +
+freq_tema  <- ac_count(corpus_limpo, by = "tema")
+tfidf_tema <- ac_tf_idf(freq_tema, by = "tema")
+
+ac_plot_tf_idf(tfidf_tema, by = "tema", n = 6) +
   ggplot2::labs(
-    title    = "Termos mais distintivos por documento (TF-IDF)",
-    subtitle = "Alta pontuacao = palavra frequente no doc E rara no corpus"
+    title    = "Termos mais distintivos por tema (TF-IDF)",
+    subtitle = "Cada eixo temático como um documento; alta pontuação = termo característico do tema"
   )
 ```
 
@@ -219,14 +227,74 @@ semânticos**. A rede de coocorrência mostra essas vizinhanças com base numa
 combinações de palavras que definem sub-temas dentro do corpus.
 
 ```{r coocorrencia, fig.height=7}
+cooc <- ac_cooccurrence(corpus_limpo, window = 5L, min_count = 2L)
+
 if (requireNamespace("ggraph", quietly = TRUE)) {
-  cooc <- ac_cooccurrence(corpus_limpo, window = 5L, min_count = 2L)
   ac_plot_cooccurrence(cooc, top_n = 25) +
     ggplot2::labs(
       title    = "Rede de coocorrencia (janela = 5, freq minima = 2)",
       subtitle = "Arestas conectam termos que co-ocorrem no mesmo contexto"
     )
 }
+```
+
+### 9.1 Trocando o peso: PMI em vez de contagem
+
+A rede padrão pondera arestas pela **contagem** de coocorrências — termos
+frequentes tendem a dominar. O **PMI** (*pointwise mutual information*)
+mede o quanto duas palavras aparecem juntas *acima do esperado por acaso*;
+revela pares surpreendentes, mesmo que raros.
+
+```{r coocorrencia-pmi, fig.height=7}
+if (requireNamespace("ggraph", quietly = TRUE)) {
+  ac_plot_cooccurrence(cooc, top_n = 25, weight = "pmi") +
+    ggplot2::labs(
+      title    = "Rede de coocorrencia ponderada por PMI",
+      subtitle = "Destaca pares associados alem do esperado por acaso"
+    )
+}
+```
+
+### 9.2 Trocando o layout
+
+O layout controla como os nós são posicionados no plano. O padrão
+`"fr"` (Fruchterman-Reingold) minimiza cruzamentos; `"kk"` (Kamada-Kawai)
+respeita distâncias de grafo; `"circle"` alinha tudo num anel — útil
+para corpora pequenos onde a topologia importa menos que a legibilidade.
+
+```{r coocorrencia-circle, fig.height=7}
+if (requireNamespace("ggraph", quietly = TRUE)) {
+  ac_plot_cooccurrence(cooc, top_n = 25, layout = "circle") +
+    ggplot2::labs(
+      title    = "Rede de coocorrencia — layout circular",
+      subtitle = "Todas as palavras num anel; arestas mostram o grafo cru"
+    )
+}
+```
+
+### 9.3 Coocorrência como matriz (heatmap)
+
+Quando a rede fica saturada de arestas, um **heatmap** das top-N palavras
+pode ser mais legível: linhas e colunas são termos, e a intensidade da
+célula é a coocorrência. Não requer `ggraph`.
+
+```{r coocorrencia-heatmap, fig.height=6}
+top_tokens <- ac_top_terms(ac_count(corpus_limpo), n = 12)$token
+cooc_mat   <- cooc[cooc$word1 %in% top_tokens & cooc$word2 %in% top_tokens, ]
+
+ggplot2::ggplot(cooc_mat,
+                ggplot2::aes(word1, word2, fill = cooc)) +
+  ggplot2::geom_tile(color = "white") +
+  ggplot2::scale_fill_gradient(low = "#F1F5F9", high = ac_palette(1)) +
+  ggplot2::labs(
+    title    = "Matriz de coocorrencia (top 12 termos)",
+    subtitle = "Alternativa ao grafo quando a rede fica densa",
+    x = NULL, y = NULL, fill = "cooc."
+  ) +
+  theme_ac() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+  )
 ```
 
 ## Referências
