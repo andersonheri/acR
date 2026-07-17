@@ -100,8 +100,93 @@ gráfico.</p>
 <p>O caminho é o clássico da análise de conteúdo estatística:
 <strong>corpus → limpeza → tokenização → frequências → distintividade →
 visualização</strong>.</p>
+<div class="section level2">
+<h2 id="qual-métrica-responde-qual-pergunta">Qual métrica responde qual pergunta?<a class="anchor" aria-label="anchor" href="#qual-m%C3%A9trica-responde-qual-pergunta"></a>
+</h2>
+<p>O módulo quantitativo tem seis técnicas centrais. Aprender qual usar
+em cada situação vale mais que decorar sintaxe:</p>
+<table class="table">
+<colgroup>
+<col width="53%">
+<col width="12%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Pergunta</th>
+<th>Técnica</th>
+<th>Função</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Que palavras dominam o corpus como um todo?</td>
+<td>Frequência bruta</td>
+<td>
+<code><a href="../reference/ac_count.html">ac_count()</a></code> → <code><a href="../reference/ac_top_terms.html">ac_top_terms()</a></code>
+</td>
+</tr>
+<tr class="even">
+<td>Que palavras são <strong>distintivas</strong> de cada documento
+vs. o resto?</td>
+<td>TF-IDF</td>
+<td>
+<code><a href="../reference/ac_tf_idf.html">ac_tf_idf()</a></code> → <code><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>
+</td>
+</tr>
+<tr class="odd">
+<td>Que palavras separam <strong>um grupo</strong> do outro
+estatisticamente?</td>
+<td><em>Keyness</em></td>
+<td>
+<code><a href="../reference/ac_keyness.html">ac_keyness()</a></code> → <code><a href="../reference/ac_plot_keyness.html">ac_plot_keyness()</a></code>
+</td>
+</tr>
+<tr class="even">
+<td>Que palavras <strong>andam juntas</strong> (associação
+sintagmática)?</td>
+<td>Coocorrência</td>
+<td>
+<code><a href="../reference/ac_cooccurrence.html">ac_cooccurrence()</a></code> →
+<code><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code>
+</td>
+</tr>
+<tr class="odd">
+<td>
+<strong>Onde no texto</strong> um termo aparece com mais
+frequência?</td>
+<td>X-ray plot</td>
+<td><code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code></td>
+</tr>
+<tr class="even">
+<td>Panorama visual rápido para relatório ou apresentação</td>
+<td>Nuvem de palavras</td>
+<td>
+<code><a href="../reference/ac_wordcloud.html">ac_wordcloud()</a></code> (<code>ggwordcloud</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Não é redundância.</strong> As três métricas de frequência
+respondem perguntas diferentes:</p>
+<ul>
+<li>
+<strong>Frequência bruta</strong> conta ocorrências. É a primeira
+olhada, mas os termos no topo tendem a ser genéricos (mesmo depois de
+tirar <em>stopwords</em>).</li>
+<li>
+<strong>TF-IDF</strong> penaliza termos que aparecem em muitos
+documentos: destaca o vocabulário <strong>próprio</strong> de cada
+texto. Sem grupo definido a priori.</li>
+<li>
+<strong>Keyness</strong> compara <strong>grupos</strong> com um
+teste estatístico (χ² ou log-likelihood). Precisa de uma variável
+categórica no corpus.</li>
+</ul>
+<p>Para descobrir tipologias emergentes sem categoria a priori, veja
+<code><a href="../articles/cluster.html">vignette("cluster")</a></code> e <code><a href="../articles/lda.html">vignette("lda")</a></code> (não
+supervisionado). Para rotular com categorias teóricas, veja
+<code><a href="../articles/qualitativo-llm.html">vignette("qualitativo-llm")</a></code> (assistido).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="construir-o-corpus">1. Construir o corpus<a class="anchor" aria-label="anchor" href="#construir-o-corpus"></a>
 </h2>

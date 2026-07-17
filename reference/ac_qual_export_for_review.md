@@ -58,7 +58,7 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
 }
 #> ℹ Amostra de 3 documentos selecionada (estratégia: "uncertainty").
 #> ℹ Use `ac_qual_export_for_review()` para exportar para Excel.
-#> ✅ Planilha exportada: /tmp/Rtmp2FtUFO/file1b661b0978c5.xlsx
+#> ✅ Planilha exportada: /tmp/RtmpsN0KuP/file1b141282d6bd.xlsx
 #> ℹ Preencha a coluna "categoria_humano" com a classificação.
 #> ℹ Use `ac_qual_import_human()` para importar após preenchimento.
 #> [1] TRUE

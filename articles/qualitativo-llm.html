@@ -100,18 +100,23 @@ completo de análise de conteúdo assistida por modelos de linguagem
 (LLMs), seguindo as diretrizes metodológicas de Krippendorff (2018) e as
 recomendações empíricas de Gilardi, Alizadeh e Kubli (2023), que
 mostraram que LLMs modernas superam trabalhadores de plataformas em
-várias tarefas de anotação de textos políticos, desde que guiadas por um
-codebook bem construído e validadas por revisão humana.</p>
-<p>O pipeline tem cinco etapas encadeadas:</p>
+várias tarefas de anotação de textos políticos — <strong>desde que
+guiadas por um codebook bem construído e validadas por revisão
+humana</strong>.</p>
+<p>O pipeline tem sete etapas encadeadas:</p>
 <pre><code>ac_fetch_camara() / ac_fetch_senado()        ← coleta
          ↓
 ac_corpus()                                  ← estruturação
          ↓
 ac_qual_codebook() + funções de gestão       ← codebook
          ↓
-as_prompt()                                  ← system prompt
+as_prompt()                                  ← system prompt (opcional)
          ↓
-ac_qual_code()                               ← classificação com LLM</code></pre>
+ac_qual_code()                               ← classificação com LLM
+         ↓
+ac_qual_sample() + ac_qual_reliability()     ← validação humana
+         ↓
+ac_qual_report()                             ← relatório reprodutível</code></pre>
 <p>A função <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> aceita o argumento
 <code>chat =</code>, que recebe qualquer objeto <code>Chat</code> do
 pacote <strong>ellmer</strong> (Wickham et al., 2025). Isso permite usar
@@ -128,7 +133,119 @@ que essas palavras significam. Um codebook transforma a classificação em
 (humano ou LLM) chega aos mesmos rótulos aplicando as mesmas definições
 e exemplos.</p>
 </blockquote>
+</div>
+<div class="section level2">
+<h2 id="quando-usar-llm-e-quando-não-usar">Quando usar LLM (e quando <strong>não</strong> usar)<a class="anchor" aria-label="anchor" href="#quando-usar-llm-e-quando-n%C3%A3o-usar"></a>
+</h2>
+<p>Antes de acender API, vale escolher a técnica certa para a pergunta.
+LLM não é o melhor caminho para todo problema de análise de conteúdo — é
+caro, tem variabilidade estocástica e depende de um provedor externo. A
+tabela abaixo resume quando <strong>cada</strong> abordagem do
+<code>acR</code> faz sentido:</p>
+<table class="table">
+<colgroup>
+<col width="47%">
+<col width="52%">
+</colgroup>
+<thead><tr class="header">
+<th>Você quer…</th>
+<th>Use</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Rotular textos com <strong>categorias teóricas
+pré-definidas</strong> (populismo, framing)</td>
+<td>LLM + codebook — esta vignette</td>
+</tr>
+<tr class="even">
+<td>Medir <strong>valência afetiva</strong> (positivo/negativo/neutro)
+em português</td>
+<td>
+<code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code> (léxico OpLexicon) — mais rápido,
+determinístico, sem chave de API</td>
+</tr>
+<tr class="odd">
+<td>Descobrir <strong>tópicos emergentes</strong> sem categorias a
+priori</td>
+<td>
+<code><a href="../reference/ac_lda.html">ac_lda()</a></code> — modelo probabilístico não
+supervisionado</td>
+</tr>
+<tr class="even">
+<td>Detectar <strong>tipologias latentes</strong> para amostragem
+estratificada</td>
+<td>
+<code><a href="../reference/ac_cluster_documents.html">ac_cluster_documents()</a></code> — hard clustering; veja a
+<code><a href="../articles/cluster.html">vignette("cluster")</a></code>
+</td>
+</tr>
+<tr class="odd">
+<td>
+<strong>Comparar</strong> vocabulário entre dois ou mais grupos</td>
+<td>
+<code><a href="../reference/ac_keyness.html">ac_keyness()</a></code> — teste estatístico, sem LLM</td>
+</tr>
+<tr class="even">
+<td>
+<strong>Explorar</strong> vocabulário distintivo dentro de cada
+documento</td>
+<td><code><a href="../reference/ac_tf_idf.html">ac_tf_idf()</a></code></td>
+</tr>
+</tbody>
+</table>
+<p>Regra prática: <strong>se a categoria pode ser detectada por
+palavras-chave, use léxico ou keyness — é mais barato, reprodutível e
+defensável.</strong> LLM brilha quando a categoria depende de
+<strong>contexto, ironia, referência implícita ou raciocínio sobre
+argumento</strong> — populismo, framing, posicionamento, tom, estilo
+retórico.</p>
+<div class="section level3">
+<h3 id="custo-real-de-um-estudo-com-llm">Custo real de um estudo com LLM<a class="anchor" aria-label="anchor" href="#custo-real-de-um-estudo-com-llm"></a>
+</h3>
+<p>Para calibrar expectativas, estimativa em dólares para um corpus
+típico brasileiro (500 discursos parlamentares, ~800 tokens cada) com
+<code>k_consistency = 3</code> e
+<code>reasoning = TRUE, reasoning_length = "medium"</code>:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Modelo</th>
+<th>Custo estimado</th>
+<th>Tempo estimado</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>groq/llama-3.3-70b-versatile</code></td>
+<td>US$ 0,50 – 1</td>
+<td>~10 min</td>
+</tr>
+<tr class="even">
+<td><code>openai/gpt-4o-mini</code></td>
+<td>US$ 3 – 5</td>
+<td>~15 min</td>
+</tr>
+<tr class="odd">
+<td><code>anthropic/claude-sonnet-4-5</code></td>
+<td>US$ 10 – 20</td>
+<td>~25 min</td>
+</tr>
+<tr class="even">
+<td><code>anthropic/claude-opus-4-7</code></td>
+<td>US$ 40 – 80</td>
+<td>~40 min</td>
+</tr>
+<tr class="odd">
+<td>
+<code>ollama/llama3.1:70b</code> (local)</td>
+<td>US$ 0 (GPU)</td>
+<td>~2 h em RTX 4090</td>
+</tr>
+</tbody>
+</table>
+<p><code><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code> (chamado a seguir) sugere o
+modelo mais custo-efetivo para o tamanho e a dificuldade da sua
+tarefa.</p>
 <hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="instalação-e-configuração">Instalação e configuração<a class="anchor" aria-label="anchor" href="#instala%C3%A7%C3%A3o-e-configura%C3%A7%C3%A3o"></a>
@@ -196,8 +313,28 @@ categorias similares.</p>
 <span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,   <span class="co"># cada doc recebe UMA categoria</span></span>
 <span>  lang       <span class="op">=</span> <span class="st">"pt"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"neutro"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Exemplos negativos reduzem confusão entre categorias similares.</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cb</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cb</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Codebook </span><span style="color: #0000BB; font-weight: bold;">acR</span><span style="font-weight: bold;">: </span><span style="color: #0000BB; font-weight: bold;">"tom_discurso"</span> <span style="color: #00BBBB;">────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Modo: <span style="color: #0000BB;">"manual"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"positivo"</span>, <span style="color: #0000BB;">"negativo"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 17/07/2026 21:57</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
+<span><span class="co">#&gt; Classifique o tom geral do discurso parlamentar.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Categorias</span>:</span></span>
+<span><span class="co">#&gt; • <span style="color: #0000BB;">"positivo"</span>: Discurso com tom propositivo e colaborativo.</span></span>
+<span><span class="co">#&gt; Ex+: Proponho que trabalhemos juntos nesta agenda.</span></span>
+<span><span class="co">#&gt; • <span style="color: #0000BB;">"negativo"</span> [peso: 1.5]: Discurso com tom crítico ou confrontacional.</span></span>
+<span><span class="co">#&gt; Ex+: Esta proposta vai arruinar o país.</span></span>
+<span><span class="co">#&gt; • <span style="color: #0000BB;">"neutro"</span>: Discurso descritivo, sem posicionamento claro.</span></span>
+<span><span class="co">#&gt; Ex+: O projeto foi apresentado na sessão de hoje.</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="adicionar-e-remover-categorias">Adicionar e remover categorias<a class="anchor" aria-label="anchor" href="#adicionar-e-remover-categorias"></a>
 </h3>
@@ -538,6 +675,74 @@ errar).</p>
 (Krippendorff) ou <strong>0.61</strong> (Landis-Koch) são geralmente
 aceitos, com discussão dos casos divergentes na seção de método.</p>
 <hr>
+</div>
+<div class="section level2">
+<h2 id="diagnosticando-problemas-comuns">Diagnosticando problemas comuns<a class="anchor" aria-label="anchor" href="#diagnosticando-problemas-comuns"></a>
+</h2>
+<p>Antes de partir para o relatório final, vale conhecer os quatro modos
+de falha mais frequentes de uma rodada com LLM — e o que cada um
+pede.</p>
+<div class="section level3">
+<h3 id="categorias-com-concordância-baixa-entre-k_consistency">1. Categorias com concordância baixa entre
+<code>k_consistency</code><a class="anchor" aria-label="anchor" href="#categorias-com-concord%C3%A2ncia-baixa-entre-k_consistency"></a>
+</h3>
+<p><strong>Sintoma:</strong> <code>confidence_score</code> mediano
+abaixo de 0,80.</p>
+<p><strong>Causa provável:</strong> definições ambíguas ou exemplos
+negativos ausentes. A LLM está literalmente hesitando entre categorias
+em cada repetição.</p>
+<p><strong>Fix:</strong> rodar
+<code>ac_qual_codebook(check_overlap = TRUE)</code> para detectar
+definições semanticamente próximas; adicionar exemplos negativos
+cruzados (o que uma categoria <strong>não</strong> é, especialmente
+perto das vizinhas); revisar manualmente 5–10 documentos com
+<code>confidence_score &lt; 0.67</code> e verificar se o problema está
+no texto (documento genuinamente ambíguo) ou no codebook.</p>
+</div>
+<div class="section level3">
+<h3 id="llm-devolve-categoria-fora-do-codebook">2. LLM devolve categoria fora do codebook<a class="anchor" aria-label="anchor" href="#llm-devolve-categoria-fora-do-codebook"></a>
+</h3>
+<p><strong>Sintoma:</strong> categoria como “misto”, “outro” ou uma
+variante da sua (“populismo_forte”) que <strong>não está</strong> no
+<code>codebook$categories</code>.</p>
+<p><strong>Causa:</strong> o modelo entendeu a tarefa mas achou a
+categoria correta insuficiente.</p>
+<p><strong>Fix:</strong> ou você acrescenta a categoria emergente (via
+<code><a href="../reference/ac_qual_codebook_add.html">ac_qual_codebook_add()</a></code>), ou reforça no prompt que
+<strong>só as categorias listadas</strong> são válidas. A segunda
+geralmente é preferível — categorias emergentes indicam refinamento
+metodológico, não desvio da LLM.</p>
+</div>
+<div class="section level3">
+<h3 id="distribuição-colapsada-em-uma-categoria">3. Distribuição colapsada em uma categoria<a class="anchor" aria-label="anchor" href="#distribui%C3%A7%C3%A3o-colapsada-em-uma-categoria"></a>
+</h3>
+<p><strong>Sintoma:</strong> 90%+ dos documentos vão para o mesmo
+rótulo.</p>
+<p><strong>Causa:</strong> categoria com definição muito abrangente ou
+peso implicitamente alto (mais exemplos positivos que as outras).</p>
+<p><strong>Fix:</strong> equilibrar o número de exemplos positivos por
+categoria; usar o argumento <code>weight</code> para dar peso extra às
+categorias mais raras; considerar <code>multilabel = TRUE</code> se os
+documentos genuinamente cobrem mais de um tema.</p>
+</div>
+<div class="section level3">
+<h3 id="irr-humana-llm-inaceitável">4. IRR humana × LLM inaceitável<a class="anchor" aria-label="anchor" href="#irr-humana-llm-inaceit%C3%A1vel"></a>
+</h3>
+<p><strong>Sintoma:</strong> <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> retorna
+α &lt; 0,60.</p>
+<p><strong>Causa:</strong> três possibilidades, em ordem de frequência:
+(i) codebook não está claro nem para humanos (peça a
+<strong>outro</strong> humano codificar; se dois humanos discordam, a
+LLM não vai salvar), (ii) modelo escolhido é pequeno demais para a
+tarefa (troque para um tier acima), (iii) o próprio conceito teórico é
+contestado — reformule a pergunta.</p>
+<blockquote>
+<p><strong>Regra de ouro:</strong> se a IRR entre dois humanos está
+abaixo de 0,70, o problema é do codebook, não da LLM. Nenhum modelo vai
+ter mais concordância consigo mesmo do que humanos treinados têm entre
+si.</p>
+</blockquote>
+</div>
 </div>
 <div class="section level2">
 <h2 id="etapa-8-replicabilidade-e-transparência">Etapa 8 — Replicabilidade e transparência<a class="anchor" aria-label="anchor" href="#etapa-8-replicabilidade-e-transpar%C3%AAncia"></a>

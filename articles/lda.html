@@ -119,11 +119,57 @@ para ter mistura temática (não frases isoladas). É comum em análise de
 discurso parlamentar, notícias, revisões de literatura, feedback de
 clientes.</p>
 </blockquote>
+<div class="section level3">
+<h3 id="lda-vs--clustering-vs--llm">LDA vs. clustering vs. LLM<a class="anchor" aria-label="anchor" href="#lda-vs--clustering-vs--llm"></a>
+</h3>
+<p>Três técnicas resolvem problemas parecidos e são confundidas. A
+distinção importa mais que a sintaxe:</p>
+<table class="table">
+<colgroup>
+<col width="30%">
+<col width="40%">
+<col width="29%">
+</colgroup>
+<thead><tr class="header">
+<th>Técnica</th>
+<th>Saída</th>
+<th>Você fornece</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<strong>LDA</strong> (esta vignette)</td>
+<td>Mistura probabilística de tópicos</td>
+<td>Só o corpus + <code>k</code>
+</td>
+</tr>
+<tr class="even">
+<td>
+<strong>Hard clustering</strong>
+(<code><a href="../articles/cluster.html">vignette("cluster")</a></code>)</td>
+<td>Uma etiqueta por documento</td>
+<td>Só o corpus + <code>k</code>
+</td>
+</tr>
+<tr class="odd">
+<td>
+<strong>LLM</strong> (<code><a href="../articles/qualitativo-llm.html">vignette("qualitativo-llm")</a></code>)</td>
+<td>Categoria pré-definida</td>
+<td>Codebook com categorias</td>
+</tr>
+</tbody>
+</table>
+<p>Regra prática: use <strong>LDA</strong> quando temas se
+<strong>misturam</strong> dentro do mesmo texto (discurso parlamentar,
+notícia, artigo científico); <strong>clustering</strong> quando você
+quer uma partição limpa para amostrar; <strong>LLM</strong> quando as
+categorias vêm da teoria e não da distribuição empírica de palavras.</p>
 <p>O <code>acR</code> empacota o pipeline em três chamadas:
 <code><a href="../reference/ac_lda_tune.html">ac_lda_tune()</a></code> para escolher <strong>K</strong> (número de
 tópicos), <code><a href="../reference/ac_lda.html">ac_lda()</a></code> para ajustar o modelo,
 <code><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code> para visualizar. Todo o restante é
 <code>dplyr</code> puro.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="corpus-agenda-legislativa">1. Corpus: agenda legislativa<a class="anchor" aria-label="anchor" href="#corpus-agenda-legislativa"></a>
@@ -435,11 +481,52 @@ no artigo:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4 dados, ia, congresso, lei, pessoais, prioridades, privacidade</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="exportar">8. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
+<h2 id="visualizando-as-misturas-γ-como-heatmap">8. Visualizando as misturas: γ como heatmap<a class="anchor" aria-label="anchor" href="#visualizando-as-misturas-%CE%B3-como-heatmap"></a>
+</h2>
+<p>Uma das forças didáticas do LDA é que γ <strong>não é</strong> uma
+etiqueta — é uma proporção. Documentos que “quase pertencem a um tema”
+aparecem como um gradiente, não como uma célula preenchida. Este heatmap
+mostra os documentos como linhas, os tópicos como colunas, e a cor como
+<code>gamma</code> (0 = nada; 1 = totalidade da massa).</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gamma_ord</span> <span class="op">&lt;-</span> <span class="va">gamma</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
+<span>  <span class="va">gamma_ord</span>,</span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">topic</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">doc_id</span>, fill <span class="op">=</span> <span class="va">gamma</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span></span>
+<span>    low  <span class="op">=</span> <span class="st">"#F1F5F9"</span>,</span>
+<span>    high <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"gamma"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Composicao tematica de cada documento (matriz gamma)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Cores mais fortes = maior peso do topico no documento"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Topico"</span>,</span>
+<span>    y        <span class="op">=</span> <span class="st">"Documento"</span>,</span>
+<span>    caption  <span class="op">=</span> <span class="st">"acR - LDA soft assignment"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    axis.text.y <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="lda_files/figure-html/gamma-heatmap-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p>Compare mentalmente com o heatmap “hard clustering” da
+<code><a href="../articles/cluster.html">vignette("cluster")</a></code> §4.6: lá, cada linha tem
+<strong>uma</strong> célula acesa (pertence ao grupo A
+<strong>ou</strong> ao B). Aqui, muitas linhas têm massa espalhada entre
+dois ou três tópicos. É a mesma tipologia latente, descrita em duas
+resoluções diferentes — hard é uma projeção do soft.</p>
+</div>
+<div class="section level2">
+<h2 id="exportar">9. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
 </h2>
 <p>Salvamos as duas matrizes principais para reuso — em outros scripts,
 no Excel, ou para colar em tabelas de artigo:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">beta</span>,  arquivo <span class="op">=</span> <span class="st">"lda_beta.csv"</span>,  formato <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">gamma</span>, arquivo <span class="op">=</span> <span class="st">"lda_gamma.csv"</span>, formato <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
 <span></span>

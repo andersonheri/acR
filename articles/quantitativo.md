@@ -8,6 +8,39 @@ do código e do gráfico.
 O caminho é o clássico da análise de conteúdo estatística: **corpus →
 limpeza → tokenização → frequências → distintividade → visualização**.
 
+## Qual métrica responde qual pergunta?
+
+O módulo quantitativo tem seis técnicas centrais. Aprender qual usar em
+cada situação vale mais que decorar sintaxe:
+
+| Pergunta | Técnica | Função |
+|----|----|----|
+| Que palavras dominam o corpus como um todo? | Frequência bruta | [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md) → [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md) |
+| Que palavras são **distintivas** de cada documento vs. o resto? | TF-IDF | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md) |
+| Que palavras separam **um grupo** do outro estatisticamente? | *Keyness* | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md) |
+| Que palavras **andam juntas** (associação sintagmática)? | Coocorrência | [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md) |
+| **Onde no texto** um termo aparece com mais frequência? | X-ray plot | [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md) |
+| Panorama visual rápido para relatório ou apresentação | Nuvem de palavras | [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md) (`ggwordcloud`) |
+
+**Não é redundância.** As três métricas de frequência respondem
+perguntas diferentes:
+
+- **Frequência bruta** conta ocorrências. É a primeira olhada, mas os
+  termos no topo tendem a ser genéricos (mesmo depois de tirar
+  *stopwords*).
+- **TF-IDF** penaliza termos que aparecem em muitos documentos: destaca
+  o vocabulário **próprio** de cada texto. Sem grupo definido a priori.
+- **Keyness** compara **grupos** com um teste estatístico (χ² ou
+  log-likelihood). Precisa de uma variável categórica no corpus.
+
+Para descobrir tipologias emergentes sem categoria a priori, veja
+[`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)
+e
+[`vignette("lda")`](https://andersonheri.github.io/acR/articles/lda.md)
+(não supervisionado). Para rotular com categorias teóricas, veja
+[`vignette("qualitativo-llm")`](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)
+(assistido).
+
 ``` r
 
 library(acR)
