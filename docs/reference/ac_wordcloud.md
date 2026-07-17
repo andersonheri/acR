@@ -1,11 +1,12 @@
 # Criar nuvem de palavras
 
 `ac_wordcloud()` cria uma nuvem de palavras a partir de uma tabela de
-frequencias, tipicamente gerada por
+frequências, tipicamente gerada por
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
 
-A funcao usa o pacote `wordcloud` para desenhar a nuvem e trabalha com
-as colunas `token` e `n`.
+Por padrão prefere `ggwordcloud` (retorna `ggplot`, layout mais
+agradável, tipografia melhor); cai para `wordcloud` clássico se o
+primeiro não estiver instalado.
 
 ## Usage
 
@@ -14,9 +15,9 @@ ac_wordcloud(
   x,
   max_words = 100,
   min_n = 1,
-  scale = c(4, 0.8),
-  random_order = FALSE,
-  colors = c("#2C7FB8", "#7FCDBB", "#EDF8B1", "#253494"),
+  colors = NULL,
+  backend = c("auto", "ggwordcloud", "wordcloud"),
+  title = NULL,
   ...
 )
 ```
@@ -25,70 +26,95 @@ ac_wordcloud(
 
 - x:
 
-  Um `data.frame` ou
-  [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
-  contendo, no minimo, as colunas `token` e `n`.
+  Um `data.frame` ou tibble contendo, no mínimo, as colunas `token` e
+  `n`.
 
 - max_words:
 
-  Numero maximo de palavras a desenhar. Padrao: `100`.
+  Número máximo de palavras a desenhar. Padrão: `100`.
 
 - min_n:
 
-  Frequencia minima para incluir um termo. Padrao: `1`.
-
-- scale:
-
-  Vetor numerico de comprimento 2 indicando o intervalo de tamanhos das
-  palavras. Padrao: `c(4, 0.8)`.
-
-- random_order:
-
-  Logico. Se `TRUE`, plota em ordem aleatoria. Se `FALSE` (padrao), as
-  palavras mais frequentes tendem a aparecer mais ao centro.
+  Frequência mínima para incluir um termo. Padrão: `1`.
 
 - colors:
 
-  Vetor de cores usado no grafico. Padrao:
-  `c("#2C7FB8", "#7FCDBB", "#EDF8B1", "#253494")`.
+  Vetor de cores usado no gráfico. Padrão: paleta
+  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md).
+
+- backend:
+
+  Motor a usar: `"auto"` (padrão, prefere `ggwordcloud`),
+  `"ggwordcloud"` ou `"wordcloud"`.
+
+- title:
+
+  Título opcional (apenas em modo `ggwordcloud`).
 
 - ...:
 
-  Argumentos adicionais encaminhados para
-  [`wordcloud::wordcloud()`](https://rdrr.io/pkg/wordcloud/man/wordcloud.html).
+  Argumentos adicionais encaminhados para o motor escolhido
+  ([`ggwordcloud::geom_text_wordcloud`](https://lepennec.github.io/ggwordcloud/reference/geom_text_wordcloud.html)
+  ou
+  [`wordcloud::wordcloud`](https://rdrr.io/pkg/wordcloud/man/wordcloud.html)).
 
 ## Value
 
-Invisivelmente, o `data.frame` filtrado usado para desenhar a nuvem de
-palavras.
-
-## Details
-
-Como
-[`wordcloud::wordcloud()`](https://rdrr.io/pkg/wordcloud/man/wordcloud.html)
-desenha diretamente no dispositivo grafico ativo, esta funcao nao
-retorna um objeto `ggplot`. Em vez disso, produz o grafico como efeito
-colateral e retorna invisivelmente a tabela usada no desenho.
+Um objeto `ggplot` (backend `ggwordcloud`) ou, invisivelmente, o
+`data.frame` filtrado (backend `wordcloud`).
 
 ## See also
 
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
+[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md),
+[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
 
 ## Examples
 
 ``` r
+# Corpus pequeno para demonstrar
 df <- data.frame(
-  id    = c("d1", "d2", "d3"),
-  texto = c("A A B", "B C", "A C"),
+  id    = paste0("d", 1:8),
+  texto = c(
+    "reforma tributaria simplifica sistema empresas",
+    "reforma reduz distorcoes fiscais brasileiras",
+    "sistema tributario complexo prejudica empresas",
+    "reforma modernizacao arrecadacao federal",
+    "IVA substitui impostos indiretos federais",
+    "reforma tributaria arrecadacao IVA aliquotas",
+    "simplificacao impostos aliquotas empresas",
+    "reforma federal moderniza sistema tributario"
+  ),
   stringsAsFactors = FALSE
 )
-
-corp <- ac_corpus(df, text = texto, docid = id)
+corp <- ac_corpus(df, text = texto, docid = id) |>
+  ac_clean(remove_stopwords = "pt")
 freq <- ac_count(corp)
 
-if (requireNamespace("wordcloud", quietly = TRUE)) {
-  ac_wordcloud(freq, max_words = 20)
+# Motor ggplot moderno (recomendado)
+if (requireNamespace("ggwordcloud", quietly = TRUE)) {
+  ac_wordcloud(freq, max_words = 30, title = "Termos frequentes")
 }
+#> Warning: Some words could not fit on page. They have been removed.
 
+
+# Motor classico (fallback)
+if (requireNamespace("wordcloud", quietly = TRUE)) {
+  ac_wordcloud(freq, max_words = 30, backend = "wordcloud")
+}
+#> Warning: federal could not be fit on page. It will not be plotted.
+#> Warning: federal could not be fit on page. It will not be plotted.
+#> Warning: impostos could not be fit on page. It will not be plotted.
+#> Warning: impostos could not be fit on page. It will not be plotted.
+#> Warning: indiretos could not be fit on page. It will not be plotted.
+#> Warning: moderniza could not be fit on page. It will not be plotted.
+#> Warning: prejudica could not be fit on page. It will not be plotted.
+
+#> Warning: reforma could not be fit on page. It will not be plotted.
+#> Warning: reforma could not be fit on page. It will not be plotted.
+#> Warning: reforma could not be fit on page. It will not be plotted.
+#> Warning: reforma could not be fit on page. It will not be plotted.
+#> Warning: reforma could not be fit on page. It will not be plotted.
+#> Warning: simplifica could not be fit on page. It will not be plotted.
+#> Warning: simplificacao could not be fit on page. It will not be plotted.
 ```

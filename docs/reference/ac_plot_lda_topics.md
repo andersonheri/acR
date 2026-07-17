@@ -44,7 +44,10 @@ Objeto `ggplot`.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Assumindo corpus preparado como em ?ac_lda
 lda <- ac_lda(corpus, k = 3)
+
+# Grafico com os 8 termos mais probabilisticos por topico
 ac_plot_lda_topics(lda, top_n = 8)
 } # }
 ```

@@ -6,11 +6,14 @@
 <url><loc>https://andersonheri.github.io/acR/LICENSE.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/PULL_REQUEST_TEMPLATE.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/articles/analise-proposicoes.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/articles/cluster.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/articles/index.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/articles/introducao-acR.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/articles/lda.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/articles/qualitativo-llm.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/articles/quantitativo.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/articles/quickstart.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/articles/replicabilidade.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/articles/sentimento.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/authors.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/index.html</loc></url>
@@ -18,6 +21,7 @@
 <url><loc>https://andersonheri.github.io/acR/reference/acR-package.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_clean.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_clean_stopwords.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_cluster_documents.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_cooccurrence.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_corpus.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_count.html</loc></url>
@@ -28,6 +32,8 @@
 <url><loc>https://andersonheri.github.io/acR/reference/ac_keyness.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_lda.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_lda_tune.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_palette.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_plot_cluster.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_plot_keyness.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.html</loc></url>
@@ -52,6 +58,7 @@
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_load_codebook.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_reliability.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/ac_qual_report.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_sample.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/ac_qual_search_literature.html</loc></url>
@@ -63,6 +70,8 @@
 <url><loc>https://andersonheri.github.io/acR/reference/as_prompt.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/index.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/is_ac_corpus.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/print.ac_cluster.html</loc></url>
 <url><loc>https://andersonheri.github.io/acR/reference/print.ac_irr.html</loc></url>
+<url><loc>https://andersonheri.github.io/acR/reference/theme_ac.html</loc></url>
 </urlset>
 

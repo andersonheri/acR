@@ -1,5 +1,23 @@
 # Package index
 
+## Comece aqui — funcoes principais
+
+Os seis pontos de entrada mais usados do pacote. Se voce esta comecando,
+aprenda estas primeiro; o resto do pipeline se conecta em torno delas.
+
+- [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)
+  : Importar arquivos para um corpus acR
+- [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+  : Construir um corpus para análise de conteúdo
+- [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
+  : Contar frequencias de tokens ou n-gramas em um corpus
+- [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
+  : Criar um codebook para análise de conteúdo qualitativa
+- [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+  : Classificar textos com LLM usando um codebook
+- [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+  : Calcular confiabilidade entre codificação LLM e humana
+
 ## Coleta de dados
 
 Importacao de textos de fontes abertas brasileiras.
@@ -54,6 +72,8 @@ Frequencias, associacoes e modelagem estatistica de textos.
   Ajustar modelo LDA (Latent Dirichlet Allocation)
 - [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
   : Ajustar múltiplos modelos LDA para selecionar k
+- [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)
+  : Agrupamento nao supervisionado de documentos
 
 ## Codificacao qualitativa via LLM
 
@@ -102,6 +122,14 @@ Amostragem, concordancia inter-codificador e importacao/exportacao.
 - [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md)
   : Importar classificação humana de Excel
 
+## Replicabilidade
+
+Relatorio automatico das decisoes metodologicas para artigos e
+relatorios.
+
+- [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
+  : Gerar relatorio de replicabilidade da analise qualitativa
+
 ## Selecao de modelos LLM
 
 Listagem e recomendacao de modelos LLM.
@@ -113,8 +141,10 @@ Listagem e recomendacao de modelos LLM.
 
 ## Visualizacao
 
-Graficos modernos baseados em ggplot2.
+Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 
+- [`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md)
+  : Visualiza um objeto ac_cluster
 - [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
   : Visualizar rede de co-ocorrência de termos
 - [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md)
@@ -135,6 +165,10 @@ Graficos modernos baseados em ggplot2.
   : Gráfico X-ray — dispersão lexical de termos no corpus
 - [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
   : Criar nuvem de palavras
+- [`theme_ac()`](https://andersonheri.github.io/acR/reference/theme_ac.md)
+  : Tema visual consistente do acR
+- [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+  : Paleta categórica do acR
 
 ## Exportacao
 

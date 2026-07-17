@@ -41,3 +41,27 @@ ac_qual_codebook_translate(
 ## Value
 
 Objeto `ac_codebook` traduzido.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Requer credenciais da LLM (ANTHROPIC_API_KEY ou GROQ_API_KEY).
+
+cb_pt <- ac_qual_codebook(
+  name         = "polaridade",
+  instructions = "Classifique a polaridade do texto.",
+  categories   = list(
+    favor  = list(definition = "Apoia a proposta.",
+                  examples_pos = "Sou totalmente a favor desta reforma."),
+    contra = list(definition = "Opoe-se a proposta.",
+                  examples_pos = "Esta proposta e um retrocesso.")
+  )
+)
+
+# Traduzir para ingles preservando estrutura e exemplos
+cb_en <- ac_qual_codebook_translate(cb_pt, to = "en")
+cb_en$lang  # "en"
+cb_en$categories$favor$definition
+} # }
+```

@@ -3,23 +3,22 @@
 ## Authors
 
 - **Anderson Henrique**. Author, maintainer.
-  [](https://orcid.org/0000-0002-1842-2725)  
-  Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao Paulo
+  [](https://orcid.org/0000-0002-1842-2725)
 
 ## Citation
 
 Source:
 [`inst/CITATION`](https://github.com/andersonheri/acR/blob/HEAD/inst/CITATION)
 
-Henrique, A. (2025). acR: Analise de Conteudo em R. R package version
-0.1.0. Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao
+Henrique, A. (2026). acR: Analise de Conteudo em R. R package version
+0.3.0. Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao
 Paulo. https://andersonheri.github.io/acR/
 
     @Manual{,
       title = {acR: Analise de Conteudo em R},
       author = {Anderson Henrique},
-      year = {2025},
-      note = {R package version 0.1.0},
+      year = {2026},
+      note = {R package version 0.3.0},
       url = {https://andersonheri.github.io/acR/},
     }
 

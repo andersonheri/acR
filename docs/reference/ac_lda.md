@@ -53,6 +53,10 @@ Lista de classe `ac_lda` com:
 Blei, D. M.; Ng, A. Y.; Jordan, M. I. (2003). Latent Dirichlet
 Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
 
+Vignette:
+[`vignette("lda", package = "acR")`](https://andersonheri.github.io/acR/articles/lda.md)
+— tutorial completo com corpus real e visualizações.
+
 ## See also
 
 [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md),
@@ -62,6 +66,7 @@ Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
 
 ``` r
 if (FALSE) { # \dontrun{
+# 1. Corpus sintetico com 3 temas nitidos (democracia, economia, saude, educacao)
 df <- data.frame(
   id = paste0("d", 1:10),
   texto = c(
@@ -78,7 +83,9 @@ df <- data.frame(
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# 2. Ajustar LDA com k=3 topicos (o corpus tem ~4 temas; k=3 for a experimentacao)
 lda <- ac_lda(corpus, k = 3)
-lda
+lda  # imprime resumo do modelo
 } # }
 ```

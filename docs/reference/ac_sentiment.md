@@ -79,6 +79,7 @@ Construction of a Portuguese Opinion Lexicon from multiple resources.
 ## Examples
 
 ``` r
+# Corpus com um documento positivo, um negativo e um neutro
 df <- data.frame(
   id = c("a", "b", "c"),
   texto = c(
@@ -88,6 +89,8 @@ df <- data.frame(
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
+
+# Score por documento (soma de polaridade via OpLexicon PT-BR)
 ac_sentiment(corpus)
 #> # A tibble: 3 × 6
 #>   doc_id n_pos n_neg n_neu score sentiment

@@ -62,27 +62,27 @@ navbar:
       - text: "COMECE POR AQUI"
       - text: "Quickstart (5 min)"
         href: articles/quickstart.html
-      - text: "Visao geral do pacote"
+      - text: "Visão geral do pacote"
         href: articles/introducao-acR.html
       - text: "Replicabilidade ponta-a-ponta"
         href: articles/replicabilidade.html
       - text: "---"
       - text: "PIPELINE QUALITATIVO (LLMs)"
-      - text: "Codificacao com LLMs — guia completo"
+      - text: "Codificação com LLMs — guia completo"
         href: articles/qualitativo-llm.html
-      - text: "  ↳ Estudo de caso: proposicoes legislativas"
+      - text: "  ↳ Estudo de caso: proposições legislativas"
         href: articles/analise-proposicoes.html
       - text: "---"
       - text: "PIPELINE QUANTITATIVO"
-      - text: "Frequencias, keyness e coocorrencia"
+      - text: "Frequências, keyness e coocorrência"
         href: articles/quantitativo.html
       - text: "  ↳ Nuvens de palavras (ggwordcloud) e comparativa"
         href: articles/quantitativo.html#nuvem-de-palavras
-      - text: "  ↳ Cluster de documentos (hclust/k-means)"
-        href: reference/ac_cluster_documents.html
-      - text: "Analise de sentimento (OpLexicon)"
+      - text: "Agrupamento não supervisionado de documentos"
+        href: articles/cluster.html
+      - text: "Análise de sentimento (OpLexicon)"
         href: articles/sentimento.html
-      - text: "Modelagem de topicos (LDA)"
+      - text: "Modelagem de tópicos (LDA)"
         href: articles/lda.html
 articles:
   - title: "Comece por aqui"
@@ -94,15 +94,16 @@ articles:
       - replicabilidade
   - title: "Pipeline qualitativo (LLMs)"
     desc: >
-      Codebook, self-consistency, revisao humana e casos aplicados.
+      Codebook, self-consistency, revisão humana e casos aplicados.
     contents:
       - qualitativo-llm
       - analise-proposicoes
   - title: "Pipeline quantitativo"
     desc: >
-      Analises estatisticas classicas de conteudo textual.
+      Análises estatísticas clássicas de conteúdo textual.
     contents:
       - quantitativo
+      - cluster
       - sentimento
       - lda
 reference:

@@ -349,7 +349,7 @@ utilitários — veja **[Funções disponíveis (completo)](https://andersonheri
 | Rede de coocorrência | `ac_cooccurrence()` → `ac_plot_cooccurrence()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Análise de sentimento (OpLexicon) | `ac_sentiment()` → `ac_plot_sentiment()` | [Sentimento](https://andersonheri.github.io/acR/articles/sentimento.html) |
 | Modelagem de tópicos (LDA) | `ac_lda()` → `ac_plot_lda_topics()` | [LDA](https://andersonheri.github.io/acR/articles/lda.html) |
-| Cluster de documentos (hclust, k-means, PAM) | `ac_cluster_documents()` → `ac_plot_cluster()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
+| Cluster de documentos (hclust, k-means, PAM) | `ac_cluster_documents()` → `ac_plot_cluster()` | [Cluster](https://andersonheri.github.io/acR/articles/cluster.html) |
 | Criar codebook para LLM | `ac_qual_codebook()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
 | Classificar textos com LLM | `ac_qual_code()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
 | Amostrar documentos para revisão humana | `ac_qual_sample()` · `ac_qual_export_for_review()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
@@ -389,6 +389,7 @@ referência de todas as funções e changelog.
 ### Pipeline quantitativo
 
 - [Frequências, keyness e coocorrência](https://andersonheri.github.io/acR/articles/quantitativo.html) — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.
+- [Agrupamento não supervisionado de documentos](https://andersonheri.github.io/acR/articles/cluster.html) — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.
 - [Análise de sentimento (OpLexicon)](https://andersonheri.github.io/acR/articles/sentimento.html) — polaridade e sentimento agregado por documento.
 - [Modelagem de tópicos (LDA)](https://andersonheri.github.io/acR/articles/lda.html) — escolha de `k`, interpretação de tópicos e visualização.
 

@@ -66,8 +66,15 @@ aciona o parser correto:
 
 - **Pasta inteira / glob**: todos os arquivos compativeis de uma vez
 
+A ordem dos documentos no corpus resultante segue a ordem de entrada em
+`path` (ou a ordem alfabetica retornada por
+[`Sys.glob()`](https://rdrr.io/r/base/Sys.glob.html)), independente de o
+parser ser OCR ou readtext. IDs duplicados (dois arquivos com o mesmo
+`basename`) sao desambiguados automaticamente com um sufixo `_2`, `_3`,
+... e um aviso e emitido.
+
 **Dependencias opcionais**: `readtext` e `tesseract` nao sao importados
-automaticamente — o `ac_import()` verifica se estao instalados e orienta
+automaticamente – o `ac_import()` verifica se estao instalados e orienta
 a instalacao caso necessario.
 
 ## References

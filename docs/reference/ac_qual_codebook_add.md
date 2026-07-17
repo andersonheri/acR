@@ -34,6 +34,7 @@ Objeto `ac_codebook` atualizado.
 ## Examples
 
 ``` r
+# Codebook inicial com 2 categorias
 cb <- ac_qual_codebook(
   name         = "tom",
   instructions = "Classifique o tom.",
@@ -51,6 +52,7 @@ cb <- ac_qual_codebook(
 #> ! Categoria "negativo": sem exemplos negativos (examples_neg).
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 
+# Adicionar uma terceira categoria (nome do argumento vira nome da categoria)
 cb <- ac_qual_codebook_add(cb,
   neutro = list(
     definition   = "Tom neutro, sem posicionamento claro.",
@@ -61,6 +63,6 @@ cb <- ac_qual_codebook_add(cb,
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 #> ✔ 1 categoria adicionada: "neutro".
 #> ℹ Codebook agora tem 3 categorias.
-names(cb$categories)
+names(cb$categories)  # "positivo" "negativo" "neutro"
 #> [1] "positivo" "negativo" "neutro"  
 ```

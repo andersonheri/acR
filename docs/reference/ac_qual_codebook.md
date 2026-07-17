@@ -121,6 +121,8 @@ manual de aplicação*. Brasília: ENAP.
 ## Examples
 
 ``` r
+# Codebook manual com duas categorias, cada uma com exemplos positivos
+# (o que E) e negativos (o que NAO e, para desambiguar categorias vizinhas)
 cb <- ac_qual_codebook(
   name         = "tom_discurso",
   instructions = "Classifique o tom geral do discurso.",
@@ -129,7 +131,7 @@ cb <- ac_qual_codebook(
       definition   = "Discurso com tom propositivo e colaborativo.",
       examples_pos = c("Proponho que trabalhemos juntos nesta agenda."),
       examples_neg = c("Este governo e um desastre completo."),
-      weight       = 1
+      weight       = 1  # peso relativo no prompt; use >1 para priorizar
     ),
     negativo = list(
       definition   = "Discurso com tom critico ou confrontacional.",
@@ -139,14 +141,14 @@ cb <- ac_qual_codebook(
     )
   )
 )
-cb
+cb  # imprime resumo do codebook
 #> 
 #> ── Codebook acR: "tom_discurso" ────────────────────────────────────────────────
 #> • Modo: "manual"
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 20/04/2026 12:02
+#> • Criado em: 17/07/2026 18:14
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.

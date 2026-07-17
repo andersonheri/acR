@@ -69,8 +69,7 @@ ac_qual_search_literature(
 
 - ...:
 
-  Argumentos adicionais passados a
-  [`ellmer::chat()`](https://ellmer.tidyverse.org/reference/chat-any.html).
+  Argumentos adicionais passados a `ellmer::chat()`.
 
 ## Value
 
@@ -89,14 +88,20 @@ Workers for Text-Annotation Tasks. *PNAS*, 120(30).
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requer internet (busca no OpenAlex) e credenciais da LLM (para sintese)
+
+# Chat via Groq (plano gratuito com llama-3.3-70b)
 chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
 
+# Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma
 lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
   n_refs        = 5,
-  min_citations = 50,
+  min_citations = 50,  # filtra papers com pouca reverberacao
   chat          = chat_obj
 )
+
+# Colunas principais do resultado
 print(lit[, c("autor", "ano", "revista", "n_citacoes", "definicao_pt")])
 } # }
 ```
