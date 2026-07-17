@@ -126,11 +126,18 @@ ac_import <- function(path,
     .check_pkg('tesseract')
     engine <- tesseract::tesseract(lang_ocr)
     idx_ocr <- which(is_ocr)
+    cli::cli_progress_bar(
+      "Executando OCR",
+      total = length(idx_ocr),
+      clear = TRUE
+    )
     for (i in idx_ocr) {
       textos[i] <- paste(tesseract::ocr(arquivos[i], engine = engine),
                          collapse = ' ')
       ids[i]    <- tools::file_path_sans_ext(basename(arquivos[i]))
+      cli::cli_progress_update()
     }
+    cli::cli_progress_done()
   }
 
   if (any(is_texto)) {

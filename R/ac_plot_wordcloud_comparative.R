@@ -13,6 +13,9 @@
 #'   primeiras cores de [ac_palette()] (Okabe-Ito).
 #' @param seed Semente para o posicionamento aleatorio dos termos. Padrao
 #'   `42L` (garante layout reproduzivel entre chamadas).
+#' @param backend Motor de renderizacao: `"auto"` (padrao, prefere
+#'   `ggwordcloud` com facets), `"ggwordcloud"` ou `"ggplot"` (layout
+#'   original com jitter).
 #' @param title Título do gráfico. Padrão: `NULL`.
 #' @param ... Ignorado.
 #'
@@ -46,7 +49,11 @@ ac_plot_wordcloud_comparative <- function(corpus,
                                            colors    = NULL,
                                            title     = NULL,
                                            seed      = 42L,
+                                           backend   = c("auto", "ggwordcloud",
+                                                         "ggplot"),
                                            ...) {
+
+  backend <- match.arg(backend)
 
   if (is.null(colors)) colors <- ac_palette(2L)
   if (length(colors) < 2L) {
@@ -115,8 +122,7 @@ ac_plot_wordcloud_comparative <- function(corpus,
     ) |>
     dplyr::ungroup()
 
-  # Posicionar grupo A a esquerda, B a direita (layout reproduzivel:
-  # salva/restaura o RNG global para nao afetar a sessao do usuario)
+  # Salvar/restaurar RNG global para nao afetar a sessao do usuario
   old_seed <- if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
     get(".Random.seed", envir = .GlobalEnv, inherits = FALSE) else NULL
   on.exit({
@@ -126,6 +132,52 @@ ac_plot_wordcloud_comparative <- function(corpus,
       assign(".Random.seed", old_seed, envir = .GlobalEnv)
   }, add = TRUE)
   set.seed(seed)
+
+  use_ggwordcloud <- switch(backend,
+    "ggwordcloud" = TRUE,
+    "ggplot"      = FALSE,
+    "auto"        = requireNamespace("ggwordcloud", quietly = TRUE)
+  )
+
+  if (use_ggwordcloud) {
+    if (!requireNamespace("ggwordcloud", quietly = TRUE)) {
+      cli::cli_abort(c(
+        "Pacote {.pkg ggwordcloud} necessario para backend {.val ggwordcloud}.",
+        "i" = "Instale com {.code install.packages(\"ggwordcloud\")}."
+      ))
+    }
+    p <- ggplot2::ggplot(
+      top_grp,
+      ggplot2::aes(label = token, size = size_norm, color = grp)
+    ) +
+      ggwordcloud::geom_text_wordcloud(
+        rm_outside = TRUE,
+        eccentricity = 0.9,
+        shape = "circle",
+        family = "sans"
+      ) +
+      ggplot2::facet_wrap(~ grp, nrow = 1L) +
+      ggplot2::scale_color_manual(values = color_map, guide = "none") +
+      ggplot2::scale_size_area(max_size = 18) +
+      ggplot2::labs(
+        title    = title,
+        subtitle = paste0("Termos distintivos por grupo (TF-IDF) • top ",
+                          max_words, " por grupo"),
+        caption  = "acR • ac_plot_wordcloud_comparative()"
+      ) +
+      theme_ac() +
+      ggplot2::theme(
+        panel.grid  = ggplot2::element_blank(),
+        axis.text   = ggplot2::element_blank(),
+        axis.title  = ggplot2::element_blank(),
+        axis.ticks  = ggplot2::element_blank(),
+        strip.text  = ggplot2::element_text(face = "bold", size = 11),
+        legend.position = "none"
+      )
+    return(p)
+  }
+
+  # Fallback: layout ggplot2 base com jitter reproduzivel
   top_grp$x_jitter <- ifelse(
     top_grp$grp == grupos[1],
     stats::runif(nrow(top_grp), -1, -0.1),
