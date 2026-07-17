@@ -2,10 +2,11 @@
 
 ## Comece aqui — funcoes principais
 
-Os cinco pontos de entrada mais usados do pacote. Se voce esta
-comecando, aprenda estas primeiro; o resto do pipeline se conecta em
-torno delas.
+Os seis pontos de entrada mais usados do pacote. Se voce esta comecando,
+aprenda estas primeiro; o resto do pipeline se conecta em torno delas.
 
+- [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)
+  : Importar arquivos para um corpus acR
 - [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
   : Construir um corpus para análise de conteúdo
 - [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)

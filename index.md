@@ -24,12 +24,14 @@ reprodutível.
 install.packages("acR")           # via CRAN (em análise)
 remotes::install_github("andersonheri/acR")  # ou versão dev
 
-# 2. Rodar o pipeline mínimo
+# 2. Importar seus documentos (PDF, docx, xlsx, csv, txt, imagens com OCR)
 library(acR)
-corpus <- ac_corpus(data.frame(id = 1:3, text = c("...","...","...")))
+corpus <- ac_import("dados/*.pdf")          # ou "planilha.xlsx", "documento.docx"
+
+# 3. Rodar o pipeline mínimo
 ac_count(corpus) |> ac_top_terms(n = 10)
 
-# 3. Codificar qualitativamente (requer chave de LLM)
+# 4. Codificar qualitativamente (requer chave de LLM)
 codebook  <- ac_qual_codebook("posicao", "Classifique.",
                               categories = list(favor = "...", contra = "..."))
 resultado <- ac_qual_code(corpus, codebook, model = "anthropic/claude-sonnet-4-5")
