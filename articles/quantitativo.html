@@ -281,28 +281,34 @@ com o tema do pacote); se ele não estiver instalado, cai para o
 <h3 id="nuvem-comparativa-entre-grupos">6.1 Nuvem comparativa entre grupos<a class="anchor" aria-label="anchor" href="#nuvem-comparativa-entre-grupos"></a>
 </h3>
 <p>Quando o corpus tem uma variável de agrupamento (partido, período,
-tribunal, etc.), a nuvem comparativa mostra lado a lado os termos mais
+tema, etc.), a nuvem comparativa mostra lado a lado os termos mais
 <strong>distintivos</strong> de cada grupo — pontuados por TF-IDF
-calculado entre os dois lados. Requer exatamente dois grupos.</p>
+calculado tratando cada grupo como um “documento”. Aceita 2, 3 ou mais
+grupos.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Nosso corpus tem 4 temas; comparativa exige exatamente 2. Filtrando:</span></span>
-<span><span class="va">corpus_2</span> <span class="op">&lt;-</span> <span class="va">corpus</span><span class="op">[</span><span class="va">corpus</span><span class="op">$</span><span class="va">tema</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>, <span class="st">"tributario"</span><span class="op">)</span>, <span class="op">]</span></span>
-<span></span>
+<code class="sourceCode R"><span><span class="co"># Nosso corpus tem 5 temas distintos — todos entram na comparativa:</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative</a></span><span class="op">(</span></span>
-<span>  <span class="va">corpus_2</span>,</span>
+<span>  <span class="va">corpus</span>,</span>
 <span>  group     <span class="op">=</span> <span class="va">tema</span>,</span>
-<span>  max_words <span class="op">=</span> <span class="fl">40</span>,</span>
-<span>  title     <span class="op">=</span> <span class="st">"Termos distintivos: fiscal vs. tributario"</span></span>
+<span>  max_words <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  title     <span class="op">=</span> <span class="st">"Termos distintivos por tema"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
+<span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
+<span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span>
+<span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
+<span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span>
 <span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
 <span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span>
 <span><span class="co">#&gt; Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :</span></span>
 <span><span class="co">#&gt; Some words could not fit on page. They have been removed.</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/wordcloud-comp-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>O layout usa <code>ggwordcloud</code> com facets quando disponível
-(<code>backend = "auto"</code>), e cai no scatter jitter reproduzível
-quando não. A semente do posicionamento é controlada por
-<code>seed = 42L</code>.</p>
+(<code>backend = "auto"</code>), e cai em <code>geom_text</code> com
+jitter reproduzível quando não. A semente do posicionamento é controlada
+por <code>seed = 42L</code>. Cores vêm de <code><a href="../reference/ac_palette.html">ac_palette()</a></code> por
+padrão — uma por grupo.</p>
 </div>
 </div>
 <div class="section level2">

@@ -1,9 +1,11 @@
 # Nuvem de palavras comparativa entre grupos
 
-`ac_plot_wordcloud_comparative()` gera uma nuvem de palavras comparativa
-entre dois grupos de documentos, posicionando termos mais associados a
-cada grupo em lados opostos. Usa TF-IDF para identificar os termos mais
-distintivos de cada grupo.
+`ac_plot_wordcloud_comparative()` gera nuvens de palavras comparativas
+entre N grupos de documentos, dispostas em facets lado a lado. Usa
+TF-IDF (calculado tratando cada grupo como um "documento") para
+identificar os termos mais distintivos de cada grupo.
+
+Aceita 2, 3, 4+ grupos: cada grupo vira uma faceta.
 
 ## Usage
 
@@ -28,7 +30,8 @@ ac_plot_wordcloud_comparative(
 
 - group:
 
-  Coluna de agrupamento (nome sem aspas ou string).
+  Coluna de agrupamento (nome sem aspas ou string). Deve ter pelo menos
+  2 valores unicos.
 
 - max_words:
 
@@ -36,9 +39,9 @@ ac_plot_wordcloud_comparative(
 
 - colors:
 
-  Vetor com duas cores (uma por grupo). Padrão: duas primeiras cores de
-  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
-  (Okabe-Ito).
+  Vetor de cores (uma por grupo, na ordem alfabetica dos grupos).
+  Padrao: as primeiras N cores de
+  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md).
 
 - title:
 
@@ -52,7 +55,8 @@ ac_plot_wordcloud_comparative(
 - backend:
 
   Motor de renderizacao: `"auto"` (padrao, prefere `ggwordcloud` com
-  facets), `"ggwordcloud"` ou `"ggplot"` (layout original com jitter).
+  facets), `"ggwordcloud"` ou `"ggplot"` (facets com geom_text + jitter
+  reproduzivel).
 
 - ...:
 

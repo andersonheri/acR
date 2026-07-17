@@ -206,22 +206,26 @@ ac_wordcloud(contagem, max_words = 40, title = "Panorama do corpus")
 
 ### 6.1 Nuvem comparativa entre grupos
 
-Quando o corpus tem uma variável de agrupamento (partido, período,
-tribunal, etc.), a nuvem comparativa mostra lado a lado os termos mais
-**distintivos** de cada grupo — pontuados por TF-IDF calculado entre os
-dois lados. Requer exatamente dois grupos.
+Quando o corpus tem uma variável de agrupamento (partido, período, tema,
+etc.), a nuvem comparativa mostra lado a lado os termos mais
+**distintivos** de cada grupo — pontuados por TF-IDF calculado tratando
+cada grupo como um “documento”. Aceita 2, 3 ou mais grupos.
 
 ``` r
 
-# Nosso corpus tem 4 temas; comparativa exige exatamente 2. Filtrando:
-corpus_2 <- corpus[corpus$tema %in% c("fiscal", "tributario"), ]
-
+# Nosso corpus tem 5 temas distintos — todos entram na comparativa:
 ac_plot_wordcloud_comparative(
-  corpus_2,
+  corpus,
   group     = tema,
-  max_words = 40,
-  title     = "Termos distintivos: fiscal vs. tributario"
+  max_words = 25,
+  title     = "Termos distintivos por tema"
 )
+#> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
+#> Some words could not fit on page. They have been removed.
+#> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
+#> Some words could not fit on page. They have been removed.
+#> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
+#> Some words could not fit on page. They have been removed.
 #> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
 #> Some words could not fit on page. They have been removed.
 #> Warning in wordcloud_boxes(data_points = points_valid_first, boxes = boxes, :
@@ -231,8 +235,11 @@ ac_plot_wordcloud_comparative(
 ![](quantitativo_files/figure-html/wordcloud-comp-1.png)
 
 O layout usa `ggwordcloud` com facets quando disponível
-(`backend = "auto"`), e cai no scatter jitter reproduzível quando não. A
-semente do posicionamento é controlada por `seed = 42L`.
+(`backend = "auto"`), e cai em `geom_text` com jitter reproduzível
+quando não. A semente do posicionamento é controlada por `seed = 42L`.
+Cores vêm de
+[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+por padrão — uma por grupo.
 
 ## 7. TF-IDF: o que é *distintivo* em cada documento?
 
