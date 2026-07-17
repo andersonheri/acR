@@ -8,8 +8,10 @@ ac_plot_wordcloud_comparative(
   corpus,
   group,
   max_words = 50L,
-  colors = c("#0072B2", "#D55E00"),
+  colors = NULL,
   title = NULL,
+  seed = 42L,
+  backend = c("auto", "ggwordcloud", "ggplot"),
   ...
 )
 }
@@ -20,10 +22,17 @@ ac_plot_wordcloud_comparative(
 
 \item{max_words}{Número máximo de palavras por grupo. Padrão: \code{50}.}
 
-\item{colors}{Vetor com duas cores (uma por grupo). Padrão: paleta
-acessível Okabe-Ito.}
+\item{colors}{Vetor com duas cores (uma por grupo). Padrão: duas
+primeiras cores de \code{\link[=ac_palette]{ac_palette()}} (Okabe-Ito).}
 
 \item{title}{Título do gráfico. Padrão: \code{NULL}.}
+
+\item{seed}{Semente para o posicionamento aleatorio dos termos. Padrao
+\code{42L} (garante layout reproduzivel entre chamadas).}
+
+\item{backend}{Motor de renderizacao: \code{"auto"} (padrao, prefere
+\code{ggwordcloud} com facets), \code{"ggwordcloud"} ou \code{"ggplot"}
+(layout original com jitter).}
 
 \item{...}{Ignorado.}
 }

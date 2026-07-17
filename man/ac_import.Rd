@@ -46,8 +46,14 @@ aciona o parser correto:
 \item \strong{Pasta inteira / glob}: todos os arquivos compativeis de uma vez
 }
 
+A ordem dos documentos no corpus resultante segue a ordem de entrada em
+\code{path} (ou a ordem alfabetica retornada por \code{Sys.glob()}), independente
+de o parser ser OCR ou readtext. IDs duplicados (dois arquivos com o
+mesmo \code{basename}) sao desambiguados automaticamente com um sufixo \code{_2},
+\code{_3}, ... e um aviso e emitido.
+
 \strong{Dependencias opcionais}: \code{readtext} e \code{tesseract} nao sao importados
-automaticamente — o \code{ac_import()} verifica se estao instalados e
+automaticamente -- o \code{ac_import()} verifica se estao instalados e
 orienta a instalacao caso necessario.
 }
 \examples{

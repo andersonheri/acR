@@ -121,6 +121,56 @@ test_that("ac_plot_wordcloud_comparative() aceita group como string", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("ac_plot_wordcloud_comparative() backend='ggplot' usa jitter layout", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("scales")
+
+  corp <- make_wc_corpus()
+  p    <- ac_plot_wordcloud_comparative(corp, group = grupo, backend = "ggplot")
+  expect_s3_class(p, "ggplot")
+  # Layout jitter usa geom_text (nao ggwordcloud) -> deve ter GeomText
+  geom_classes <- vapply(p$layers, function(l) class(l$geom)[1], character(1))
+  expect_true("GeomText" %in% geom_classes)
+})
+
+test_that("ac_plot_wordcloud_comparative() backend='ggwordcloud' requer o pacote", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("scales")
+  skip_if_not_installed("ggwordcloud")
+
+  corp <- make_wc_corpus()
+  p <- ac_plot_wordcloud_comparative(corp, group = grupo,
+                                     backend = "ggwordcloud")
+  expect_s3_class(p, "ggplot")
+  # Backend ggwordcloud produz layer com geom_text_wordcloud e facet
+  expect_true(inherits(p$facet, "FacetWrap") || inherits(p$facet, "FacetGrid"))
+})
+
+test_that("ac_plot_wordcloud_comparative() seed produz layout determinico", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("scales")
+
+  corp <- make_wc_corpus()
+  p1 <- ac_plot_wordcloud_comparative(corp, group = grupo,
+                                      backend = "ggplot", seed = 7L)
+  p2 <- ac_plot_wordcloud_comparative(corp, group = grupo,
+                                      backend = "ggplot", seed = 7L)
+  expect_equal(p1$data$x_jitter, p2$data$x_jitter)
+  expect_equal(p1$data$y_jitter, p2$data$y_jitter)
+})
+
+test_that("ac_plot_wordcloud_comparative() nao poluir RNG global", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("scales")
+
+  corp <- make_wc_corpus()
+  set.seed(123L)
+  before <- .Random.seed
+  ac_plot_wordcloud_comparative(corp, group = grupo,
+                                backend = "ggplot", seed = 1L)
+  expect_identical(.Random.seed, before)
+})
+
 
 # ============================================================
 # ac_plot_xray() — validacoes

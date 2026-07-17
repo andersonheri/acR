@@ -1,10 +1,25 @@
 ## Submission summary
 
-This is the initial CRAN submission of `acR` (version 0.3.0). The package
-provides an integrated pipeline for content analysis in R, combining
-qualitative coding assisted by large language models (LLMs) with classical
-quantitative text analysis. Special focus on Brazilian corpora and
-political-institutional codebooks.
+This is a patch release of `acR` (0.3.0 -> 0.3.1). The package provides an
+integrated pipeline for content analysis in R, combining qualitative coding
+assisted by large language models (LLMs) with classical quantitative text
+analysis. Special focus on Brazilian corpora and political-institutional
+codebooks.
+
+### Changes in 0.3.1
+
+* `ac_plot_wordcloud_comparative()`: reproducible layout via a new `seed`
+  argument; default `colors` now come from `ac_palette(2L)`; global RNG is
+  saved and restored to avoid side effects on the user's session.
+* `ac_plot_xray()`: fixed a divide-by-zero for documents with a single
+  token (position defaults to 0.5); warning now identifies which specific
+  terms have no occurrences.
+* `ac_import()`: document order in the resulting corpus now matches input
+  order even when mixing OCR and text parsers; duplicate `doc_id` values
+  are disambiguated automatically with a warning; error calls migrated
+  from `stop()` to `cli::cli_abort()` for consistency.
+* Added test coverage for `ac_export()`, `ac_qual_irr()`, `theme_ac()`,
+  `ac_palette()`, and `is_ac_corpus()`.
 
 ## Test environments
 

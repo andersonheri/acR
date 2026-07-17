@@ -1,3 +1,29 @@
+# acR 0.3.1
+
+## Ajustes
+
+* **`ac_plot_wordcloud_comparative()`** — layout reproduzivel via novo
+  argumento `seed` (padrao `42L`), com salvaguarda do RNG global; cores
+  padrao agora vem de `ac_palette(2L)` em vez de codigos fixos. Novo
+  argumento `backend` (`"auto"`/`"ggwordcloud"`/`"ggplot"`): quando
+  `ggwordcloud` esta instalado, usa `geom_text_wordcloud` com facets
+  lado a lado; caso contrario, mantem o layout jitter original.
+* **`ac_plot_xray()`** — corrigido caso de divisao por zero em
+  documentos com apenas 1 token (posicao passa a ser `0.5`); warning
+  agora identifica quais termos ficaram sem ocorrencia, nao apenas o
+  caso extremo de nenhum encontrado.
+* **`ac_import()`** — a ordem dos documentos no corpus resultante
+  agora preserva a ordem de entrada em `path`, mesmo misturando arquivos
+  OCR e texto; `doc_id` duplicados sao desambiguados automaticamente
+  com sufixos (`_2`, `_3`, ...) e um aviso; erros migrados para
+  `cli::cli_abort` (padrao do pacote). Loop de OCR ganhou barra de
+  progresso via `cli::cli_progress_bar()`.
+
+## Testes
+
+* Nova cobertura para `ac_export()`, `ac_qual_irr()`, `theme_ac()`,
+  `ac_palette()` e `is_ac_corpus()`.
+
 # acR 0.3.0
 
 ## Novas funcionalidades — Visualização e Tema
