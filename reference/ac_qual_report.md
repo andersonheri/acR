@@ -1,13 +1,23 @@
-# Gerar relatorio de replicabilidade da analise qualitativa
+# Gerar relatório de replicabilidade da análise qualitativa
 
 `ac_qual_report()` gera um documento estruturado, pronto para artigo ou
-relatorio, com todas as decisoes metodologicas da rodada de codificacao
-qualitativa: codebook completo, historico de modificacoes, configuracao
-da LLM, distribuicao de resultados, metricas de confiabilidade e
-referencias bibliograficas.
+relatório, com todas as decisões metodológicas da rodada de codificação
+qualitativa: codebook completo, histórico de modificações, configuração
+da LLM, distribuição de resultados, métricas de confiabilidade e
+referências bibliográficas.
 
-Suporta saida em Markdown (`.md`) ou HTML autocontido (`.html`), em
-portugues ou ingles.
+É a resposta do `acR` a um risco real de comunicação em análises
+assistidas por LLM: **o revisor ou leitor não consegue reproduzir a
+rodada** sem saber exatamente qual modelo, qual codebook, quais
+parâmetros e qual amostra foram usados. Sem esse relatório, o leitor tem
+que confiar no autor — algo que a tradição de análise de conteúdo
+(Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido e
+pode ser anexado como material suplementar do artigo, publicado como
+apêndice ou depositado num repositório de dados junto com o codebook em
+YAML.
+
+Suporta saída em Markdown (`.md`) ou HTML autocontido (`.html`), em
+português ou inglês (para submissões internacionais).
 
 ## Usage
 
@@ -108,6 +118,6 @@ coded <- tibble::tibble(
 # Gerar relatorio em markdown temporario
 arquivo <- tempfile(fileext = ".md")
 ac_qual_report(coded, cb, path = arquivo, author = "Fulano de Tal")
-#> ✔ Relatorio salvo em /tmp/RtmpsN0KuP/file1b142fa15e06.md
+#> ✔ Relatorio salvo em /tmp/RtmpigmqAp/file1b643b7eb53e.md
 # readLines(arquivo, n = 20)
 ```

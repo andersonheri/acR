@@ -156,25 +156,40 @@ grupo de referencia.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># 1. Corpus fabricado com duas subamostras (Governo vs Oposicao)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Comparar vocabulario entre dois grupos (aqui, dois temas legislativos).</span></span></span>
+<span class="r-in"><span><span class="co"># O criterio de grupo e do pesquisador: partido, periodo, regiao, tema...</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d1"</span>, <span class="st">"d2"</span>, <span class="st">"d3"</span>, <span class="st">"d4"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="st">"A A A B"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"A B"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"A B B B"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"B B C"</span></span></span>
+<span class="r-in"><span>    <span class="st">"reforma tributaria simplifica sistema impostos empresas"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"IVA dual substitui PIS COFINS ICMS federal"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"aliquotas excecoes tributarias setores economicos"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"reforma tributaria unifica impostos indiretos"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"programa habitacional amplia recursos moradia popular"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"deficit habitacional afeta familias baixa renda"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"urbanizacao favelas regularizacao fundiaria municipios"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"moradia digna direito social constituicao"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  lado  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Governo"</span>, <span class="st">"Governo"</span>, <span class="st">"Oposicao"</span>, <span class="st">"Oposicao"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  tema  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tributario"</span>, <span class="st">"habitacao"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># 2. Frequencias por grupo — insumo obrigatorio de ac_keyness()</span></span></span>
-<span class="r-in"><span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">lado</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span>, by <span class="op">=</span> <span class="st">"lado"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># 3. Termos-chave: quais palavras sao sobre-representadas no grupo alvo</span></span></span>
-<span class="r-in"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu">ac_keyness</span><span class="op">(</span><span class="va">freq</span>, group <span class="op">=</span> <span class="st">"lado"</span>, target <span class="op">=</span> <span class="st">"Governo"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Termos-chave do grupo "tributario" versus o resto</span></span></span>
+<span class="r-in"><span><span class="va">key</span> <span class="op">&lt;-</span> <span class="fu">ac_keyness</span><span class="op">(</span><span class="va">freq</span>, group <span class="op">=</span> <span class="st">"tema"</span>, target <span class="op">=</span> <span class="st">"tributario"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   token group target reference n_target n_reference total_target total_reference</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> impo… tema  tribu… habitacao        2           0           23              22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> refo… tema  tribu… habitacao        2           0           23              22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> trib… tema  tribu… habitacao        2           0           23              22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> COFI… tema  tribu… habitacao        1           0           23              22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> ICMS  tema  tribu… habitacao        1           0           23              22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> IVA   tema  tribu… habitacao        1           0           23              22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: keyness &lt;dbl&gt;, direction &lt;chr&gt;</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

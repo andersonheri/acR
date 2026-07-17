@@ -1,19 +1,30 @@
-# Contar frequencias de tokens ou n-gramas em um corpus
+# Contar frequências de tokens ou n-gramas em um corpus
 
-`ac_count()` calcula frequencias de tokens ou n-gramas a partir de um
+`ac_count()` calcula frequências de tokens ou n-gramas a partir de um
 objeto
 [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
 usando internamente
 [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
-seguido de uma agregacao com
+seguido de uma agregação com
 [`dplyr::count()`](https://dplyr.tidyverse.org/reference/count.html).
 
-Pode operar em dois niveis:
+É o insumo direto de quase toda análise quantitativa do pacote:
+[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
+pega o topo,
+[`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
+recalibra por distintividade,
+[`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+compara grupos,
+[`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
+visualiza. O argumento `by` decide se a unidade de análise é o documento
+ou o grupo agregado.
+
+Pode operar em dois níveis:
 
 - por documento (`by = NULL`): contagens por `doc_id` e `token`;
 
-- por metadados (`by = c("partido", ...)`): contagens por variaveis de
-  agrupamento e `token` (agregando varios documentos).
+- por metadados (`by = c("partido", ...)`): contagens por variáveis de
+  agrupamento e `token` (agregando vários documentos).
 
 ## Usage
 

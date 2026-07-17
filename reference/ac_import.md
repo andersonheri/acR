@@ -5,6 +5,14 @@ TXT, JSON, imagens com OCR) e retorna diretamente um objeto `ac_corpus`.
 Suporta caminhos individuais, vetores de arquivos e globs
 (`dados/*.pdf`).
 
+É a **via de entrada principal** do pipeline quando você trabalha com
+arquivos em disco (relatórios, transcrições, PDFs escaneados). Faz o que
+[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+faria a partir de um `data.frame`, mas cobrindo o passo anterior:
+extração de texto de formatos heterogêneos com detecção automática pelo
+sufixo do arquivo. Para PDFs escaneados e imagens, aciona OCR via
+`tesseract` com português como padrão.
+
 ## Usage
 
 ``` r

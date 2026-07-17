@@ -79,23 +79,55 @@ Construction of a Portuguese Opinion Lexicon from multiple resources.
 ## Examples
 
 ``` r
-# Corpus com um documento positivo, um negativo e um neutro
+# Discursos com valencia afetiva variada
 df <- data.frame(
-  id = c("a", "b", "c"),
+  id = paste0("d", 1:6),
   texto = c(
-    "governo excelente otimo resultado positivo",
-    "pessima gestao corrupta fracasso terrivel",
-    "aprovada proposta reuniao assembleia"
-  )
+    "A reforma tributaria e um passo excelente para o pais",
+    "Esta proposta e um desastre, um retrocesso terrivel",
+    "O relator apresentou o parecer na sessao ordinaria",
+    "Comemoramos essa vitoria historica com muita alegria",
+    "Rejeitamos com veemencia essa medida injusta e ilegal",
+    "A comissao encerra os trabalhos as 18h"
+  ),
+  partido = rep(c("A", "B"), 3),
+  stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 
-# Score por documento (soma de polaridade via OpLexicon PT-BR)
+# Polaridade agregada por documento (soma de scores OpLexicon)
 ac_sentiment(corpus)
-#> # A tibble: 3 × 6
+#> # A tibble: 6 × 6
 #>   doc_id n_pos n_neg n_neu score sentiment
 #>   <chr>  <int> <int> <int> <int> <chr>    
-#> 1 a          2     0     3     2 positivo 
-#> 2 b          0     1     4    -1 negativo 
-#> 3 c          1     0     3     1 positivo 
+#> 1 d1         1     1     8     0 neutro   
+#> 2 d2         0     1     7    -1 negativo 
+#> 3 d3         0     0     8     0 neutro   
+#> 4 d4         0     0     7     0 neutro   
+#> 5 d5         0     2     6    -2 negativo 
+#> 6 d6         0     0     7     0 neutro   
+
+# Agregado por grupo (aqui, por partido)
+ac_sentiment(corpus, by = "partido")
+#> # A tibble: 6 × 7
+#>   doc_id partido n_pos n_neg n_neu score sentiment
+#>   <chr>  <chr>   <int> <int> <int> <int> <chr>    
+#> 1 d1     A           1     1     8     0 neutro   
+#> 2 d2     B           0     1     7    -1 negativo 
+#> 3 d3     A           0     0     8     0 neutro   
+#> 4 d4     B           0     0     7     0 neutro   
+#> 5 d5     A           0     2     6    -2 negativo 
+#> 6 d6     B           0     0     7     0 neutro   
+
+# Metodo alternativo: razao positivos/negativos
+ac_sentiment(corpus, method = "ratio")
+#> # A tibble: 6 × 6
+#>   doc_id n_pos n_neg n_neu score sentiment
+#>   <chr>  <int> <int> <int> <dbl> <chr>    
+#> 1 d1         1     1     8     0 neutro   
+#> 2 d2         0     1     7    -1 negativo 
+#> 3 d3         0     0     8     0 neutro   
+#> 4 d4         0     0     7     0 neutro   
+#> 5 d5         0     2     6    -1 negativo 
+#> 6 d6         0     0     7     0 neutro   
 ```

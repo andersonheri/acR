@@ -1,13 +1,21 @@
-# Calcula metricas de confiabilidade inter-anotador
+# Calcular métricas de confiabilidade inter-anotador
 
-Compara as classificacoes de dois ou mais anotadores (humanos ou LLMs) e
-retorna metricas padronizadas de concordancia. Suporta Cohen's Kappa
+Compara as classificações de dois ou mais anotadores (humanos ou LLMs) e
+retorna métricas padronizadas de concordância. Suporta Cohen's Kappa
 (dois anotadores), Fleiss' Kappa (multi-anotador), Krippendorff's Alpha
-e percentual de concordancia simples.
+e percentual de concordância simples.
 
-A funcao aceita dois formatos de entrada: (a) dois data.frames com
+Complementa
+[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md):
+aquela compara **um par** LLM × humano com bootstrap; esta é o motor
+genérico para **qualquer par ou painel** de anotadores. Use-a
+diretamente quando você tem duas rodadas humanas para calibrar entre
+codificadores antes de acender a LLM, ou quando quer comparar LLMs entre
+si sobre a mesma amostra.
+
+A função aceita dois formatos de entrada: (a) dois data.frames com
 colunas `id` e `categoria`, representando anotador 1 e anotador 2; ou
-(b) um unico data.frame em formato largo com uma coluna por anotador.
+(b) um único data.frame em formato largo com uma coluna por anotador.
 
 ## Usage
 

@@ -1,17 +1,36 @@
 # Criar um codebook para análise de conteúdo qualitativa
 
 `ac_qual_codebook()` cria um livro de códigos estruturado para
-classificação de textos via LLM. Suporta três modos:
+classificação de textos via LLM. É o **instrumento central** da análise
+de conteúdo assistida por IA: nenhum resultado publicável de codificação
+automática dispensa um codebook explícito, versionável e passível de
+revisão por pares (Krippendorff, 2018).
+
+Um codebook do `acR` operacionaliza cinco elementos por categoria:
+definição (o que é), exemplos positivos (o que é, concretamente),
+exemplos negativos (o que não é, para desambiguar categorias vizinhas),
+referências (ancorar a categoria em literatura publicada) e peso
+(indicação relativa de prioridade no prompt). Um codebook bem construído
+é a diferença entre a LLM adivinhar (com prior próprio, não replicável)
+e a LLM **aplicar** uma operacionalização reproduzível (Gilardi et al.,
+2023).
+
+Suporta três modos de construção:
 
 - **`"manual"`** (padrão): o pesquisador fornece definições, exemplos e
   referências diretamente.
 
 - **`"induced"`**: a LLM induz categorias automaticamente a partir de
-  uma amostra do corpus, sugerindo nomes, definições e exemplos.
+  uma amostra do corpus, sugerindo nomes, definições e exemplos. Útil
+  como ponto de partida quando você não tem um esquema teórico a priori.
 
 - **`"literature"`**: a LLM busca definições na literatura acadêmica,
   gerando um banco estruturado com trecho original, tradução, autor,
   ano, revista e link. O pesquisador revisa e aprova interativamente.
+
+Todo codebook mantém um `history` das modificações — quem alterou,
+quando e o quê. Essencial para auditoria metodológica quando o
+instrumento evolui entre a versão piloto e a versão final publicada.
 
 ## Usage
 
@@ -112,6 +131,9 @@ Objeto de classe `ac_codebook`.
 
 ## References
 
+Gilardi, F., Alizadeh, M., & Kubli, M. (2023). ChatGPT outperforms crowd
+workers for text-annotation tasks. *PNAS*, 120(30).
+
 Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
 Methodology* (4th ed.). SAGE.
 
@@ -148,7 +170,7 @@ cb  # imprime resumo do codebook
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 17/07/2026 21:57
+#> • Criado em: 17/07/2026 22:08
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.

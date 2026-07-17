@@ -10,7 +10,7 @@ aprenda estas primeiro; o resto do pipeline se conecta em torno delas.
 - [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
   : Construir um corpus para análise de conteúdo
 - [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-  : Contar frequencias de tokens ou n-gramas em um corpus
+  : Contar frequências de tokens ou n-gramas em um corpus
 - [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
   : Criar um codebook para análise de conteúdo qualitativa
 - [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
@@ -57,7 +57,7 @@ Criacao, limpeza e tokenizacao de corpus em portugues.
 Frequencias, associacoes e modelagem estatistica de textos.
 
 - [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-  : Contar frequencias de tokens ou n-gramas em um corpus
+  : Contar frequências de tokens ou n-gramas em um corpus
 - [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
   : Selecionar os termos mais frequentes
 - [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
@@ -112,7 +112,7 @@ geracao de system prompts.
 Amostragem, concordancia inter-codificador e importacao/exportacao.
 
 - [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md)
-  : Calcula metricas de confiabilidade inter-anotador
+  : Calcular métricas de confiabilidade inter-anotador
 - [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
   : Calcular confiabilidade entre codificação LLM e humana
 - [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
@@ -128,7 +128,7 @@ Relatorio automatico das decisoes metodologicas para artigos e
 relatorios.
 
 - [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
-  : Gerar relatorio de replicabilidade da analise qualitativa
+  : Gerar relatório de replicabilidade da análise qualitativa
 
 ## Selecao de modelos LLM
 

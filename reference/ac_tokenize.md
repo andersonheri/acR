@@ -3,11 +3,19 @@
 `ac_tokenize()` recebe um objeto
 [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
 e retorna um `tibble` em formato *tidy*, com um token por linha, no
-estilo usado em analises de texto no ecossistema tidy.
+estilo usado em análises de texto no ecossistema tidy.
 
-A funcao implementa tokenizacao em palavras (n = 1) ou n-gramas de
-tamanho arbitrario (n \> 1), usando janelas contiguas de tokens dentro
+A função implementa tokenização em palavras (n = 1) ou n-gramas de
+tamanho arbitrário (n \> 1), usando janelas contíguas de tokens dentro
 de cada documento.
+
+É o segundo passo canônico do pipeline quantitativo, geralmente entre
+[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+e
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
+Para análises que dependem de expressões compostas (\\reforma
+tributária\\, \\desenvolvimento sustentável\\), use `n = 2L` para
+bigramas — cada n-grama vira uma unidade de contagem independente.
 
 ## Usage
 

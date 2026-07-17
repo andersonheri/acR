@@ -127,25 +127,52 @@ documento/grupo e termo (isto e, uma linha por termo-em-documento).</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  id      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d1"</span>, <span class="st">"d2"</span>, <span class="st">"d3"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  texto   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="st">"O deputado do PT falou na CCJ."</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"O deputado do PL falou novamente."</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"O senador do PT falou na CCJ."</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Corpus com discursos sobre tres agendas distintas.</span></span></span>
+<span class="r-in"><span><span class="co"># TF-IDF vai destacar o vocabulario proprio de cada texto,</span></span></span>
+<span class="r-in"><span><span class="co"># nao os termos comuns a todos (que a frequencia bruta mostraria).</span></span></span>
+<span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  id    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="st">"reforma tributaria simplifica sistema impostos empresas"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"IVA dual substitui PIS COFINS ICMS federal"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"programa habitacional amplia recursos moradia popular urbana"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"deficit habitacional afeta familias baixa renda cidades"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"educacao basica recebe recursos Fundeb Congresso"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"alfabetizacao idade certa meta Plano Nacional Educacao"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>, <span class="st">"PL"</span>, <span class="st">"PT"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  tema  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tributario"</span>, <span class="st">"habitacao"</span>, <span class="st">"educacao"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">partido</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># TF-IDF por documento</span></span></span>
+<span class="r-in"><span><span class="va">freq</span>  <span class="op">&lt;-</span> <span class="fu"><a href="ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu">ac_tf_idf</span><span class="op">(</span><span class="va">freq</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tfidf</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   doc_id token          n    tf   idf tf_idf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> d1     empresas       1 0.167  1.79  0.299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> d1     impostos       1 0.167  1.79  0.299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> d1     reforma        1 0.167  1.79  0.299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d1     simplifica     1 0.167  1.79  0.299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> d1     sistema        1 0.167  1.79  0.299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> d1     tributaria     1 0.167  1.79  0.299</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># tf-idf por partido (tratando cada partido como "documento")</span></span></span>
-<span class="r-in"><span><span class="va">freq_by</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">tfidf_by</span> <span class="op">&lt;-</span> <span class="fu">ac_tf_idf</span><span class="op">(</span><span class="va">freq_by</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># TF-IDF por tema (cada tema tratado como "documento agregado")</span></span></span>
+<span class="r-in"><span><span class="va">freq_by</span>  <span class="op">&lt;-</span> <span class="fu"><a href="ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corp</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tfidf_by</span> <span class="op">&lt;-</span> <span class="fu">ac_tf_idf</span><span class="op">(</span><span class="va">freq_by</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tfidf_by</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   tema      token            n     tf   idf tf_idf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> habitacao habitacional     2 0.143   1.10 0.157 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> educacao  Congresso        1 0.076<span style="text-decoration: underline;">9</span>  1.10 0.084<span style="text-decoration: underline;">5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> educacao  Educacao         1 0.076<span style="text-decoration: underline;">9</span>  1.10 0.084<span style="text-decoration: underline;">5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> educacao  Fundeb           1 0.076<span style="text-decoration: underline;">9</span>  1.10 0.084<span style="text-decoration: underline;">5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> educacao  Nacional         1 0.076<span style="text-decoration: underline;">9</span>  1.10 0.084<span style="text-decoration: underline;">5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> educacao  Plano            1 0.076<span style="text-decoration: underline;">9</span>  1.10 0.084<span style="text-decoration: underline;">5</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
