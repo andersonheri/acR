@@ -344,34 +344,149 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <hr>
 </div>
 <div class="section level2">
-<h2 id="funções-disponíveis">Funções disponíveis<a class="anchor" aria-label="anchor" href="#fun%C3%A7%C3%B5es-dispon%C3%ADveis"></a>
+<h2 id="qual-função-eu-preciso">Qual função eu preciso?<a class="anchor" aria-label="anchor" href="#qual-fun%C3%A7%C3%A3o-eu-preciso"></a>
 </h2>
-<div class="section level3">
-<h3 id="coleta-de-dados">Coleta de dados<a class="anchor" aria-label="anchor" href="#coleta-de-dados"></a>
-</h3>
-<p><code><a href="reference/ac_fetch_camara.html">ac_fetch_camara()</a></code> coleta discursos parlamentares via API da Câmara dos Deputados. <code><a href="reference/ac_fetch_senado.html">ac_fetch_senado()</a></code> faz o mesmo para o Senado Federal, com base no pacote <code>senatebR</code> (Santos, 2024).</p>
-</div>
-<div class="section level3">
-<h3 id="corpus-e-pré-processamento">Corpus e pré-processamento<a class="anchor" aria-label="anchor" href="#corpus-e-pr%C3%A9-processamento"></a>
-</h3>
-<p><code><a href="reference/ac_corpus.html">ac_corpus()</a></code> cria o objeto corpus a partir de um <code>data.frame</code> ou vetor de textos. <code><a href="reference/ac_import.html">ac_import()</a></code> importa de arquivos externos (<code>.txt</code>, <code>.csv</code>, <code>.docx</code>, <code>.pdf</code>) com detecção automática de formato, suporte a glob e OCR via <code>tesseract</code>. <code><a href="reference/ac_clean.html">ac_clean()</a></code> padroniza o texto com controle granular sobre cada etapa de limpeza — URLs, emails, hashtags, menções, símbolos, stopwords, acentos, normalização PT-BR, substituições customizadas, tokens mínimos e tratamento de NAs. <code><a href="reference/ac_clean_stopwords.html">ac_clean_stopwords()</a></code> permite inspecionar e editar o vetor de stopwords antes da limpeza, partindo de um preset (<code>"pt"</code>, <code>"pt-br-extended"</code>, <code>"pt-legislativo"</code>, <code>"en"</code>) e adicionando ou removendo termos conforme o corpus. <code><a href="reference/ac_tokenize.html">ac_tokenize()</a></code> tokeniza com remoção automática de stopwords em português.</p>
-</div>
-<div class="section level3">
-<h3 id="análise-qualitativa-com-llms">Análise qualitativa com LLMs<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-qualitativa-com-llms"></a>
-</h3>
-<p><code><a href="reference/ac_qual_codebook.html">ac_qual_codebook()</a></code>, <code><a href="reference/ac_qual_code.html">ac_qual_code()</a></code>, <code><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature()</a></code>, <code><a href="reference/ac_qual_sample.html">ac_qual_sample()</a></code>, <code><a href="reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>, <code><a href="reference/ac_qual_import_human.html">ac_qual_import_human()</a></code>, <code><a href="reference/ac_qual_irr.html">ac_qual_irr()</a></code>, <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>, <code><a href="reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code>, <code><a href="reference/ac_qual_load_codebook.html">ac_qual_load_codebook()</a></code>.</p>
-</div>
-<div class="section level3">
-<h3 id="análise-quantitativa">Análise quantitativa<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-quantitativa"></a>
-</h3>
-<p><code><a href="reference/ac_count.html">ac_count()</a></code>, <code><a href="reference/ac_top_terms.html">ac_top_terms()</a></code>, <code><a href="reference/ac_tf_idf.html">ac_tf_idf()</a></code>, <code><a href="reference/ac_keyness.html">ac_keyness()</a></code>, <code><a href="reference/ac_cooccurrence.html">ac_cooccurrence()</a></code>, <code><a href="reference/ac_sentiment.html">ac_sentiment()</a></code>, <code><a href="reference/ac_lda.html">ac_lda()</a></code>, <code><a href="reference/ac_lda_tune.html">ac_lda_tune()</a></code>.</p>
-</div>
-<div class="section level3">
-<h3 id="visualização">Visualização<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o"></a>
-</h3>
-<p><code><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms()</a></code>, <code><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>, <code><a href="reference/ac_plot_keyness.html">ac_plot_keyness()</a></code>, <code><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment()</a></code>, <code><a href="reference/ac_plot_xray.html">ac_plot_xray()</a></code>, <code><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code>, <code><a href="reference/ac_plot_lda_tune.html">ac_plot_lda_tune()</a></code>, <code><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code>, <code><a href="reference/ac_wordcloud.html">ac_wordcloud()</a></code>, <code><a href="reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code>.</p>
+<p>Um guia rápido do objetivo ao código. Cada linha aponta a função principal e a vignette com o exemplo completo. As demais funções são variações ou utilitários — veja <strong><a href="https://andersonheri.github.io/acR/reference/">Funções disponíveis (completo)</a></strong>.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Objetivo</th>
+<th>Função</th>
+<th>Vignette</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR)</td>
+<td><code><a href="reference/ac_import.html">ac_import()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/quickstart.html">Quickstart</a></td>
+</tr>
+<tr>
+<td>Criar corpus a partir de <code>data.frame</code> ou vetor</td>
+<td><code><a href="reference/ac_corpus.html">ac_corpus()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/quickstart.html">Quickstart</a></td>
+</tr>
+<tr>
+<td>Coletar discursos da Câmara/Senado</td>
+<td>
+<code><a href="reference/ac_fetch_camara.html">ac_fetch_camara()</a></code> · <code><a href="reference/ac_fetch_senado.html">ac_fetch_senado()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/analise-proposicoes.html">Estudo de caso</a></td>
+</tr>
+<tr>
+<td>Limpar texto (stopwords, URLs, acentos, NAs)</td>
+<td>
+<code><a href="reference/ac_clean.html">ac_clean()</a></code> + <code><a href="reference/ac_clean_stopwords.html">ac_clean_stopwords()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Quantitativo</a></td>
+</tr>
+<tr>
+<td>Contar tokens</td>
+<td><code><a href="reference/ac_count.html">ac_count()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Quantitativo</a></td>
+</tr>
+<tr>
+<td>Top termos + gráfico</td>
+<td>
+<code><a href="reference/ac_top_terms.html">ac_top_terms()</a></code> → <code><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Quantitativo</a></td>
+</tr>
+<tr>
+<td>Termos distintivos por documento</td>
+<td>
+<code><a href="reference/ac_tf_idf.html">ac_tf_idf()</a></code> → <code><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Quantitativo</a></td>
+</tr>
+<tr>
+<td>Comparar grupos (governo × oposição)</td>
+<td>
+<code><a href="reference/ac_keyness.html">ac_keyness()</a></code> → <code><a href="reference/ac_plot_keyness.html">ac_plot_keyness()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Quantitativo</a></td>
+</tr>
+<tr>
+<td>Nuvem de palavras (ggwordcloud)</td>
+<td><code><a href="reference/ac_wordcloud.html">ac_wordcloud()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras">Quantitativo §6</a></td>
+</tr>
+<tr>
+<td>Nuvem comparativa entre 2 grupos</td>
+<td><code><a href="reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras">Quantitativo §6.1</a></td>
+</tr>
+<tr>
+<td>Mapear onde termos aparecem no texto</td>
+<td><code><a href="reference/ac_plot_xray.html">ac_plot_xray()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Quantitativo</a></td>
+</tr>
+<tr>
+<td>Rede de coocorrência</td>
+<td>
+<code><a href="reference/ac_cooccurrence.html">ac_cooccurrence()</a></code> → <code><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Quantitativo</a></td>
+</tr>
+<tr>
+<td>Análise de sentimento (OpLexicon)</td>
+<td>
+<code><a href="reference/ac_sentiment.html">ac_sentiment()</a></code> → <code><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/sentimento.html">Sentimento</a></td>
+</tr>
+<tr>
+<td>Modelagem de tópicos (LDA)</td>
+<td>
+<code><a href="reference/ac_lda.html">ac_lda()</a></code> → <code><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/lda.html">LDA</a></td>
+</tr>
+<tr>
+<td>Criar codebook para LLM</td>
+<td><code><a href="reference/ac_qual_codebook.html">ac_qual_codebook()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
+</tr>
+<tr>
+<td>Classificar textos com LLM</td>
+<td><code><a href="reference/ac_qual_code.html">ac_qual_code()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
+</tr>
+<tr>
+<td>Amostrar documentos para revisão humana</td>
+<td>
+<code><a href="reference/ac_qual_sample.html">ac_qual_sample()</a></code> · <code><a href="reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
+</tr>
+<tr>
+<td>Concordância humano × LLM (Kappa, Krippendorff)</td>
+<td>
+<code><a href="reference/ac_qual_irr.html">ac_qual_irr()</a></code> · <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>
+</td>
+<td><a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
+</tr>
+<tr>
+<td>Escolher o modelo LLM certo</td>
+<td><code><a href="reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
+</tr>
+<tr>
+<td>Relatório metodológico reprodutível</td>
+<td><code><a href="reference/ac_qual_report.html">ac_qual_report()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/replicabilidade.html">Replicabilidade</a></td>
+</tr>
+<tr>
+<td>Exportar (CSV, LaTeX, Excel, RDS)</td>
+<td><code><a href="reference/ac_export.html">ac_export()</a></code></td>
+<td><a href="https://andersonheri.github.io/acR/articles/replicabilidade.html">Replicabilidade</a></td>
+</tr>
+</tbody>
+</table>
 <hr>
-</div>
 </div>
 <div class="section level2">
 <h2 id="cobertura-de-testes">Cobertura de testes<a class="anchor" aria-label="anchor" href="#cobertura-de-testes"></a>
@@ -382,16 +497,52 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="documentação">Documentação<a class="anchor" aria-label="anchor" href="#documenta%C3%A7%C3%A3o"></a>
 </h2>
-<p><strong><a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></strong></p>
+<p>Site completo: <strong><a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></strong> — vignettes navegáveis, referência de todas as funções e changelog.</p>
+<div class="section level3">
+<h3 id="comece-por-aqui">Comece por aqui<a class="anchor" aria-label="anchor" href="#comece-por-aqui"></a>
+</h3>
 <ul>
-<li><a href="https://andersonheri.github.io/acR/articles/introducao-acR.html">Introdução ao acR</a></li>
-<li><a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Codificação qualitativa com LLMs</a></li>
-<li><a href="https://andersonheri.github.io/acR/articles/analise-proposicoes.html">Análise de proposições legislativas</a></li>
-<li><a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Análise quantitativa</a></li>
-<li><a href="https://andersonheri.github.io/acR/articles/sentimento.html">Análise de sentimento</a></li>
-<li><a href="https://andersonheri.github.io/acR/articles/lda.html">Modelagem de tópicos LDA</a></li>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/quickstart.html">Quickstart (5 min)</a> — do zero ao primeiro gráfico.</li>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/introducao-acR.html">Visão geral do pacote</a> — pipeline em uma hora.</li>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a> — do dado bruto ao relatório reprodutível.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="pipeline-qualitativo-llms">Pipeline qualitativo (LLMs)<a class="anchor" aria-label="anchor" href="#pipeline-qualitativo-llms"></a>
+</h3>
+<ul>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a> — codebook, self-consistency, revisão humana e concordância.</li>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/analise-proposicoes.html">Estudo de caso: proposições legislativas</a> — aplicação real com dados da Câmara.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="pipeline-quantitativo-1">Pipeline quantitativo<a class="anchor" aria-label="anchor" href="#pipeline-quantitativo-1"></a>
+</h3>
+<ul>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Frequências, keyness e coocorrência</a> — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.</li>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/sentimento.html">Análise de sentimento (OpLexicon)</a> — polaridade e sentimento agregado por documento.</li>
+<li>
+<a href="https://andersonheri.github.io/acR/articles/lda.html">Modelagem de tópicos (LDA)</a> — escolha de <code>k</code>, interpretação de tópicos e visualização.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="referência-de-funções">Referência de funções<a class="anchor" aria-label="anchor" href="#refer%C3%AAncia-de-fun%C3%A7%C3%B5es"></a>
+</h3>
+<ul>
+<li>
+<a href="https://andersonheri.github.io/acR/reference/">Índice completo por área</a> — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.</li>
+<li>
+<a href="https://andersonheri.github.io/acR/news/">Notícias / changelog</a> — histórico de versões (atual: <strong>0.3.1</strong>).</li>
 </ul>
 <hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="como-citar">Como citar<a class="anchor" aria-label="anchor" href="#como-citar"></a>
@@ -399,7 +550,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.3.0. ORCID: 0000-0002-1842-2725.
+R package version 0.3.1. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/</code></pre>
 <hr>

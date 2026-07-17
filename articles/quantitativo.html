@@ -312,14 +312,22 @@ quando não. A semente do posicionamento é controlada por
 documentos (mesmo depois de <em>stopwords</em>). O
 <strong>TF-IDF</strong> (<em>term frequency × inverse document
 frequency</em>) penaliza termos comuns e destaca vocabulário próprio de
-cada documento — útil quando o corpus é composto por textos com
-propostas ou temas distintos.</p>
+cada grupo — útil quando o corpus é composto por textos com propostas ou
+temas distintos.</p>
+<p>Com <strong>12 discursos curtos</strong> e cada palavra aparecendo em
+1–2 documentos, o TF-IDF <em>por documento</em> resulta em barras quase
+todas iguais (todo termo único vale o mesmo). O padrão fica mais legível
+<strong>agregando por tema</strong>: tratamos cada tema como um
+“documento” e o TF-IDF revela o vocabulário característico de cada eixo
+temático do corpus.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tfidf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">contagem</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="va">freq_tema</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span>
+<span><span class="va">tfidf_tema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_tf_idf.html">ac_tf_idf</a></span><span class="op">(</span><span class="va">freq_tema</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/ac_plot_tf_idf.html">ac_plot_tf_idf</a></span><span class="op">(</span><span class="va">tfidf_tema</span>, by <span class="op">=</span> <span class="st">"tema"</span>, n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Termos mais distintivos por documento (TF-IDF)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Alta pontuacao = palavra frequente no doc E rara no corpus"</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Termos mais distintivos por tema (TF-IDF)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Cada eixo temático como um documento; alta pontuação = termo característico do tema"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/tfidf-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
@@ -362,8 +370,9 @@ essas vizinhanças com base numa <strong>janela</strong> de tokens (aqui,
 encontrar combinações de palavras que definem sub-temas dentro do
 corpus.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_cooccurrence.html">ac_cooccurrence</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, window <span class="op">=</span> <span class="fl">5L</span>, min_count <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_cooccurrence.html">ac_cooccurrence</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, window <span class="op">=</span> <span class="fl">5L</span>, min_count <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrencia (janela = 5, freq minima = 2)"</span>,</span>
@@ -371,6 +380,68 @@ corpus.</p>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/coocorrencia-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<div class="section level3">
+<h3 id="trocando-o-peso-pmi-em-vez-de-contagem">9.1 Trocando o peso: PMI em vez de contagem<a class="anchor" aria-label="anchor" href="#trocando-o-peso-pmi-em-vez-de-contagem"></a>
+</h3>
+<p>A rede padrão pondera arestas pela <strong>contagem</strong> de
+coocorrências — termos frequentes tendem a dominar. O
+<strong>PMI</strong> (<em>pointwise mutual information</em>) mede o
+quanto duas palavras aparecem juntas <em>acima do esperado por
+acaso</em>; revela pares surpreendentes, mesmo que raros.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span>, weight <span class="op">=</span> <span class="st">"pmi"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrencia ponderada por PMI"</span>,</span>
+<span>      subtitle <span class="op">=</span> <span class="st">"Destaca pares associados alem do esperado por acaso"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/coocorrencia-pmi-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="trocando-o-layout">9.2 Trocando o layout<a class="anchor" aria-label="anchor" href="#trocando-o-layout"></a>
+</h3>
+<p>O layout controla como os nós são posicionados no plano. O padrão
+<code>"fr"</code> (Fruchterman-Reingold) minimiza cruzamentos;
+<code>"kk"</code> (Kamada-Kawai) respeita distâncias de grafo;
+<code>"circle"</code> alinha tudo num anel — útil para corpora pequenos
+onde a topologia importa menos que a legibilidade.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span>, layout <span class="op">=</span> <span class="st">"circle"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrencia — layout circular"</span>,</span>
+<span>      subtitle <span class="op">=</span> <span class="st">"Todas as palavras num anel; arestas mostram o grafo cru"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/coocorrencia-circle-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="coocorrência-como-matriz-heatmap">9.3 Coocorrência como matriz (heatmap)<a class="anchor" aria-label="anchor" href="#coocorr%C3%AAncia-como-matriz-heatmap"></a>
+</h3>
+<p>Quando a rede fica saturada de arestas, um <strong>heatmap</strong>
+das top-N palavras pode ser mais legível: linhas e colunas são termos, e
+a intensidade da célula é a coocorrência. Não requer
+<code>ggraph</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">$</span><span class="va">token</span></span>
+<span><span class="va">cooc_mat</span>   <span class="op">&lt;-</span> <span class="va">cooc</span><span class="op">[</span><span class="va">cooc</span><span class="op">$</span><span class="va">word1</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">top_tokens</span> <span class="op">&amp;</span> <span class="va">cooc</span><span class="op">$</span><span class="va">word2</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">top_tokens</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cooc_mat</span>,</span>
+<span>                <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">word1</span>, <span class="va">word2</span>, fill <span class="op">=</span> <span class="va">cooc</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#F1F5F9"</span>, high <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Matriz de coocorrencia (top 12 termos)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Alternativa ao grafo quando a rede fica densa"</span>,</span>
+<span>    x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="st">"cooc."</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/coocorrencia-heatmap-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
