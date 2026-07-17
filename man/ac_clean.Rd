@@ -59,7 +59,7 @@ Padrão: \code{FALSE}. Cuidado: hashtags e menções podem ser informativas.}
 Padrão: \code{FALSE}.}
 
 \item{normalize_pt}{Se \code{TRUE}, aplica normalizações ortográficas do português
-brasileiro coloquial: \code{"pra"} → \code{"para"}, \code{"tá"} → \code{"está"}, etc.
+brasileiro coloquial: \code{"pra"} -> \code{"para"}, \code{"tá"} -> \code{"está"}, etc.
 Padrão: \code{FALSE}.}
 
 \item{protect}{Vetor \code{character} com termos a preservar exatamente como

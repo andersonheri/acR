@@ -24,7 +24,7 @@
 #' @param remove_accents Se `TRUE`, remove acentos (ex: "ação" vira "acao").
 #'   Padrão: `FALSE`.
 #' @param normalize_pt Se `TRUE`, aplica normalizações ortográficas do português
-#'   brasileiro coloquial: `"pra"` → `"para"`, `"tá"` → `"está"`, etc.
+#'   brasileiro coloquial: `"pra"` -> `"para"`, `"tá"` -> `"está"`, etc.
 #'   Padrão: `FALSE`.
 #' @param protect Vetor `character` com termos a preservar exatamente como
 #'   estão. Útil para siglas (`c("PT", "PSDB", "CCJ")`). Padrão: `NULL`.

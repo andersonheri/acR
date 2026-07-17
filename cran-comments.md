@@ -49,7 +49,7 @@ corpora and political-institutional codebooks.
 Locally with `--as-cran`:
 
 ```
-0 errors | 0 warnings | 2 NOTEs
+0 errors | 0 warnings | 3 NOTEs
 ```
 
 The NOTEs are:
@@ -57,6 +57,15 @@ The NOTEs are:
 1. **New submission** — expected for a first-time package.
 2. **Unable to verify current time** — offline check host, unrelated to
    the package.
+3. **HTML validation problems in the manual** — HTML Tidy warnings
+   about (a) `<table>` lacking `summary`, `<script>` `onload` attributes
+   and `<link>`/`<script>` inserting `type` — all emitted by R's own
+   default `Rd2HTML` template, common on many CRAN packages; and (b)
+   "replacing invalid character code" warnings when accented Portuguese
+   characters (á, ç, — etc., all valid UTF-8) are validated by an
+   HTML Tidy that assumes Latin-1 despite the file declaring
+   `charset=utf-8`. Nothing in the package can suppress these; the
+   generated HTML is well-formed UTF-8.
 
 ## Vignettes
 
