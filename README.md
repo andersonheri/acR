@@ -362,8 +362,8 @@ utilitários — veja **[Funções disponíveis (completo)](https://andersonheri
 
 ## Cobertura de testes
 
-Suite de **360 blocos `test_that`** com 655 assertions, cobrindo
-**~55%** do código (medido com `covr::package_coverage()`). Testes de
+Suite de **431 blocos `test_that`** com 779 assertions, cobrindo
+**~66%** do código (medido com `covr::package_coverage()`). Testes de
 integração com APIs externas (Câmara, Senado, LLM) usam `skip_on_cran()`
 e verificação prévia de disponibilidade — não bloqueiam CI offline nem
 o `R CMD check` da CRAN.
@@ -396,7 +396,7 @@ referência de todas as funções e changelog.
 ### Referência de funções
 
 - [Índice completo por área](https://andersonheri.github.io/acR/reference/) — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
-- [Notícias / changelog](https://andersonheri.github.io/acR/news/) — histórico de versões (atual: **0.3.1**).
+- [Notícias / changelog](https://andersonheri.github.io/acR/news/) — histórico de versões (atual: **0.3.2**).
 
 ---
 
@@ -408,7 +408,7 @@ citation("acR")
 
 ```
 Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.3.1. ORCID: 0000-0002-1842-2725.
+R package version 0.3.2. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/
 ```
