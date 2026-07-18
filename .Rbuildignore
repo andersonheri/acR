@@ -24,3 +24,4 @@
 ^\.positai$
 ^\.claude$
 ^Rplots\.pdf$
+^CRAN-SUBMISSION$
