@@ -146,7 +146,7 @@ categorical data. **Biometrics**, v. 33, n. 1, p. 159-174, 1977.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # Comparar LLM vs. anotador humano
 humano <- data.frame(
   id_discurso = c("d1", "d2", "d3", "d4", "d5"),
@@ -161,9 +161,63 @@ llm <- data.frame(
 )
 
 resultado <- ac_qual_irr(gold = humano, predicted = llm)
+#> 
+#> ── Confiabilidade inter-anotador (acR) ──
+#> 
+#> • Documentos comparados: 5
+#> • Categorias: conservador, progressista, tecnocratico
+#> 
+#> Metrica                            Estimativa  IC 95%            Interpretacao
+#> ------------------------------------------------------------------------------------- 
+#> Percent Agreement                  0.800       [, ]              Muito bom
+#> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial
+#> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial
+#> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial
+#> 
+#> Matriz de confusao:
+#>               Predicted
+#> Gold           conservador progressista
+#>   conservador            2            0
+#>   progressista           0            2
+#>   tecnocratico           0            1
 print(resultado)
+#> 
+#> ── Confiabilidade inter-anotador (acR) ──
+#> 
+#> • Documentos comparados: 5
+#> • Categorias: conservador, progressista, tecnocratico
+#> 
+#> Metrica                            Estimativa  IC 95%            Interpretacao
+#> ------------------------------------------------------------------------------------- 
+#> Percent Agreement                  0.800       [, ]              Muito bom
+#> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial
+#> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial
+#> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial
+#> 
+#> Matriz de confusao:
+#>               Predicted
+#> Gold           conservador progressista
+#>   conservador            2            0
+#>   progressista           0            2
+#>   tecnocratico           0            1
 
 # So Cohen's Kappa
 ac_qual_irr(humano, llm, method = "cohen_kappa")
-} # }
+#> 
+#> ── Confiabilidade inter-anotador (acR) ──
+#> 
+#> • Documentos comparados: 5
+#> • Categorias: conservador, progressista, tecnocratico
+#> 
+#> Metrica                            Estimativa  IC 95%            Interpretacao
+#> ------------------------------------------------------------------------------------- 
+#> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial
+#> 
+#> Matriz de confusao:
+#>               Predicted
+#> Gold           conservador progressista
+#>   conservador            2            0
+#>   progressista           0            2
+#>   tecnocratico           0            1
+# }
 ```

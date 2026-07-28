@@ -43,11 +43,28 @@ Objeto `ggplot`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Assumindo corpus preparado como em ?ac_lda
-lda <- ac_lda(corpus, k = 3)
+# \donttest{
+# Corpus sintetico com dois blocos tematicos
+df <- data.frame(
+  id = paste0("d", 1:8),
+  texto = c(
+    "democracia participacao voto cidadania",
+    "cidadania direitos participacao democracia",
+    "voto direitos liberdade cidadania",
+    "democracia voto participacao popular",
+    "mercado economia eficiencia privatizacao",
+    "privatizacao mercado livre eficiencia",
+    "economia crescimento investimento mercado",
+    "eficiencia mercado economia livre"
+  ),
+  stringsAsFactors = FALSE
+)
+corpus <- ac_corpus(df, text = texto, docid = id)
+lda    <- ac_lda(corpus, k = 2)
+#> Ajustando LDA com k = 2 tópicos...
 
-# Grafico com os 8 termos mais probabilisticos por topico
-ac_plot_lda_topics(lda, top_n = 8)
-} # }
+# Grafico com os 5 termos mais probabilisticos por topico
+ac_plot_lda_topics(lda, top_n = 5)
+
+# }
 ```

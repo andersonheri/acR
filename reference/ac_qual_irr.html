@@ -210,7 +210,7 @@ categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174, 1977.</p
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># Comparar LLM vs. anotador humano</span></span></span>
 <span class="r-in"><span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  id_discurso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d1"</span>, <span class="st">"d2"</span>, <span class="st">"d3"</span>, <span class="st">"d4"</span>, <span class="st">"d5"</span><span class="op">)</span>,</span></span>
@@ -225,11 +225,65 @@ categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174, 1977.</p
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_irr</span><span class="op">(</span>gold <span class="op">=</span> <span class="va">humano</span>, predicted <span class="op">=</span> <span class="va">llm</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Confiabilidade inter-anotador (acR)</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Documentos comparados: 5</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias: conservador, progressista, tecnocratico</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC 95%            Interpretacao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Agreement                  0.800       [, ]              Muito bom</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Matriz de confusao:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Predicted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Gold           conservador progressista</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   conservador            2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   progressista           0            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   tecnocratico           0            1</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Confiabilidade inter-anotador (acR)</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Documentos comparados: 5</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias: conservador, progressista, tecnocratico</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC 95%            Interpretacao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Agreement                  0.800       [, ]              Muito bom</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Matriz de confusao:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Predicted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Gold           conservador progressista</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   conservador            2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   progressista           0            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   tecnocratico           0            1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># So Cohen's Kappa</span></span></span>
 <span class="r-in"><span><span class="fu">ac_qual_irr</span><span class="op">(</span><span class="va">humano</span>, <span class="va">llm</span>, method <span class="op">=</span> <span class="st">"cohen_kappa"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Confiabilidade inter-anotador (acR)</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Documentos comparados: 5</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias: conservador, progressista, tecnocratico</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC 95%            Interpretacao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------------------------------- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Matriz de confusao:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Predicted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Gold           conservador progressista</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   conservador            2            0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   progressista           0            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   tecnocratico           0            1</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

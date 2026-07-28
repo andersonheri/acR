@@ -51,7 +51,7 @@ pacote `ldatuning`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 # 1. Corpus sintetico (mesmos temas de ac_lda(), palavras diferentes)
 df <- data.frame(
   id = paste0("d", 1:10),
@@ -72,6 +72,14 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 
 # 2. Testar k de 2 a 5 e comparar perplexidade (menor = melhor ajuste)
 tune <- ac_lda_tune(corpus, k_range = 2:5)
+#> Testando k = 2 a 5...
 tune
-} # }
+#> # A tibble: 4 × 2
+#>       k perplexity
+#>   <int>      <dbl>
+#> 1     2       31.0
+#> 2     3       31.0
+#> 3     4       13.8
+#> 4     5       12.6
+# }
 ```

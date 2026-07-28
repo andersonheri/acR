@@ -176,8 +176,8 @@ print(rel)
 #> # A tibble: 4 × 5
 #>   metric             estimate ci_lower ci_upper interpretation                  
 #>   <chr>                 <dbl>    <dbl>    <dbl> <chr>                           
-#> 1 percent_agreement      0.8    0.6           1 boa (>= 80%)                    
-#> 2 krippendorff_alpha     0.64   0.0563        1 substancial (Landis & Koch, 197…
-#> 3 gwet_ac1               0.6   -0.163         1 moderada (Landis & Koch, 1977)  
+#> 1 percent_agreement      0.8    0.4           1 boa (>= 80%)                    
+#> 2 krippendorff_alpha     0.64  -0.286         1 substancial (Landis & Koch, 197…
+#> 3 gwet_ac1               0.6   -0.0345        1 moderada (Landis & Koch, 1977)  
 #> 4 f1_macro               0.8    0.306         1 quase perfeita (Landis & Koch, …
 ```

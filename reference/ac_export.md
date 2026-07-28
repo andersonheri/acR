@@ -109,33 +109,53 @@ Ideal para replicabilidade interna ao projeto.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 resultados <- data.frame(
-  id_discurso  = c("d1", "d2", "d3"),
+  id_discurso   = c("d1", "d2", "d3"),
   nome_deputado = c("Dep. A", "Dep. B", "Dep. C"),
-  categoria    = c("progressista", "conservador", "tecnocratico"),
-  confianca    = c(0.94, 0.91, 0.87)
+  categoria     = c("progressista", "conservador", "tecnocratico"),
+  confianca     = c(0.94, 0.91, 0.87)
 )
 
+# Escrevemos em tempdir() para nao poluir o filesystem do usuario
+out_csv <- file.path(tempdir(), "resultados.csv")
+out_tex <- file.path(tempdir(), "resultados.tex")
+out_rds <- file.path(tempdir(), "resultados.rds")
+
 # CSV
-ac_export(resultados, "resultados_discursos.csv")
+ac_export(resultados, out_csv)
+#> ✔ Exportado para /tmp/RtmpUTLQX0/resultados.csv (csv).
 
 # LaTeX (para incluir em artigo)
 ac_export(
   resultados,
-  "tabela_resultados.tex",
+  out_tex,
   latex_caption = "Classificacao do tom dos discursos por LLM",
   latex_label   = "tab:tom_discursos"
 )
-
-# Excel
-ac_export(resultados, "resultados.xlsx", excel_sheet = "Classificacao")
+#> ✔ Exportado para /tmp/RtmpUTLQX0/resultados.tex (latex).
 
 # RDS (replicabilidade)
-ac_export(resultados, "resultados.rds")
+ac_export(resultados, out_rds)
+#> ✔ Exportado para /tmp/RtmpUTLQX0/resultados.rds (rds).
 
-# Objeto ac_irr
+# Excel (requer openxlsx ou writexl instalado)
+if (requireNamespace("writexl", quietly = TRUE) ||
+    requireNamespace("openxlsx", quietly = TRUE)) {
+  out_xlsx <- file.path(tempdir(), "resultados.xlsx")
+  ac_export(resultados, out_xlsx, excel_sheet = "Classificacao")
+}
+#> ✔ Exportado para /tmp/RtmpUTLQX0/resultados.xlsx (xlsx).
+
+# Objeto ac_irr (comparar codificacao humana vs. LLM)
+gold <- data.frame(
+  id_discurso = c("d1", "d2", "d3"),
+  categoria   = c("progressista", "conservador", "tecnocratico")
+)
+predicted <- data.frame(
+  id_discurso = c("d1", "d2", "d3"),
+  categoria   = c("progressista", "conservador", "progressista")
+)
 irr_result <- ac_qual_irr(gold, predicted, verbose = FALSE)
-ac_export(irr_result, "confiabilidade.csv")
-} # }
+ac_export(irr_result, file.path(tempdir(), "confiabilidade.csv"))
+#> ✔ Exportado para /tmp/RtmpUTLQX0/confiabilidade.csv (csv).
 ```
