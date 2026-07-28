@@ -3,7 +3,7 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/acR)](https://CRAN.R-project.org/package=acR)
 [![R-CMD-check](https://github.com/andersonheri/acR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/andersonheri/acR/actions/workflows/R-CMD-check.yaml)
-[![pkgdown](https://github.com/andersonheri/acR/actions/workflows/pkgdown.yaml/badge.svg)](https://andersonheri.github.io/acR/)
+[![pkgdown](https://github.com/andersonheri/acR/actions/workflows/pkgdown.yaml/badge.svg)](https://ahenriquecp.com/acR/)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Codecov](https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/andersonheri/acR)
@@ -71,8 +71,8 @@ codebook  <- ac_qual_codebook("posicao", "Classifique.",
 resultado <- ac_qual_code(corpus, codebook, model = "anthropic/claude-sonnet-4-5")
 ```
 
-Vignette completa: **[Comece aqui →](https://andersonheri.github.io/acR/articles/introducao-acR.html)** ·
-**[Quickstart 5 min →](https://andersonheri.github.io/acR/articles/quickstart.html)**
+Vignette completa: **[Comece aqui →](https://ahenriquecp.com/acR/articles/introducao-acR.html)** ·
+**[Quickstart 5 min →](https://ahenriquecp.com/acR/articles/quickstart.html)**
 
 ---
 
@@ -331,32 +331,32 @@ ac_plot_lda_topics(lda)
 
 Um guia rápido do objetivo ao código. Cada linha aponta a função principal
 e a vignette com o exemplo completo. As demais funções são variações ou
-utilitários — veja **[Funções disponíveis (completo)](https://andersonheri.github.io/acR/reference/)**.
+utilitários — veja **[Funções disponíveis (completo)](https://ahenriquecp.com/acR/reference/)**.
 
 | Objetivo | Função | Vignette |
 |---|---|---|
-| Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR) | `ac_import()` | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
-| Criar corpus a partir de `data.frame` ou vetor | `ac_corpus()` | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
-| Coletar discursos da Câmara/Senado | `ac_fetch_camara()` · `ac_fetch_senado()` | [Estudo de caso](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) |
-| Limpar texto (stopwords, URLs, acentos, NAs) | `ac_clean()` + `ac_clean_stopwords()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Contar tokens | `ac_count()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Top termos + gráfico | `ac_top_terms()` → `ac_plot_top_terms()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Termos distintivos por documento | `ac_tf_idf()` → `ac_plot_tf_idf()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Comparar grupos (partido, período, tema, região…) | `ac_keyness()` → `ac_plot_keyness()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Nuvem de palavras (ggwordcloud) | `ac_wordcloud()` | [Quantitativo §6](https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras) |
-| Nuvem comparativa entre 2 grupos | `ac_plot_wordcloud_comparative()` | [Quantitativo §6.1](https://andersonheri.github.io/acR/articles/quantitativo.html#nuvem-de-palavras) |
-| Mapear onde termos aparecem no texto | `ac_plot_xray()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Rede de coocorrência | `ac_cooccurrence()` → `ac_plot_cooccurrence()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
-| Análise de sentimento (OpLexicon) | `ac_sentiment()` → `ac_plot_sentiment()` | [Sentimento](https://andersonheri.github.io/acR/articles/sentimento.html) |
-| Modelagem de tópicos (LDA) | `ac_lda()` → `ac_plot_lda_topics()` | [LDA](https://andersonheri.github.io/acR/articles/lda.html) |
-| Cluster de documentos (hclust, k-means, PAM) | `ac_cluster_documents()` → `ac_plot_cluster()` | [Cluster](https://andersonheri.github.io/acR/articles/cluster.html) |
-| Criar codebook para LLM | `ac_qual_codebook()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
-| Classificar textos com LLM | `ac_qual_code()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
-| Amostrar documentos para revisão humana | `ac_qual_sample()` · `ac_qual_export_for_review()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
-| Concordância humano × LLM (Kappa, Krippendorff) | `ac_qual_irr()` · `ac_qual_reliability()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
-| Escolher o modelo LLM certo | `ac_qual_recommend_model()` | [Qualitativo LLM](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) |
-| Relatório metodológico reprodutível | `ac_qual_report()` | [Replicabilidade](https://andersonheri.github.io/acR/articles/replicabilidade.html) |
-| Exportar (CSV, LaTeX, Excel, RDS) | `ac_export()` | [Replicabilidade](https://andersonheri.github.io/acR/articles/replicabilidade.html) |
+| Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR) | `ac_import()` | [Quickstart](https://ahenriquecp.com/acR/articles/quickstart.html) |
+| Criar corpus a partir de `data.frame` ou vetor | `ac_corpus()` | [Quickstart](https://ahenriquecp.com/acR/articles/quickstart.html) |
+| Coletar discursos da Câmara/Senado | `ac_fetch_camara()` · `ac_fetch_senado()` | [Estudo de caso](https://ahenriquecp.com/acR/articles/analise-proposicoes.html) |
+| Limpar texto (stopwords, URLs, acentos, NAs) | `ac_clean()` + `ac_clean_stopwords()` | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Contar tokens | `ac_count()` | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Top termos + gráfico | `ac_top_terms()` → `ac_plot_top_terms()` | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Termos distintivos por documento | `ac_tf_idf()` → `ac_plot_tf_idf()` | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Comparar grupos (partido, período, tema, região…) | `ac_keyness()` → `ac_plot_keyness()` | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Nuvem de palavras (ggwordcloud) | `ac_wordcloud()` | [Quantitativo §6](https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras) |
+| Nuvem comparativa entre 2 grupos | `ac_plot_wordcloud_comparative()` | [Quantitativo §6.1](https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras) |
+| Mapear onde termos aparecem no texto | `ac_plot_xray()` | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Rede de coocorrência | `ac_cooccurrence()` → `ac_plot_cooccurrence()` | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Análise de sentimento (OpLexicon) | `ac_sentiment()` → `ac_plot_sentiment()` | [Sentimento](https://ahenriquecp.com/acR/articles/sentimento.html) |
+| Modelagem de tópicos (LDA) | `ac_lda()` → `ac_plot_lda_topics()` | [LDA](https://ahenriquecp.com/acR/articles/lda.html) |
+| Cluster de documentos (hclust, k-means, PAM) | `ac_cluster_documents()` → `ac_plot_cluster()` | [Cluster](https://ahenriquecp.com/acR/articles/cluster.html) |
+| Criar codebook para LLM | `ac_qual_codebook()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Classificar textos com LLM | `ac_qual_code()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Amostrar documentos para revisão humana | `ac_qual_sample()` · `ac_qual_export_for_review()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Concordância humano × LLM (Kappa, Krippendorff) | `ac_qual_irr()` · `ac_qual_reliability()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Escolher o modelo LLM certo | `ac_qual_recommend_model()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Relatório metodológico reprodutível | `ac_qual_report()` | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
+| Exportar (CSV, LaTeX, Excel, RDS) | `ac_export()` | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
 
 ---
 
@@ -372,31 +372,31 @@ o `R CMD check` da CRAN.
 
 ## Documentação
 
-Site completo: **<https://andersonheri.github.io/acR/>** — vignettes navegáveis,
+Site completo: **<https://ahenriquecp.com/acR/>** — vignettes navegáveis,
 referência de todas as funções e changelog.
 
 ### Comece por aqui
 
-- [Quickstart (5 min)](https://andersonheri.github.io/acR/articles/quickstart.html) — do zero ao primeiro gráfico.
-- [Visão geral do pacote](https://andersonheri.github.io/acR/articles/introducao-acR.html) — pipeline em uma hora.
-- [Replicabilidade ponta-a-ponta](https://andersonheri.github.io/acR/articles/replicabilidade.html) — do dado bruto ao relatório reprodutível.
+- [Quickstart (5 min)](https://ahenriquecp.com/acR/articles/quickstart.html) — do zero ao primeiro gráfico.
+- [Visão geral do pacote](https://ahenriquecp.com/acR/articles/introducao-acR.html) — pipeline em uma hora.
+- [Replicabilidade ponta-a-ponta](https://ahenriquecp.com/acR/articles/replicabilidade.html) — do dado bruto ao relatório reprodutível.
 
 ### Pipeline qualitativo (LLMs)
 
-- [Codificação com LLMs — guia completo](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) — codebook, self-consistency, revisão humana e concordância.
-- [Estudo de caso: proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) — aplicação real com dados da Câmara.
+- [Codificação com LLMs — guia completo](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) — codebook, self-consistency, revisão humana e concordância.
+- [Estudo de caso: proposições legislativas](https://ahenriquecp.com/acR/articles/analise-proposicoes.html) — aplicação real com dados da Câmara.
 
 ### Pipeline quantitativo
 
-- [Frequências, keyness e coocorrência](https://andersonheri.github.io/acR/articles/quantitativo.html) — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.
-- [Agrupamento não supervisionado de documentos](https://andersonheri.github.io/acR/articles/cluster.html) — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.
-- [Análise de sentimento (OpLexicon)](https://andersonheri.github.io/acR/articles/sentimento.html) — polaridade e sentimento agregado por documento.
-- [Modelagem de tópicos (LDA)](https://andersonheri.github.io/acR/articles/lda.html) — escolha de `k`, interpretação de tópicos e visualização.
+- [Frequências, keyness e coocorrência](https://ahenriquecp.com/acR/articles/quantitativo.html) — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.
+- [Agrupamento não supervisionado de documentos](https://ahenriquecp.com/acR/articles/cluster.html) — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.
+- [Análise de sentimento (OpLexicon)](https://ahenriquecp.com/acR/articles/sentimento.html) — polaridade e sentimento agregado por documento.
+- [Modelagem de tópicos (LDA)](https://ahenriquecp.com/acR/articles/lda.html) — escolha de `k`, interpretação de tópicos e visualização.
 
 ### Referência de funções
 
-- [Índice completo por área](https://andersonheri.github.io/acR/reference/) — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
-- [Notícias / changelog](https://andersonheri.github.io/acR/news/) — histórico de versões (atual: **0.3.2**).
+- [Índice completo por área](https://ahenriquecp.com/acR/reference/) — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
+- [Notícias / changelog](https://ahenriquecp.com/acR/news/) — histórico de versões (atual: **0.3.2**).
 
 ---
 
@@ -410,7 +410,7 @@ citation("acR")
 Henrique, A. (2026). acR: Análise de Conteúdo em R.
 R package version 0.3.2. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
-https://andersonheri.github.io/acR/
+https://ahenriquecp.com/acR/
 ```
 
 ---

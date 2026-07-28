@@ -1,10 +1,41 @@
+## Resubmission
+
+This is a **resubmission** of `acR` 0.3.2, addressing the review
+comments received from Konstanze Lauseker on 2026-07-18. All requested
+changes were applied:
+
+1. **DESCRIPTION** — removed the redundant "in R" at the start of the
+   description and dropped single quotes around acronyms/product names
+   (`LLM`, `LDA`, `OpLexicon`, `ggplot2`).
+2. **`\dontrun{}` usage** — replaced with `\donttest{}` for examples
+   that are simply slow or require optional packages; kept `\dontrun{}`
+   only where the example truly cannot run without external services
+   (network fetch of legislative data via `ac_fetch_camara()` /
+   `ac_fetch_senado()`, LLM API keys via `ac_qual_code()` /
+   `ac_qual_codebook_hybrid()` / `ac_qual_codebook_translate()` /
+   `ac_qual_search_literature()`, and file paths in `ac_import()`).
+   `\donttest{}` examples were made self-contained and now build a
+   local corpus inside the block.
+3. **`.GlobalEnv` writes** — removed the direct `.GlobalEnv` seed
+   save/restore idiom from `ac_plot_wordcloud_comparative()`; RNG is
+   now scoped exclusively via `withr::with_seed()` (moved `withr` from
+   Suggests to Imports).
+4. **`<<-` operator** — removed from `.ac_report_build_md()` in
+   `ac_qual_report.R`; the string accumulator now uses a local
+   environment (`buf$lines <- c(buf$lines, ...)`) instead of assigning
+   to an enclosing frame.
+5. **Hard-coded `set.seed()` inside functions** — `ac_wordcloud()`,
+   `ac_plot_wordcloud_comparative()`, `ac_qual_sample()` no longer
+   call `set.seed()`. Each exposes a `seed` argument (default `42L`
+   for reproducibility, `NULL` to use the current session RNG); the
+   seed is scoped via `withr::with_seed()`.
+
 ## Submission summary
 
-This is the **first CRAN submission** of `acR` (version 0.3.2). The
-package provides an integrated pipeline for content analysis in R,
-combining qualitative coding assisted by large language models (LLMs)
-with classical quantitative text analysis. Special focus on Brazilian
-corpora and political-institutional codebooks.
+`acR` (version 0.3.2) provides an integrated pipeline for content
+analysis combining qualitative coding assisted by large language models
+(LLMs) with classical quantitative text analysis. Special focus on
+Brazilian corpora and political-institutional codebooks.
 
 ### Highlights of 0.3.2
 

@@ -131,22 +131,18 @@ ac_plot_wordcloud_comparative <- function(corpus,
     ) |>
     dplyr::ungroup()
 
-  # Salvar/restaurar RNG global para nao afetar a sessao do usuario
-  old_seed <- if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
-    get(".Random.seed", envir = .GlobalEnv, inherits = FALSE) else NULL
-  on.exit({
-    if (is.null(old_seed))
-      suppressWarnings(rm(".Random.seed", envir = .GlobalEnv))
-    else
-      assign(".Random.seed", old_seed, envir = .GlobalEnv)
-  }, add = TRUE)
-  set.seed(seed)
-
   use_ggwordcloud <- switch(backend,
     "ggwordcloud" = TRUE,
     "ggplot"      = FALSE,
     "auto"        = requireNamespace("ggwordcloud", quietly = TRUE)
   )
+
+  # Helper: aplica expr sob RNG escopado (via withr::with_seed) se `seed`
+  # foi fornecido; caso contrario avalia com o RNG corrente da sessao.
+  # withr::with_seed NAO altera o .Random.seed do usuario apos o retorno.
+  .with_layout_seed <- function(expr) {
+    if (is.null(seed)) expr else withr::with_seed(seed, expr)
+  }
 
   if (use_ggwordcloud) {
     if (!requireNamespace("ggwordcloud", quietly = TRUE)) {
@@ -155,40 +151,49 @@ ac_plot_wordcloud_comparative <- function(corpus,
         "i" = "Instale com {.code install.packages(\"ggwordcloud\")}."
       ))
     }
-    p <- ggplot2::ggplot(
-      top_grp,
-      ggplot2::aes(label = token, size = size_norm, color = grp)
-    ) +
-      ggwordcloud::geom_text_wordcloud(
-        rm_outside = TRUE,
-        eccentricity = 0.9,
-        shape = "circle",
-        family = "sans"
-      ) +
-      ggplot2::facet_wrap(~ grp, nrow = 1L) +
-      ggplot2::scale_color_manual(values = color_map, guide = "none") +
-      ggplot2::scale_size_area(max_size = 18) +
-      ggplot2::labs(
-        title    = title,
-        subtitle = paste0("Termos distintivos por grupo (TF-IDF) \u2022 top ",
-                          max_words, " por grupo"),
-        caption  = "acR \u2022 ac_plot_wordcloud_comparative()"
-      ) +
-      theme_ac() +
-      ggplot2::theme(
-        panel.grid  = ggplot2::element_blank(),
-        axis.text   = ggplot2::element_blank(),
-        axis.title  = ggplot2::element_blank(),
-        axis.ticks  = ggplot2::element_blank(),
-        strip.text  = ggplot2::element_text(face = "bold", size = 11),
-        legend.position = "none"
+    return(
+      .with_layout_seed(
+        ggplot2::ggplot(
+          top_grp,
+          ggplot2::aes(label = token, size = size_norm, color = grp)
+        ) +
+          ggwordcloud::geom_text_wordcloud(
+            rm_outside   = TRUE,
+            eccentricity = 0.9,
+            shape        = "circle",
+            family       = "sans"
+          ) +
+          ggplot2::facet_wrap(~ grp, nrow = 1L) +
+          ggplot2::scale_color_manual(values = color_map, guide = "none") +
+          ggplot2::scale_size_area(max_size = 18) +
+          ggplot2::labs(
+            title    = title,
+            subtitle = paste0("Termos distintivos por grupo (TF-IDF) \u2022 top ",
+                              max_words, " por grupo"),
+            caption  = "acR \u2022 ac_plot_wordcloud_comparative()"
+          ) +
+          theme_ac() +
+          ggplot2::theme(
+            panel.grid  = ggplot2::element_blank(),
+            axis.text   = ggplot2::element_blank(),
+            axis.title  = ggplot2::element_blank(),
+            axis.ticks  = ggplot2::element_blank(),
+            strip.text  = ggplot2::element_text(face = "bold", size = 11),
+            legend.position = "none"
+          )
       )
-    return(p)
+    )
   }
 
-  # Fallback ggplot: geom_text com jitter reproduzivel dentro de cada facet
-  top_grp$x_jitter <- stats::runif(nrow(top_grp), -1, 1)
-  top_grp$y_jitter <- stats::runif(nrow(top_grp), -1, 1)
+  # Fallback ggplot: jitter reproduzivel escopado, sem tocar o RNG global
+  jitter <- .with_layout_seed({
+    list(
+      x = stats::runif(nrow(top_grp), -1, 1),
+      y = stats::runif(nrow(top_grp), -1, 1)
+    )
+  })
+  top_grp$x_jitter <- jitter$x
+  top_grp$y_jitter <- jitter$y
 
   p <- ggplot2::ggplot(
     top_grp,

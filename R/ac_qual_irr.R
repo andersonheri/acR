@@ -67,7 +67,7 @@
 #' (KRIPPENDORFF, 2018).
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Comparar LLM vs. anotador humano
 #' humano <- data.frame(
 #'   id_discurso = c("d1", "d2", "d3", "d4", "d5"),

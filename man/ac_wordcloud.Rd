@@ -11,6 +11,7 @@ ac_wordcloud(
   colors = NULL,
   backend = c("auto", "ggwordcloud", "wordcloud"),
   title = NULL,
+  seed = 42L,
   ...
 )
 }
@@ -29,6 +30,10 @@ ac_wordcloud(
 \code{ggwordcloud}), \code{"ggwordcloud"} ou \code{"wordcloud"}.}
 
 \item{title}{Título opcional (apenas em modo \code{ggwordcloud}).}
+
+\item{seed}{Semente para reprodutibilidade do layout. Padrão: \code{42L}.
+Use \code{NULL} para usar o RNG corrente da sessão. A semente é escopada
+via \code{withr::with_seed()} e não altera o \code{.Random.seed} global.}
 
 \item{...}{Argumentos adicionais encaminhados para o motor escolhido
 (\code{ggwordcloud::geom_text_wordcloud} ou \code{wordcloud::wordcloud}).}

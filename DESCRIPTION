@@ -5,20 +5,20 @@ Version: 0.3.2
 Authors@R: person("Anderson Henrique", email = "anderson.henrique@usp.br",
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-1842-2725"))
-Description: Provides an integrated pipeline for content analysis in R,
-    combining qualitative coding assisted by large language models ('LLMs')
+Description: Provides an integrated pipeline for content analysis
+    combining qualitative coding assisted by large language models (LLMs)
     with classical quantitative text analysis. Includes modules for
     pre-processing (tokenization, stopwords for Brazilian Portuguese),
     descriptive statistics, keyness, co-occurrence networks, word clouds
-    (including comparative and X-ray variants), sentiment analysis
-    ('OpLexicon'), Latent Dirichlet Allocation ('LDA'), inter-coder
+    (including comparative and X-ray variants), sentiment analysis via
+    OpLexicon, Latent Dirichlet Allocation (LDA), inter-coder
     reliability metrics (Krippendorff, Gwet), and modern visualizations
-    based on 'ggplot2'. Special focus on Brazilian corpora and
+    based on ggplot2. Special focus on Brazilian corpora and
     political-institutional codebooks. Inspired by Maerz and Benoit (2025)
     <https://quallmer.github.io/quallmer/>.
 License: MIT + file LICENSE
 URL: https://github.com/andersonheri/acR,
-    https://andersonheri.github.io/acR/
+    https://ahenriquecp.com/acR/
 BugReports: https://github.com/andersonheri/acR/issues
 Depends:
     R (>= 4.1)
@@ -34,6 +34,7 @@ Imports:
     tibble,
     tidyr,
     tidyselect,
+    withr,
     yaml
 Suggests:
     callr,
@@ -61,7 +62,6 @@ Suggests:
     testthat,
     tidytext,
     topicmodels,
-    withr,
     wordcloud,
     writexl
 VignetteBuilder: knitr

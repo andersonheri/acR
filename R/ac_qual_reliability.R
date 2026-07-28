@@ -264,8 +264,11 @@ ac_qual_sample <- function(coded,
   }
 
   strategy <- match.arg(strategy)
-  set.seed(seed)
   n <- min(as.integer(n), nrow(coded))
+
+  # withr::with_seed escopa o RNG apenas na amostragem; nao altera o
+  # .Random.seed do usuario apos o retorno.
+  do_sample <- function() {
 
   if (strategy == "uncertainty") {
     if (!"confidence_score" %in% names(coded)) {
@@ -319,6 +322,11 @@ ac_qual_sample <- function(coded,
       dplyr::slice_sample(n = n) |>
       dplyr::mutate(sample_reason = "random")
   }
+
+  result
+  }  # fim do closure do_sample
+
+  result <- if (is.null(seed)) do_sample() else withr::with_seed(seed, do_sample())
 
   cli::cli_inform(c(
     "i" = "Amostra de {nrow(result)} documentos selecionada (estrat\u00e9gia: {.val {strategy}}).",

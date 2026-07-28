@@ -22,10 +22,27 @@ métricas) em função do número de tópicos k, auxiliando na escolha do k
 ideal para o modelo LDA.
 }
 \examples{
-\dontrun{
-# Testar k de 2 a 10 e visualizar a curva de perplexidade
+\donttest{
+# Corpus sintetico com dois blocos tematicos
+df <- data.frame(
+  id = paste0("d", 1:8),
+  texto = c(
+    "democracia participacao voto cidadania",
+    "cidadania direitos participacao democracia",
+    "voto direitos liberdade cidadania",
+    "democracia voto participacao popular",
+    "mercado economia eficiencia privatizacao",
+    "privatizacao mercado livre eficiencia",
+    "economia crescimento investimento mercado",
+    "eficiencia mercado economia livre"
+  ),
+  stringsAsFactors = FALSE
+)
+corpus <- ac_corpus(df, text = texto, docid = id)
+
+# Testar k de 2 a 4 e visualizar a curva de perplexidade
 # (ponto de inflexao/"cotovelo" sugere um bom k)
-tune <- ac_lda_tune(corpus, k_range = 2:10)
+tune <- ac_lda_tune(corpus, k_range = 2:4)
 ac_plot_lda_tune(tune)
 }
 

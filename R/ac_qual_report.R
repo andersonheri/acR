@@ -262,8 +262,11 @@ ac_qual_report <- function(coded,
 #' @noRd
 .ac_report_build_md <- function(coded, codebook, reliability, chat,
                                  title, author, method, L) {
-  lines <- character(0)
-  add <- function(...) lines <<- c(lines, ...)
+  # Container local mutavel para evitar <<- (CRAN policy):
+  # environment() e um objeto R normal, nao escreve fora do escopo.
+  buf <- new.env(parent = emptyenv())
+  buf$lines <- character(0)
+  add <- function(...) buf$lines <- c(buf$lines, ...)
 
   # ---- Header --------------------------------------------------------------
   add(paste0("# ", title))
@@ -450,7 +453,7 @@ ac_qual_report <- function(coded,
   add("```")
   add("")
 
-  paste(lines, collapse = "\n")
+  paste(buf$lines, collapse = "\n")
 }
 
 

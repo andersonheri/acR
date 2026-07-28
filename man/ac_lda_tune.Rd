@@ -33,7 +33,7 @@ calcula métricas de qualidade para auxiliar na seleção do número
 ideal de tópicos.
 }
 \examples{
-\dontrun{
+\donttest{
 # 1. Corpus sintetico (mesmos temas de ac_lda(), palavras diferentes)
 df <- data.frame(
   id = paste0("d", 1:10),

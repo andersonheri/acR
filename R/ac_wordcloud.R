@@ -17,6 +17,9 @@
 #' @param backend Motor a usar: `"auto"` (padrão, prefere
 #'   `ggwordcloud`), `"ggwordcloud"` ou `"wordcloud"`.
 #' @param title Título opcional (apenas em modo `ggwordcloud`).
+#' @param seed Semente para reprodutibilidade do layout. Padrão: `42L`.
+#'   Use `NULL` para usar o RNG corrente da sessão. A semente é escopada
+#'   via `withr::with_seed()` e não altera o `.Random.seed` global.
 #' @param ... Argumentos adicionais encaminhados para o motor escolhido
 #'   (`ggwordcloud::geom_text_wordcloud` ou `wordcloud::wordcloud`).
 #'
@@ -63,6 +66,7 @@ ac_wordcloud <- function(
     colors    = NULL,
     backend   = c("auto", "ggwordcloud", "wordcloud"),
     title     = NULL,
+    seed      = 42L,
     ...
 ) {
   if (!is.data.frame(x)) {
@@ -115,33 +119,37 @@ ac_wordcloud <- function(
     }
 
     df_plot$color_id <- (seq_len(nrow(df_plot)) - 1L) %% length(colors) + 1L
-    set.seed(42L)  # layout reproduzivel
 
-    p <- ggplot2::ggplot(
-      df_plot,
-      ggplot2::aes(label = .data$token, size = .data$n,
-                   color = factor(.data$color_id))
-    ) +
-      ggwordcloud::geom_text_wordcloud(
-        rm_outside = TRUE,
-        eccentricity = 0.9,
-        shape = "circle",
-        family = "sans",
-        ...
+    # withr::with_seed escopa o RNG apenas na construcao do plot; nao
+    # altera o .Random.seed do usuario apos o retorno.
+    build_plot <- function() {
+      p <- ggplot2::ggplot(
+        df_plot,
+        ggplot2::aes(label = .data$token, size = .data$n,
+                     color = factor(.data$color_id))
       ) +
-      ggplot2::scale_size_area(max_size = 24) +
-      ggplot2::scale_color_manual(values = colors, guide = "none") +
-      theme_ac() +
-      ggplot2::theme(
-        panel.grid = ggplot2::element_blank(),
-        axis.text  = ggplot2::element_blank(),
-        axis.title = ggplot2::element_blank(),
-        axis.ticks = ggplot2::element_blank()
-      )
-    if (!is.null(title)) {
-      p <- p + ggplot2::labs(title = title)
+        ggwordcloud::geom_text_wordcloud(
+          rm_outside = TRUE,
+          eccentricity = 0.9,
+          shape = "circle",
+          family = "sans",
+          ...
+        ) +
+        ggplot2::scale_size_area(max_size = 24) +
+        ggplot2::scale_color_manual(values = colors, guide = "none") +
+        theme_ac() +
+        ggplot2::theme(
+          panel.grid = ggplot2::element_blank(),
+          axis.text  = ggplot2::element_blank(),
+          axis.title = ggplot2::element_blank(),
+          axis.ticks = ggplot2::element_blank()
+        )
+      if (!is.null(title)) p <- p + ggplot2::labs(title = title)
+      p
     }
-    return(p)
+    return(
+      if (is.null(seed)) build_plot() else withr::with_seed(seed, build_plot())
+    )
   }
 
   # Fallback: wordcloud classico
@@ -151,13 +159,16 @@ ac_wordcloud <- function(
       "i" = "Instale {.pkg ggwordcloud} (recomendado) ou {.pkg wordcloud}."
     ))
   }
-  wordcloud::wordcloud(
-    words        = df_plot$token,
-    freq         = df_plot$n,
-    scale        = c(4, 0.8),
-    random.order = FALSE,
-    colors       = colors,
-    ...
-  )
+  draw_wc <- function() {
+    wordcloud::wordcloud(
+      words        = df_plot$token,
+      freq         = df_plot$n,
+      scale        = c(4, 0.8),
+      random.order = FALSE,
+      colors       = colors,
+      ...
+    )
+  }
+  if (is.null(seed)) draw_wc() else withr::with_seed(seed, draw_wc())
   invisible(df_plot)
 }

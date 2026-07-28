@@ -43,7 +43,7 @@ O \code{acR} reconhece dívida intelectual com \code{quallmer}
 Useful links:
 \itemize{
   \item \url{https://github.com/andersonheri/acR}
-  \item \url{https://andersonheri.github.io/acR/}
+  \item \url{https://ahenriquecp.com/acR/}
   \item Report bugs at \url{https://github.com/andersonheri/acR/issues}
 }
 

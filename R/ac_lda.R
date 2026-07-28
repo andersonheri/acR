@@ -26,7 +26,7 @@
 #' corpus real e visualizações.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # 1. Corpus sintetico com 3 temas nitidos (democracia, economia, saude, educacao)
 #' df <- data.frame(
 #'   id = paste0("d", 1:10),
@@ -160,7 +160,7 @@ print.ac_lda <- function(x, ...) {
 #'   métricas do pacote `ldatuning`.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # 1. Corpus sintetico (mesmos temas de ac_lda(), palavras diferentes)
 #' df <- data.frame(
 #'   id = paste0("d", 1:10),
@@ -241,12 +241,27 @@ ac_lda_tune <- function(corpus,
 #' @return Objeto `ggplot`.
 #'
 #' @examples
-#' \dontrun{
-#' # Assumindo corpus preparado como em ?ac_lda
-#' lda <- ac_lda(corpus, k = 3)
+#' \donttest{
+#' # Corpus sintetico com dois blocos tematicos
+#' df <- data.frame(
+#'   id = paste0("d", 1:8),
+#'   texto = c(
+#'     "democracia participacao voto cidadania",
+#'     "cidadania direitos participacao democracia",
+#'     "voto direitos liberdade cidadania",
+#'     "democracia voto participacao popular",
+#'     "mercado economia eficiencia privatizacao",
+#'     "privatizacao mercado livre eficiencia",
+#'     "economia crescimento investimento mercado",
+#'     "eficiencia mercado economia livre"
+#'   ),
+#'   stringsAsFactors = FALSE
+#' )
+#' corpus <- ac_corpus(df, text = texto, docid = id)
+#' lda    <- ac_lda(corpus, k = 2)
 #'
-#' # Grafico com os 8 termos mais probabilisticos por topico
-#' ac_plot_lda_topics(lda, top_n = 8)
+#' # Grafico com os 5 termos mais probabilisticos por topico
+#' ac_plot_lda_topics(lda, top_n = 5)
 #' }
 #'
 #' @seealso [ac_lda()]
@@ -314,10 +329,27 @@ ac_plot_lda_topics <- function(lda_result,
 #' @return Objeto `ggplot`.
 #'
 #' @examples
-#' \dontrun{
-#' # Testar k de 2 a 10 e visualizar a curva de perplexidade
+#' \donttest{
+#' # Corpus sintetico com dois blocos tematicos
+#' df <- data.frame(
+#'   id = paste0("d", 1:8),
+#'   texto = c(
+#'     "democracia participacao voto cidadania",
+#'     "cidadania direitos participacao democracia",
+#'     "voto direitos liberdade cidadania",
+#'     "democracia voto participacao popular",
+#'     "mercado economia eficiencia privatizacao",
+#'     "privatizacao mercado livre eficiencia",
+#'     "economia crescimento investimento mercado",
+#'     "eficiencia mercado economia livre"
+#'   ),
+#'   stringsAsFactors = FALSE
+#' )
+#' corpus <- ac_corpus(df, text = texto, docid = id)
+#'
+#' # Testar k de 2 a 4 e visualizar a curva de perplexidade
 #' # (ponto de inflexao/"cotovelo" sugere um bom k)
-#' tune <- ac_lda_tune(corpus, k_range = 2:10)
+#' tune <- ac_lda_tune(corpus, k_range = 2:4)
 #' ac_plot_lda_tune(tune)
 #' }
 #'

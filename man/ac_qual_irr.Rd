@@ -97,7 +97,7 @@ dados faltantes e suporta escalas nominais, ordinais e de intervalo
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Comparar LLM vs. anotador humano
 humano <- data.frame(
   id_discurso = c("d1", "d2", "d3", "d4", "d5"),

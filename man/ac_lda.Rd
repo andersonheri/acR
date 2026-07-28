@@ -33,7 +33,7 @@ retornando um objeto com os resultados do modelo e tibbles tidy de
 termos por tópico e prevalência por documento.
 }
 \examples{
-\dontrun{
+\donttest{
 # 1. Corpus sintetico com 3 temas nitidos (democracia, economia, saude, educacao)
 df <- data.frame(
   id = paste0("d", 1:10),
