@@ -18,6 +18,7 @@ ac_wordcloud(
   colors = NULL,
   backend = c("auto", "ggwordcloud", "wordcloud"),
   title = NULL,
+  seed = 42L,
   ...
 )
 ```
@@ -50,6 +51,13 @@ ac_wordcloud(
 - title:
 
   Título opcional (apenas em modo `ggwordcloud`).
+
+- seed:
+
+  Semente para reprodutibilidade do layout. Padrão: `42L`. Use `NULL`
+  para usar o RNG corrente da sessão. A semente é escopada via
+  [`withr::with_seed()`](https://withr.r-lib.org/reference/with_seed.html)
+  e não altera o `.Random.seed` global.
 
 - ...:
 
@@ -102,15 +110,13 @@ if (requireNamespace("ggwordcloud", quietly = TRUE)) {
 if (requireNamespace("wordcloud", quietly = TRUE)) {
   ac_wordcloud(freq, max_words = 30, backend = "wordcloud")
 }
-#> Warning: federal could not be fit on page. It will not be plotted.
-#> Warning: federal could not be fit on page. It will not be plotted.
 #> Warning: impostos could not be fit on page. It will not be plotted.
 #> Warning: impostos could not be fit on page. It will not be plotted.
 #> Warning: indiretos could not be fit on page. It will not be plotted.
 #> Warning: moderniza could not be fit on page. It will not be plotted.
 #> Warning: prejudica could not be fit on page. It will not be plotted.
+#> Warning: reduz could not be fit on page. It will not be plotted.
 
-#> Warning: reforma could not be fit on page. It will not be plotted.
 #> Warning: reforma could not be fit on page. It will not be plotted.
 #> Warning: reforma could not be fit on page. It will not be plotted.
 #> Warning: reforma could not be fit on page. It will not be plotted.

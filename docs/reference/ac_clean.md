@@ -90,7 +90,7 @@ ac_clean(
 - normalize_pt:
 
   Se `TRUE`, aplica normalizações ortográficas do português brasileiro
-  coloquial: `"pra"` → `"para"`, `"tá"` → `"está"`, etc. Padrão:
+  coloquial: `"pra"` -\> `"para"`, `"tá"` -\> `"está"`, etc. Padrão:
   `FALSE`.
 
 - protect:

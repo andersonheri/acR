@@ -67,32 +67,50 @@ Tibble com colunas:
 ## Examples
 
 ``` r
-# 1. Corpus minimo com 3 documentos
+# Corpus tematico: coocorrencia revela associacoes conceituais
+# (que palavras "andam juntas" no discurso).
 df <- data.frame(
-  id = c("d1", "d2", "d3"),
+  id = paste0("d", 1:6),
   texto = c(
-    "democracia participacao cidadania",
-    "participacao politica democracia",
-    "cidadania direitos participacao"
-  )
+    "democracia participacao voto liberdade cidadania popular",
+    "cidadania direitos participacao democracia representacao politica",
+    "voto direitos liberdade cidadania soberania popular",
+    "mercado economia eficiencia privatizacao competicao livre",
+    "privatizacao mercado livre eficiencia produtividade lucro",
+    "economia crescimento investimento mercado capital juros"
+  ),
+  stringsAsFactors = FALSE
 )
 
-# 2. Preparar corpus e tokens (limpeza padrao)
 corpus <- ac_corpus(df, text = texto, docid = id) |>
   ac_clean()
 tokens <- ac_tokenize(corpus)
 
-# 3. Calcular co-ocorrencias em janelas de 3 tokens
-#    min_count = 1 mantem todos os pares (usar valor maior em corpora reais)
-ac_cooccurrence(tokens, window = 3, min_count = 1)
-#> # A tibble: 7 × 5
-#>   word1        word2         cooc   pmi  dice
-#>   <chr>        <chr>        <int> <dbl> <dbl>
-#> 1 cidadania    participacao     4  2.58     1
-#> 2 democracia   participacao     4  2.58     1
-#> 3 cidadania    democracia       2  2.17     1
-#> 4 cidadania    direitos         2  3.17     1
-#> 5 democracia   politica         2  3.17     1
-#> 6 direitos     participacao     2  2.58     1
-#> 7 participacao politica         2  2.58     1
+# Janela de 3 tokens, sem filtro de frequencia minima
+# (em corpora reais use min_count >= 5 para reduzir ruido)
+cooc <- ac_cooccurrence(tokens, window = 3L, min_count = 1L)
+head(cooc)
+#> # A tibble: 6 × 5
+#>   word1      word2         cooc   pmi  dice
+#>   <chr>      <chr>        <int> <dbl> <dbl>
+#> 1 cidadania  direitos         4  4.58     1
+#> 2 cidadania  liberdade        4  4.58     1
+#> 3 cidadania  participacao     4  4.58     1
+#> 4 cidadania  popular          4  4.58     1
+#> 5 cidadania  voto             4  4.58     1
+#> 6 democracia participacao     4  5.17     1
+
+# Coocorrencia com PMI (associacao normalizada por acaso)
+cooc_pmi <- ac_cooccurrence(tokens, window = 3L, measure = "pmi",
+                            min_count = 1L)
+head(cooc_pmi)
+#> # A tibble: 6 × 4
+#>   word1      word2         cooc   pmi
+#>   <chr>      <chr>        <int> <dbl>
+#> 1 cidadania  direitos         4  4.58
+#> 2 cidadania  liberdade        4  4.58
+#> 3 cidadania  participacao     4  4.58
+#> 4 cidadania  popular          4  4.58
+#> 5 cidadania  voto             4  4.58
+#> 6 democracia participacao     4  5.17
 ```

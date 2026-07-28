@@ -19,7 +19,7 @@ por documento.'><meta property="og:image" content="https://andersonheri.github.i
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,9 +106,9 @@ por TF-IDF; <code>"count"</code> usa contagens brutas.</p></dd>
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>Numero de grupos. Se <code>NULL</code> (padrao) e <code>method %in% c("hclust","kmeans")</code>,
-tenta escolher automaticamente por silhouette entre 2 e 8; requer <code>cluster</code>.
-Se <code>cluster</code> nao estiver instalado, <code>k = 3</code> e o fallback.</p></dd>
+<dd><p>Numero de grupos. Se <code>NULL</code> (padrao) e <code>method %in% c("hclust","kmeans")</code>, tenta escolher automaticamente por silhouette
+entre 2 e 8; requer <code>cluster</code>. Se <code>cluster</code> nao estiver instalado,
+<code>k = 3</code> e o fallback.</p></dd>
 
 
 <dt id="arg-distance">distance<a class="anchor" aria-label="anchor" href="#arg-distance"></a></dt>
@@ -127,19 +127,19 @@ pequeno. Padrao: <code>15L</code>.</p></dd>
     <p>Objeto de classe <code>ac_cluster</code> com:</p><dl><dt><code>assignments</code></dt>
 <dd><p><code>tibble</code> com <code>doc_id</code> e <code>cluster</code> (integer).</p></dd>
 
-  <dt><code>fit</code></dt>
+<dt><code>fit</code></dt>
 <dd><p>Objeto bruto do algoritmo (<code>hclust</code>, <code>kmeans</code> ou <code>pam</code>).</p></dd>
 
-  <dt><code>k</code></dt>
+<dt><code>k</code></dt>
 <dd><p>Numero final de grupos.</p></dd>
 
-  <dt><code>method</code>, <code>features</code>, <code>distance</code></dt>
+<dt><code>method</code>, <code>features</code>, <code>distance</code></dt>
 <dd><p>Parametros usados.</p></dd>
 
-  <dt><code>silhouette</code></dt>
+<dt><code>silhouette</code></dt>
 <dd><p>Silhueta media (NA se <code>cluster</code> nao instalado).</p></dd>
 
-  <dt><code>dtm</code></dt>
+<dt><code>dtm</code></dt>
 <dd><p>Matriz documento-termo usada (para plotagem).</p></dd>
 
 

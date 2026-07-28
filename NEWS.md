@@ -48,6 +48,19 @@
   em `ac_cluster.R` (67% -> 91%), `ac_qual_codebook.R` (43% -> 48%) e
   `ac_qual_reliability.R`.
 
+## Adequacao CRAN (correcoes de resubmissao)
+
+* `ac_wordcloud()`, `ac_plot_wordcloud_comparative()` e `ac_qual_sample()`
+  agora expoem argumento `seed` (padrao `42L`; `NULL` usa o RNG corrente).
+  A semente e escopada via `withr::with_seed()` -- nao altera o
+  `.Random.seed` do usuario apos o retorno.
+* Removido uso de `<<-` em `.ac_report_build_md()` (`ac_qual_report.R`):
+  o buffer de linhas agora vive em um `environment()` local.
+* Removidas escritas ao `.GlobalEnv` em
+  `ac_plot_wordcloud_comparative()`; RNG passa a ser escopado
+  exclusivamente via `withr::with_seed()`.
+* `withr` movido de `Suggests` para `Imports` (usado em codigo principal).
+
 # acR 0.3.1
 
 ## Ajustes

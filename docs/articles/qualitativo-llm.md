@@ -7,10 +7,10 @@ análise de conteúdo assistida por modelos de linguagem (LLMs), seguindo
 as diretrizes metodológicas de Krippendorff (2018) e as recomendações
 empíricas de Gilardi, Alizadeh e Kubli (2023), que mostraram que LLMs
 modernas superam trabalhadores de plataformas em várias tarefas de
-anotação de textos políticos, desde que guiadas por um codebook bem
-construído e validadas por revisão humana.
+anotação de textos políticos — **desde que guiadas por um codebook bem
+construído e validadas por revisão humana**.
 
-O pipeline tem cinco etapas encadeadas:
+O pipeline tem sete etapas encadeadas:
 
     ac_fetch_camara() / ac_fetch_senado()        ← coleta
              ↓
@@ -18,9 +18,13 @@ O pipeline tem cinco etapas encadeadas:
              ↓
     ac_qual_codebook() + funções de gestão       ← codebook
              ↓
-    as_prompt()                                  ← system prompt
+    as_prompt()                                  ← system prompt (opcional)
              ↓
     ac_qual_code()                               ← classificação com LLM
+             ↓
+    ac_qual_sample() + ac_qual_reliability()     ← validação humana
+             ↓
+    ac_qual_report()                             ← relatório reprodutível
 
 A função
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
@@ -36,6 +40,46 @@ locais via Ollama para pesquisas com dados sensíveis.
 > palavras significam. Um codebook transforma a classificação em
 > **operacionalização reproduzível**: outro pesquisador (humano ou LLM)
 > chega aos mesmos rótulos aplicando as mesmas definições e exemplos.
+
+## Quando usar LLM (e quando **não** usar)
+
+Antes de acender API, vale escolher a técnica certa para a pergunta. LLM
+não é o melhor caminho para todo problema de análise de conteúdo — é
+caro, tem variabilidade estocástica e depende de um provedor externo. A
+tabela abaixo resume quando **cada** abordagem do `acR` faz sentido:
+
+| Você quer… | Use |
+|----|----|
+| Rotular textos com **categorias teóricas pré-definidas** (populismo, framing) | LLM + codebook — esta vignette |
+| Medir **valência afetiva** (positivo/negativo/neutro) em português | [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md) (léxico OpLexicon) — mais rápido, determinístico, sem chave de API |
+| Descobrir **tópicos emergentes** sem categorias a priori | [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md) — modelo probabilístico não supervisionado |
+| Detectar **tipologias latentes** para amostragem estratificada | [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md) — hard clustering; veja a [`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md) |
+| **Comparar** vocabulário entre dois ou mais grupos | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) — teste estatístico, sem LLM |
+| **Explorar** vocabulário distintivo dentro de cada documento | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) |
+
+Regra prática: **se a categoria pode ser detectada por palavras-chave,
+use léxico ou keyness — é mais barato, reprodutível e defensável.** LLM
+brilha quando a categoria depende de **contexto, ironia, referência
+implícita ou raciocínio sobre argumento** — populismo, framing,
+posicionamento, tom, estilo retórico.
+
+### Custo real de um estudo com LLM
+
+Para calibrar expectativas, estimativa em dólares para um corpus típico
+brasileiro (500 discursos parlamentares, ~800 tokens cada) com
+`k_consistency = 3` e `reasoning = TRUE, reasoning_length = "medium"`:
+
+| Modelo                         | Custo estimado | Tempo estimado   |
+|--------------------------------|----------------|------------------|
+| `groq/llama-3.3-70b-versatile` | US\$ 0,50 – 1  | ~10 min          |
+| `openai/gpt-4o-mini`           | US\$ 3 – 5     | ~15 min          |
+| `anthropic/claude-sonnet-4-5`  | US\$ 10 – 20   | ~25 min          |
+| `anthropic/claude-opus-4-7`    | US\$ 40 – 80   | ~40 min          |
+| `ollama/llama3.1:70b` (local)  | US\$ 0 (GPU)   | ~2 h em RTX 4090 |
+
+[`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md)
+(chamado a seguir) sugere o modelo mais custo-efetivo para o tamanho e a
+dificuldade da sua tarefa.
 
 ------------------------------------------------------------------------
 
@@ -107,8 +151,28 @@ cb <- ac_qual_codebook(
   multilabel = FALSE,   # cada doc recebe UMA categoria
   lang       = "pt"
 )
+#> ! Categoria "neutro": sem exemplos negativos (examples_neg).
+#> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 
 print(cb)
+#> 
+#> ── Codebook acR: "tom_discurso" ────────────────────────────────────────────────
+#> • Modo: "manual"
+#> • Categorias (3): "positivo", "negativo", and "neutro"
+#> • Multilabel: FALSE
+#> • Idioma: "pt"
+#> • Criado em: 28/07/2026 17:08
+#> 
+#> Instrução geral:
+#> Classifique o tom geral do discurso parlamentar.
+#> 
+#> Categorias:
+#> • "positivo": Discurso com tom propositivo e colaborativo.
+#> Ex+: Proponho que trabalhemos juntos nesta agenda.
+#> • "negativo" [peso: 1.5]: Discurso com tom crítico ou confrontacional.
+#> Ex+: Esta proposta vai arruinar o país.
+#> • "neutro": Discurso descritivo, sem posicionamento claro.
+#> Ex+: O projeto foi apresentado na sessão de hoje.
 ```
 
 ### Adicionar e remover categorias
@@ -441,6 +505,67 @@ Para análises publicáveis, valores acima de **0.67** (Krippendorff) ou
 divergentes na seção de método.
 
 ------------------------------------------------------------------------
+
+## Diagnosticando problemas comuns
+
+Antes de partir para o relatório final, vale conhecer os quatro modos de
+falha mais frequentes de uma rodada com LLM — e o que cada um pede.
+
+### 1. Categorias com concordância baixa entre `k_consistency`
+
+**Sintoma:** `confidence_score` mediano abaixo de 0,80.
+
+**Causa provável:** definições ambíguas ou exemplos negativos ausentes.
+A LLM está literalmente hesitando entre categorias em cada repetição.
+
+**Fix:** rodar `ac_qual_codebook(check_overlap = TRUE)` para detectar
+definições semanticamente próximas; adicionar exemplos negativos
+cruzados (o que uma categoria **não** é, especialmente perto das
+vizinhas); revisar manualmente 5–10 documentos com
+`confidence_score < 0.67` e verificar se o problema está no texto
+(documento genuinamente ambíguo) ou no codebook.
+
+### 2. LLM devolve categoria fora do codebook
+
+**Sintoma:** categoria como “misto”, “outro” ou uma variante da sua
+(“populismo_forte”) que **não está** no `codebook$categories`.
+
+**Causa:** o modelo entendeu a tarefa mas achou a categoria correta
+insuficiente.
+
+**Fix:** ou você acrescenta a categoria emergente (via
+[`ac_qual_codebook_add()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.md)),
+ou reforça no prompt que **só as categorias listadas** são válidas. A
+segunda geralmente é preferível — categorias emergentes indicam
+refinamento metodológico, não desvio da LLM.
+
+### 3. Distribuição colapsada em uma categoria
+
+**Sintoma:** 90%+ dos documentos vão para o mesmo rótulo.
+
+**Causa:** categoria com definição muito abrangente ou peso
+implicitamente alto (mais exemplos positivos que as outras).
+
+**Fix:** equilibrar o número de exemplos positivos por categoria; usar o
+argumento `weight` para dar peso extra às categorias mais raras;
+considerar `multilabel = TRUE` se os documentos genuinamente cobrem mais
+de um tema.
+
+### 4. IRR humana × LLM inaceitável
+
+**Sintoma:**
+[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+retorna α \< 0,60.
+
+**Causa:** três possibilidades, em ordem de frequência: (i) codebook não
+está claro nem para humanos (peça a **outro** humano codificar; se dois
+humanos discordam, a LLM não vai salvar), (ii) modelo escolhido é
+pequeno demais para a tarefa (troque para um tier acima), (iii) o
+próprio conceito teórico é contestado — reformule a pergunta.
+
+> **Regra de ouro:** se a IRR entre dois humanos está abaixo de 0,70, o
+> problema é do codebook, não da LLM. Nenhum modelo vai ter mais
+> concordância consigo mesmo do que humanos treinados têm entre si.
 
 ## Etapa 8 — Replicabilidade e transparência
 

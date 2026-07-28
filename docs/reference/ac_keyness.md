@@ -1,8 +1,10 @@
 # Calcular estatisticas de keyness entre dois grupos
 
 `ac_keyness()` calcula estatisticas de "keyness" para comparar a
-distribuicao de termos entre dois grupos (por exemplo, governo vs
-oposicao, partidos, periodos). A funcao e inspirada em
+distribuicao de termos entre dois grupos. O criterio que define os
+grupos e do pesquisador: partido, periodo, tema, regiao, autor, condicao
+experimental ou qualquer variavel categorica no corpus. A funcao e
+inspirada em
 [`quanteda.textstats::textstat_keyness()`](https://quanteda.io/reference/textstat_keyness.html)
 e utiliza tabelas 2x2 por termo.
 
@@ -10,9 +12,9 @@ A entrada tipica e uma tabela de frequencias gerada por
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
 agregada por uma coluna de grupo:
 
-- `ac_count(corp, by = "lado")` seguido de
+- `ac_count(corp, by = "grupo")` seguido de
 
-- `ac_keyness(freq, group = "lado", target = "Governo")`.
+- `ac_keyness(freq, group = "grupo", target = "A")`.
 
 ## Usage
 
@@ -105,23 +107,38 @@ referencia.
 ## Examples
 
 ``` r
-# 1. Corpus fabricado com duas subamostras (Governo vs Oposicao)
+# Comparar vocabulario entre dois grupos (aqui, dois temas legislativos).
+# O criterio de grupo e do pesquisador: partido, periodo, regiao, tema...
 df <- data.frame(
-  id    = c("d1", "d2", "d3", "d4"),
+  id    = paste0("d", 1:8),
   texto = c(
-    "A A A B",
-    "A B",
-    "A B B B",
-    "B B C"
+    "reforma tributaria simplifica sistema impostos empresas",
+    "IVA dual substitui PIS COFINS ICMS federal",
+    "aliquotas excecoes tributarias setores economicos",
+    "reforma tributaria unifica impostos indiretos",
+    "programa habitacional amplia recursos moradia popular",
+    "deficit habitacional afeta familias baixa renda",
+    "urbanizacao favelas regularizacao fundiaria municipios",
+    "moradia digna direito social constituicao"
   ),
-  lado  = c("Governo", "Governo", "Oposicao", "Oposicao"),
+  tema  = rep(c("tributario", "habitacao"), each = 4),
   stringsAsFactors = FALSE
 )
 
-# 2. Frequencias por grupo — insumo obrigatorio de ac_keyness()
-corp <- ac_corpus(df, text = texto, docid = id, meta = lado)
-freq <- ac_count(corp, by = "lado")
+corp <- ac_corpus(df, text = texto, docid = id)
+freq <- ac_count(corp, by = "tema")
 
-# 3. Termos-chave: quais palavras sao sobre-representadas no grupo alvo
-key <- ac_keyness(freq, group = "lado", target = "Governo")
+# Termos-chave do grupo "tributario" versus o resto
+key <- ac_keyness(freq, group = "tema", target = "tributario")
+head(key)
+#> # A tibble: 6 × 10
+#>   token group target reference n_target n_reference total_target total_reference
+#>   <chr> <chr> <chr>  <chr>        <dbl>       <dbl>        <dbl>           <dbl>
+#> 1 impo… tema  tribu… habitacao        2           0           23              22
+#> 2 refo… tema  tribu… habitacao        2           0           23              22
+#> 3 trib… tema  tribu… habitacao        2           0           23              22
+#> 4 COFI… tema  tribu… habitacao        1           0           23              22
+#> 5 ICMS  tema  tribu… habitacao        1           0           23              22
+#> 6 IVA   tema  tribu… habitacao        1           0           23              22
+#> # ℹ 2 more variables: keyness <dbl>, direction <chr>
 ```

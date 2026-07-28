@@ -22,6 +22,22 @@ Duas matrizes de saída são o coração do modelo:
 > mistura temática (não frases isoladas). É comum em análise de discurso
 > parlamentar, notícias, revisões de literatura, feedback de clientes.
 
+### LDA vs. clustering vs. LLM
+
+Três técnicas resolvem problemas parecidos e são confundidas. A
+distinção importa mais que a sintaxe:
+
+| Técnica | Saída | Você fornece |
+|----|----|----|
+| **LDA** (esta vignette) | Mistura probabilística de tópicos | Só o corpus + `k` |
+| **Hard clustering** ([`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)) | Uma etiqueta por documento | Só o corpus + `k` |
+| **LLM** ([`vignette("qualitativo-llm")`](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)) | Categoria pré-definida | Codebook com categorias |
+
+Regra prática: use **LDA** quando temas se **misturam** dentro do mesmo
+texto (discurso parlamentar, notícia, artigo científico); **clustering**
+quando você quer uma partição limpa para amostrar; **LLM** quando as
+categorias vêm da teoria e não da distribuição empírica de palavras.
+
 O `acR` empacota o pipeline em três chamadas:
 [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
 para escolher **K** (número de tópicos),
@@ -363,7 +379,52 @@ top_terms_por_topico
 #> 4     4 dados, ia, congresso, lei, pessoais, prioridades, privacidade
 ```
 
-## 8. Exportar
+## 8. Visualizando as misturas: γ como heatmap
+
+Uma das forças didáticas do LDA é que γ **não é** uma etiqueta — é uma
+proporção. Documentos que “quase pertencem a um tema” aparecem como um
+gradiente, não como uma célula preenchida. Este heatmap mostra os
+documentos como linhas, os tópicos como colunas, e a cor como `gamma` (0
+= nada; 1 = totalidade da massa).
+
+``` r
+
+gamma_ord <- gamma |>
+  dplyr::mutate(doc_id = factor(doc_id, levels = sort(unique(doc_id))))
+
+ggplot2::ggplot(
+  gamma_ord,
+  ggplot2::aes(x = factor(topic), y = doc_id, fill = gamma)
+) +
+  ggplot2::geom_tile(color = "white") +
+  ggplot2::scale_fill_gradient(
+    low  = "#F1F5F9",
+    high = ac_palette(1),
+    name = "gamma"
+  ) +
+  ggplot2::labs(
+    title    = "Composicao tematica de cada documento (matriz gamma)",
+    subtitle = "Cores mais fortes = maior peso do topico no documento",
+    x        = "Topico",
+    y        = "Documento",
+    caption  = "acR - LDA soft assignment"
+  ) +
+  theme_ac() +
+  ggplot2::theme(
+    axis.text.y = ggplot2::element_text(size = 7)
+  )
+```
+
+![](lda_files/figure-html/gamma-heatmap-1.png)
+
+Compare mentalmente com o heatmap “hard clustering” da
+[`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)
+§4.6: lá, cada linha tem **uma** célula acesa (pertence ao grupo A
+**ou** ao B). Aqui, muitas linhas têm massa espalhada entre dois ou três
+tópicos. É a mesma tipologia latente, descrita em duas resoluções
+diferentes — hard é uma projeção do soft.
+
+## 9. Exportar
 
 Salvamos as duas matrizes principais para reuso — em outros scripts, no
 Excel, ou para colar em tabelas de artigo:

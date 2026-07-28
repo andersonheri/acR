@@ -57,7 +57,7 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
   humano
 }
 #> ✅ 3 classificações humanas importadas de
-#> /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpbSe0Oz/file19615ed4822c.xlsx
+#> /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/file530d631fa2ad.xlsx
 #> # A tibble: 3 × 2
 #>   doc_id categoria
 #>   <chr>  <chr>    

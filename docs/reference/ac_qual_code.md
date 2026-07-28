@@ -5,6 +5,34 @@
 tibble com a classificação, grau de certeza (via self-consistency) e
 raciocínio da LLM para cada documento.
 
+É o **motor de classificação** do pipeline qualitativo do `acR`. Assume
+que o codebook já foi construído com
+[`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
+e (idealmente) testado numa amostra piloto. A saída é sempre validada
+com
+[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+contra uma amostra codificada por humano — nenhuma análise categorial
+publicável dispensa essa etapa.
+
+Três parâmetros determinam qualidade e custo:
+
+- `k_consistency`: número de rodadas de *self-consistency* (Wang et al.,
+  2023). O mesmo texto é classificado k vezes com pequena variação de
+  temperatura, e a categoria final é a moda. O `confidence_score` sai
+  dessa concordância — 1,0 significa que todas as k rodadas concordaram.
+  Padrão `k = 3` custa 3x mais tokens que uma rodada única, e é a
+  configuração mínima para reportar confiança de forma defensável.
+
+- `reasoning`: pede raciocínio estruturado. Melhora a qualidade em casos
+  ambíguos mas praticamente dobra o custo por documento. Use `"short"`
+  como padrão e `"detailed"` só quando planeja auditar decisões
+  individuais.
+
+- `live`: tira a classificação do modo "caixa-preta" mostrando cada
+  documento em tempo real. Numa rodada de 500 discursos, você percebe
+  nos primeiros 10 se o codebook está funcionando — antes de gastar todo
+  o orçamento de tokens.
+
 ## Usage
 
 ``` r
