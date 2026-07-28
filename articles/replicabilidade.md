@@ -120,7 +120,7 @@ cb
 #> • Categorias (3): "favor", "contra", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 28/07/2026 20:07
+#> • Criado em: 28/07/2026 20:13
 #> 
 #> Instrução geral:
 #> Classifique a posicao do parlamentar sobre a reforma tributaria com base no
@@ -143,9 +143,9 @@ análise em outra sessão:
 
 arquivo_cb <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo_cb)
-#> ✅ Codebook salvo em /tmp/RtmpImcLDc/file22d61e9e9234.yaml
+#> ✅ Codebook salvo em /tmp/RtmpQFlKzR/file217d6e670076.yaml
 cat("Codebook salvo em:", arquivo_cb, "\n")
-#> Codebook salvo em: /tmp/RtmpImcLDc/file22d61e9e9234.yaml
+#> Codebook salvo em: /tmp/RtmpQFlKzR/file217d6e670076.yaml
 ```
 
 ## 3. Classificação com live view
@@ -544,7 +544,7 @@ ac_qual_report(
 )
 #> Warning: Unknown or uninitialised column: `metrics`.
 #> ✔ Relatorio salvo em
-#> /tmp/RtmpImcLDc/relatorio-22d65448f484.md
+#> /tmp/RtmpQFlKzR/relatorio-217d52e46485.md
 ```
 
 Primeiras 40 linhas do relatório gerado:
@@ -554,7 +554,7 @@ Primeiras 40 linhas do relatório gerado:
 cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> # Classificacao de posicionamento na reforma tributaria
 #> 
-#> - **Gerado em:** 2026-07-28 20:07:36 UTC
+#> - **Gerado em:** 2026-07-28 20:13:18 UTC
 #> - **Versao do acR:** 0.3.2
 #> - **Autor(es):** Silva, A.; Souza, B.
 #> - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).
@@ -570,7 +570,7 @@ cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> | Idioma        | `pt` |
 #> | Modo        | `manual` |
 #> | Multilabel  | `FALSE` |
-#> | Criado em     | 2026-07-28 20:07:34 |
+#> | Criado em     | 2026-07-28 20:13:16 |
 #> 
 #> **Instrucoes ao codificador:**
 #> 

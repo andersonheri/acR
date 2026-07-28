@@ -71,6 +71,15 @@
 <li>
 <strong>Cobertura de testes</strong> subiu de ~55% (0.3.1) para ~66%. Testes novos em <code>ac_cluster.R</code> (67% -&gt; 91%), <code>ac_qual_codebook.R</code> (43% -&gt; 48%) e <code>ac_qual_reliability.R</code>.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="adequacao-cran-correcoes-de-resubmissao-0-3-2">Adequacao CRAN (correcoes de resubmissao)<a class="anchor" aria-label="anchor" href="#adequacao-cran-correcoes-de-resubmissao-0-3-2"></a></h3>
+<ul><li>
+<code><a href="../reference/ac_wordcloud.html">ac_wordcloud()</a></code>, <code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code> e <code><a href="../reference/ac_qual_sample.html">ac_qual_sample()</a></code> agora expoem argumento <code>seed</code> (padrao <code>42L</code>; <code>NULL</code> usa o RNG corrente). A semente e escopada via <code><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">withr::with_seed()</a></code> – nao altera o <code>.Random.seed</code> do usuario apos o retorno.</li>
+<li>Removido uso de <code>&lt;&lt;-</code> em <code>.ac_report_build_md()</code> (<code>ac_qual_report.R</code>): o buffer de linhas agora vive em um <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> local.</li>
+<li>Removidas escritas ao <code>.GlobalEnv</code> em <code><a href="../reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code>; RNG passa a ser escopado exclusivamente via <code><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">withr::with_seed()</a></code>.</li>
+<li>
+<code>withr</code> movido de <code>Suggests</code> para <code>Imports</code> (usado em codigo principal).</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="acr-031">acR 0.3.1<a class="anchor" aria-label="anchor" href="#acr-031"></a></h2>
