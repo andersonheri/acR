@@ -449,7 +449,7 @@ ac_qual_report <- function(coded,
              as.character(utils::packageVersion("acR")),
              ". Sao Paulo: CEM-Cepid/USP, ",
              format(Sys.Date(), "%Y"),
-             ". Disponivel em: <https://andersonheri.github.io/acR/>."))
+             ". Disponivel em: <https://ahenriquecp.com/acR/>."))
   add("```")
   add("")
 

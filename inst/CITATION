@@ -9,12 +9,12 @@ bibentry(
   ),
   year     = "2026",
   note     = "R package version 0.3.0",
-  url      = "https://andersonheri.github.io/acR/",
+  url      = "https://ahenriquecp.com/acR/",
   textVersion = paste0(
     "Henrique, A. (2026). acR: Analise de Conteudo em R. ",
     "R package version 0.3.0. ",
     "Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao Paulo. ",
-    "https://andersonheri.github.io/acR/"
+    "https://ahenriquecp.com/acR/"
   )
 )
 

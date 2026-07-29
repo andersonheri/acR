@@ -7,7 +7,7 @@
   v <- utils::packageVersion("acR")
   packageStartupMessage(
     "acR ", v, " -- Analise de Conteudo em R (qualitativo LLM + quantitativo)\n",
-    "  Documentacao: https://andersonheri.github.io/acR/\n",
+    "  Documentacao: https://ahenriquecp.com/acR/\n",
     "  Comece com : vignette(\"quickstart\", package = \"acR\") ou ?acR"
   )
 }
