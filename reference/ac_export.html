@@ -5,7 +5,7 @@ Pensada para facilitar a transicao entre o pipeline acR e a escrita
 academica (tabelas em artigos) ou o compartilhamento de dados replicaveis."><meta property="og:description" content="Exporta data.frames de resultados (corpus codificado, tabelas de frequencia,
 metricas de confiabilidade) para CSV, LaTeX, Excel (.xlsx) ou RDS.
 Pensada para facilitar a transicao entre o pipeline acR e a escrita
-academica (tabelas em artigos) ou o compartilhamento de dados replicaveis."><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
+academica (tabelas em artigos) ou o compartilhamento de dados replicaveis."><meta property="og:image" content="https://ahenriquecp.com/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -191,7 +191,7 @@ Ideal para replicabilidade interna ao projeto.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># CSV</span></span></span>
 <span class="r-in"><span><span class="fu">ac_export</span><span class="op">(</span><span class="va">resultados</span>, <span class="va">out_csv</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/RtmpP3ZjbX/resultados.csv</span> (csv).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/Rtmp3qN8jV/resultados.csv</span> (csv).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># LaTeX (para incluir em artigo)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_export</span><span class="op">(</span></span></span>
@@ -200,11 +200,11 @@ Ideal para replicabilidade interna ao projeto.</p>
 <span class="r-in"><span>  latex_caption <span class="op">=</span> <span class="st">"Classificacao do tom dos discursos por LLM"</span>,</span></span>
 <span class="r-in"><span>  latex_label   <span class="op">=</span> <span class="st">"tab:tom_discursos"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/RtmpP3ZjbX/resultados.tex</span> (latex).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/Rtmp3qN8jV/resultados.tex</span> (latex).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># RDS (replicabilidade)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_export</span><span class="op">(</span><span class="va">resultados</span>, <span class="va">out_rds</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/RtmpP3ZjbX/resultados.rds</span> (rds).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/Rtmp3qN8jV/resultados.rds</span> (rds).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Excel (requer openxlsx ou writexl instalado)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"writexl"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">||</span></span></span>
@@ -212,7 +212,7 @@ Ideal para replicabilidade interna ao projeto.</p>
 <span class="r-in"><span>  <span class="va">out_xlsx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"resultados.xlsx"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">ac_export</span><span class="op">(</span><span class="va">resultados</span>, <span class="va">out_xlsx</span>, excel_sheet <span class="op">=</span> <span class="st">"Classificacao"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/RtmpP3ZjbX/resultados.xlsx</span> (xlsx).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/Rtmp3qN8jV/resultados.xlsx</span> (xlsx).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Objeto ac_irr (comparar codificacao humana vs. LLM)</span></span></span>
 <span class="r-in"><span><span class="va">gold</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -225,7 +225,7 @@ Ideal para replicabilidade interna ao projeto.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">irr_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span><span class="va">gold</span>, <span class="va">predicted</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_export</span><span class="op">(</span><span class="va">irr_result</span>, <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"confiabilidade.csv"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/RtmpP3ZjbX/confiabilidade.csv</span> (csv).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Exportado para <span style="color: #0000BB;">/tmp/Rtmp3qN8jV/confiabilidade.csv</span> (csv).</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

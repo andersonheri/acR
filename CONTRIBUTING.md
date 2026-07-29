@@ -66,7 +66,7 @@ Para sugerir novas funcionalidades:
 ## Código de Conduta
 
 Este projeto adota o [Contributor
-Covenant](https://andersonheri.github.io/acR/CODE_OF_CONDUCT.md). Ao
+Covenant](https://ahenriquecp.com/acR/CODE_OF_CONDUCT.md). Ao
 participar, você concorda em respeitar seus termos.
 
 ## Dúvidas

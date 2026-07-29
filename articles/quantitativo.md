@@ -15,12 +15,12 @@ cada situação vale mais que decorar sintaxe:
 
 | Pergunta | Técnica | Função |
 |----|----|----|
-| Que palavras dominam o corpus como um todo? | Frequência bruta | [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md) → [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md) |
-| Que palavras são **distintivas** de cada documento vs. o resto? | TF-IDF | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md) |
-| Que palavras separam **um grupo** do outro estatisticamente? | *Keyness* | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md) |
-| Que palavras **andam juntas** (associação sintagmática)? | Coocorrência | [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md) |
-| **Onde no texto** um termo aparece com mais frequência? | X-ray plot | [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md) |
-| Panorama visual rápido para relatório ou apresentação | Nuvem de palavras | [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md) (`ggwordcloud`) |
+| Que palavras dominam o corpus como um todo? | Frequência bruta | [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) → [`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md) |
+| Que palavras são **distintivas** de cada documento vs. o resto? | TF-IDF | [`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_plot_tf_idf.md) |
+| Que palavras separam **um grupo** do outro estatisticamente? | *Keyness* | [`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://ahenriquecp.com/acR/reference/ac_plot_keyness.md) |
+| Que palavras **andam juntas** (associação sintagmática)? | Coocorrência | [`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_plot_cooccurrence.md) |
+| **Onde no texto** um termo aparece com mais frequência? | X-ray plot | [`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md) |
+| Panorama visual rápido para relatório ou apresentação | Nuvem de palavras | [`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md) (`ggwordcloud`) |
 
 **Não é redundância.** As três métricas de frequência respondem
 perguntas diferentes:
@@ -34,11 +34,10 @@ perguntas diferentes:
   log-likelihood). Precisa de uma variável categórica no corpus.
 
 Para descobrir tipologias emergentes sem categoria a priori, veja
-[`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)
-e
-[`vignette("lda")`](https://andersonheri.github.io/acR/articles/lda.md)
-(não supervisionado). Para rotular com categorias teóricas, veja
-[`vignette("qualitativo-llm")`](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)
+[`vignette("cluster")`](https://ahenriquecp.com/acR/articles/cluster.md)
+e [`vignette("lda")`](https://ahenriquecp.com/acR/articles/lda.md) (não
+supervisionado). Para rotular com categorias teóricas, veja
+[`vignette("qualitativo-llm")`](https://ahenriquecp.com/acR/articles/qualitativo-llm.md)
 (assistido).
 
 ``` r
@@ -48,8 +47,7 @@ library(acR)
 
 ## 1. Construir o corpus
 
-O
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+O [`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md)
 padroniza qualquer `data.frame` em um objeto com colunas fixas `doc_id`
 e `text`, mantendo os metadados que você quiser preservar para
 comparações posteriores.
@@ -108,8 +106,7 @@ qualquer padrão real de vocabulário. A regra prática em análise de
 conteúdo (Sampaio & Lycarião, 2021) é sempre remover *stopwords* antes
 de contar frequências ou calcular distintividade.
 
-O
-[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+O [`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md)
 aceita o parâmetro `remove_stopwords = "pt"` para aplicar uma lista de
 *stopwords* portuguesas curada. Você pode adicionar seu próprio
 glossário via `extra_stopwords`.
@@ -142,7 +139,7 @@ corpus_limpo
 
 ## 3. Tokenização
 
-[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+[`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
 quebra cada documento em unidades de análise. Com `n = 1L` são unigramas
 (palavras); com `n = 2L`, bigramas (“reforma tributária”). Bigramas são
 úteis quando você quer capturar **expressões compostas** que perdem
@@ -172,9 +169,8 @@ head(tokens, 12)
 ## 4. Frequência
 
 Contagem de ocorrências por documento e depois agregação.
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-já retorna no formato *tidy* pronto para pipeline com `dplyr` e
-`ggplot2`.
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) já
+retorna no formato *tidy* pronto para pipeline com `dplyr` e `ggplot2`.
 
 ``` r
 
@@ -222,7 +218,7 @@ e apresentações. Não substitui análise numérica: o tamanho da palavra é
 proporcional à frequência, mas a posição no plot é aleatória.
 
 Desde a versão 0.3.1 o
-[`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
+[`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md)
 prefere automaticamente o motor `ggwordcloud` (retorna um `ggplot`, com
 tipografia mais legível e layout consistente com o tema do pacote); se
 ele não estiver instalado, cai para o `wordcloud` clássico. Você pode
@@ -271,7 +267,7 @@ O layout usa `ggwordcloud` com facets quando disponível
 (`backend = "auto"`), e cai em `geom_text` com jitter reproduzível
 quando não. A semente do posicionamento é controlada por `seed = 42L`.
 Cores vêm de
-[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+[`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
 por padrão — uma por grupo.
 
 ## 7. TF-IDF: o que é *distintivo* em cada documento?

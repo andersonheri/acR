@@ -64,7 +64,7 @@ ac_qual_recommend_model(
 ## Value
 
 Tibble com as colunas de
-[`ac_qual_list_models()`](https://andersonheri.github.io/acR/reference/ac_qual_list_models.md)
+[`ac_qual_list_models()`](https://ahenriquecp.com/acR/reference/ac_qual_list_models.md)
 mais:
 
 - `rank`: posição na recomendação;
@@ -87,8 +87,8 @@ Practical Guide for Model Setting and Fine-Tuning. *arXiv*, 2307.02179.
 
 ## See also
 
-[`ac_qual_list_models()`](https://andersonheri.github.io/acR/reference/ac_qual_list_models.md),
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+[`ac_qual_list_models()`](https://ahenriquecp.com/acR/reference/ac_qual_list_models.md),
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
 
 ## Examples
 

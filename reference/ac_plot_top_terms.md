@@ -2,9 +2,9 @@
 
 `ac_plot_top_terms()` cria um grafico de barras com os termos mais
 frequentes a partir de uma tabela de frequencias, tipicamente gerada por
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-ou filtrada por
-[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md).
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) ou
+filtrada por
+[`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md).
 
 A funcao usa
 [ggplot2](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
@@ -60,8 +60,8 @@ Um objeto `ggplot`.
 
 ## See also
 
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
+[`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md)
 
 ## Examples
 

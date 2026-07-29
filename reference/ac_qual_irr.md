@@ -6,7 +6,7 @@ retorna métricas padronizadas de concordância. Suporta Cohen's Kappa
 e percentual de concordância simples.
 
 Complementa
-[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md):
+[`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md):
 aquela compara **um par** LLM × humano com bootstrap; esta é o motor
 genérico para **qualquer par ou painel** de anotadores. Use-a
 diretamente quando você tem duas rodadas humanas para calibrar entre
@@ -42,7 +42,7 @@ ac_qual_irr(
 - predicted:
 
   `data.frame`. Anotacoes a comparar (ex.: saida do LLM via
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)).
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)).
   Mesmas colunas exigidas.
 
 - method:
@@ -140,8 +140,8 @@ categorical data. **Biometrics**, v. 33, n. 1, p. 159-174, 1977.
 
 ## See also
 
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md),
-[`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md),
+[`ac_qual_sample()`](https://ahenriquecp.com/acR/reference/ac_qual_sample.md)
 
 ## Examples
 

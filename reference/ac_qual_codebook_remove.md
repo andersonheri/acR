@@ -25,8 +25,8 @@ Objeto `ac_codebook` atualizado.
 
 ## See also
 
-[`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md),
-[`ac_qual_codebook_add()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.md)
+[`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md),
+[`ac_qual_codebook_add()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_add.md)
 
 ## Examples
 

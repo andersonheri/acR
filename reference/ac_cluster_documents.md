@@ -6,9 +6,9 @@ para descobrir tipologias latentes, montar amostras estratificadas de
 revisao humana ou produzir dendrogramas para relatorios metodologicos.
 
 Nao substitui
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md):
-LDA e clustering *soft* (cada documento vira uma mistura de topicos),
-enquanto esta funcao devolve **uma etiqueta por documento**.
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md): LDA e
+clustering *soft* (cada documento vira uma mistura de topicos), enquanto
+esta funcao devolve **uma etiqueta por documento**.
 
 ## Usage
 
@@ -87,8 +87,8 @@ Objeto de classe `ac_cluster` com:
 
 ## See also
 
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md),
-[`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md)
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md),
+[`ac_plot_cluster()`](https://ahenriquecp.com/acR/reference/ac_plot_cluster.md)
 
 ## Examples
 

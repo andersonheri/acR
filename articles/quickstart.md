@@ -131,15 +131,15 @@ ac_qual_recommend_model(task = "coding", budget = "medium", lang = "pt", n = 3)
 ## O que vem depois?
 
 - **[Comece
-  aqui](https://andersonheri.github.io/acR/articles/introducao-acR.md)**
-  — visão geral com codificação humana e IRR.
+  aqui](https://ahenriquecp.com/acR/articles/introducao-acR.md)** —
+  visão geral com codificação humana e IRR.
 - **[Codificação com
-  LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)**
-  — codebook, `ellmer`, *self-consistency*.
-- **[LDA](https://andersonheri.github.io/acR/articles/lda.md)** —
-  modelagem de tópicos.
-- **[Sentimento](https://andersonheri.github.io/acR/articles/sentimento.md)**
-  — pipeline completo com OpLexicon.
+  LLMs](https://ahenriquecp.com/acR/articles/qualitativo-llm.md)** —
+  codebook, `ellmer`, *self-consistency*.
+- **[LDA](https://ahenriquecp.com/acR/articles/lda.md)** — modelagem de
+  tópicos.
+- **[Sentimento](https://ahenriquecp.com/acR/articles/sentimento.md)** —
+  pipeline completo com OpLexicon.
 
 Cada uma das funções acima tem exemplos executáveis em
 `?nome_da_funcao`.

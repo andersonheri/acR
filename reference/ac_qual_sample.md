@@ -21,7 +21,7 @@ ac_qual_sample(
 - coded:
 
   Tibble com classificação LLM, saída de
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md).
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md).
 
 - n:
 

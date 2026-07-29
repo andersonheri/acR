@@ -139,11 +139,11 @@ corpus <- ac_corpus(
 ```
 
 A função
-[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
-aplica transformações configuráveis ao texto, com controle granular
-sobre cada etapa. Antes de rodar a limpeza, o pesquisador pode
-inspecionar e editar as stopwords com
-[`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md):
+[`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md) aplica
+transformações configuráveis ao texto, com controle granular sobre cada
+etapa. Antes de rodar a limpeza, o pesquisador pode inspecionar e editar
+as stopwords com
+[`ac_clean_stopwords()`](https://ahenriquecp.com/acR/reference/ac_clean_stopwords.md):
 
 ``` r
 
@@ -322,28 +322,28 @@ variações ou utilitários — veja **[Funções disponíveis
 
 | Objetivo | Função | Vignette |
 |----|----|----|
-| Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR) | [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md) | [Quickstart](https://ahenriquecp.com/acR/articles/quickstart.html) |
-| Criar corpus a partir de `data.frame` ou vetor | [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md) | [Quickstart](https://ahenriquecp.com/acR/articles/quickstart.html) |
-| Coletar discursos da Câmara/Senado | [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md) · [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md) | [Estudo de caso](https://ahenriquecp.com/acR/articles/analise-proposicoes.html) |
-| Limpar texto (stopwords, URLs, acentos, NAs) | [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md) + [`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
-| Contar tokens | [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
-| Top termos + gráfico | [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md) → [`ac_plot_top_terms()`](https://andersonheri.github.io/acR/reference/ac_plot_top_terms.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
-| Termos distintivos por documento | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
-| Comparar grupos (partido, período, tema, região…) | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
-| Nuvem de palavras (ggwordcloud) | [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md) | [Quantitativo §6](https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras) |
-| Nuvem comparativa entre 2 grupos | [`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md) | [Quantitativo §6.1](https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras) |
-| Mapear onde termos aparecem no texto | [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
-| Rede de coocorrência | [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
-| Análise de sentimento (OpLexicon) | [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md) → [`ac_plot_sentiment()`](https://andersonheri.github.io/acR/reference/ac_plot_sentiment.md) | [Sentimento](https://ahenriquecp.com/acR/articles/sentimento.html) |
-| Modelagem de tópicos (LDA) | [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md) → [`ac_plot_lda_topics()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.md) | [LDA](https://ahenriquecp.com/acR/articles/lda.html) |
-| Cluster de documentos (hclust, k-means, PAM) | [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md) → [`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md) | [Cluster](https://ahenriquecp.com/acR/articles/cluster.html) |
-| Criar codebook para LLM | [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
-| Classificar textos com LLM | [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
-| Amostrar documentos para revisão humana | [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md) · [`ac_qual_export_for_review()`](https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
-| Concordância humano × LLM (Kappa, Krippendorff) | [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md) · [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
-| Escolher o modelo LLM certo | [`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
-| Relatório metodológico reprodutível | [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md) | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
-| Exportar (CSV, LaTeX, Excel, RDS) | [`ac_export()`](https://andersonheri.github.io/acR/reference/ac_export.md) | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
+| Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR) | [`ac_import()`](https://ahenriquecp.com/acR/reference/ac_import.md) | [Quickstart](https://ahenriquecp.com/acR/articles/quickstart.html) |
+| Criar corpus a partir de `data.frame` ou vetor | [`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md) | [Quickstart](https://ahenriquecp.com/acR/articles/quickstart.html) |
+| Coletar discursos da Câmara/Senado | [`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md) · [`ac_fetch_senado()`](https://ahenriquecp.com/acR/reference/ac_fetch_senado.md) | [Estudo de caso](https://ahenriquecp.com/acR/articles/analise-proposicoes.html) |
+| Limpar texto (stopwords, URLs, acentos, NAs) | [`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md) + [`ac_clean_stopwords()`](https://ahenriquecp.com/acR/reference/ac_clean_stopwords.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Contar tokens | [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Top termos + gráfico | [`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md) → [`ac_plot_top_terms()`](https://ahenriquecp.com/acR/reference/ac_plot_top_terms.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Termos distintivos por documento | [`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_plot_tf_idf.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Comparar grupos (partido, período, tema, região…) | [`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://ahenriquecp.com/acR/reference/ac_plot_keyness.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Nuvem de palavras (ggwordcloud) | [`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md) | [Quantitativo §6](https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras) |
+| Nuvem comparativa entre 2 grupos | [`ac_plot_wordcloud_comparative()`](https://ahenriquecp.com/acR/reference/ac_plot_wordcloud_comparative.md) | [Quantitativo §6.1](https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras) |
+| Mapear onde termos aparecem no texto | [`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Rede de coocorrência | [`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_plot_cooccurrence.md) | [Quantitativo](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Análise de sentimento (OpLexicon) | [`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md) → [`ac_plot_sentiment()`](https://ahenriquecp.com/acR/reference/ac_plot_sentiment.md) | [Sentimento](https://ahenriquecp.com/acR/articles/sentimento.html) |
+| Modelagem de tópicos (LDA) | [`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md) → [`ac_plot_lda_topics()`](https://ahenriquecp.com/acR/reference/ac_plot_lda_topics.md) | [LDA](https://ahenriquecp.com/acR/articles/lda.html) |
+| Cluster de documentos (hclust, k-means, PAM) | [`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md) → [`ac_plot_cluster()`](https://ahenriquecp.com/acR/reference/ac_plot_cluster.md) | [Cluster](https://ahenriquecp.com/acR/articles/cluster.html) |
+| Criar codebook para LLM | [`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Classificar textos com LLM | [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Amostrar documentos para revisão humana | [`ac_qual_sample()`](https://ahenriquecp.com/acR/reference/ac_qual_sample.md) · [`ac_qual_export_for_review()`](https://ahenriquecp.com/acR/reference/ac_qual_export_for_review.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Concordância humano × LLM (Kappa, Krippendorff) | [`ac_qual_irr()`](https://ahenriquecp.com/acR/reference/ac_qual_irr.md) · [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Escolher o modelo LLM certo | [`ac_qual_recommend_model()`](https://ahenriquecp.com/acR/reference/ac_qual_recommend_model.md) | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Relatório metodológico reprodutível | [`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md) | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
+| Exportar (CSV, LaTeX, Excel, RDS) | [`ac_export()`](https://ahenriquecp.com/acR/reference/ac_export.md) | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
 
 ------------------------------------------------------------------------
 
@@ -480,49 +480,49 @@ Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.
 Os seis pontos de entrada mais usados do pacote. Se voce esta comecando,
 aprenda estas primeiro; o resto do pipeline se conecta em torno delas.
 
-- [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)
-  : Importar arquivos para um corpus acR
-- [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
-  : Construir um corpus para análise de conteúdo
-- [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-  : Contar frequências de tokens ou n-gramas em um corpus
-- [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
+- [`ac_import()`](https://ahenriquecp.com/acR/reference/ac_import.md) :
+  Importar arquivos para um corpus acR
+- [`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md) :
+  Construir um corpus para análise de conteúdo
+- [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) :
+  Contar frequências de tokens ou n-gramas em um corpus
+- [`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md)
   : Criar um codebook para análise de conteúdo qualitativa
-- [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+- [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
   : Classificar textos com LLM usando um codebook
-- [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+- [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
   : Calcular confiabilidade entre codificação LLM e humana
 
 ## Coleta de dados
 
 Importacao de textos de fontes abertas brasileiras.
 
-- [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md)
+- [`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md)
   : Busca discursos de deputados federais via API da Camara dos
   Deputados
-- [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md)
+- [`ac_fetch_senado()`](https://ahenriquecp.com/acR/reference/ac_fetch_senado.md)
   : Busca discursos de senadores federais via senatebR
 
 ## Corpus e pre-processamento
 
 Criacao, limpeza e tokenizacao de corpus em portugues.
 
-- [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
-  : Construir um corpus para análise de conteúdo
+- [`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md) :
+  Construir um corpus para análise de conteúdo
 
-- [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)
-  : Importar arquivos para um corpus acR
+- [`ac_import()`](https://ahenriquecp.com/acR/reference/ac_import.md) :
+  Importar arquivos para um corpus acR
 
-- [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
-  : Limpar e normalizar texto de um corpus
+- [`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md) :
+  Limpar e normalizar texto de um corpus
 
-- [`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md)
+- [`ac_clean_stopwords()`](https://ahenriquecp.com/acR/reference/ac_clean_stopwords.md)
   : Inspecionar e editar stopwords extras do acR
 
-- [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+- [`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
   : Tokenizar textos de um corpus acR
 
-- [`is_ac_corpus()`](https://andersonheri.github.io/acR/reference/is_ac_corpus.md)
+- [`is_ac_corpus()`](https://ahenriquecp.com/acR/reference/is_ac_corpus.md)
   :
 
   Verificar se um objeto é um corpus do `acR`
@@ -531,23 +531,23 @@ Criacao, limpeza e tokenizacao de corpus em portugues.
 
 Frequencias, associacoes e modelagem estatistica de textos.
 
-- [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-  : Contar frequências de tokens ou n-gramas em um corpus
-- [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
+- [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) :
+  Contar frequências de tokens ou n-gramas em um corpus
+- [`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md)
   : Selecionar os termos mais frequentes
-- [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
-  : Calcular tf-idf para termos em documentos ou grupos
-- [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+- [`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md) :
+  Calcular tf-idf para termos em documentos ou grupos
+- [`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md)
   : Calcular estatisticas de keyness entre dois grupos
-- [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md)
+- [`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md)
   : Calcular co-ocorrências de termos
-- [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+- [`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
   : Análise de sentimento com OpLexicon
-- [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md) :
+- [`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md) :
   Ajustar modelo LDA (Latent Dirichlet Allocation)
-- [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
+- [`ac_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_lda_tune.md)
   : Ajustar múltiplos modelos LDA para selecionar k
-- [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)
+- [`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md)
   : Agrupamento nao supervisionado de documentos
 
 ## Codificacao qualitativa via LLM
@@ -556,45 +556,45 @@ Pipeline de analise de conteudo qualitativa assistida por LLMs: criacao
 e gestao de codebooks, enriquecimento com literatura, traducao, fusao e
 geracao de system prompts.
 
-- [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
+- [`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md)
   : Criar um codebook para análise de conteúdo qualitativa
-- [`ac_qual_codebook_add()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.md)
+- [`ac_qual_codebook_add()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_add.md)
   : Adicionar categoria a um codebook existente
-- [`ac_qual_codebook_remove()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_remove.md)
+- [`ac_qual_codebook_remove()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_remove.md)
   : Remover categoria de um codebook existente
-- [`ac_qual_codebook_hybrid()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_hybrid.md)
+- [`ac_qual_codebook_hybrid()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_hybrid.md)
   : Enriquecer codebook com literatura via LLM (modo híbrido)
-- [`ac_qual_codebook_merge()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_merge.md)
+- [`ac_qual_codebook_merge()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_merge.md)
   : Fundir dois codebooks em um
-- [`ac_qual_codebook_translate()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_translate.md)
+- [`ac_qual_codebook_translate()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_translate.md)
   : Traduzir codebook para outro idioma via LLM
-- [`ac_qual_codebook_history()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_history.md)
+- [`ac_qual_codebook_history()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_history.md)
   : Exibir histórico de modificações de um codebook
-- [`as_prompt()`](https://andersonheri.github.io/acR/reference/as_prompt.md)
-  : Converter codebook em system prompt para LLM
-- [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
+- [`as_prompt()`](https://ahenriquecp.com/acR/reference/as_prompt.md) :
+  Converter codebook em system prompt para LLM
+- [`ac_qual_search_literature()`](https://ahenriquecp.com/acR/reference/ac_qual_search_literature.md)
   : Buscar referencias bibliograficas sobre um conceito via OpenAlex e
   LLM
-- [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+- [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
   : Classificar textos com LLM usando um codebook
-- [`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)
+- [`ac_qual_save_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_save_codebook.md)
   : Salvar codebook em arquivo YAML
-- [`ac_qual_load_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_load_codebook.md)
+- [`ac_qual_load_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_load_codebook.md)
   : Carregar codebook de arquivo YAML
 
 ## Validacao e confiabilidade
 
 Amostragem, concordancia inter-codificador e importacao/exportacao.
 
-- [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md)
+- [`ac_qual_irr()`](https://ahenriquecp.com/acR/reference/ac_qual_irr.md)
   : Calcular métricas de confiabilidade inter-anotador
-- [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+- [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
   : Calcular confiabilidade entre codificação LLM e humana
-- [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
+- [`ac_qual_sample()`](https://ahenriquecp.com/acR/reference/ac_qual_sample.md)
   : Amostrar documentos para validação humana
-- [`ac_qual_export_for_review()`](https://andersonheri.github.io/acR/reference/ac_qual_export_for_review.md)
+- [`ac_qual_export_for_review()`](https://ahenriquecp.com/acR/reference/ac_qual_export_for_review.md)
   : Exportar amostra para revisão humana em Excel
-- [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md)
+- [`ac_qual_import_human()`](https://ahenriquecp.com/acR/reference/ac_qual_import_human.md)
   : Importar classificação humana de Excel
 
 ## Replicabilidade
@@ -602,55 +602,55 @@ Amostragem, concordancia inter-codificador e importacao/exportacao.
 Relatorio automatico das decisoes metodologicas para artigos e
 relatorios.
 
-- [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
+- [`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md)
   : Gerar relatório de replicabilidade da análise qualitativa
 
 ## Selecao de modelos LLM
 
 Listagem e recomendacao de modelos LLM.
 
-- [`ac_qual_list_models()`](https://andersonheri.github.io/acR/reference/ac_qual_list_models.md)
+- [`ac_qual_list_models()`](https://ahenriquecp.com/acR/reference/ac_qual_list_models.md)
   : Listar modelos LLM disponíveis para análise de conteúdo
-- [`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md)
+- [`ac_qual_recommend_model()`](https://ahenriquecp.com/acR/reference/ac_qual_recommend_model.md)
   : Recomendar modelo LLM para análise de conteúdo qualitativa
 
 ## Visualizacao
 
 Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 
-- [`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md)
+- [`ac_plot_cluster()`](https://ahenriquecp.com/acR/reference/ac_plot_cluster.md)
   : Visualiza um objeto ac_cluster
-- [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
+- [`ac_plot_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_plot_cooccurrence.md)
   : Visualizar rede de co-ocorrência de termos
-- [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md)
+- [`ac_plot_keyness()`](https://ahenriquecp.com/acR/reference/ac_plot_keyness.md)
   : Plotar estatisticas de keyness
-- [`ac_plot_lda_topics()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.md)
+- [`ac_plot_lda_topics()`](https://ahenriquecp.com/acR/reference/ac_plot_lda_topics.md)
   : Visualizar top termos por tópico
-- [`ac_plot_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_tune.md)
+- [`ac_plot_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_plot_lda_tune.md)
   : Visualizar curva de seleção de k (perplexidade)
-- [`ac_plot_sentiment()`](https://andersonheri.github.io/acR/reference/ac_plot_sentiment.md)
+- [`ac_plot_sentiment()`](https://ahenriquecp.com/acR/reference/ac_plot_sentiment.md)
   : Visualizar sentimento ao longo dos documentos
-- [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md)
+- [`ac_plot_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_plot_tf_idf.md)
   : Plotar termos mais caracteristicos por tf-idf
-- [`ac_plot_top_terms()`](https://andersonheri.github.io/acR/reference/ac_plot_top_terms.md)
+- [`ac_plot_top_terms()`](https://ahenriquecp.com/acR/reference/ac_plot_top_terms.md)
   : Plotar termos mais frequentes
-- [`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md)
+- [`ac_plot_wordcloud_comparative()`](https://ahenriquecp.com/acR/reference/ac_plot_wordcloud_comparative.md)
   : Nuvem de palavras comparativa entre grupos
-- [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)
+- [`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md)
   : Gráfico X-ray — dispersão lexical de termos no corpus
-- [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
+- [`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md)
   : Criar nuvem de palavras
-- [`theme_ac()`](https://andersonheri.github.io/acR/reference/theme_ac.md)
-  : Tema visual consistente do acR
-- [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+- [`theme_ac()`](https://ahenriquecp.com/acR/reference/theme_ac.md) :
+  Tema visual consistente do acR
+- [`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
   : Paleta categórica do acR
 
 ## Exportacao
 
 Exporta resultados para CSV, LaTeX, Excel e RDS.
 
-- [`ac_export()`](https://andersonheri.github.io/acR/reference/ac_export.md)
-  : Exporta resultados de analise de conteudo em multiplos formatos
+- [`ac_export()`](https://ahenriquecp.com/acR/reference/ac_export.md) :
+  Exporta resultados de analise de conteudo em multiplos formatos
 
 # Articles
 
@@ -659,30 +659,30 @@ Exporta resultados para CSV, LaTeX, Excel e RDS.
 Do zero ao pipeline completo em 5 minutos ou uma hora de estudo.
 
 - [Quickstart — acR em 5
-  minutos](https://andersonheri.github.io/acR/articles/quickstart.md):
+  minutos](https://ahenriquecp.com/acR/articles/quickstart.md):
 - [Introdução ao acR: pipeline integrado de análise de
-  conteúdo](https://andersonheri.github.io/acR/articles/introducao-acR.md):
+  conteúdo](https://ahenriquecp.com/acR/articles/introducao-acR.md):
 - [Replicabilidade ponta-a-ponta — do codebook ao relatório de
-  método](https://andersonheri.github.io/acR/articles/replicabilidade.md):
+  método](https://ahenriquecp.com/acR/articles/replicabilidade.md):
 
 ### Pipeline qualitativo (LLMs)
 
 Codebook, self-consistency, revisão humana e casos aplicados.
 
 - [Análise de Conteúdo Qualitativa com
-  LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md):
+  LLMs](https://ahenriquecp.com/acR/articles/qualitativo-llm.md):
 - [Análise de proposições
-  legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.md):
+  legislativas](https://ahenriquecp.com/acR/articles/analise-proposicoes.md):
 
 ### Pipeline quantitativo
 
 Análises estatísticas clássicas de conteúdo textual.
 
 - [Analise quantitativa de
-  texto](https://andersonheri.github.io/acR/articles/quantitativo.md):
+  texto](https://ahenriquecp.com/acR/articles/quantitativo.md):
 - [Agrupamento não supervisionado de
-  documentos](https://andersonheri.github.io/acR/articles/cluster.md):
+  documentos](https://ahenriquecp.com/acR/articles/cluster.md):
 - [Analise de
-  sentimento](https://andersonheri.github.io/acR/articles/sentimento.md):
+  sentimento](https://ahenriquecp.com/acR/articles/sentimento.md):
 - [Modelagem de topicos com
-  LDA](https://andersonheri.github.io/acR/articles/lda.md):
+  LDA](https://ahenriquecp.com/acR/articles/lda.md):

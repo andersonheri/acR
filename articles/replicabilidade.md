@@ -5,10 +5,10 @@ qualitativa assistida por LLM, com foco na **replicabilidade**: cada
 decisão metodológica é documentada de forma que outro pesquisador possa
 reproduzir a análise apenas com o codebook em YAML e o relatório gerado
 por
-[`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md).
+[`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md).
 
 A demonstração usa dados sintéticos
-([`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+([`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
 requer chave de LLM paga); a estrutura, formatos e sequência são
 idênticos a uma rodada real.
 
@@ -18,18 +18,18 @@ idênticos a uma rodada real.
 2.  **Codebook** — instrumento analítico (`ac_qual_codebook`)
 3.  **Classificação** — LLM com `live view` (`ac_qual_code(live = ...)`)
 4.  **Amostragem para revisão** —
-    [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
+    [`ac_qual_sample()`](https://ahenriquecp.com/acR/reference/ac_qual_sample.md)
 5.  **Confiabilidade inter-codificador** —
-    [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+    [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
 6.  **Relatório de método** —
-    [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
+    [`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md)
 
 ## 1. Corpus
 
 Corpus fabricado de 12 pronunciamentos com posição declarada
 (favor/contra/neutro) — em uso real, este data.frame viria de
-[`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md),
-[`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md)
+[`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md),
+[`ac_fetch_senado()`](https://ahenriquecp.com/acR/reference/ac_fetch_senado.md)
 ou de importação de PDFs.
 
 ``` r
@@ -120,7 +120,7 @@ cb
 #> • Categorias (3): "favor", "contra", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 28/07/2026 20:13
+#> • Criado em: 29/07/2026 15:34
 #> 
 #> Instrução geral:
 #> Classifique a posicao do parlamentar sobre a reforma tributaria com base no
@@ -143,9 +143,9 @@ análise em outra sessão:
 
 arquivo_cb <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo_cb)
-#> ✅ Codebook salvo em /tmp/RtmpQFlKzR/file217d6e670076.yaml
+#> ✅ Codebook salvo em /tmp/RtmpzfxP2n/file20ba6bcfa89b.yaml
 cat("Codebook salvo em:", arquivo_cb, "\n")
-#> Codebook salvo em: /tmp/RtmpQFlKzR/file217d6e670076.yaml
+#> Codebook salvo em: /tmp/RtmpzfxP2n/file20ba6bcfa89b.yaml
 ```
 
 ## 3. Classificação com live view
@@ -521,7 +521,7 @@ irr
 ## 6. Relatório de método — replicabilidade automática
 
 Aqui está o **coração desta vignette**:
-[`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
+[`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md)
 empacota tudo — codebook, config LLM, distribuição de resultados,
 métricas de IRR — em um documento único, pronto para anexar como
 material suplementar de um artigo.
@@ -544,7 +544,7 @@ ac_qual_report(
 )
 #> Warning: Unknown or uninitialised column: `metrics`.
 #> ✔ Relatorio salvo em
-#> /tmp/RtmpQFlKzR/relatorio-217d52e46485.md
+#> /tmp/RtmpzfxP2n/relatorio-20ba16214593.md
 ```
 
 Primeiras 40 linhas do relatório gerado:
@@ -554,7 +554,7 @@ Primeiras 40 linhas do relatório gerado:
 cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> # Classificacao de posicionamento na reforma tributaria
 #> 
-#> - **Gerado em:** 2026-07-28 20:13:18 UTC
+#> - **Gerado em:** 2026-07-29 15:34:11 UTC
 #> - **Versao do acR:** 0.3.2
 #> - **Autor(es):** Silva, A.; Souza, B.
 #> - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).
@@ -570,7 +570,7 @@ cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> | Idioma        | `pt` |
 #> | Modo        | `manual` |
 #> | Multilabel  | `FALSE` |
-#> | Criado em     | 2026-07-28 20:13:16 |
+#> | Criado em     | 2026-07-29 15:34:10 |
 #> 
 #> **Instrucoes ao codificador:**
 #> 

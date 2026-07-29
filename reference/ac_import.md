@@ -7,7 +7,7 @@ Suporta caminhos individuais, vetores de arquivos e globs
 
 É a **via de entrada principal** do pipeline quando você trabalha com
 arquivos em disco (relatórios, transcrições, PDFs escaneados). Faz o que
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md)
 faria a partir de um `data.frame`, mas cobrindo o passo anterior:
 extração de texto de formatos heterogêneos com detecção automática pelo
 sufixo do arquivo. Para PDFs escaneados e imagens, aciona OCR via
@@ -96,9 +96,9 @@ Ooms, J. (2024). tesseract: Open Source OCR Engine. R package.
 
 ## See also
 
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
-[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md),
-[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md),
+[`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md),
+[`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
 
 ## Examples
 

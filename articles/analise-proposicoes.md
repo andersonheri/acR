@@ -171,7 +171,7 @@ codebook <- ac_qual_codebook(
 
 ### Enriquecer com literatura via LLM
 
-[`ac_qual_codebook_hybrid()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_hybrid.md)
+[`ac_qual_codebook_hybrid()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_hybrid.md)
 re-ancora as definições em referências bibliográficas buscadas via LLM,
 preservando os exemplos manuais:
 

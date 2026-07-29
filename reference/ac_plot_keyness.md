@@ -2,7 +2,7 @@
 
 `ac_plot_keyness()` cria um grafico de barras com as estatisticas de
 keyness calculadas por
-[`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md),
+[`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md),
 destacando os termos mais caracteristicos do grupo alvo e do grupo de
 referencia.
 
@@ -60,8 +60,8 @@ Um objeto `ggplot`.
 
 ## See also
 
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-[`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
+[`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md)
 
 ## Examples
 
