@@ -148,7 +148,9 @@ cb <- ac_qual_codebook(
       weight       = 1
     )
   ),
-  multilabel = FALSE,   # cada doc recebe UMA categoria
+  multilabel = FALSE,   # cada doc recebe UMA categoria; se TRUE, a coluna
+                        # `categoria` na saida vira uma string pipe-separada
+                        # ("tecnica|politica") quando mais de uma se aplicar.
   lang       = "pt"
 )
 #> ! Categoria "neutro": sem exemplos negativos (examples_neg).
@@ -161,7 +163,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 29/07/2026 15:33
+#> • Criado em: 05/08/2026 18:57
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
@@ -366,6 +368,14 @@ faz a classificação em lotes. Três parâmetros são chave:
   variação de temperatura, e a categoria final é a moda. O
   `confidence_score` sai daí — 1.0 = todas as k rodadas concordaram;
   0.67 = 2 de 3.
+- `temperature`: **variação estocástica** entre as rodadas de
+  self-consistency (padrão `0.3`). A rodada principal usa
+  `temperature = 0` (determinística); as `k - 1` rodadas de consistência
+  usam este valor para diversificar as saídas. Desde a v0.3.3 é de fato
+  repassado ao provedor via
+  [`ellmer::params()`](https://ellmer.tidyverse.org/reference/params.html)
+  — versões anteriores aceitavam o parâmetro mas não o aplicavam,
+  inflando `confidence_score` espuriamente.
 - `reasoning`: pede raciocínio estruturado em JSON.
 - `live`: **visualização em tempo real** da classificação, tirando o
   processo do “caixa-preta”. Ver blockquote abaixo.

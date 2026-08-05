@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -310,7 +310,9 @@ categorias similares.</p>
 <span>      weight       <span class="op">=</span> <span class="fl">1</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,   <span class="co"># cada doc recebe UMA categoria</span></span>
+<span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,   <span class="co"># cada doc recebe UMA categoria; se TRUE, a coluna</span></span>
+<span>                        <span class="co"># `categoria` na saida vira uma string pipe-separada</span></span>
+<span>                        <span class="co"># ("tecnica|politica") quando mais de uma se aplicar.</span></span>
 <span>  lang       <span class="op">=</span> <span class="st">"pt"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"neutro"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span></span>
@@ -323,7 +325,7 @@ categorias similares.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"positivo"</span>, <span style="color: #0000BB;">"negativo"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 29/07/2026 15:33</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 05/08/2026 18:57</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique o tom geral do discurso parlamentar.</span></span>
@@ -515,6 +517,15 @@ faz a classificação em lotes. Três parâmetros são chave:</p>
 classificado k× (padrão 3) com pequena variação de temperatura, e a
 categoria final é a moda. O <code>confidence_score</code> sai daí — 1.0
 = todas as k rodadas concordaram; 0.67 = 2 de 3.</li>
+<li>
+<code>temperature</code>: <strong>variação estocástica</strong>
+entre as rodadas de self-consistency (padrão <code>0.3</code>). A rodada
+principal usa <code>temperature = 0</code> (determinística); as
+<code>k - 1</code> rodadas de consistência usam este valor para
+diversificar as saídas. Desde a v0.3.3 é de fato repassado ao provedor
+via <code><a href="https://ellmer.tidyverse.org/reference/params.html" class="external-link">ellmer::params()</a></code> — versões anteriores aceitavam o
+parâmetro mas não o aplicavam, inflando <code>confidence_score</code>
+espuriamente.</li>
 <li>
 <code>reasoning</code>: pede raciocínio estruturado em JSON.</li>
 <li>
