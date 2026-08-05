@@ -23,7 +23,7 @@
 ">
 <meta property="og:description" content="Pipeline integrado de analise de conteudo em R, combinando codificacao qualitativa via LLMs com analise quantitativa classica e visualizacao moderna, com foco em corpora brasileiros.
 ">
-<meta property="og:image" content="https://andersonheri.github.io/acR/logo.png">
+<meta property="og:image" content="https://ahenriquecp.com/acR/logo.png">
 <meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros.">
 <meta property="og:title" content="acR — Analise de Conteudo em R">
 <meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento.">
@@ -38,7 +38,7 @@
 
     <a class="navbar-brand me-2" href="index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,7 +137,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="va">codebook</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span><span class="st">"posicao"</span>, <span class="st">"Classifique."</span>,</span>
 <span>                              categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>favor <span class="op">=</span> <span class="st">"..."</span>, contra <span class="op">=</span> <span class="st">"..."</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span><span class="va">corpus</span>, <span class="va">codebook</span>, model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span><span class="op">)</span></span></code></pre></div>
-<p>Vignette completa: <strong><a href="https://ahenriquecp.com/acR/articles/introducao-acR.html" class="external-link">Comece aqui →</a></strong> · <strong><a href="https://ahenriquecp.com/acR/articles/quickstart.html" class="external-link">Quickstart 5 min →</a></strong></p>
+<p>Vignette completa: <strong><a href="https://ahenriquecp.com/acR/articles/introducao-acR.html">Comece aqui →</a></strong> · <strong><a href="https://ahenriquecp.com/acR/articles/quickstart.html">Quickstart 5 min →</a></strong></p>
 <hr>
 </div>
 <div class="section level2">
@@ -347,7 +347,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="qual-função-eu-preciso">Qual função eu preciso?<a class="anchor" aria-label="anchor" href="#qual-fun%C3%A7%C3%A3o-eu-preciso"></a>
 </h2>
-<p>Um guia rápido do objetivo ao código. Cada linha aponta a função principal e a vignette com o exemplo completo. As demais funções são variações ou utilitários — veja <strong><a href="https://ahenriquecp.com/acR/reference/" class="external-link">Funções disponíveis (completo)</a></strong>.</p>
+<p>Um guia rápido do objetivo ao código. Cada linha aponta a função principal e a vignette com o exemplo completo. As demais funções são variações ou utilitários — veja <strong><a href="https://ahenriquecp.com/acR/reference/">Funções disponíveis (completo)</a></strong>.</p>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -363,134 +363,134 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <tr>
 <td>Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR)</td>
 <td><code><a href="reference/ac_import.html">ac_import()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quickstart.html" class="external-link">Quickstart</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quickstart.html">Quickstart</a></td>
 </tr>
 <tr>
 <td>Criar corpus a partir de <code>data.frame</code> ou vetor</td>
 <td><code><a href="reference/ac_corpus.html">ac_corpus()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quickstart.html" class="external-link">Quickstart</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quickstart.html">Quickstart</a></td>
 </tr>
 <tr>
 <td>Coletar discursos da Câmara/Senado</td>
 <td>
 <code><a href="reference/ac_fetch_camara.html">ac_fetch_camara()</a></code> · <code><a href="reference/ac_fetch_senado.html">ac_fetch_senado()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/analise-proposicoes.html" class="external-link">Estudo de caso</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/analise-proposicoes.html">Estudo de caso</a></td>
 </tr>
 <tr>
 <td>Limpar texto (stopwords, URLs, acentos, NAs)</td>
 <td>
 <code><a href="reference/ac_clean.html">ac_clean()</a></code> + <code><a href="reference/ac_clean_stopwords.html">ac_clean_stopwords()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Quantitativo</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo</a></td>
 </tr>
 <tr>
 <td>Contar tokens</td>
 <td><code><a href="reference/ac_count.html">ac_count()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Quantitativo</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo</a></td>
 </tr>
 <tr>
 <td>Top termos + gráfico</td>
 <td>
 <code><a href="reference/ac_top_terms.html">ac_top_terms()</a></code> → <code><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Quantitativo</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo</a></td>
 </tr>
 <tr>
 <td>Termos distintivos por documento</td>
 <td>
 <code><a href="reference/ac_tf_idf.html">ac_tf_idf()</a></code> → <code><a href="reference/ac_plot_tf_idf.html">ac_plot_tf_idf()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Quantitativo</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo</a></td>
 </tr>
 <tr>
 <td>Comparar grupos (partido, período, tema, região…)</td>
 <td>
 <code><a href="reference/ac_keyness.html">ac_keyness()</a></code> → <code><a href="reference/ac_plot_keyness.html">ac_plot_keyness()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Quantitativo</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo</a></td>
 </tr>
 <tr>
 <td>Nuvem de palavras (ggwordcloud)</td>
 <td><code><a href="reference/ac_wordcloud.html">ac_wordcloud()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras" class="external-link">Quantitativo §6</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras">Quantitativo §6</a></td>
 </tr>
 <tr>
 <td>Nuvem comparativa entre 2 grupos</td>
 <td><code><a href="reference/ac_plot_wordcloud_comparative.html">ac_plot_wordcloud_comparative()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras" class="external-link">Quantitativo §6.1</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html#nuvem-de-palavras">Quantitativo §6.1</a></td>
 </tr>
 <tr>
 <td>Mapear onde termos aparecem no texto</td>
 <td><code><a href="reference/ac_plot_xray.html">ac_plot_xray()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Quantitativo</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo</a></td>
 </tr>
 <tr>
 <td>Rede de coocorrência</td>
 <td>
 <code><a href="reference/ac_cooccurrence.html">ac_cooccurrence()</a></code> → <code><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Quantitativo</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo</a></td>
 </tr>
 <tr>
 <td>Análise de sentimento (OpLexicon)</td>
 <td>
 <code><a href="reference/ac_sentiment.html">ac_sentiment()</a></code> → <code><a href="reference/ac_plot_sentiment.html">ac_plot_sentiment()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/sentimento.html" class="external-link">Sentimento</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/sentimento.html">Sentimento</a></td>
 </tr>
 <tr>
 <td>Modelagem de tópicos (LDA)</td>
 <td>
 <code><a href="reference/ac_lda.html">ac_lda()</a></code> → <code><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/lda.html" class="external-link">LDA</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/lda.html">LDA</a></td>
 </tr>
 <tr>
 <td>Cluster de documentos (hclust, k-means, PAM)</td>
 <td>
 <code><a href="reference/ac_cluster_documents.html">ac_cluster_documents()</a></code> → <code><a href="reference/ac_plot_cluster.html">ac_plot_cluster()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/cluster.html" class="external-link">Cluster</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/cluster.html">Cluster</a></td>
 </tr>
 <tr>
 <td>Criar codebook para LLM</td>
 <td><code><a href="reference/ac_qual_codebook.html">ac_qual_codebook()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html" class="external-link">Qualitativo LLM</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
 </tr>
 <tr>
 <td>Classificar textos com LLM</td>
 <td><code><a href="reference/ac_qual_code.html">ac_qual_code()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html" class="external-link">Qualitativo LLM</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
 </tr>
 <tr>
 <td>Amostrar documentos para revisão humana</td>
 <td>
 <code><a href="reference/ac_qual_sample.html">ac_qual_sample()</a></code> · <code><a href="reference/ac_qual_export_for_review.html">ac_qual_export_for_review()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html" class="external-link">Qualitativo LLM</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
 </tr>
 <tr>
 <td>Concordância humano × LLM (Kappa, Krippendorff)</td>
 <td>
 <code><a href="reference/ac_qual_irr.html">ac_qual_irr()</a></code> · <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>
 </td>
-<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html" class="external-link">Qualitativo LLM</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
 </tr>
 <tr>
 <td>Escolher o modelo LLM certo</td>
 <td><code><a href="reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html" class="external-link">Qualitativo LLM</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
 </tr>
 <tr>
 <td>Relatório metodológico reprodutível</td>
 <td><code><a href="reference/ac_qual_report.html">ac_qual_report()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html" class="external-link">Replicabilidade</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html">Replicabilidade</a></td>
 </tr>
 <tr>
 <td>Exportar (CSV, LaTeX, Excel, RDS)</td>
 <td><code><a href="reference/ac_export.html">ac_export()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html" class="external-link">Replicabilidade</a></td>
+<td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html">Replicabilidade</a></td>
 </tr>
 </tbody>
 </table>
@@ -505,17 +505,17 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="documentação">Documentação<a class="anchor" aria-label="anchor" href="#documenta%C3%A7%C3%A3o"></a>
 </h2>
-<p>Site completo: <strong><a href="https://ahenriquecp.com/acR/" class="external-link uri">https://ahenriquecp.com/acR/</a></strong> — vignettes navegáveis, referência de todas as funções e changelog.</p>
+<p>Site completo: <strong><a href="https://ahenriquecp.com/acR/" class="uri">https://ahenriquecp.com/acR/</a></strong> — vignettes navegáveis, referência de todas as funções e changelog.</p>
 <div class="section level3">
 <h3 id="comece-por-aqui">Comece por aqui<a class="anchor" aria-label="anchor" href="#comece-por-aqui"></a>
 </h3>
 <ul>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/quickstart.html" class="external-link">Quickstart (5 min)</a> — do zero ao primeiro gráfico.</li>
+<a href="https://ahenriquecp.com/acR/articles/quickstart.html">Quickstart (5 min)</a> — do zero ao primeiro gráfico.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/introducao-acR.html" class="external-link">Visão geral do pacote</a> — pipeline em uma hora.</li>
+<a href="https://ahenriquecp.com/acR/articles/introducao-acR.html">Visão geral do pacote</a> — pipeline em uma hora.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/replicabilidade.html" class="external-link">Replicabilidade ponta-a-ponta</a> — do dado bruto ao relatório reprodutível.</li>
+<a href="https://ahenriquecp.com/acR/articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a> — do dado bruto ao relatório reprodutível.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -523,9 +523,9 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h3>
 <ul>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html" class="external-link">Codificação com LLMs — guia completo</a> — codebook, self-consistency, revisão humana e concordância.</li>
+<a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a> — codebook, self-consistency, revisão humana e concordância.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/analise-proposicoes.html" class="external-link">Estudo de caso: proposições legislativas</a> — aplicação real com dados da Câmara.</li>
+<a href="https://ahenriquecp.com/acR/articles/analise-proposicoes.html">Estudo de caso: proposições legislativas</a> — aplicação real com dados da Câmara.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -533,13 +533,13 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h3>
 <ul>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/quantitativo.html" class="external-link">Frequências, keyness e coocorrência</a> — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.</li>
+<a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Frequências, keyness e coocorrência</a> — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/cluster.html" class="external-link">Agrupamento não supervisionado de documentos</a> — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.</li>
+<a href="https://ahenriquecp.com/acR/articles/cluster.html">Agrupamento não supervisionado de documentos</a> — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/sentimento.html" class="external-link">Análise de sentimento (OpLexicon)</a> — polaridade e sentimento agregado por documento.</li>
+<a href="https://ahenriquecp.com/acR/articles/sentimento.html">Análise de sentimento (OpLexicon)</a> — polaridade e sentimento agregado por documento.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/articles/lda.html" class="external-link">Modelagem de tópicos (LDA)</a> — escolha de <code>k</code>, interpretação de tópicos e visualização.</li>
+<a href="https://ahenriquecp.com/acR/articles/lda.html">Modelagem de tópicos (LDA)</a> — escolha de <code>k</code>, interpretação de tópicos e visualização.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -547,9 +547,9 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h3>
 <ul>
 <li>
-<a href="https://ahenriquecp.com/acR/reference/" class="external-link">Índice completo por área</a> — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.</li>
+<a href="https://ahenriquecp.com/acR/reference/">Índice completo por área</a> — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/news/" class="external-link">Notícias / changelog</a> — histórico de versões (atual: <strong>0.3.2</strong>).</li>
+<a href="https://ahenriquecp.com/acR/news/">Notícias / changelog</a> — histórico de versões (atual: <strong>0.3.2</strong>).</li>
 </ul>
 <hr>
 </div>

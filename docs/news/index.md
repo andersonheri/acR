@@ -1,22 +1,72 @@
 # Changelog
 
+## acR 0.3.3 (em desenvolvimento)
+
+### Bug fixes – modulo qualitativo (pipeline LLM)
+
+Tres bugs encontrados no
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+e funcoes internas durante uso em producao (Gemini/Groq/OpenAI) foram
+corrigidos:
+
+- **`live = "terminal"` travava no primeiro documento com “Cannot find
+  progress bar”** (`R/ac_qual_live.R`). A
+  [`cli::cli_progress_bar()`](https://cli.r-lib.org/reference/cli_progress_bar.html)
+  era criada sem `.envir`, amarrando o ciclo de vida da barra ao frame
+  de `.ac_live_start()` – que retorna imediatamente. `cli` destruia a
+  barra antes de
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+  conseguir chamar `cli_progress_update()`. Fix: `.ac_live_start()` (e
+  `.ac_live_finish()`) agora aceita argumento `.envir` (padrao
+  [`parent.frame()`](https://rdrr.io/r/base/sys.parent.html)), amarrando
+  a barra ao frame do chamador – tipicamente
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md).
+
+- **`temperature` de
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+  era aceito mas nunca usado** (`R/ac_qual_code.R`,
+  `.ac_classify_one()`). O parametro formal era ignorado no corpo, entao
+  as `k_consistency` rodadas de self-consistency (Wang et al., 2023)
+  usavam sempre a temperatura padrao do provedor – variacao estocastica
+  esperada nao acontecia, inflando `confidence_score` espuriamente. Fix:
+  `temperature` agora e injetada via `ellmer::params(temperature = ...)`
+  no argumento `params` do chat (respeita `params` explicitos passados
+  pelo usuario via `...`). Para o caminho
+  `chat = <Chat pre-configurado>`, o Chat e reconstruido com o novo
+  `params` via `get_provider()` + `get_model()`, com fallback graceful
+  para o clone antigo se a reconstrucao falhar.
+
+- **`multilabel = TRUE` quebrava com “Result must be length 1, not N”
+  quando o modelo devolvia array JSON** (`R/ac_qual_code.R`,
+  `.ac_build_system_prompt()` + `.ac_build_result_tibble()`). O prompt
+  nao instruia explicitamente que `"categoria"` deve ser sempre uma
+  string (mesmo em multilabel), e o parser assumia que `main$categoria`
+  era escalar. Um documento com array `["a","b"]` quebrava a
+  [`purrr::map()`](https://purrr.tidyverse.org/reference/map.html)
+  inteira, derrubando a classificacao de TODOS os documentos daquela
+  variavel. Fix: (a) prompt multilabel agora instrui a devolver
+  “tecnica\|politica” (string pipe-separada) e proibe explicitamente
+  array JSON; (b) parser defensivo faz sempre
+  `paste(as.character(main$categoria), collapse = "|")`, absorvendo
+  arrays quando o modelo ignora a instrucao.
+
 ## acR 0.3.2
 
 ### Novidades
 
-- **[`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)**
+- **[`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md)**
   (novo) — clustering nao supervisionado de documentos com hierarquico
   (Ward.D2), k-means ou PAM. Features configuraveis (TF-IDF ou
   contagens), distancias `cosine`/`euclidean`, escolha automatica de `k`
   por silhueta (usa `cluster` de `Suggests`). Retorna S3 `ac_cluster`
   com metodo `print`.
-- **[`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md)**
+- **[`ac_plot_cluster()`](https://ahenriquecp.com/acR/reference/ac_plot_cluster.md)**
   (novo) — tres tipos de visualizacao para objetos `ac_cluster`:
   `dendrogram` (default para hclust), `scatter` (projecao PCA 2D com
   labels) e `heatmap` (matriz de dissimilaridade ordenada pelo
   dendrograma).
 - **Nova vignette** —
-  [`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md):
+  [`vignette("cluster")`](https://ahenriquecp.com/acR/articles/cluster.md):
   “Agrupamento nao supervisionado de documentos”. Explica as tres
   familias (hard/soft clustering e LDA) com tabela de quando usar cada
   uma, apresenta seis visualizacoes complementares (dendrograma, PCA,
@@ -27,7 +77,7 @@
 - **Documentacao** — README, `_pkgdown.yml` (menu de vignettes e secao
   “Pipeline quantitativo”) apontam para a nova vignette; acentos
   corrigidos nas entradas visiveis do menu.
-- **[`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md)**
+- **[`ac_plot_wordcloud_comparative()`](https://ahenriquecp.com/acR/reference/ac_plot_wordcloud_comparative.md)**
   agora aceita **N grupos** (\>= 2) em vez de somente 2. Cada grupo vira
   uma faceta; nas duas implementacoes (`backend = "ggwordcloud"` e
   `backend = "ggplot"`) o layout usa `facet_wrap()`. Cores padrao passam
@@ -40,25 +90,24 @@
   metrica responde qual pergunta”); `lda.Rmd` (comparativo LDA vs.
   clustering vs. LLM e heatmap gamma com referencia cruzada ao cluster).
   Roxygen de
-  [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md),
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md),
-  [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md),
-  [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md),
-  [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md),
-  [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md),
-  [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
-  e
-  [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
+  [`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md),
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md),
+  [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md),
+  [`ac_import()`](https://ahenriquecp.com/acR/reference/ac_import.md),
+  [`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md),
+  [`ac_qual_irr()`](https://ahenriquecp.com/acR/reference/ac_qual_irr.md),
+  [`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
+  e [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md)
   expandidos com framing teorico e faixas interpretativas. `@examples`
   mais realistas em
-  [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md),
-  [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md),
-  [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md)
+  [`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md),
+  [`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md),
+  [`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md)
   e
-  [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md).
+  [`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md).
 - **Generalizacao do keyness** — README, vignette `quantitativo` e
   roxygen de
-  [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+  [`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md)
   descrevem grupos genericamente (qualquer variavel categorica: partido,
   periodo, tema, regiao, condicao experimental) em vez do exemplo
   “governo x oposicao” que havia ossificado como canonico.
@@ -68,10 +117,10 @@
 
 ### Adequacao CRAN (correcoes de resubmissao)
 
-- [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md),
-  [`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md)
+- [`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md),
+  [`ac_plot_wordcloud_comparative()`](https://ahenriquecp.com/acR/reference/ac_plot_wordcloud_comparative.md)
   e
-  [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
+  [`ac_qual_sample()`](https://ahenriquecp.com/acR/reference/ac_qual_sample.md)
   agora expoem argumento `seed` (padrao `42L`; `NULL` usa o RNG
   corrente). A semente e escopada via
   [`withr::with_seed()`](https://withr.r-lib.org/reference/with_seed.html)
@@ -80,7 +129,7 @@
   o buffer de linhas agora vive em um
   [`environment()`](https://rdrr.io/r/base/environment.html) local.
 - Removidas escritas ao `.GlobalEnv` em
-  [`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md);
+  [`ac_plot_wordcloud_comparative()`](https://ahenriquecp.com/acR/reference/ac_plot_wordcloud_comparative.md);
   RNG passa a ser escopado exclusivamente via
   [`withr::with_seed()`](https://withr.r-lib.org/reference/with_seed.html).
 - `withr` movido de `Suggests` para `Imports` (usado em codigo
@@ -90,19 +139,19 @@
 
 ### Ajustes
 
-- **[`ac_plot_wordcloud_comparative()`](https://andersonheri.github.io/acR/reference/ac_plot_wordcloud_comparative.md)**
+- **[`ac_plot_wordcloud_comparative()`](https://ahenriquecp.com/acR/reference/ac_plot_wordcloud_comparative.md)**
   — layout reproduzivel via novo argumento `seed` (padrao `42L`), com
   salvaguarda do RNG global; cores padrao agora vem de `ac_palette(2L)`
   em vez de codigos fixos. Novo argumento `backend`
   (`"auto"`/`"ggwordcloud"`/`"ggplot"`): quando `ggwordcloud` esta
   instalado, usa `geom_text_wordcloud` com facets lado a lado; caso
   contrario, mantem o layout jitter original.
-- **[`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)**
+- **[`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md)**
   — corrigido caso de divisao por zero em documentos com apenas 1 token
   (posicao passa a ser `0.5`); warning agora identifica quais termos
   ficaram sem ocorrencia, nao apenas o caso extremo de nenhum
   encontrado.
-- **[`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md)**
+- **[`ac_import()`](https://ahenriquecp.com/acR/reference/ac_import.md)**
   — a ordem dos documentos no corpus resultante agora preserva a ordem
   de entrada em `path`, mesmo misturando arquivos OCR e texto; `doc_id`
   duplicados sao desambiguados automaticamente com sufixos (`_2`, `_3`,
@@ -114,23 +163,23 @@
 ### Testes
 
 - Nova cobertura para
-  [`ac_export()`](https://andersonheri.github.io/acR/reference/ac_export.md),
-  [`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md),
-  [`theme_ac()`](https://andersonheri.github.io/acR/reference/theme_ac.md),
-  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+  [`ac_export()`](https://ahenriquecp.com/acR/reference/ac_export.md),
+  [`ac_qual_irr()`](https://ahenriquecp.com/acR/reference/ac_qual_irr.md),
+  [`theme_ac()`](https://ahenriquecp.com/acR/reference/theme_ac.md),
+  [`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
   e
-  [`is_ac_corpus()`](https://andersonheri.github.io/acR/reference/is_ac_corpus.md).
+  [`is_ac_corpus()`](https://ahenriquecp.com/acR/reference/is_ac_corpus.md).
 
 ## acR 0.3.0
 
 ### Novas funcionalidades — Visualização e Tema
 
-- **[`theme_ac()`](https://andersonheri.github.io/acR/reference/theme_ac.md)**
+- **[`theme_ac()`](https://ahenriquecp.com/acR/reference/theme_ac.md)**
   — tema `ggplot2` minimalista e consistente, usado por todos os
   `ac_plot_*()`. Deriva de `theme_minimal()` com ajustes editoriais:
   títulos em negrito, gridlines suaves, tipografia compacta.
 
-- **[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)**
+- **[`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)**
   — paleta categórica de 8 cores (adaptada de Okabe-Ito para
   compatibilidade WCAG AA e daltonismo).
 
@@ -139,10 +188,10 @@
   editorial), com fallback para `wordcloud` clássico. Novos argumentos
   `backend` e `title`.
 
-- **[`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)**
+- **[`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md)**
   — refinada com
-  [`theme_ac()`](https://andersonheri.github.io/acR/reference/theme_ac.md) +
-  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md),
+  [`theme_ac()`](https://ahenriquecp.com/acR/reference/theme_ac.md) +
+  [`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md),
   facet_grid com label do documento à esquerda, barras verticais mais
   espessas e arredondadas.
 
@@ -168,7 +217,7 @@
 - Nova vignette **`replicabilidade.Rmd`** — pipeline completo em 6
   etapas (corpus → codebook → code + live → sample → reliability →
   report), com exemplo executável de
-  [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md).
+  [`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md).
 
 - Todas as vignettes usam `ac_clean(remove_stopwords = "pt")` — antes
   top-terms e keyness apareciam poluídos por artigos e preposições.
@@ -190,7 +239,7 @@
 
 ### Novas funcionalidades — Replicabilidade e transparência
 
-- **[`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)**
+- **[`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md)**
   — gera relatório de replicabilidade em Markdown ou HTML autocontido
   (bilíngue PT/EN), documentando codebook completo, histórico de
   modificações, configuração da LLM, distribuição de resultados,
@@ -245,9 +294,9 @@
   `.ac_model_justification`, `.ac_list_models_live`).
 
 - Testes online de
-  [`ac_qual_codebook_translate()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_translate.md)
+  [`ac_qual_codebook_translate()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_translate.md)
   e
-  [`ac_qual_codebook_hybrid()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_hybrid.md)
+  [`ac_qual_codebook_hybrid()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_hybrid.md)
   ganham `skip_if()` defensivo para versões do `ellmer` sem `chat()`.
 
 - Total: 688 pass, 4 skips justificados.
@@ -258,32 +307,31 @@
 
 ### Novas funções
 
-- [`ac_qual_codebook_hybrid()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_hybrid.md)
+- [`ac_qual_codebook_hybrid()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_hybrid.md)
   — enriquece definições de categorias com referências bibliográficas
   buscadas via LLM, combinando fundamento manual com ancora teórica
   induzida da literatura.
 
-- [`ac_qual_codebook_merge()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_merge.md)
+- [`ac_qual_codebook_merge()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_merge.md)
   — funde dois objetos `ac_codebook` em um único, com controle de
   conflitos de nomes (`error`, `keep_first`, `keep_second`,
   `rename_second`).
 
-- [`ac_qual_codebook_translate()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_translate.md)
+- [`ac_qual_codebook_translate()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_translate.md)
   — traduz instruções, definições e exemplos de um codebook para outro
   idioma via LLM (`"pt"` ↔︎ `"en"`).
 
-- [`ac_qual_codebook_history()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_history.md)
+- [`ac_qual_codebook_history()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_history.md)
   — retorna o histórico de modificações de um `ac_codebook` (adições,
   remoções, merges, traduções, enriquecimentos).
 
-- [`as_prompt()`](https://andersonheri.github.io/acR/reference/as_prompt.md)
-  /
-  [`as_prompt.ac_codebook()`](https://andersonheri.github.io/acR/reference/as_prompt.md)
+- [`as_prompt()`](https://ahenriquecp.com/acR/reference/as_prompt.md) /
+  [`as_prompt.ac_codebook()`](https://ahenriquecp.com/acR/reference/as_prompt.md)
   — converte um `ac_codebook` em system prompt formatado para uso direto
   com objetos `Chat` do `ellmer`, com suporte a raciocínio estruturado
   (`reasoning_length`).
 
-- [`as_prompt.default()`](https://andersonheri.github.io/acR/reference/as_prompt.md)
+- [`as_prompt.default()`](https://ahenriquecp.com/acR/reference/as_prompt.md)
   — método default com mensagem de erro informativa para objetos que não
   são `ac_codebook`.
 
@@ -299,7 +347,7 @@
 
 - Corrigido mismatch de documentação: `check_overlap` adicionado ao
   `.Rd` de
-  [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md).
+  [`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md).
 
 - Corrigido `vignettes/sentimento.Rmd`: `eval=FALSE` adicionado a todos
   os chunks que faziam download externo, prevenindo falha no CI sem

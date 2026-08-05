@@ -7,10 +7,10 @@ raciocínio da LLM para cada documento.
 
 É o **motor de classificação** do pipeline qualitativo do `acR`. Assume
 que o codebook já foi construído com
-[`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md)
+[`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md)
 e (idealmente) testado numa amostra piloto. A saída é sempre validada
 com
-[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+[`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
 contra uma amostra codificada por humano — nenhuma análise categorial
 publicável dispensa essa etapa.
 
@@ -60,7 +60,7 @@ ac_qual_code(
 - codebook:
 
   Objeto `ac_codebook`, saída de
-  [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md).
+  [`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md).
 
 - model:
 

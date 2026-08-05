@@ -21,7 +21,7 @@ ac_plot_sentiment(
 - sentiment_tbl:
 
   Tibble retornado por
-  [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md).
+  [`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md).
 
 - type:
 
@@ -50,7 +50,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 
 ## Examples
 

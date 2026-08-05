@@ -2,20 +2,20 @@
 
 `ac_count()` calcula frequências de tokens ou n-gramas a partir de um
 objeto
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
+[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md),
 usando internamente
-[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+[`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
 seguido de uma agregação com
 [`dplyr::count()`](https://dplyr.tidyverse.org/reference/count.html).
 
 É o insumo direto de quase toda análise quantitativa do pacote:
-[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
+[`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md)
 pega o topo,
-[`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
+[`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md)
 recalibra por distintividade,
-[`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+[`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md)
 compara grupos,
-[`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
+[`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md)
 visualiza. O argumento `by` decide se a unidade de análise é o documento
 ou o grupo agregado.
 
@@ -37,21 +37,21 @@ ac_count(corpus, n = 1L, drop_punct = FALSE, by = NULL, sort = TRUE, ...)
 - corpus:
 
   Objeto de classe
-  [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md).
+  [`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md).
 
 - n:
 
   Tamanho do n-grama a ser tokenizado. Encaminhado para
-  [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md).
+  [`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md).
   Veja
-  [`?ac_tokenize`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+  [`?ac_tokenize`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
   para detalhes.
 
 - drop_punct:
 
   Logico. Se `TRUE`, remove tokens compostos apenas por pontuacao antes
   de calcular as frequencias (via `drop_punct = TRUE` em
-  [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)).
+  [`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)).
 
 - by:
 
@@ -68,7 +68,7 @@ ac_count(corpus, n = 1L, drop_punct = FALSE, by = NULL, sort = TRUE, ...)
 - ...:
 
   Argumentos adicionais encaminhados para
-  [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+  [`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
   (por exemplo, `keep_empty`).
 
 ## Value
@@ -82,9 +82,9 @@ Um
 
 ## See also
 
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
-[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md),
-[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md),
+[`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md),
+[`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
 
 ## Examples
 

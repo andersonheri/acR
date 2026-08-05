@@ -1,3 +1,44 @@
+# acR 0.3.3 (em desenvolvimento)
+
+## Bug fixes -- modulo qualitativo (pipeline LLM)
+
+Tres bugs encontrados no `ac_qual_code()` e funcoes internas durante uso
+em producao (Gemini/Groq/OpenAI) foram corrigidos:
+
+* **`live = "terminal"` travava no primeiro documento com "Cannot find
+  progress bar"** (`R/ac_qual_live.R`). A `cli::cli_progress_bar()` era
+  criada sem `.envir`, amarrando o ciclo de vida da barra ao frame de
+  `.ac_live_start()` -- que retorna imediatamente. `cli` destruia a
+  barra antes de `ac_qual_code()` conseguir chamar
+  `cli_progress_update()`. Fix: `.ac_live_start()` (e `.ac_live_finish()`)
+  agora aceita argumento `.envir` (padrao `parent.frame()`), amarrando
+  a barra ao frame do chamador -- tipicamente `ac_qual_code()`.
+
+* **`temperature` de `ac_qual_code()` era aceito mas nunca usado**
+  (`R/ac_qual_code.R`, `.ac_classify_one()`). O parametro formal era
+  ignorado no corpo, entao as `k_consistency` rodadas de
+  self-consistency (Wang et al., 2023) usavam sempre a temperatura
+  padrao do provedor -- variacao estocastica esperada nao acontecia,
+  inflando `confidence_score` espuriamente. Fix: `temperature` agora
+  e injetada via `ellmer::params(temperature = ...)` no argumento
+  `params` do chat (respeita `params` explicitos passados pelo usuario
+  via `...`). Para o caminho `chat = <Chat pre-configurado>`, o Chat e
+  reconstruido com o novo `params` via `get_provider()` + `get_model()`,
+  com fallback graceful para o clone antigo se a reconstrucao falhar.
+
+* **`multilabel = TRUE` quebrava com "Result must be length 1, not N"
+  quando o modelo devolvia array JSON** (`R/ac_qual_code.R`,
+  `.ac_build_system_prompt()` + `.ac_build_result_tibble()`). O prompt
+  nao instruia explicitamente que `"categoria"` deve ser sempre uma
+  string (mesmo em multilabel), e o parser assumia que
+  `main$categoria` era escalar. Um documento com array `["a","b"]`
+  quebrava a `purrr::map()` inteira, derrubando a classificacao de
+  TODOS os documentos daquela variavel. Fix: (a) prompt multilabel
+  agora instrui a devolver "tecnica|politica" (string pipe-separada) e
+  proibe explicitamente array JSON; (b) parser defensivo faz sempre
+  `paste(as.character(main$categoria), collapse = "|")`, absorvendo
+  arrays quando o modelo ignora a instrucao.
+
 # acR 0.3.2
 
 ## Novidades

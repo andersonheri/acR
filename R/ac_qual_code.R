@@ -273,7 +273,14 @@ ac_qual_code <- function(corpus,
   } else ""
 
   multilabel_instruction <- if (codebook$multilabel) {
-    "Um texto pode pertencer a MAIS DE UMA categoria simultaneamente."
+    paste(
+      "Um texto pode pertencer a MAIS DE UMA categoria simultaneamente.",
+      "Se mais de uma categoria se aplicar, responda com uma UNICA STRING",
+      "contendo os nomes das categorias escolhidas separados por \"|\"",
+      "(exemplo: \"tecnica|politica\"). NUNCA responda com um array JSON",
+      "(ex.: [\"tecnica\", \"politica\"]) -- o campo \"categoria\" deve ser",
+      "SEMPRE uma string, mesmo quando multiplas categorias se aplicam."
+    )
   } else {
     "Cada texto deve ser classificado em EXATAMENTE UMA categoria."
   }
@@ -302,9 +309,46 @@ ac_qual_code <- function(corpus,
                               temperature, reasoning, ...) {
   dots <- list(...)
 
+  # Injeta temperature no objeto `params` do ellmer. Isso e essencial
+  # para self-consistency (Wang et al., 2023) funcionar de fato: sem
+  # variacao real de temperatura entre as k rodadas, `confidence_score`
+  # infla espuriamente. Nao sobrescreve `params` explicitos passados
+  # via `...` (usuario prevalece).
+  if (!is.null(temperature) && requireNamespace("ellmer", quietly = TRUE) &&
+      is.null(dots$params)) {
+    dots$params <- ellmer::params(temperature = temperature)
+  }
+
   if (inherits(model, "Chat")) {
-    chat <- model$clone()
-    chat$set_system_prompt(system_prompt)
+    # Chat pre-configurado pelo usuario: nao ha API publica no ellmer
+    # atual para mutar `params` em runtime. Clonamos e reutilizamos o
+    # provider por meio de um novo chat_<provider>() com params ajustado,
+    # preservando system_prompt. Se algo falhar, degradamos para o
+    # comportamento antigo (clone sem alterar params) e avisamos.
+    chat <- tryCatch({
+      provider <- model$get_provider()
+      provider_name <- tolower(class(provider)[1])
+      # class names: ProviderAnthropic, ProviderOpenAI, ProviderGoogleGemini...
+      provider_name <- sub("^provider", "", provider_name)
+      # Modelo atual do chat (get_model devolve string)
+      current_model <- tryCatch(model$get_model(), error = function(e) NULL)
+      if (!is.null(current_model) && !is.null(dots$params)) {
+        # Reconstroi via .ac_ellmer_chat para respeitar aliases
+        new_name <- paste0(provider_name, "/", current_model)
+        new_chat <- do.call(.ac_ellmer_chat,
+                            c(list(name = new_name, system_prompt = system_prompt),
+                              dots))
+        new_chat
+      } else {
+        c2 <- model$clone()
+        c2$set_system_prompt(system_prompt)
+        c2
+      }
+    }, error = function(e) {
+      c2 <- model$clone()
+      c2$set_system_prompt(system_prompt)
+      c2
+    })
   } else {
     chat_args <- c(
       list(name = model, system_prompt = system_prompt),
@@ -390,12 +434,18 @@ ac_qual_code <- function(corpus,
     main <- r$main
     conf <- r$conf_scores
 
+    # Modelos podem devolver `categoria` como string ("a"), string
+    # pipe-separada ("a|b") ou array JSON (["a","b"]) apesar do prompt.
+    # Sempre colapsamos para uma unica string, mantendo o tibble com uma
+    # linha por documento -- essa e a garantia esperada pelo restante do
+    # pipeline (ac_qual_reliability, ac_qual_report, etc.).
     cat_val <- if (!is.null(main) && !is.null(main$categoria)) {
-      as.character(main$categoria)
+      paste(as.character(main$categoria), collapse = "|")
     } else NA_character_
 
+    # Mesmo cuidado para raciocinio: alguns modelos devolvem lista/array
     rac_val <- if (reasoning && !is.null(main) && !is.null(main$raciocinio)) {
-      as.character(main$raciocinio)
+      paste(as.character(main$raciocinio), collapse = " ")
     } else NA_character_
 
     conf_score <- if (!is.null(conf)) conf$total %||% NA_real_ else NA_real_

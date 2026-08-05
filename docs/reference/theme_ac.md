@@ -7,7 +7,7 @@ com ajustes editoriais: tipografia mais compacta, gridlines suaves,
 títulos em negrito com espaçamento negativo (visual editorial).
 
 Também expõe
-[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+[`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
 para uma paleta categórica coerente com o tema (compatível com
 acessibilidade AA).
 
@@ -34,7 +34,7 @@ Um objeto
 
 ## See also
 
-[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+[`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
 
 ## Examples
 

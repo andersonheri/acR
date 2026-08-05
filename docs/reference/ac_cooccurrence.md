@@ -22,7 +22,7 @@ ac_cooccurrence(
 - corpus:
 
   Objeto `ac_corpus` ou tibble com colunas `doc_id` e `token` (saída de
-  [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)).
+  [`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)).
 
 - window:
 
@@ -61,8 +61,8 @@ Tibble com colunas:
 
 ## See also
 
-[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md),
-[`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
+[`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md),
+[`ac_plot_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_plot_cooccurrence.md)
 
 ## Examples
 

@@ -27,7 +27,7 @@ ac_plot_cluster(
 - x:
 
   Objeto `ac_cluster` (saida de
-  [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)).
+  [`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md)).
 
 - kind:
 
@@ -41,7 +41,7 @@ ac_plot_cluster(
 - palette:
 
   Vetor de cores para os clusters. Padrao:
-  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md).
+  [`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md).
 
 ## Value
 
@@ -49,7 +49,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)
+[`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md)
 
 ## Examples
 

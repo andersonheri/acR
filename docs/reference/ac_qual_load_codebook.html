@@ -3,7 +3,7 @@
 o objeto ac_codebook na sessao atual. Uso tipico: retomar uma analise
 iniciada em outra sessao ou por outro pesquisador."><meta property="og:description" content="Le um arquivo YAML gerado por ac_qual_save_codebook() e reconstroi
 o objeto ac_codebook na sessao atual. Uso tipico: retomar uma analise
-iniciada em outra sessao ou por outro pesquisador."><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
+iniciada em outra sessao ou por outro pesquisador."><meta property="og:image" content="https://ahenriquecp.com/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -11,7 +11,7 @@ iniciada em outra sessao ou por outro pesquisador."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ iniciada em outra sessao ou por outro pesquisador.</p>
 <span class="r-in"><span><span class="va">arquivo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ✅ Codebook salvo em</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">/var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/file530d81bec91.yaml</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">/var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpUfBAEF/file327a1fb57216.yaml</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Recarregar em outra sessao</span></span></span>
 <span class="r-in"><span><span class="va">cb_novo</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_load_codebook</span><span class="op">(</span><span class="va">arquivo</span><span class="op">)</span></span></span>

@@ -103,8 +103,8 @@ Ideal para replicabilidade interna ao projeto.
 
 ## See also
 
-[`ac_qual_irr()`](https://andersonheri.github.io/acR/reference/ac_qual_irr.md),
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+[`ac_qual_irr()`](https://ahenriquecp.com/acR/reference/ac_qual_irr.md),
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
 
 ## Examples
 
@@ -123,7 +123,7 @@ out_rds <- file.path(tempdir(), "resultados.rds")
 
 # CSV
 ac_export(resultados, out_csv)
-#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/resultados.csv (csv).
+#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpUfBAEF/resultados.csv (csv).
 
 # LaTeX (para incluir em artigo)
 ac_export(
@@ -132,11 +132,11 @@ ac_export(
   latex_caption = "Classificacao do tom dos discursos por LLM",
   latex_label   = "tab:tom_discursos"
 )
-#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/resultados.tex (latex).
+#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpUfBAEF/resultados.tex (latex).
 
 # RDS (replicabilidade)
 ac_export(resultados, out_rds)
-#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/resultados.rds (rds).
+#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpUfBAEF/resultados.rds (rds).
 
 # Excel (requer openxlsx ou writexl instalado)
 if (requireNamespace("writexl", quietly = TRUE) ||
@@ -144,7 +144,7 @@ if (requireNamespace("writexl", quietly = TRUE) ||
   out_xlsx <- file.path(tempdir(), "resultados.xlsx")
   ac_export(resultados, out_xlsx, excel_sheet = "Classificacao")
 }
-#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/resultados.xlsx (xlsx).
+#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpUfBAEF/resultados.xlsx (xlsx).
 
 # Objeto ac_irr (comparar codificacao humana vs. LLM)
 gold <- data.frame(
@@ -157,5 +157,5 @@ predicted <- data.frame(
 )
 irr_result <- ac_qual_irr(gold, predicted, verbose = FALSE)
 ac_export(irr_result, file.path(tempdir(), "confiabilidade.csv"))
-#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/confiabilidade.csv (csv).
+#> ✔ Exportado para /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpUfBAEF/confiabilidade.csv (csv).
 ```

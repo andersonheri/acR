@@ -201,3 +201,117 @@ test_that("ac_qual_code() preserva metadados do corpus no resultado", {
   expect_true("partido" %in% names(resultado))
   expect_equal(resultado$partido[resultado$doc_id == "d1"], "PT")
 })
+
+
+# ============================================================
+# Bug fix: .ac_build_result_tibble tratava `categoria` como
+# comprimento 1; quando modelo devolvia array JSON (comum em
+# multilabel), purrr::map_chr quebrava com "Result must be length 1,
+# not N". Fix: paste(collapse = "|") -- sempre colapsa para string.
+# ============================================================
+
+test_that(".ac_build_result_tibble colapsa categoria/raciocinio em array (bug multilabel)", {
+  corpus <- tibble::tibble(
+    doc_id = c("d1", "d2", "d3"),
+    text   = c("t1", "t2", "t3")
+  )
+  results <- list(
+    # d1: modelo obedeceu (string)
+    list(doc_id = "d1",
+         main = list(categoria = "tecnica",
+                     raciocinio = "explicacao"),
+         conf_scores = list(total = 1)),
+    # d2: modelo devolveu array (bug reproduzido)
+    list(doc_id = "d2",
+         main = list(categoria = c("tecnica", "politica"),
+                     raciocinio = c("parte 1", "parte 2")),
+         conf_scores = list(total = 0.8)),
+    # d3: modelo devolveu string pipe-separada
+    list(doc_id = "d3",
+         main = list(categoria = "tecnica|politica",
+                     raciocinio = "explicacao unica"),
+         conf_scores = list(total = 0.67))
+  )
+
+  tbl <- acR:::.ac_build_result_tibble(
+    results   = results,
+    corpus    = corpus,
+    cat_names = c("tecnica", "politica"),
+    confidence = "total",
+    reasoning = TRUE
+  )
+
+  expect_s3_class(tbl, "tbl_df")
+  expect_equal(nrow(tbl), 3L)
+  expect_equal(tbl$categoria[1], "tecnica")
+  # d2 (array) deve virar string pipe-separada, nao quebrar
+  expect_equal(tbl$categoria[2], "tecnica|politica")
+  expect_equal(tbl$categoria[3], "tecnica|politica")
+  # raciocinio de array deve virar string unica
+  expect_equal(tbl$raciocinio[2], "parte 1 parte 2")
+})
+
+test_that("prompt multilabel instrui explicitamente que categoria eh string", {
+  cb <- ac_qual_codebook(
+    name = "multi_teste",
+    instructions = "Classifique.",
+    categories = list(
+      a = list(definition = "cat a"),
+      b = list(definition = "cat b"),
+      c = list(definition = "cat c")
+    ),
+    multilabel = TRUE
+  )
+  prompt <- acR:::.ac_build_system_prompt(cb, reasoning = FALSE,
+                                          reasoning_length = "short")
+  # Instrucao explicita contra array JSON deve estar presente
+  expect_true(grepl("NUNCA responda com um array JSON", prompt, fixed = TRUE))
+  expect_true(grepl("SEMPRE uma string", prompt))
+  expect_true(grepl("separados por", prompt))
+})
+
+
+# ============================================================
+# Bug fix: .ac_classify_one recebia `temperature` mas nunca o
+# repassava ao Chat -- as k rodadas de self-consistency usavam
+# temperatura fixa do provedor. Fix: injeta ellmer::params() em
+# dots quando o usuario nao passou params explicitos.
+# ============================================================
+
+test_that(".ac_classify_one injeta ellmer::params(temperature) quando ausente (bug temperature)", {
+  skip_if_not_installed("ellmer")
+  # Interceptamos .ac_ellmer_chat via trace() para capturar os argumentos
+  # sem exercer o caminho real (que abriria HTTP). Testa apenas o passo
+  # de composicao de argumentos que era o bug.
+  captured <- new.env()
+  captured$args <- NULL
+  ns <- asNamespace("acR")
+  original <- ns$.ac_ellmer_chat
+  # unlockBinding pra permitir substituicao segura em testes
+  suppressWarnings(unlockBinding(".ac_ellmer_chat", ns))
+  ns$.ac_ellmer_chat <- function(...) {
+    captured$args <- list(...)
+    # abortar imediatamente para nao continuar o pipeline
+    stop("test-shortcircuit", call. = FALSE)
+  }
+  on.exit({
+    ns$.ac_ellmer_chat <- original
+    lockBinding(".ac_ellmer_chat", ns)
+  }, add = TRUE)
+
+  cb <- list(multilabel = FALSE,
+             categories = list(a = list(definition = "cat a")))
+  tryCatch(
+    ns$.ac_classify_one(
+      text = "t", codebook = cb, model = "openai/gpt-4o",
+      system_prompt = "sys", temperature = 0.5, reasoning = FALSE
+    ),
+    error = function(e) NULL
+  )
+
+  expect_false(is.null(captured$args))
+  # `params` deve ter sido injetado nos args passados ao .ac_ellmer_chat
+  expect_true("params" %in% names(captured$args))
+  # E deve ser um objeto do ellmer::params()
+  expect_true(!is.null(captured$args$params))
+})

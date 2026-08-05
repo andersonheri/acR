@@ -53,12 +53,12 @@ ac_qual_reliability(
 - llm:
 
   Tibble com classificação LLM, saída de
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md).
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md).
 
 - human:
 
   Tibble com classificação humana, saída de
-  [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md).
+  [`ac_qual_import_human()`](https://ahenriquecp.com/acR/reference/ac_qual_import_human.md).
 
 - cat_col:
 

@@ -45,8 +45,8 @@ pacote `ldatuning`.
 
 ## See also
 
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md),
-[`ac_plot_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_tune.md)
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md),
+[`ac_plot_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_plot_lda_tune.md)
 
 ## Examples
 

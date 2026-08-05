@@ -1,7 +1,7 @@
 # Carregar codebook de arquivo YAML
 
 Le um arquivo YAML gerado por
-[`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)
+[`ac_qual_save_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_save_codebook.md)
 e reconstroi o objeto `ac_codebook` na sessao atual. Uso tipico: retomar
 uma analise iniciada em outra sessao ou por outro pesquisador.
 
@@ -48,7 +48,7 @@ cb <- ac_qual_codebook(
 arquivo <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo)
 #> ✅ Codebook salvo em
-#> /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//Rtmps6PLEe/file530d81bec91.yaml
+#> /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpUfBAEF/file327a1fb57216.yaml
 
 # Recarregar em outra sessao
 cb_novo <- ac_qual_load_codebook(arquivo)

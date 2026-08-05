@@ -42,3 +42,31 @@ test_that(".ac_live_start('shiny') sem pacote cai para terminal via warn", {
   # em ac_qual_live.R existe.
   expect_true(exists(".ac_live_start", envir = asNamespace("acR")))
 })
+
+
+# ============================================================
+# Bug fix: cli::cli_progress_bar sem .envir travava a barra ao frame
+# de .ac_live_start(), que retorna imediatamente -- primeira chamada
+# de cli_progress_update encontrava "Cannot find progress bar".
+# Fix: .ac_live_start ganha argumento .envir (default parent.frame()),
+# amarrando a barra ao chamador (ac_qual_code).
+# ============================================================
+
+test_that(".ac_live_start('terminal') sobrevive alem do proprio frame (bug .envir)", {
+  # Simula o fluxo real: um wrapper chama .ac_live_start, guarda o ctx
+  # e sai de escopo; depois um segundo wrapper (analogo ao loop de
+  # ac_qual_code) tenta atualizar a barra. Antes do fix, isso falhava
+  # imediatamente com "Cannot find progress bar <id>".
+  run_pipeline <- function() {
+    ctx <- acR:::.ac_live_start(mode = "terminal", n_docs = 3L)
+    # Alguns updates: se .envir estiver amarrado ao frame errado, o
+    # primeiro update ja quebra
+    for (i in seq_len(3L)) {
+      cli::cli_progress_update(id = ctx$pb, status = paste0("doc ", i),
+                               .envir = parent.frame())
+    }
+    acR:::.ac_live_finish(ctx)
+    "ok"
+  }
+  expect_equal(run_pipeline(), "ok")
+})

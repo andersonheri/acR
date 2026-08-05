@@ -3,7 +3,7 @@
 `ac_plot_tf_idf()` cria um grafico de barras com os termos mais
 caracteristicos a partir de uma tabela com a coluna `tf_idf`,
 tipicamente gerada por
-[`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md).
+[`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md).
 
 A funcao usa
 [ggplot2](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
@@ -59,9 +59,9 @@ Um objeto `ggplot`.
 
 ## See also
 
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-[`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md),
-[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md)
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
+[`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md),
+[`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md)
 
 ## Examples
 

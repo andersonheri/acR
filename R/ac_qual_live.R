@@ -1,13 +1,17 @@
 #' @keywords internal
 #' @noRd
-.ac_live_start <- function(mode, n_docs) {
+.ac_live_start <- function(mode, n_docs, .envir = parent.frame()) {
   ctx <- list(mode = mode, n = n_docs, results = list())
 
   if (mode == "terminal") {
+    # `.envir` amarra o ciclo de vida da barra ao frame do CHAMADOR
+    # (tipicamente ac_qual_code), nao ao frame de .ac_live_start() -- que
+    # retorna imediatamente e destruiria a barra antes do primeiro update.
     ctx$pb <- cli::cli_progress_bar(
       total  = n_docs,
       format = "{cli::pb_current}/{cli::pb_total} | {cli::pb_bar} {cli::pb_percent} | ETA {cli::pb_eta} | {cli::pb_status}",
-      clear  = FALSE
+      clear  = FALSE,
+      .envir = .envir
     )
   } else if (mode == "shiny") {
     ctx$shiny_data <- new.env(parent = emptyenv())
@@ -65,11 +69,11 @@
 
 #' @keywords internal
 #' @noRd
-.ac_live_finish <- function(ctx) {
+.ac_live_finish <- function(ctx, .envir = parent.frame()) {
   if (is.null(ctx)) return(invisible())
 
   if (identical(ctx$mode, "terminal") && !is.null(ctx$pb)) {
-    cli::cli_progress_done(id = ctx$pb)
+    cli::cli_progress_done(id = ctx$pb, .envir = .envir)
   } else if (identical(ctx$mode, "shiny")) {
     if (!is.null(ctx$shiny_data)) ctx$shiny_data$done <- TRUE
     # nao encerra o gadget; usuario fecha a janela quando quiser

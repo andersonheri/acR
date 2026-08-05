@@ -19,7 +19,7 @@ diferentes**, cada uma respondendo a uma pergunta distinta:
 
 Cada documento pertence a **um único grupo**. A saída é uma etiqueta
 `cluster ∈ {1, 2, …, k}`. É o mundo do
-[`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md):
+[`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md):
 hierárquico (`hclust`), `kmeans` e `pam`.
 
 - **Modelo mental:** cada documento é *do* tipo A ou *do* tipo B.
@@ -46,9 +46,9 @@ e misturas gaussianas (`mclust`) são os exemplos clássicos.
 
 Cada documento é uma **mistura probabilística de tópicos**, e cada
 tópico é uma **distribuição sobre palavras**. É o mundo do
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md): o
-output é uma matriz **γ (gamma)** de probabilidades documento × tópico e
-uma matriz **β (beta)** de probabilidades tópico × palavra.
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md): o output
+é uma matriz **γ (gamma)** de probabilidades documento × tópico e uma
+matriz **β (beta)** de probabilidades tópico × palavra.
 
 - **Modelo mental:** o autor amostrou tópicos com certas proporções e,
   para cada palavra, sorteou um tópico e depois uma palavra dele.
@@ -63,8 +63,8 @@ uma matriz **β (beta)** de probabilidades tópico × palavra.
 |----|----|
 | Uma partição limpa, uma etiqueta por documento | Hard clustering (esta vignette) |
 | Detectar documentos fronteiriços, quão típico de um grupo cada é | Soft clustering (fuzzy c-means) |
-| Descobrir temas que se **misturam** em cada texto | LDA (veja [`vignette("lda")`](https://andersonheri.github.io/acR/articles/lda.md)) |
-| Rotular documentos com **categorias pré-definidas** por um pesquisador | LLM (veja [`vignette("qualitativo-llm")`](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)) |
+| Descobrir temas que se **misturam** em cada texto | LDA (veja [`vignette("lda")`](https://ahenriquecp.com/acR/articles/lda.md)) |
+| Rotular documentos com **categorias pré-definidas** por um pesquisador | LLM (veja [`vignette("qualitativo-llm")`](https://ahenriquecp.com/acR/articles/qualitativo-llm.md)) |
 
 Um bom pipeline muitas vezes **combina** essas técnicas: hard clustering
 para triagem inicial, LDA para entender temas dentro de cada grupo, LLM
@@ -336,7 +336,7 @@ sabe qual grupo é “democracia” ou “mercado”, só que são diferentes).
 
 ## 6. Escolhendo o método
 
-[`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)
+[`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md)
 aceita três algoritmos:
 
 | Método | Quando usar |
@@ -360,16 +360,16 @@ ac_plot_cluster(clust_km, kind = "scatter")
 
 Fluxo típico onde clustering é **etapa prévia**:
 
-1.  [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)
+1.  [`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md)
     particiona o corpus em `k` grupos.
 2.  Amostre `n` documentos por cluster para leitura humana.
 3.  Use as leituras para escrever um **codebook inicial** com
-    [`ac_qual_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook.md).
+    [`ac_qual_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook.md).
 4.  Aplique o codebook ao corpus inteiro com
-    [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md).
+    [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md).
 5.  Se quiser refinar temas *dentro* de um cluster, rode
-    [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md)
-    só naquele subcorpus.
+    [`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md) só
+    naquele subcorpus.
 
 Isso reduz o custo cognitivo do primeiro contato com o corpus: em vez de
 enfrentar centenas de documentos aleatórios, você lê um punhado de

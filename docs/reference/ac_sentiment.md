@@ -74,7 +74,7 @@ Construction of a Portuguese Opinion Lexicon from multiple resources.
 
 ## See also
 
-[`ac_plot_sentiment()`](https://andersonheri.github.io/acR/reference/ac_plot_sentiment.md)
+[`ac_plot_sentiment()`](https://ahenriquecp.com/acR/reference/ac_plot_sentiment.md)
 
 ## Examples
 
