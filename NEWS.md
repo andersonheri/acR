@@ -1,5 +1,16 @@
 # acR 0.3.3
 
+## Compatibilidade
+
+* Teste `ac_plot_top_terms() gera ggplot valido` (em
+  `test-plots-snapshot.R:56`) usava `"labels" %in% names(p)` como
+  sanidade. Em ggplot2 4.x a estrutura interna do objeto ggplot mudou
+  (nova base S7) e a checagem por nome de slot passou a retornar
+  `FALSE`, quebrando o test na CRAN r-release-macos e r-oldrel-macos
+  (post-acceptance check, deadline 2026-08-21). Substituido por
+  `expect_no_error(ggplot2::ggplot_build(p))` -- teste de
+  buildabilidade real, independente de versao do ggplot2.
+
 ## Nova funcionalidade
 
 * **`ac_qual_report_full()`** (novo) -- relatorio consolidado

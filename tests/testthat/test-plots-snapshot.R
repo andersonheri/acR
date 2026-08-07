@@ -53,7 +53,10 @@ test_that("ac_plot_top_terms() gera ggplot valido", {
   p      <- ac_plot_top_terms(top)
 
   expect_s3_class(p, "ggplot")
-  expect_true("labels" %in% names(p))
+  # `names(p)` mudou de estrutura em ggplot2 4.x (S7). Em vez de checar
+  # slot interno, verificamos que o objeto compila via ggplot_build --
+  # teste mais robusto e independente da versao do ggplot2.
+  expect_no_error(ggplot2::ggplot_build(p))
 })
 
 test_that("ac_plot_keyness() gera ggplot valido", {
