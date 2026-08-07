@@ -129,6 +129,8 @@ relatorios.
 
 - [`ac_qual_report()`](https://ahenriquecp.com/acR/reference/ac_qual_report.md)
   : Gerar relatório de replicabilidade da análise qualitativa
+- [`ac_qual_report_full()`](https://ahenriquecp.com/acR/reference/ac_qual_report_full.md)
+  : Gerar relatório consolidado de múltiplas variáveis de conteúdo
 
 ## Selecao de modelos LLM
 

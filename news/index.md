@@ -2,6 +2,31 @@
 
 ## acR 0.3.3 (em desenvolvimento)
 
+### Nova funcionalidade
+
+- **[`ac_qual_report_full()`](https://ahenriquecp.com/acR/reference/ac_qual_report_full.md)**
+  (novo) – relatorio consolidado multi-variavel. Aceita uma lista
+  nomeada de resultados (`coded` + `codebook` + `reliability` opcional)
+  e gera **um unico** arquivo (Markdown ou HTML) com uma secao por
+  variavel, tabela sumaria no topo (k categorias, n docs, multilabel por
+  variavel), mesmo idioma (`pt`/`en`) e formato consistente com
+  \[ac_qual_report()\]. Atende ao caso de uso comum de analise de
+  conteudo com N variaveis, que antes exigia consolidador ad hoc.
+
+- **Campo `label` opcional em cada categoria do codebook.** Cada entrada
+  de `categories` em \[ac_qual_codebook()\] agora aceita `label = "..."`
+  como rotulo humano para exibicao (paralelo a `definition`,
+  `examples_pos`, etc.). Se ausente, o rotulo defaults para o proprio
+  slug (chave da lista). A saida de \[ac_qual_code()\] ganha coluna nova
+  **`categoria_label`** com o rotulo traduzido; em multilabel, os labels
+  vem unidos por `" | "` (espaco dos dois lados), enquanto a coluna
+  `categoria` mantem `"|"` sem espaco como chave estavel de comparacao.
+  Preservado tambem em
+  [`ac_qual_save_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_save_codebook.md)
+  /
+  [`ac_qual_load_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_load_codebook.md)
+  (YAML).
+
 ### Bug fixes – modulo qualitativo (pipeline LLM)
 
 Tres bugs encontrados no
@@ -35,6 +60,16 @@ corrigidos:
   `chat = <Chat pre-configurado>`, o Chat e reconstruido com o novo
   `params` via `get_provider()` + `get_model()`, com fallback graceful
   para o clone antigo se a reconstrucao falhar.
+
+- **`ac_qual_report(path = <relativo>)` falhava com “The directory ‘X’
+  does not exist”** mesmo com a pasta criada, e derrubava loops sem
+  `tryCatch`. Causa:
+  [`rmarkdown::render()`](https://pkgs.rstudio.com/rmarkdown/reference/render.html)
+  muda o cwd durante o knit, e `normalizePath(path, mustWork = FALSE)`
+  nao converte confiavelmente paths relativos inexistentes em absolutos.
+  Fix: `.ac_report_absolute_path()` resolve para absoluto contra o cwd
+  atual antes de qualquer `render()`, e a pasta destino e criada com
+  `dir.create(recursive = TRUE)` se necessario.
 
 - **`multilabel = TRUE` quebrava com “Result must be length 1, not N”
   quando o modelo devolvia array JSON** (`R/ac_qual_code.R`,

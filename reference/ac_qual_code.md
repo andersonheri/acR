@@ -136,7 +136,13 @@ Tibble com colunas:
 
 - Metadados originais do corpus;
 
-- Uma coluna por categoria com a classificação;
+- `categoria`: slug interno da categoria (chave da lista `categories` no
+  codebook). Em `multilabel = TRUE`, string pipe-separada sem espaço
+  (`"tecnica|politica"`).
+
+- `categoria_label`: rótulo humano correspondente, vindo do campo
+  `label` de cada categoria (se ausente, repete o slug). Em multilabel,
+  unidos por `" | "` (espaço dos dois lados).
 
 - `confidence_score`: grau de certeza (0-1);
 

@@ -215,7 +215,12 @@ Permite uso de APIs OpenAI-compatible self-hosted via <code>base_url</code>.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Tibble com colunas:</p><ul><li><p><code>doc_id</code>: identificador do documento;</p></li>
 <li><p>Metadados originais do corpus;</p></li>
-<li><p>Uma coluna por categoria com a classificação;</p></li>
+<li><p><code>categoria</code>: slug interno da categoria (chave da lista
+<code>categories</code> no codebook). Em <code>multilabel = TRUE</code>, string
+pipe-separada sem espaço (<code>"tecnica|politica"</code>).</p></li>
+<li><p><code>categoria_label</code>: rótulo humano correspondente, vindo do campo
+<code>label</code> de cada categoria (se ausente, repete o slug). Em
+multilabel, unidos por <code>" | "</code> (espaço dos dois lados).</p></li>
 <li><p><code>confidence_score</code>: grau de certeza (0-1);</p></li>
 <li><p><code>confidence_level</code>: <code>"alta"</code>, <code>"media"</code>, <code>"baixa"</code>;</p></li>
 <li><p><code>raciocinio</code>: justificativa da classificação (se <code>reasoning = TRUE</code>).</p></li>
