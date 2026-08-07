@@ -1,6 +1,6 @@
 # Changelog
 
-## acR 0.3.3 (em desenvolvimento)
+## acR 0.3.3
 
 ### Nova funcionalidade
 
