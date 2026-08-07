@@ -63,7 +63,12 @@
 #' @return Tibble com colunas:
 #'   * `doc_id`: identificador do documento;
 #'   * Metadados originais do corpus;
-#'   * Uma coluna por categoria com a classificação;
+#'   * `categoria`: slug interno da categoria (chave da lista
+#'     `categories` no codebook). Em `multilabel = TRUE`, string
+#'     pipe-separada sem espaço (`"tecnica|politica"`).
+#'   * `categoria_label`: rótulo humano correspondente, vindo do campo
+#'     `label` de cada categoria (se ausente, repete o slug). Em
+#'     multilabel, unidos por `" | "` (espaço dos dois lados).
 #'   * `confidence_score`: grau de certeza (0-1);
 #'   * `confidence_level`: `"alta"`, `"media"`, `"baixa"`;
 #'   * `raciocinio`: justificativa da classificação (se `reasoning = TRUE`).
@@ -235,6 +240,7 @@ ac_qual_code <- function(corpus,
     results    = results,
     corpus     = corpus,
     cat_names  = cat_names,
+    codebook   = codebook,
     confidence = confidence,
     reasoning  = reasoning
   )
@@ -428,8 +434,20 @@ ac_qual_code <- function(corpus,
 
 #' @keywords internal
 #' @noRd
-.ac_build_result_tibble <- function(results, corpus, cat_names,
+.ac_build_result_tibble <- function(results, corpus, cat_names, codebook,
                                      confidence, reasoning) {
+  # Mapeamento slug -> label para categoria_label. Se nenhuma categoria
+  # tiver `label` definido, categoria_label repete o slug (sem quebrar
+  # nada). Bug 5: garante coluna legivel na saida sem exigir dicionario
+  # externo do usuario.
+  label_map <- stats::setNames(
+    vapply(cat_names, function(k) {
+      cat <- codebook$categories[[k]]
+      if (!is.null(cat$label) && nzchar(cat$label)) cat$label else k
+    }, character(1)),
+    cat_names
+  )
+
   rows <- purrr::map(results, function(r) {
     main <- r$main
     conf <- r$conf_scores
@@ -441,6 +459,17 @@ ac_qual_code <- function(corpus,
     # pipeline (ac_qual_reliability, ac_qual_report, etc.).
     cat_val <- if (!is.null(main) && !is.null(main$categoria)) {
       paste(as.character(main$categoria), collapse = "|")
+    } else NA_character_
+
+    # Traduz slug(s) -> label(s), unindo multilabel com " | " (espaco
+    # dos dois lados) para leitura humana. Slugs desconhecidos passam
+    # inalterados.
+    cat_label <- if (!is.na(cat_val)) {
+      slugs <- strsplit(cat_val, "|", fixed = TRUE)[[1]]
+      labels <- vapply(slugs, function(s) {
+        if (s %in% names(label_map)) label_map[[s]] else s
+      }, character(1))
+      paste(labels, collapse = " | ")
     } else NA_character_
 
     # Mesmo cuidado para raciocinio: alguns modelos devolvem lista/array
@@ -456,6 +485,7 @@ ac_qual_code <- function(corpus,
     row <- tibble::tibble(
       doc_id           = r$doc_id,
       categoria        = cat_val,
+      categoria_label  = cat_label,
       confidence_score = conf_score,
       confidence_level = conf_level
     )

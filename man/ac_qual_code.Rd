@@ -69,7 +69,12 @@ Tibble com colunas:
 \itemize{
 \item \code{doc_id}: identificador do documento;
 \item Metadados originais do corpus;
-\item Uma coluna por categoria com a classificação;
+\item \code{categoria}: slug interno da categoria (chave da lista
+\code{categories} no codebook). Em \code{multilabel = TRUE}, string
+pipe-separada sem espaço (\code{"tecnica|politica"}).
+\item \code{categoria_label}: rótulo humano correspondente, vindo do campo
+\code{label} de cada categoria (se ausente, repete o slug). Em
+multilabel, unidos por \code{" | "} (espaço dos dois lados).
 \item \code{confidence_score}: grau de certeza (0-1);
 \item \code{confidence_level}: \code{"alta"}, \code{"media"}, \code{"baixa"};
 \item \code{raciocinio}: justificativa da classificação (se \code{reasoning = TRUE}).

@@ -89,6 +89,23 @@ ac_qual_report <- function(coded,
                      fileext = paste0(".", format))
   }
 
+  # rmarkdown::render() muda o diretorio de trabalho durante o knit;
+  # se `path` for relativo, dirname(path) sera resolvido no cwd novo e
+  # a checagem "The directory 'X' does not exist" quebra mesmo com a
+  # pasta existindo no cwd original. Convertemos SEMPRE para absoluto
+  # antes de sair do cwd atual, e criamos a pasta destino se preciso.
+  path     <- .ac_report_absolute_path(path)
+  dest_dir <- dirname(path)
+  if (!dir.exists(dest_dir)) {
+    dir.create(dest_dir, recursive = TRUE, showWarnings = FALSE)
+    if (!dir.exists(dest_dir)) {
+      cli::cli_abort(c(
+        "Nao foi possivel criar o diretorio destino do relatorio.",
+        "i" = "Diretorio: {.path {dest_dir}}"
+      ))
+    }
+  }
+
   md <- .ac_report_build_md(
     coded       = coded,
     codebook    = codebook,
@@ -116,7 +133,7 @@ ac_qual_report <- function(coded,
         self_contained   = TRUE,
         highlight        = "tango"
       ),
-      output_file  = normalizePath(path, mustWork = FALSE),
+      output_file  = path,   # ja absoluto
       quiet        = TRUE
     )
   }
@@ -125,6 +142,18 @@ ac_qual_report <- function(coded,
     "v" = sprintf(L$done_fmt, path)
   ))
   invisible(path)
+}
+
+
+#' Converte um caminho (possivelmente inexistente) em caminho absoluto
+#' @keywords internal
+#' @noRd
+.ac_report_absolute_path <- function(p) {
+  if (length(p) != 1L || !is.character(p)) return(p)
+  # Ja absoluto?  Unix: comeca com "/"; Windows: "C:/" ou "\\\\server"
+  if (grepl("^(/|[A-Za-z]:[/\\\\]|\\\\\\\\)", p)) return(p)
+  # Relativo: resolver contra o cwd ATUAL (antes de render mudar de dir)
+  file.path(normalizePath(getwd(), winslash = "/", mustWork = FALSE), p)
 }
 
 
@@ -519,4 +548,232 @@ ac_qual_report <- function(coded,
     if (all(valid)) return(k)
   }
   NULL
+}
+
+
+# ============================================================================
+# ac_qual_report_full: relatorio consolidado multi-variavel (Feature #6)
+# ============================================================================
+
+#' Gerar relatório consolidado de múltiplas variáveis de conteúdo
+#'
+#' @description
+#' `ac_qual_report_full()` gera **um único** documento (Markdown ou HTML)
+#' consolidando resultados de N variáveis de codificação qualitativa —
+#' cada uma com seu próprio codebook, rodada de [ac_qual_code()] e,
+#' opcionalmente, métricas de [ac_qual_reliability()] ou [ac_qual_irr()].
+#'
+#' É a resposta natural ao caso de uso mais comum de análise de conteúdo
+#' categorial (Krippendorff, 2018): um estudo tem várias variáveis de
+#' conteúdo (tom, posicionamento, tema, framing…). Antes desta função, o
+#' pesquisador precisava chamar [ac_qual_report()] N vezes e emendar os
+#' relatórios manualmente, ou escrever um consolidador ad hoc por projeto.
+#'
+#' Aceita variáveis `multilabel = TRUE` e `multilabel = FALSE` no mesmo
+#' relatório — cada seção herda a apresentação apropriada para o tipo.
+#'
+#' @param variables Lista **nomeada** onde cada elemento é uma lista com:
+#'   * `coded`: tibble com resultado de [ac_qual_code()] (obrigatório).
+#'   * `codebook`: objeto `ac_codebook` (obrigatório).
+#'   * `reliability`: opcional, saída de [ac_qual_reliability()] ou
+#'     [ac_qual_irr()].
+#'   Os nomes da lista viram os títulos das seções do relatório.
+#' @param chat Opcional. Objeto `Chat` do `ellmer` ou string de modelo
+#'   `"provider/model"`. Aplica-se a todas as variáveis (assumindo que
+#'   todas foram classificadas com o mesmo modelo — se não, deixe `NULL`).
+#' @param title Título do relatório consolidado. Padrão: `"Relatório
+#'   consolidado de análise de conteúdo"`.
+#' @param author Autor(es) do estudo.
+#' @param method Descrição do método de coleta do corpus.
+#' @param format `"md"` (padrão) ou `"html"`.
+#' @param path Caminho do arquivo destino. Se `NULL`, usa `tempfile()`.
+#' @param lang `"pt"` (padrão) ou `"en"`.
+#'
+#' @return Invisível: caminho do arquivo gerado.
+#'
+#' @examples
+#' # Duas variaveis de conteudo, cada uma com seu codebook
+#' cb_tom <- ac_qual_codebook(
+#'   name = "tom",
+#'   instructions = "Classifique o tom.",
+#'   categories = list(
+#'     pos = list(definition = "Positivo.", label = "Positivo"),
+#'     neg = list(definition = "Negativo.", label = "Negativo")
+#'   )
+#' )
+#' cb_pos <- ac_qual_codebook(
+#'   name = "posicao",
+#'   instructions = "Classifique a posicao.",
+#'   categories = list(
+#'     favor  = list(definition = "A favor.",  label = "A favor"),
+#'     contra = list(definition = "Contra.",   label = "Contra")
+#'   )
+#' )
+#'
+#' coded_tom <- tibble::tibble(
+#'   doc_id = paste0("d", 1:3),
+#'   categoria = c("pos", "neg", "pos"),
+#'   confidence_score = c(1, 0.67, 1)
+#' )
+#' coded_pos <- tibble::tibble(
+#'   doc_id = paste0("d", 1:3),
+#'   categoria = c("favor", "contra", "favor"),
+#'   confidence_score = c(1, 1, 0.67)
+#' )
+#'
+#' arquivo <- tempfile(fileext = ".md")
+#' ac_qual_report_full(
+#'   variables = list(
+#'     "Tom do discurso" = list(coded = coded_tom, codebook = cb_tom),
+#'     "Posicao politica" = list(coded = coded_pos, codebook = cb_pos)
+#'   ),
+#'   path = arquivo,
+#'   author = "Fulano de Tal"
+#' )
+#'
+#' @seealso [ac_qual_report()] para relatório de uma única variável.
+#'
+#' @concept qualitative
+#' @export
+ac_qual_report_full <- function(variables,
+                                 chat   = NULL,
+                                 title  = NULL,
+                                 author = NULL,
+                                 method = NULL,
+                                 format = c("md", "html"),
+                                 path   = NULL,
+                                 lang   = c("pt", "en")) {
+
+  format <- match.arg(format)
+  lang   <- match.arg(lang)
+  L      <- .ac_report_labels(lang)
+
+  # ---- Validacoes ----------------------------------------------------------
+  if (!is.list(variables) || length(variables) == 0L) {
+    cli::cli_abort("{.arg variables} deve ser uma lista nao-vazia.")
+  }
+  if (is.null(names(variables)) || any(!nzchar(names(variables)))) {
+    cli::cli_abort(c(
+      "{.arg variables} deve ser uma lista {.strong nomeada}.",
+      "i" = "Os nomes viram os titulos das secoes do relatorio."
+    ))
+  }
+  for (nm in names(variables)) {
+    v <- variables[[nm]]
+    if (!is.list(v) || is.null(v$coded) || is.null(v$codebook)) {
+      cli::cli_abort(c(
+        "variables[['{nm}']]: campos {.field coded} e {.field codebook} sao obrigatorios."
+      ))
+    }
+    if (!inherits(v$codebook, "ac_codebook")) {
+      cli::cli_abort("variables[['{nm}']]$codebook deve ser um {.cls ac_codebook}.")
+    }
+    if (!is.data.frame(v$coded)) {
+      cli::cli_abort("variables[['{nm}']]$coded deve ser um tibble (saida de {.fn ac_qual_code}).")
+    }
+  }
+
+  # ---- Path absoluto + dir cria-se se preciso -----------------------------
+  if (is.null(title)) {
+    title <- if (lang == "pt") {
+      "Relatorio consolidado de analise de conteudo"
+    } else {
+      "Consolidated content analysis report"
+    }
+  }
+  if (is.null(path)) {
+    path <- tempfile(pattern = "acr-report-full-",
+                     fileext = paste0(".", format))
+  }
+  path     <- .ac_report_absolute_path(path)
+  dest_dir <- dirname(path)
+  if (!dir.exists(dest_dir)) {
+    dir.create(dest_dir, recursive = TRUE, showWarnings = FALSE)
+    if (!dir.exists(dest_dir)) {
+      cli::cli_abort(c(
+        "Nao foi possivel criar o diretorio destino do relatorio.",
+        "i" = "Diretorio: {.path {dest_dir}}"
+      ))
+    }
+  }
+
+  # ---- Build markdown consolidado -----------------------------------------
+  parts <- character(0)
+  parts <- c(parts, paste0("# ", title), "")
+  parts <- c(parts,
+             paste0("- **", L$generated_at, ":** ",
+                    format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")),
+             paste0("- **", L$pkg_version, ":** ",
+                    as.character(utils::packageVersion("acR"))))
+  if (!is.null(author)) parts <- c(parts, paste0("- **", L$author, ":** ", author))
+  if (!is.null(method)) parts <- c(parts, paste0("- **", L$method, ":** ", method))
+  parts <- c(parts, "")
+
+  # Sumario das variaveis
+  parts <- c(parts, if (lang == "pt") "## Variaveis analisadas" else "## Variables analysed", "")
+  parts <- c(parts,
+             if (lang == "pt")
+               "| Variavel | k categorias | n documentos | multilabel |"
+             else
+               "| Variable | k categories | n documents | multilabel |",
+             "|---|---|---|---|")
+  for (nm in names(variables)) {
+    v <- variables[[nm]]
+    parts <- c(parts, sprintf("| %s | %d | %d | %s |",
+                              nm,
+                              length(v$codebook$categories),
+                              nrow(v$coded),
+                              if (isTRUE(v$codebook$multilabel)) "sim" else "nao"))
+  }
+  parts <- c(parts, "")
+
+  # Uma secao por variavel, reusando o gerador de single-variable
+  for (nm in names(variables)) {
+    v <- variables[[nm]]
+    parts <- c(parts, paste0("---"), "",
+               paste0("# ", nm), "")
+    section_md <- .ac_report_build_md(
+      coded       = v$coded,
+      codebook    = v$codebook,
+      reliability = v$reliability,
+      chat        = chat,
+      title       = "",  # ja emitimos H1 acima
+      author      = NULL,
+      method      = NULL,
+      L           = L
+    )
+    # Remove o H1 do gerador (a primeira linha eh "# " com titulo vazio)
+    section_lines <- strsplit(section_md, "\n", fixed = TRUE)[[1]]
+    if (length(section_lines) >= 2L && startsWith(section_lines[1], "# ")) {
+      section_lines <- section_lines[-c(1L, 2L)]
+    }
+    parts <- c(parts, section_lines)
+  }
+
+  md <- paste(parts, collapse = "\n")
+
+  # ---- Escrever ------------------------------------------------------------
+  if (format == "md") {
+    writeLines(md, path, useBytes = TRUE)
+  } else {
+    if (!requireNamespace("rmarkdown", quietly = TRUE))
+      cli::cli_abort("Formato {.val html} requer o pacote {.pkg rmarkdown}.")
+    md_tmp <- tempfile(fileext = ".md")
+    writeLines(md, md_tmp, useBytes = TRUE)
+    rmarkdown::render(
+      md_tmp,
+      output_format = rmarkdown::html_document(
+        theme          = "cosmo",
+        toc            = TRUE,
+        toc_depth      = 2,
+        self_contained = TRUE,
+        highlight      = "tango"
+      ),
+      output_file = path,
+      quiet       = TRUE
+    )
+  }
+
+  cli::cli_inform(c("v" = sprintf(L$done_fmt, path)))
+  invisible(path)
 }

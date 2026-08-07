@@ -69,6 +69,14 @@ ac_qual_codebook(
 
   - `definition`: definição operacional da categoria (obrigatório).
 
+  - `label`: rótulo humano para exibição em relatórios e tabelas
+    (opcional). Se ausente, o `acR` usa o próprio nome da categoria
+    (chave da lista). Exemplo:
+    `label = "Gestão fiscal-administrativa geral"` para uma categoria de
+    nome interno `"gestao_fiscal_administrativa_geral"`. A saída de
+    [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+    ganha uma coluna `categoria_label` traduzida.
+
   - `examples_pos`: vetor de exemplos positivos (recomendado).
 
   - `examples_neg`: vetor de exemplos negativos (recomendado).
@@ -170,7 +178,7 @@ cb  # imprime resumo do codebook
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 05/08/2026 15:50
+#> • Criado em: 07/08/2026 12:19
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.

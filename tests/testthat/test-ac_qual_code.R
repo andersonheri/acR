@@ -233,10 +233,19 @@ test_that(".ac_build_result_tibble colapsa categoria/raciocinio em array (bug mu
          conf_scores = list(total = 0.67))
   )
 
+  cb <- ac_qual_codebook(
+    name = "multi", instructions = "cl.",
+    categories = list(
+      tecnica  = list(definition = "tec.", label = "Tecnica"),
+      politica = list(definition = "pol.", label = "Politica")
+    ),
+    multilabel = TRUE
+  )
   tbl <- acR:::.ac_build_result_tibble(
     results   = results,
     corpus    = corpus,
     cat_names = c("tecnica", "politica"),
+    codebook  = cb,
     confidence = "total",
     reasoning = TRUE
   )
@@ -249,6 +258,9 @@ test_that(".ac_build_result_tibble colapsa categoria/raciocinio em array (bug mu
   expect_equal(tbl$categoria[3], "tecnica|politica")
   # raciocinio de array deve virar string unica
   expect_equal(tbl$raciocinio[2], "parte 1 parte 2")
+  # Bug 5: categoria_label usa label do codebook, com " | " no multilabel
+  expect_equal(tbl$categoria_label[1], "Tecnica")
+  expect_equal(tbl$categoria_label[2], "Tecnica | Politica")
 })
 
 test_that("prompt multilabel instrui explicitamente que categoria eh string", {

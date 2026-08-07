@@ -177,6 +177,7 @@ reference:
     Relatorio automatico das decisoes metodologicas para artigos e relatorios.
   contents:
   - ac_qual_report
+  - ac_qual_report_full
 - title: "Selecao de modelos LLM"
   desc: >
     Listagem e recomendacao de modelos LLM.

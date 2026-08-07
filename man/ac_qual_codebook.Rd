@@ -29,6 +29,11 @@ ac_qual_codebook(
 \item{categories}{Lista nomeada de categorias. Cada elemento pode conter:
 \itemize{
 \item \code{definition}: definição operacional da categoria (obrigatório).
+\item \code{label}: rótulo humano para exibição em relatórios e tabelas
+(opcional). Se ausente, o \code{acR} usa o próprio nome da categoria
+(chave da lista). Exemplo: \code{label = "Gestão fiscal-administrativa geral"} para uma categoria de nome interno
+\code{"gestao_fiscal_administrativa_geral"}. A saída de \code{\link[=ac_qual_code]{ac_qual_code()}}
+ganha uma coluna \code{categoria_label} traduzida.
 \item \code{examples_pos}: vetor de exemplos positivos (recomendado).
 \item \code{examples_neg}: vetor de exemplos negativos (recomendado).
 \item \code{references}: vetor de referências bibliográficas (opcional).

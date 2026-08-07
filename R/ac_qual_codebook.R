@@ -35,6 +35,12 @@
 #' @param instructions Instrução geral para a LLM.
 #' @param categories Lista nomeada de categorias. Cada elemento pode conter:
 #'   * `definition`: definição operacional da categoria (obrigatório).
+#'   * `label`: rótulo humano para exibição em relatórios e tabelas
+#'     (opcional). Se ausente, o `acR` usa o próprio nome da categoria
+#'     (chave da lista). Exemplo: `label = "Gestão fiscal-administrativa
+#'     geral"` para uma categoria de nome interno
+#'     `"gestao_fiscal_administrativa_geral"`. A saída de [ac_qual_code()]
+#'     ganha uma coluna `categoria_label` traduzida.
 #'   * `examples_pos`: vetor de exemplos positivos (recomendado).
 #'   * `examples_neg`: vetor de exemplos negativos (recomendado).
 #'   * `references`: vetor de referências bibliográficas (opcional).
@@ -424,6 +430,7 @@ ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
     categories   = purrr::map(codebook$categories, function(cat) {
       list(
         name         = cat$name,
+        label        = cat$label,
         definition   = cat$definition,
         examples_pos = cat$examples_pos,
         examples_neg = cat$examples_neg,
@@ -482,6 +489,7 @@ ac_qual_load_codebook <- function(path, ...) {
     structure(
       list(
         name         = cat$name,
+        label        = cat$label,
         definition   = cat$definition   %||% "",
         examples_pos = unlist(cat$examples_pos %||% list()),
         examples_neg = unlist(cat$examples_neg %||% list()),
@@ -568,6 +576,7 @@ ac_qual_load_codebook <- function(path, ...) {
     structure(
       list(
         name         = cat_name,
+        label        = cat_def$label %||% NULL,
         definition   = trimws(cat_def$definition),
         examples_pos = cat_def$examples_pos %||% character(0),
         examples_neg = cat_def$examples_neg %||% character(0),

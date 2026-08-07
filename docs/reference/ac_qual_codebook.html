@@ -164,6 +164,11 @@ entre a versão piloto e a versão final publicada.</p>
 
 <dt id="arg-categories">categories<a class="anchor" aria-label="anchor" href="#arg-categories"></a></dt>
 <dd><p>Lista nomeada de categorias. Cada elemento pode conter:</p><ul><li><p><code>definition</code>: definição operacional da categoria (obrigatório).</p></li>
+<li><p><code>label</code>: rótulo humano para exibição em relatórios e tabelas
+(opcional). Se ausente, o <code>acR</code> usa o próprio nome da categoria
+(chave da lista). Exemplo: <code>label = "Gestão fiscal-administrativa geral"</code> para uma categoria de nome interno
+<code>"gestao_fiscal_administrativa_geral"</code>. A saída de <code><a href="ac_qual_code.html">ac_qual_code()</a></code>
+ganha uma coluna <code>categoria_label</code> traduzida.</p></li>
 <li><p><code>examples_pos</code>: vetor de exemplos positivos (recomendado).</p></li>
 <li><p><code>examples_neg</code>: vetor de exemplos negativos (recomendado).</p></li>
 <li><p><code>references</code>: vetor de referências bibliográficas (opcional).</p></li>
@@ -262,7 +267,7 @@ manual de aplicação</em>. Brasília: ENAP.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias (2): <span style="color: #0000BB;">"positivo"</span> and <span style="color: #0000BB;">"negativo"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 05/08/2026 15:50</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Criado em: 07/08/2026 12:19</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Instrução geral</span>:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Classifique o tom geral do discurso.</span>
