@@ -131,7 +131,8 @@ test_that("ac_qual_report() resolve path relativo em absoluto (bug 4)", {
   # subdir_report nao existe ainda -- fix deve cria-lo
   suppressMessages(out <- ac_qual_report(coded, cb, path = rel_path))
   expect_true(file.exists(out))
-  expect_true(grepl("^/", out))  # ja e absoluto
+  # Absoluto: comeca com "/" (Unix), "C:/" (Windows) ou "\\\\" (UNC)
+  expect_match(out, "^(/|[A-Za-z]:[/\\\\]|\\\\\\\\)")
   expect_true(dir.exists(file.path(tempdir(), "subdir_report")))
 })
 
