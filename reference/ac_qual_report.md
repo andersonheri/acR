@@ -118,6 +118,6 @@ coded <- tibble::tibble(
 # Gerar relatorio em markdown temporario
 arquivo <- tempfile(fileext = ".md")
 ac_qual_report(coded, cb, path = arquivo, author = "Fulano de Tal")
-#> ✔ Relatorio salvo em /tmp/RtmpWckz6C/file1c2363d6db5a.md
+#> ✔ Relatorio salvo em /tmp/RtmpXbx59n/file1c85640a2e02.md
 # readLines(arquivo, n = 20)
 ```

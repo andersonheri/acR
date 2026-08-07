@@ -425,6 +425,24 @@ citation("acR")
 
 ------------------------------------------------------------------------
 
+## Uso de Inteligência Artificial
+
+Os autores utilizaram o modelo de linguagem Claude (Sonnet 5 e Opus 4.8
+da Anthropic), operado por meio do ambiente **Claude Code / Cowork**,
+como ferramenta de apoio à depuração e à estruturação dos scripts em R
+do pipeline computacional do estudo, incluindo a identificação e
+correção de erros no pacote `acR` e a organização dos scripts de
+classificação, validação e análise descritiva.
+
+A ferramenta **não** foi utilizada para a codificação de conteúdo final
+do corpus, para a interpretação dos resultados ou para a redação
+analítica do capítulo. Todo o código gerado ou revisado com auxílio de
+IA foi verificado, testado e validado pelos autores, que assumem
+integral responsabilidade pela correção técnica e científica do material
+produzido.
+
+------------------------------------------------------------------------
+
 ## Referências
 
 Bardin, L. (2011). *Análise de conteúdo*. Edições 70.
