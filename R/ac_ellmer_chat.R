@@ -11,7 +11,7 @@
   if (length(parts) < 2L) {
     cli::cli_abort(c(
       "Modelo deve estar no formato {.val 'provider/model'}.",
-      "i" = "Ex: {.val 'anthropic/claude-sonnet-4-5'} ou {.val 'groq/llama-3.3-70b-versatile'}.",
+      "i" = "Ex: {.val 'anthropic/claude-sonnet-4-5'} ou {.val 'groq/openai/gpt-oss-120b'}.",
       "x" = "Recebido: {.val {name}}."
     ))
   }

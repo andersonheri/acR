@@ -287,12 +287,12 @@ ac_qual_recommend_model <- function(task   = c("coding", "literature", "both"),
     1000, 0.075, 0.3, "fast", "medio",
 
     # === GROQ (inferencia rapida, gratuito com limites) ======================
-    "groq", "groq/llama-3.3-70b-versatile",
-    "Llama 3.3 70B (Groq)",
+    "groq", "groq/openai/gpt-oss-120b",
+    "GPT-OSS 120B (Groq)",
     128, 0.59, 0.79, "balanced", "medio",
 
-    "groq", "groq/llama-3.1-8b-instant",
-    "Llama 3.1 8B Instant (Groq)",
+    "groq", "groq/openai/gpt-oss-20b",
+    "GPT-OSS 20B (Groq)",
     128, 0.05, 0.08, "fast", "baixo",
 
     "groq", "groq/gemma2-9b-it",

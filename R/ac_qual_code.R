@@ -108,7 +108,7 @@
 #' coded <- ac_qual_code(corpus, cb, chat = chat_obj)
 #'
 #' # Groq (inferencia rapida, plano gratuito)
-#' chat_groq <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+#' chat_groq <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 #' coded <- ac_qual_code(corpus, cb, chat = chat_groq)
 #'
 #' # Ollama (modelos locais, sem envio de dados externos)

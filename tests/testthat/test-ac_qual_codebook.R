@@ -162,7 +162,7 @@ test_that("ac_qual_search_literature() retorna tibble com colunas esperadas", {
   skip_if(!api_ok, "OpenAlex nao retornou resultados para o conceito de teste")
 
   chat_obj <- ellmer::chat_groq(
-    model = "llama-3.3-70b-versatile",
+    model = "openai/gpt-oss-120b",
     echo  = "none"
   )
 
@@ -435,7 +435,7 @@ test_that("ac_qual_codebook_translate() traduz PT->EN com LLM (online)", {
   chat_obj <- if (nchar(Sys.getenv("ANTHROPIC_API_KEY")) > 0)
     ellmer::chat(name = "anthropic/claude-sonnet-4-5", echo = "none")
   else
-    ellmer::chat(name = "groq/llama-3.3-70b-versatile", echo = "none")
+    ellmer::chat(name = "groq/openai/gpt-oss-120b", echo = "none")
 
   cb    <- make_cb_manual()
   cb_en <- tryCatch(
@@ -486,7 +486,7 @@ test_that("ac_qual_codebook_hybrid() enriquece definicoes com LLM (online)", {
   chat_obj <- if (nchar(Sys.getenv("ANTHROPIC_API_KEY")) > 0)
     ellmer::chat(name = "anthropic/claude-sonnet-4-5", echo = "none")
   else
-    ellmer::chat(name = "groq/llama-3.3-70b-versatile", echo = "none")
+    ellmer::chat(name = "groq/openai/gpt-oss-120b", echo = "none")
 
   cb        <- make_cb_manual()
   cb_hybrid <- tryCatch(

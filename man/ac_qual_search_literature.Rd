@@ -62,7 +62,7 @@ bibliograficas comuns quando a LLM opera sem fonte externa.
 # Requer internet (busca no OpenAlex) e credenciais da LLM (para sintese)
 
 # Chat via Groq (plano gratuito com llama-3.3-70b)
-chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
 # Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma
 lit <- ac_qual_search_literature(

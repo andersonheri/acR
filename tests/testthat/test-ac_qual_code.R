@@ -92,7 +92,7 @@ test_that("ac_qual_code() retorna tibble com colunas esperadas", {
   cb     <- make_codebook_test()
 
   chat_obj <- ellmer::chat_groq(
-    model = "llama-3.3-70b-versatile",
+    model = "openai/gpt-oss-120b",
     echo  = "none"
   )
 
@@ -125,7 +125,7 @@ test_that("ac_qual_code() classifica corretamente textos inequivocos", {
   cb     <- make_codebook_test()
 
   chat_obj <- ellmer::chat_groq(
-    model = "llama-3.3-70b-versatile",
+    model = "openai/gpt-oss-120b",
     echo  = "none"
   )
 
@@ -156,7 +156,7 @@ test_that("ac_qual_code() com confidence = 'none' nao retorna confidence_score N
   corpus <- make_corpus_test()
   cb     <- make_codebook_test()
 
-  chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+  chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
   resultado <- ac_qual_code(
     corpus     = corpus,
@@ -187,7 +187,7 @@ test_that("ac_qual_code() preserva metadados do corpus no resultado", {
   corpus <- ac_corpus(df, text = texto, docid = id)
   cb     <- make_codebook_test()
 
-  chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+  chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
   resultado <- ac_qual_code(
     corpus     = corpus,

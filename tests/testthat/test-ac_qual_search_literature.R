@@ -190,7 +190,7 @@ test_that("ac_qual_search_literature() retorna tibble com colunas esperadas", {
   .skip_if_openalex_empty()
 
   chat_obj <- ellmer::chat_groq(
-    model = "llama-3.3-70b-versatile",
+    model = "openai/gpt-oss-120b",
     echo  = "none"
   )
 
@@ -220,7 +220,7 @@ test_that("ac_qual_search_literature() com journals = 'all' retorna resultados",
   )
   .skip_if_openalex_empty()
 
-  chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+  chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
   lit <- ac_qual_search_literature(
     concept       = "democratic backsliding",

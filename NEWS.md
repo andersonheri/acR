@@ -11,6 +11,15 @@
   `expect_no_error(ggplot2::ggplot_build(p))` -- teste de
   buildabilidade real, independente de versao do ggplot2.
 
+* Referencias ao modelo Groq `llama-3.3-70b-versatile` (e ao par
+  `llama-3.1-8b-instant`) foram atualizadas para `openai/gpt-oss-120b`
+  (e `openai/gpt-oss-20b`) em exemplos, vignettes, README, testes de
+  integracao e na tabela de `ac_qual_recommend_model()`. A Groq
+  descontinuou os modelos Llama em 2026-06-17; chamadas com o nome
+  antigo retornam HTTP 404. Nao afeta usuarios da CRAN diretamente
+  (sao apenas defaults sugeridos e testes com `skip_if()` de API key),
+  mas evita quebra de exemplos e de CI com `GROQ_API_KEY` configurada.
+
 ## Nova funcionalidade
 
 * **`ac_qual_report_full()`** (novo) -- relatorio consolidado

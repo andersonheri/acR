@@ -87,7 +87,7 @@ brasileiro (500 discursos parlamentares, ~800 tokens cada) com
 
 | Modelo                          | Custo estimado | Tempo estimado |
 |---------------------------------|----------------|----------------|
-| `groq/llama-3.3-70b-versatile`  | US$ 0,50 – 1   | ~10 min        |
+| `groq/openai/gpt-oss-120b`  | US$ 0,50 – 1   | ~10 min        |
 | `openai/gpt-4o-mini`            | US$ 3 – 5      | ~15 min        |
 | `anthropic/claude-sonnet-4-5`   | US$ 10 – 20    | ~25 min        |
 | `anthropic/claude-opus-4-7`     | US$ 40 – 80    | ~40 min        |
