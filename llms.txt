@@ -216,7 +216,7 @@ codebook <- ac_qual_codebook(
 ``` r
 
 chat_obj <- chat_groq(
-  model = "llama-3.3-70b-versatile",
+  model = "openai/gpt-oss-120b",
   echo  = "none"
 )
 
@@ -260,7 +260,7 @@ API da OpenAI, como instâncias privadas ou servidores institucionais.
 
 ``` r
 
-chat_obj <- chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+chat_obj <- chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 chat_obj <- chat_google_gemini(model = "gemini-2.5-flash", echo = "none")
 chat_obj <- chat_ollama(model = "llama3.2", echo = "none")
 chat_obj <- chat_openai(model = "gpt-4.1", echo = "none")

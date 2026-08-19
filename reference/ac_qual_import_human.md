@@ -56,7 +56,7 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
   humano <- ac_qual_import_human(arquivo)
   humano
 }
-#> ✅ 3 classificações humanas importadas de /tmp/RtmpvqdQdJ/file1c7573b72aa1.xlsx
+#> ✅ 3 classificações humanas importadas de /tmp/RtmpdnyHxr/file1dc61a13f80d.xlsx
 #> # A tibble: 3 × 2
 #>   doc_id categoria
 #>   <chr>  <chr>    

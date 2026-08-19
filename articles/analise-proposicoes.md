@@ -178,7 +178,7 @@ preservando os exemplos manuais:
 ``` r
 
 chat_obj <- chat_groq(
-  model = "llama-3.3-70b-versatile",
+  model = "openai/gpt-oss-120b",
   echo  = "none"
 )
 
@@ -270,13 +270,13 @@ ac_qual_save_codebook(
 ## 4. Classificação com LLM
 
 O argumento `chat =` recebe qualquer objeto `Chat` do **ellmer**. Aqui
-usamos o Groq com `llama-3.3-70b-versatile`, que oferece plano gratuito
-e latência baixa — ideal para corpora de tamanho médio como este.
+usamos o Groq com `openai/gpt-oss-120b`, que oferece plano gratuito e
+latência baixa — ideal para corpora de tamanho médio como este.
 
 ``` r
 
 chat_obj <- chat_groq(
-  model = "llama-3.3-70b-versatile",
+  model = "openai/gpt-oss-120b",
   echo  = "none"
 )
 

@@ -153,7 +153,7 @@ Workers for Text-Annotation Tasks. <em>PNAS</em>, 120(30).</p>
 <span class="r-in"><span><span class="co"># Requer internet (busca no OpenAlex) e credenciais da LLM (para sintese)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Chat via Groq (plano gratuito com llama-3.3-70b)</span></span></span>
-<span class="r-in"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"openai/gpt-oss-120b"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma</span></span></span>
 <span class="r-in"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_search_literature</span><span class="op">(</span></span></span>

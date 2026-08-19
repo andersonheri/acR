@@ -69,13 +69,13 @@ Para calibrar expectativas, estimativa em dólares para um corpus típico
 brasileiro (500 discursos parlamentares, ~800 tokens cada) com
 `k_consistency = 3` e `reasoning = TRUE, reasoning_length = "medium"`:
 
-| Modelo                         | Custo estimado | Tempo estimado   |
-|--------------------------------|----------------|------------------|
-| `groq/llama-3.3-70b-versatile` | US\$ 0,50 – 1  | ~10 min          |
-| `openai/gpt-4o-mini`           | US\$ 3 – 5     | ~15 min          |
-| `anthropic/claude-sonnet-4-5`  | US\$ 10 – 20   | ~25 min          |
-| `anthropic/claude-opus-4-7`    | US\$ 40 – 80   | ~40 min          |
-| `ollama/llama3.1:70b` (local)  | US\$ 0 (GPU)   | ~2 h em RTX 4090 |
+| Modelo                        | Custo estimado | Tempo estimado   |
+|-------------------------------|----------------|------------------|
+| `groq/openai/gpt-oss-120b`    | US\$ 0,50 – 1  | ~10 min          |
+| `openai/gpt-4o-mini`          | US\$ 3 – 5     | ~15 min          |
+| `anthropic/claude-sonnet-4-5` | US\$ 10 – 20   | ~25 min          |
+| `anthropic/claude-opus-4-7`   | US\$ 40 – 80   | ~40 min          |
+| `ollama/llama3.1:70b` (local) | US\$ 0 (GPU)   | ~2 h em RTX 4090 |
 
 [`ac_qual_recommend_model()`](https://ahenriquecp.com/acR/reference/ac_qual_recommend_model.md)
 (chamado a seguir) sugere o modelo mais custo-efetivo para o tamanho e a
@@ -163,7 +163,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 07/08/2026 20:07
+#> • Criado em: 19/08/2026 19:28
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
