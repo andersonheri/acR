@@ -405,7 +405,17 @@ ac_qual_code <- function(corpus,
   if (length(valid_results) == 0L) return(NULL)
 
   cats <- purrr::map_chr(valid_results, function(r) {
-    r$categoria %||% NA_character_
+    if (is.null(r$categoria)) {
+      NA_character_
+    } else {
+      # Colapsa para string unica antes do map_chr(): alguns modelos
+      # devolvem um array JSON (ex.: ["tema_a", "tema_b"]) apesar do
+      # prompt instruir string unica separada por "|". Mesma logica de
+      # .ac_build_result_tibble() (abaixo), aplicada aqui tambem porque
+      # o calculo de confianca roda antes e quebrava com
+      # "Result must be length 1, not 2".
+      paste(as.character(r$categoria), collapse = "|")
+    }
   })
 
   mode_cat <- names(sort(table(cats), decreasing = TRUE))[1]

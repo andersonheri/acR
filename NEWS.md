@@ -1,3 +1,17 @@
+# acR 0.3.4
+
+## Correcoes
+
+* **`ac_qual_code()`**: corrigido crash "Result must be length 1, not N"
+  em `.ac_compute_confidence()` (calculo de confianca via
+  self-consistency) quando uma das k rodadas devolvia `categoria` como
+  array JSON (`["tema_a", "tema_b"]`) em vez de string unica -- apesar
+  do prompt instruir explicitamente o contrario. A funcao irma
+  `.ac_build_result_tibble()` ja colapsava esse caso corretamente
+  (`paste(collapse = "|")`), mas o crash ocorria antes, no calculo de
+  confianca, que nao tinha a mesma protecao. Mesma logica aplicada
+  agora nas duas funcoes.
+
 # acR 0.3.3
 
 ## Compatibilidade

@@ -263,6 +263,45 @@ test_that(".ac_build_result_tibble colapsa categoria/raciocinio em array (bug mu
   expect_equal(tbl$categoria_label[2], "Tecnica | Politica")
 })
 
+test_that(".ac_compute_confidence colapsa categoria em array (bug self-consistency)", {
+  # Reproduz o crash "Result must be length 1, not 2": numa das k rodadas
+  # de self-consistency, o modelo devolve um array JSON em vez de string
+  # unica. .ac_compute_confidence() rodava ANTES de .ac_build_result_tibble()
+  # e nao tinha a mesma protecao, quebrando purrr::map_chr().
+  results <- list(
+    list(categoria = "tema_a"),
+    list(categoria = c("tema_a", "tema_b")),  # array (bug reproduzido)
+    list(categoria = "tema_a")
+  )
+
+  conf <- acR:::.ac_compute_confidence(
+    results   = results,
+    cat_names = c("tema_a", "tema_b"),
+    confidence = "total"
+  )
+
+  expect_type(conf, "list")
+  expect_false(is.null(conf$total))
+  # moda deve ser "tema_a" (2 rodadas puras) ou a string colapsada,
+  # dependendo de empate; aqui garantimos so que nao ha erro e que o
+  # valor colapsado esta entre os possiveis, sem quebrar comprimento
+  expect_true(conf$dominant %in% c("tema_a", "tema_a|tema_b"))
+})
+
+test_that(".ac_compute_confidence trata categoria NULL como NA sem quebrar", {
+  results <- list(
+    list(categoria = "tema_a"),
+    list(categoria = NULL)
+  )
+  conf <- acR:::.ac_compute_confidence(
+    results   = results,
+    cat_names = c("tema_a"),
+    confidence = "total"
+  )
+  expect_type(conf, "list")
+  expect_equal(conf$dominant, "tema_a")
+})
+
 test_that("prompt multilabel instrui explicitamente que categoria eh string", {
   cb <- ac_qual_codebook(
     name = "multi_teste",

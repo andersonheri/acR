@@ -1,8 +1,21 @@
 ## Submission summary
 
-Patch release of `acR` (0.3.2 → 0.3.3) addressing three bugs found in
-production use of the qualitative pipeline (`ac_qual_code()` and helpers)
-and adding one supporting function.
+Patch release of `acR` (0.3.3 → 0.3.4) fixing one crash in the
+qualitative pipeline found in production use, on top of the fixes and
+addition already shipped in 0.3.3.
+
+### Fixes in 0.3.4
+
+* `ac_qual_code()` no longer crashes with "Result must be length 1,
+  not N" inside `.ac_compute_confidence()` (the self-consistency
+  confidence calculation) when one of the `k_consistency` rounds
+  returns `categoria` as a JSON array instead of a single string --
+  even though the system prompt explicitly instructs otherwise. The
+  sibling function `.ac_build_result_tibble()` already collapsed this
+  case defensively (`paste(collapse = "|")`, added in 0.3.3 for the
+  `multilabel = TRUE` bug), but the crash happened earlier, in the
+  confidence calculation, which lacked the same guard. Same collapsing
+  logic now applied in both places.
 
 ### Fixes in 0.3.3
 
@@ -48,11 +61,12 @@ and adding one supporting function.
 
 ## Test environments
 
+* Local: Windows 11, R 4.6.x — reproduced and fixed the crash reported
+  from production use.
 * Local: macOS 14.4 (Darwin arm64), R 4.5.x — 0 errors, 0 warnings,
-  2 NOTEs (see below).
+  2 NOTEs (see below), confirmed against 0.3.3's own submission.
 * GitHub Actions matrix on the tip of `main`: Ubuntu R-devel / release
-  / oldrel-1, macOS release, Windows release — all `R CMD check` runs
-  green after `d1518aa` (cross-platform fix in one test's regex).
+  / oldrel-1, macOS release, Windows release.
 
 ## R CMD check results
 
@@ -64,10 +78,13 @@ Locally with `--as-cran`:
 
 The NOTEs are:
 
-1. **New submission** flag (harmless after 0.3.2 acceptance — CRAN
-   incoming feasibility still shows this on version bumps).
-2. **Unable to verify current time** — offline check host, unrelated
-   to the package.
+1. **Unable to verify current time** — offline/VM check host clock
+   skew, unrelated to the package.
+2. **HTML version of manual** — validation warnings (`<link> inserting
+   "type" attribute`, `<table> lacks "summary" attribute`, etc.) from
+   an outdated local `tidy` bundled with macOS; a well-known false
+   positive on macOS local checks that does not reproduce on CRAN's
+   Linux build machines with a current `tidy`.
 
 ## Downstream dependencies
 
