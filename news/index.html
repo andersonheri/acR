@@ -51,10 +51,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.4" id="acr-034">acR 0.3.4<a class="anchor" aria-label="anchor" href="#acr-034"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.4" id="acr-034">acR 0.3.4<a class="anchor" aria-label="anchor" href="#acr-034"></a></h2><p class="text-muted">CRAN release: 2026-09-10</p>
 <div class="section level3">
 <h3 id="correcoes-0-3-4">Correcoes<a class="anchor" aria-label="anchor" href="#correcoes-0-3-4"></a></h3>
 <ul><li>
+<strong><code>ac_qual_code(confidence = "by_variable" | "both")</code></strong>: a confianca por variavel nunca era calculada nem chegava ao tibble de saida como colunas <code>&lt;categoria&gt;_confidence</code>, apesar de documentado em <code>@return</code>. Dois bugs na mesma funcao: (1) <code>.ac_compute_confidence()</code> testava <code>confidence %in% c("total", "both")</code> no primeiro <code>if</code>, entao <code>"both"</code> sempre caia nesse ramo e nunca calculava a confianca por variavel;
+<ol start="2" style="list-style-type: decimal"><li>mesmo quando calculada (modo <code>"by_variable"</code> puro), o valor era so a proporcao da categoria vencedora, nao uma proporcao por categoria do codebook – e <code>.ac_build_result_tibble()</code> nunca lia esse valor para adicionar as colunas ao tibble final. Corrigido nas duas funcoes: <code>by_var</code> agora tem uma entrada por categoria de <code>cat_names</code> com a proporcao de rodadas de self-consistency que a escolheram, calculada sempre que <code>confidence</code> inclui <code>"by_variable"</code>, e o tibble final ganha as colunas <code>&lt;categoria&gt;_confidence</code> correspondentes.</li>
+</ol></li>
+<li>
 <strong><code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code></strong>: corrigido crash “Result must be length 1, not N” em <code>.ac_compute_confidence()</code> (calculo de confianca via self-consistency) quando uma das k rodadas devolvia <code>categoria</code> como array JSON (<code>["tema_a", "tema_b"]</code>) em vez de string unica – apesar do prompt instruir explicitamente o contrario. A funcao irma <code>.ac_build_result_tibble()</code> ja colapsava esse caso corretamente (<code>paste(collapse = "|")</code>), mas o crash ocorria antes, no calculo de confianca, que nao tinha a mesma protecao. Mesma logica aplicada agora nas duas funcoes.</li>
 </ul></div>
 </div>
