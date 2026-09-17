@@ -34,10 +34,15 @@ pré-configurado. Quando \code{chat} é fornecido, \code{model} é ignorado.}
 
 \item{confidence}{Como calcular certeza:
 \itemize{
-\item \code{"total"} (padrão): uma coluna \code{confidence_score} com média de todas
-as variáveis;
-\item \code{"by_variable"}: uma coluna \verb{<variavel>_confidence} por categoria;
-\item \code{"both"}: colunas por variável + coluna \code{confidence_score} (média);
+\item \code{"total"} (padrão): uma coluna \code{confidence_score} com a proporção
+de rodadas de self-consistency que concordaram com a categoria
+vencedora (moda);
+\item \code{"by_variable"}: uma coluna \verb{<categoria>_confidence} por
+categoria do codebook, com a proporção de rodadas que escolheram
+\emph{aquela} categoria especificamente (não só a vencedora) — útil
+para montar uma matriz de confiança por tema/categoria;
+\item \code{"both"}: as colunas por categoria + \code{confidence_score} (a da
+vencedora);
 \item \code{"none"}: não calcula certeza (mais rápido, menor custo).
 }}
 
@@ -75,8 +80,16 @@ pipe-separada sem espaço (\code{"tecnica|politica"}).
 \item \code{categoria_label}: rótulo humano correspondente, vindo do campo
 \code{label} de cada categoria (se ausente, repete o slug). Em
 multilabel, unidos por \code{" | "} (espaço dos dois lados).
-\item \code{confidence_score}: grau de certeza (0-1);
-\item \code{confidence_level}: \code{"alta"}, \code{"media"}, \code{"baixa"};
+\item \code{confidence_score}: grau de certeza da categoria vencedora (0-1).
+Presente quando \code{confidence} é \code{"total"} ou \code{"both"}.
+\item \code{confidence_level}: \code{"alta"}, \code{"media"}, \code{"baixa"} — interpretação
+de \code{confidence_score} (Landis & Koch, 1977). Acompanha
+\code{confidence_score}.
+\item \verb{<categoria>_confidence}: uma coluna por categoria do codebook
+(ex.: \code{positivo_confidence}, \code{negativo_confidence}), com a
+proporção de rodadas de self-consistency que escolheram aquela
+categoria. Presentes quando \code{confidence} é \code{"by_variable"} ou
+\code{"both"}.
 \item \code{raciocinio}: justificativa da classificação (se \code{reasoning = TRUE}).
 }
 }
@@ -141,6 +154,15 @@ coded <- ac_qual_code(corpus, cb, chat = chat_groq)
 # Ollama (modelos locais, sem envio de dados externos)
 chat_local <- ellmer::chat_ollama(model = "llama3.2", echo = "none")
 coded <- ac_qual_code(corpus, cb, chat = chat_local)
+
+# confidence = "both": alem de confidence_score (categoria vencedora),
+# ganha uma coluna <categoria>_confidence por categoria do codebook --
+# util para montar uma matriz de confianca por tema entre documentos
+# ou comparar modelos na mesma tarefa.
+coded_both <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5",
+                            confidence = "both")
+coded_both[, c("doc_id", "categoria", "confidence_score",
+               "positivo_confidence", "negativo_confidence")]
 }
 
 }

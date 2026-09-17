@@ -39,10 +39,15 @@
 #'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
 #'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
 #' @param confidence Como calcular certeza:
-#'   * `"total"` (padrão): uma coluna `confidence_score` com média de todas
-#'     as variáveis;
-#'   * `"by_variable"`: uma coluna `<variavel>_confidence` por categoria;
-#'   * `"both"`: colunas por variável + coluna `confidence_score` (média);
+#'   * `"total"` (padrão): uma coluna `confidence_score` com a proporção
+#'     de rodadas de self-consistency que concordaram com a categoria
+#'     vencedora (moda);
+#'   * `"by_variable"`: uma coluna `<categoria>_confidence` por
+#'     categoria do codebook, com a proporção de rodadas que escolheram
+#'     *aquela* categoria especificamente (não só a vencedora) — útil
+#'     para montar uma matriz de confiança por tema/categoria;
+#'   * `"both"`: as colunas por categoria + `confidence_score` (a da
+#'     vencedora);
 #'   * `"none"`: não calcula certeza (mais rápido, menor custo).
 #' @param k_consistency Número de rodadas para self-consistency. Padrão: `3`.
 #'   Ignorado se `confidence = "none"`.
@@ -69,8 +74,16 @@
 #'   * `categoria_label`: rótulo humano correspondente, vindo do campo
 #'     `label` de cada categoria (se ausente, repete o slug). Em
 #'     multilabel, unidos por `" | "` (espaço dos dois lados).
-#'   * `confidence_score`: grau de certeza (0-1);
-#'   * `confidence_level`: `"alta"`, `"media"`, `"baixa"`;
+#'   * `confidence_score`: grau de certeza da categoria vencedora (0-1).
+#'     Presente quando `confidence` é `"total"` ou `"both"`.
+#'   * `confidence_level`: `"alta"`, `"media"`, `"baixa"` — interpretação
+#'     de `confidence_score` (Landis & Koch, 1977). Acompanha
+#'     `confidence_score`.
+#'   * `<categoria>_confidence`: uma coluna por categoria do codebook
+#'     (ex.: `positivo_confidence`, `negativo_confidence`), com a
+#'     proporção de rodadas de self-consistency que escolheram aquela
+#'     categoria. Presentes quando `confidence` é `"by_variable"` ou
+#'     `"both"`.
 #'   * `raciocinio`: justificativa da classificação (se `reasoning = TRUE`).
 #'
 #' @references
@@ -114,6 +127,15 @@
 #' # Ollama (modelos locais, sem envio de dados externos)
 #' chat_local <- ellmer::chat_ollama(model = "llama3.2", echo = "none")
 #' coded <- ac_qual_code(corpus, cb, chat = chat_local)
+#'
+#' # confidence = "both": alem de confidence_score (categoria vencedora),
+#' # ganha uma coluna <categoria>_confidence por categoria do codebook --
+#' # util para montar uma matriz de confianca por tema entre documentos
+#' # ou comparar modelos na mesma tarefa.
+#' coded_both <- ac_qual_code(corpus, cb, model = "anthropic/claude-sonnet-4-5",
+#'                             confidence = "both")
+#' coded_both[, c("doc_id", "categoria", "confidence_score",
+#'                "positivo_confidence", "negativo_confidence")]
 #' }
 #'
 #' @concept qualitative
