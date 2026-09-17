@@ -170,10 +170,15 @@ pré-configurado. Quando <code>chat</code> é fornecido, <code>model</code> é i
 
 
 <dt id="arg-confidence">confidence<a class="anchor" aria-label="anchor" href="#arg-confidence"></a></dt>
-<dd><p>Como calcular certeza:</p><ul><li><p><code>"total"</code> (padrão): uma coluna <code>confidence_score</code> com média de todas
-as variáveis;</p></li>
-<li><p><code>"by_variable"</code>: uma coluna <code>&lt;variavel&gt;_confidence</code> por categoria;</p></li>
-<li><p><code>"both"</code>: colunas por variável + coluna <code>confidence_score</code> (média);</p></li>
+<dd><p>Como calcular certeza:</p><ul><li><p><code>"total"</code> (padrão): uma coluna <code>confidence_score</code> com a proporção
+de rodadas de self-consistency que concordaram com a categoria
+vencedora (moda);</p></li>
+<li><p><code>"by_variable"</code>: uma coluna <code>&lt;categoria&gt;_confidence</code> por
+categoria do codebook, com a proporção de rodadas que escolheram
+<em>aquela</em> categoria especificamente (não só a vencedora) — útil
+para montar uma matriz de confiança por tema/categoria;</p></li>
+<li><p><code>"both"</code>: as colunas por categoria + <code>confidence_score</code> (a da
+vencedora);</p></li>
 <li><p><code>"none"</code>: não calcula certeza (mais rápido, menor custo).</p></li>
 </ul></dd>
 
@@ -221,8 +226,16 @@ pipe-separada sem espaço (<code>"tecnica|politica"</code>).</p></li>
 <li><p><code>categoria_label</code>: rótulo humano correspondente, vindo do campo
 <code>label</code> de cada categoria (se ausente, repete o slug). Em
 multilabel, unidos por <code>" | "</code> (espaço dos dois lados).</p></li>
-<li><p><code>confidence_score</code>: grau de certeza (0-1);</p></li>
-<li><p><code>confidence_level</code>: <code>"alta"</code>, <code>"media"</code>, <code>"baixa"</code>;</p></li>
+<li><p><code>confidence_score</code>: grau de certeza da categoria vencedora (0-1).
+Presente quando <code>confidence</code> é <code>"total"</code> ou <code>"both"</code>.</p></li>
+<li><p><code>confidence_level</code>: <code>"alta"</code>, <code>"media"</code>, <code>"baixa"</code> — interpretação
+de <code>confidence_score</code> (Landis &amp; Koch, 1977). Acompanha
+<code>confidence_score</code>.</p></li>
+<li><p><code>&lt;categoria&gt;_confidence</code>: uma coluna por categoria do codebook
+(ex.: <code>positivo_confidence</code>, <code>negativo_confidence</code>), com a
+proporção de rodadas de self-consistency que escolheram aquela
+categoria. Presentes quando <code>confidence</code> é <code>"by_variable"</code> ou
+<code>"both"</code>.</p></li>
 <li><p><code>raciocinio</code>: justificativa da classificação (se <code>reasoning = TRUE</code>).</p></li>
 </ul></div>
     <div class="section level2">
@@ -267,6 +280,15 @@ Workers for Text-Annotation Tasks. <em>PNAS</em>, 120(30).</p>
 <span class="r-in"><span><span class="co"># Ollama (modelos locais, sem envio de dados externos)</span></span></span>
 <span class="r-in"><span><span class="va">chat_local</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama3.2"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_code</span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, chat <span class="op">=</span> <span class="va">chat_local</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># confidence = "both": alem de confidence_score (categoria vencedora),</span></span></span>
+<span class="r-in"><span><span class="co"># ganha uma coluna &lt;categoria&gt;_confidence por categoria do codebook --</span></span></span>
+<span class="r-in"><span><span class="co"># util para montar uma matriz de confianca por tema entre documentos</span></span></span>
+<span class="r-in"><span><span class="co"># ou comparar modelos na mesma tarefa.</span></span></span>
+<span class="r-in"><span><span class="va">coded_both</span> <span class="op">&lt;-</span> <span class="fu">ac_qual_code</span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, model <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,</span></span>
+<span class="r-in"><span>                            confidence <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coded_both</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"doc_id"</span>, <span class="st">"categoria"</span>, <span class="st">"confidence_score"</span>,</span></span>
+<span class="r-in"><span>               <span class="st">"positivo_confidence"</span>, <span class="st">"negativo_confidence"</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
