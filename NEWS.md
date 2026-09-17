@@ -2,6 +2,22 @@
 
 ## Correcoes
 
+* **`ac_qual_code(confidence = "by_variable" | "both")`**: a confianca
+  por variavel nunca era calculada nem chegava ao tibble de saida como
+  colunas `<categoria>_confidence`, apesar de documentado em `@return`.
+  Dois bugs na mesma funcao: (1) `.ac_compute_confidence()` testava
+  `confidence %in% c("total", "both")` no primeiro `if`, entao `"both"`
+  sempre caia nesse ramo e nunca calculava a confianca por variavel;
+  (2) mesmo quando calculada (modo `"by_variable"` puro), o valor era
+  so a proporcao da categoria vencedora, nao uma proporcao por
+  categoria do codebook -- e `.ac_build_result_tibble()` nunca lia
+  esse valor para adicionar as colunas ao tibble final. Corrigido nas
+  duas funcoes: `by_var` agora tem uma entrada por categoria de
+  `cat_names` com a proporcao de rodadas de self-consistency que a
+  escolheram, calculada sempre que `confidence` inclui `"by_variable"`,
+  e o tibble final ganha as colunas `<categoria>_confidence`
+  correspondentes.
+
 * **`ac_qual_code()`**: corrigido crash "Result must be length 1, not N"
   em `.ac_compute_confidence()` (calculo de confianca via
   self-consistency) quando uma das k rodadas devolvia `categoria` como

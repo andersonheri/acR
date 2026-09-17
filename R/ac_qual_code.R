@@ -421,13 +421,25 @@ ac_qual_code <- function(corpus,
   mode_cat <- names(sort(table(cats), decreasing = TRUE))[1]
   agree    <- mean(cats == mode_cat, na.rm = TRUE)
 
-  if (confidence %in% c("total", "both")) {
-    list(total = agree, by_var = NULL, dominant = mode_cat)
+  # Proporcao de rodadas de self-consistency que escolheram CADA
+  # categoria do codebook (nao so a vencedora) -- isso e o que de fato
+  # varia "por variavel". Calculado para "by_variable" e "both" (o if
+  # anterior testava confidence %in% c("total", "both") primeiro, entao
+  # "both" nunca alcancava o ramo que populava by_var).
+  by_var <- if (confidence %in% c("by_variable", "both")) {
+    stats::setNames(
+      as.list(vapply(cat_names, function(cn) {
+        mean(cats == cn, na.rm = TRUE)
+      }, numeric(1))),
+      cat_names
+    )
   } else {
-    list(total = NULL,
-         by_var = stats::setNames(list(agree), mode_cat),
-         dominant = mode_cat)
+    NULL
   }
+
+  total <- if (confidence %in% c("total", "both")) agree else NULL
+
+  list(total = total, by_var = by_var, dominant = mode_cat)
 }
 
 
@@ -499,6 +511,20 @@ ac_qual_code <- function(corpus,
       confidence_score = conf_score,
       confidence_level = conf_level
     )
+
+    # Adiciona uma coluna `<categoria>_confidence` por categoria do
+    # codebook quando by_var foi calculado (confidence = "by_variable"
+    # ou "both"). Implementa o comportamento ja documentado em @return
+    # que nunca tinha sido de fato ligado ao tibble de saida.
+    if (!is.null(conf) && !is.null(conf$by_var)) {
+      by_var_cols <- stats::setNames(
+        as.list(vapply(cat_names, function(cn) {
+          conf$by_var[[cn]] %||% NA_real_
+        }, numeric(1))),
+        paste0(cat_names, "_confidence")
+      )
+      row <- dplyr::bind_cols(row, tibble::as_tibble(by_var_cols))
+    }
 
     if (reasoning) row$raciocinio <- rac_val
 

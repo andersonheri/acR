@@ -302,6 +302,95 @@ test_that(".ac_compute_confidence trata categoria NULL como NA sem quebrar", {
   expect_equal(conf$dominant, "tema_a")
 })
 
+
+# ============================================================
+# Bug fix: confidence = "by_variable"/"both" nunca populavam
+# confianca por variavel. Dois bugs na mesma funcao:
+# 1) .ac_compute_confidence(): o primeiro `if` testava
+#    confidence %in% c("total", "both"), entao "both" sempre caia
+#    nesse ramo e nunca calculava by_var.
+# 2) .ac_build_result_tibble(): mesmo com by_var populado, ele nunca
+#    era lido -- nenhuma coluna <categoria>_confidence era adicionada
+#    ao tibble, apesar de documentado em @return.
+# ============================================================
+
+test_that(".ac_compute_confidence() popula by_var para 'by_variable' e 'both'", {
+  results <- list(
+    list(categoria = "tema_a"),
+    list(categoria = "tema_a"),
+    list(categoria = "tema_b")
+  )
+  cat_names <- c("tema_a", "tema_b", "tema_c")
+
+  r_total <- acR:::.ac_compute_confidence(results, cat_names, "total")
+  expect_equal(r_total$total, 2/3)
+  expect_null(r_total$by_var)
+
+  r_by_var <- acR:::.ac_compute_confidence(results, cat_names, "by_variable")
+  expect_null(r_by_var$total)
+  expect_equal(r_by_var$by_var$tema_a, 2/3)
+  expect_equal(r_by_var$by_var$tema_b, 1/3)
+  expect_equal(r_by_var$by_var$tema_c, 0)
+
+  # Bug 1: "both" caia sempre no ramo de "total", nunca alcancando
+  # o calculo de by_var.
+  r_both <- acR:::.ac_compute_confidence(results, cat_names, "both")
+  expect_equal(r_both$total, 2/3)
+  expect_equal(r_both$by_var$tema_a, 2/3)
+  expect_equal(r_both$by_var$tema_b, 1/3)
+  expect_equal(r_both$by_var$tema_c, 0)
+})
+
+test_that(".ac_build_result_tibble() cria colunas <categoria>_confidence com 'both'", {
+  cb     <- make_codebook_test()  # positivo/negativo/neutro
+  corpus <- data.frame(doc_id = c("d1", "d2"), text = c("t1", "t2"),
+                       stringsAsFactors = FALSE)
+
+  results <- list(
+    list(doc_id = "d1", main = list(categoria = "positivo"),
+         conf_scores = list(total = 0.667,
+                            by_var = list(positivo = 0.667, negativo = 0.333, neutro = 0),
+                            dominant = "positivo")),
+    list(doc_id = "d2", main = list(categoria = "negativo"),
+         conf_scores = list(total = 1,
+                            by_var = list(positivo = 0, negativo = 1, neutro = 0),
+                            dominant = "negativo"))
+  )
+
+  # Bug 2: by_var era calculado (uma vez o Bug 1 corrigido) mas nunca
+  # chegava ao tibble final -- nenhuma coluna <categoria>_confidence
+  # era adicionada.
+  out <- acR:::.ac_build_result_tibble(
+    results   = results, corpus = corpus,
+    cat_names = c("positivo", "negativo", "neutro"),
+    codebook  = cb, confidence = "both", reasoning = FALSE
+  )
+
+  expect_true(all(c("positivo_confidence", "negativo_confidence",
+                    "neutro_confidence") %in% names(out)))
+  expect_equal(out$positivo_confidence[1], 0.667)
+  expect_equal(out$negativo_confidence[2], 1)
+  expect_equal(out$confidence_score, c(0.667, 1))
+})
+
+test_that(".ac_build_result_tibble() nao adiciona colunas <categoria>_confidence com 'total'", {
+  cb     <- make_codebook_test()
+  corpus <- data.frame(doc_id = "d1", text = "t1", stringsAsFactors = FALSE)
+
+  results <- list(
+    list(doc_id = "d1", main = list(categoria = "positivo"),
+         conf_scores = list(total = 1, by_var = NULL, dominant = "positivo"))
+  )
+
+  out <- acR:::.ac_build_result_tibble(
+    results   = results, corpus = corpus,
+    cat_names = c("positivo", "negativo", "neutro"),
+    codebook  = cb, confidence = "total", reasoning = FALSE
+  )
+
+  expect_false(any(grepl("_confidence$", names(out)[names(out) != "confidence_score"])))
+})
+
 test_that("prompt multilabel instrui explicitamente que categoria eh string", {
   cb <- ac_qual_codebook(
     name = "multi_teste",

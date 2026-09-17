@@ -1,10 +1,25 @@
 ## Submission summary
 
-Patch release of `acR` (0.3.3 → 0.3.4) fixing one crash in the
+Patch release of `acR` (0.3.3 → 0.3.4) fixing two crashes/bugs in the
 qualitative pipeline found in production use, on top of the fixes and
 addition already shipped in 0.3.3.
 
 ### Fixes in 0.3.4
+
+* `ac_qual_code(confidence = "by_variable" | "both")` never computed
+  or surfaced per-category confidence, despite being documented in
+  `@return`. Two bugs in the same function: (1) `.ac_compute_confidence()`
+  tested `confidence %in% c("total", "both")` in its first `if`, so
+  `"both"` always took that branch and never reached the per-variable
+  calculation; (2) even when computed (pure `"by_variable"` mode), the
+  value stored was only the winning category's proportion, not a
+  proportion per codebook category -- and `.ac_build_result_tibble()`
+  never read that value to add columns to the output tibble. Fixed in
+  both functions: `by_var` now has one entry per category in
+  `cat_names` with the proportion of self-consistency rounds that
+  picked it, computed whenever `confidence` includes `"by_variable"`,
+  and the output tibble gains the corresponding
+  `<category>_confidence` columns.
 
 * `ac_qual_code()` no longer crashes with "Result must be length 1,
   not N" inside `.ac_compute_confidence()` (the self-consistency
