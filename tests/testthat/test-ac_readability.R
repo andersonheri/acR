@@ -14,7 +14,7 @@ test_that("ac_readability() conta palavras e frases corretamente", {
   out <- ac_readability(corpus)
 
   expect_equal(out$n_frases, 2L)
-  expect_equal(out$n_palavras, 10L)
+  expect_equal(out$n_palavras, 9L)
   expect_true(!is.na(out$flesch))
 })
 

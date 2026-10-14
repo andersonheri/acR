@@ -99,7 +99,7 @@ ac_wordscores <- function(corpus,
 
   scores <- .ac_wordscores_as_tibble(scores)
 
-  counts <- ac_count(corpus, drop_punct = drop_punct)
+  counts <- ac_count(corpus, drop_punct = drop_punct, sort = FALSE)
   if (nrow(counts) == 0L) {
     cli::cli_abort("{.arg corpus} n\u00e3o produziu nenhum token.")
   }
@@ -111,6 +111,11 @@ ac_wordscores <- function(corpus,
     values_from = "n",
     values_fill = 0
   )
+  # ac_count()/pivot_wider() nao preservam a ordem original dos documentos;
+  # reordenar para a ordem do corpus evita que a saida pareca embaralhada.
+  wide <- wide[match(corpus$doc_id, wide$doc_id), , drop = FALSE]
+  wide <- wide[!is.na(wide$doc_id), , drop = FALSE]
+
   doc_ids <- wide$doc_id
   mat <- as.matrix(wide[, setdiff(names(wide), "doc_id"), drop = FALSE])
   rownames(mat) <- doc_ids

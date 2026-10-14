@@ -25,15 +25,15 @@ ac_qual_code(
 \arguments{
 \item{corpus}{Objeto \code{ac_corpus}.}
 
-\item{codebook}{Objeto \code{ac_codebook}, saída de \code{\link[=ac_qual_codebook]{ac_qual_codebook()}}.}
+\item{codebook}{Objeto \code{ac_codebook}, saida de \code{\link[=ac_qual_codebook]{ac_qual_codebook()}}.}
 
 \item{model}{Modelo LLM a usar. Aceita string no formato
 \code{"provedor/modelo"} (ex: \code{"anthropic/claude-sonnet-4-5"},
 \code{"openai/gpt-4.1"}), objeto \code{Chat} do pacote \code{ellmer}
-pré-configurado, ou função fábrica
+pre-configurado, ou funcao fabrica
 \code{function(temperature, system_prompt) Chat} para controle total
-sobre a construção do chat a cada rodada. Quando \code{chat} é
-fornecido, \code{model} é ignorado.}
+sobre a construcao do chat a cada rodada. Quando \code{chat} e fornecido,
+\code{model} e ignorado.}
 
 \item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
 \code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre
@@ -41,65 +41,65 @@ fornecido, \code{model} é ignorado.}
 
 \item{confidence}{Como calcular certeza:
 \itemize{
-\item \code{"total"} (padrão): uma coluna \code{confidence_score} com a proporção
+\item \code{"total"} (padrao): uma coluna \code{confidence_score} com a proporcao
 de rodadas de self-consistency que concordaram com a categoria
 vencedora (moda);
 \item \code{"by_variable"}: uma coluna \verb{<categoria>_confidence} por
-categoria do codebook, com a proporção de rodadas que escolheram
-\emph{aquela} categoria especificamente (não só a vencedora) — útil
-para montar uma matriz de confiança por tema/categoria;
+categoria do codebook, com a proporcao de rodadas que escolheram
+\emph{aquela} categoria especificamente (nao so a vencedora) -- util
+para montar uma matriz de confianca por tema/categoria;
 \item \code{"both"}: as colunas por categoria + \code{confidence_score} (a da
 vencedora);
-\item \code{"none"}: não calcula certeza (mais rápido, menor custo).
+\item \code{"none"}: nao calcula certeza (mais rapido, menor custo).
 }}
 
-\item{k_consistency}{Número de rodadas para self-consistency. Padrão: \code{3}.
+\item{k_consistency}{Numero de rodadas para self-consistency. Padrao: \code{3}.
 Ignorado se \code{confidence = "none"}.}
 
-\item{temperature}{Temperatura das rodadas de consistency. Padrão: \code{0.3}.}
+\item{temperature}{Temperatura das rodadas de consistency. Padrao: \code{0.3}.}
 
-\item{reasoning}{Lógico. Se \code{TRUE} (padrão), inclui coluna \code{raciocinio}
-com justificativa da classificação.}
+\item{reasoning}{Logico. Se \code{TRUE} (padrao), inclui coluna \code{raciocinio}
+com justificativa da classificacao.}
 
-\item{reasoning_length}{Tamanho do raciocínio: \code{"short"} (1 frase, padrão),
-\code{"medium"} (3 frases), \code{"detailed"} (parágrafo).}
+\item{reasoning_length}{Tamanho do raciocinio: \code{"short"} (1 frase, padrao),
+\code{"medium"} (3 frases), \code{"detailed"} (paragrafo).}
 
 \item{main_temperature}{Temperatura da rodada principal (a que gera
 \code{categoria}, \code{categoria_label} e \code{raciocinio} no resultado final).
-Padrão \code{0} (determinística). Separado de \code{temperature} (usado só nas
-rodadas extras de self-consistency) porque os dois cumprem papéis
-diferentes: a rodada principal deve ser reprodutível, as extras devem
-variar para medir concordância.}
+Padrao \code{0} (deterministica). Separado de \code{temperature} (usado so nas
+rodadas extras de self-consistency) porque os dois cumprem papeis
+diferentes: a rodada principal deve ser reprodutivel, as extras devem
+variar para medir concordancia.}
 
-\item{reasoning_extras}{Lógico. Se \code{TRUE}, pede raciocínio também nas
-rodadas extras de self-consistency (mais caro, não usado no resultado
-final). Padrão \code{FALSE}.}
+\item{reasoning_extras}{Logico. Se \code{TRUE}, pede raciocinio tambem nas
+rodadas extras de self-consistency (mais caro, nao usado no resultado
+final). Padrao \code{FALSE}.}
 
-\item{live}{Visualização em tempo real da classificação:
+\item{live}{Visualizacao em tempo real da classificacao:
 \itemize{
-\item \code{"off"} (padrão): sem live view;
-\item \code{"terminal"}: barra de progresso com doc atual, categoria, confiança e
-início do raciocínio a cada iteração;
+\item \code{"off"} (padrao): sem live view;
+\item \code{"terminal"}: barra de progresso com doc atual, categoria, confianca e
+inicio do raciocinio a cada iteracao;
 \item \code{"progress"}: barra de progresso enxuta (doc atual e status), sem
-ecoar categoria/raciocínio — útil para rodadas grandes onde o
-terminal ficaria poluído;
+ecoar categoria/raciocinio -- util para rodadas grandes onde o
+terminal ficaria poluido;
 \item \code{"shiny"}: abre janela Shiny em background com tabela atualizando
-conforme documentos são classificados (requer \code{shiny} e \code{callr}).
+conforme documentos sao classificados (requer \code{shiny} e \code{callr}).
 }}
 
-\item{max_retries}{Número máximo de novas tentativas por rodada quando a
-chamada ao LLM falha (erro de rede, timeout, resposta inválida).
-Padrão \code{2}. Espera exponencial entre tentativas (até 30s). Quando o
-erro é classificado como \code{"estouro_contexto"}, não há nova tentativa
-(repetir não resolve). Se mais da metade dos últimos 5+ documentos
-falhar, a execução é abortada com sugestão de usar \code{checkpoint_dir}.}
+\item{max_retries}{Numero maximo de novas tentativas por rodada quando a
+chamada ao LLM falha (erro de rede, timeout, resposta invalida).
+Padrao \code{2}. Espera exponencial entre tentativas (ate 30s). Quando o
+erro e classificado como \code{"estouro_contexto"}, nao ha nova tentativa
+(repetir nao resolve). Se mais da metade dos ultimos 5+ documentos
+falhar, a execucao e abortada com sugestao de usar \code{checkpoint_dir}.}
 
-\item{checkpoint_dir}{Diretório para salvar o resultado de cada documento
-assim que classificado. Se já existir um checkpoint válido para um
+\item{checkpoint_dir}{Diretorio para salvar o resultado de cada documento
+assim que classificado. Se ja existir um checkpoint valido para um
 \code{doc_id} (mesmos \code{codebook}, \code{model}, \code{k_consistency} e \code{temperature}),
-o documento é pulado e o resultado salvo é reutilizado — permite
+o documento e pulado e o resultado salvo e reutilizado -- permite
 retomar uma rodada interrompida sem reclassificar tudo. \code{NULL}
-(padrão): sem checkpoint.}
+(padrao): sem checkpoint.}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.
 Permite uso de APIs OpenAI-compatible self-hosted via \code{base_url}.}
@@ -111,67 +111,67 @@ Tibble com colunas:
 \item Metadados originais do corpus;
 \item \code{categoria}: slug interno da categoria (chave da lista
 \code{categories} no codebook). Em \code{multilabel = TRUE}, string
-pipe-separada sem espaço (\code{"tecnica|politica"}).
-\item \code{categoria_label}: rótulo humano correspondente, vindo do campo
+pipe-separada sem espaco (\code{"tecnica|politica"}).
+\item \code{categoria_label}: rotulo humano correspondente, vindo do campo
 \code{label} de cada categoria (se ausente, repete o slug). Em
-multilabel, unidos por \code{" | "} (espaço dos dois lados).
+multilabel, unidos por \code{" | "} (espaco dos dois lados).
 \item \code{confidence_score}: grau de certeza da categoria vencedora (0-1).
-Presente quando \code{confidence} é \code{"total"} ou \code{"both"}.
-\item \code{confidence_level}: \code{"alta"}, \code{"media"}, \code{"baixa"} — interpretação
+Presente quando \code{confidence} e \code{"total"} ou \code{"both"}.
+\item \code{confidence_level}: \code{"alta"}, \code{"media"}, \code{"baixa"} -- interpretacao
 de \code{confidence_score} (Landis & Koch, 1977). Acompanha
 \code{confidence_score}.
 \item \verb{<categoria>_confidence}: uma coluna por categoria do codebook
 (ex.: \code{positivo_confidence}, \code{negativo_confidence}), com a
-proporção de rodadas de self-consistency que escolheram aquela
-categoria. Presentes quando \code{confidence} é \code{"by_variable"} ou
+proporcao de rodadas de self-consistency que escolheram aquela
+categoria. Presentes quando \code{confidence} e \code{"by_variable"} ou
 \code{"both"}.
-\item \code{raciocinio}: justificativa da classificação (se \code{reasoning = TRUE}).
+\item \code{raciocinio}: justificativa da classificacao (se \code{reasoning = TRUE}).
 \item \code{status}: resultado da rodada principal: \code{"ok"}, \code{"resposta_invalida"}
-(JSON não parseável), \code{"estouro_contexto"}, \code{"timeout"} ou
+(JSON nao parseavel), \code{"estouro_contexto"}, \code{"timeout"} ou
 \code{"erro_servidor"}.
-\item \code{n_tentativas}: número de tentativas até obter \code{status = "ok"} (ou
-até esgotar \code{max_retries}).
-\item \code{tokens_entrada}, \code{tokens_saida}: tokens de entrada/saída da rodada
-principal, via \code{chat$get_tokens()} (\code{NA} se o provedor não expõe).
+\item \code{n_tentativas}: numero de tentativas ate obter \code{status = "ok"} (ou
+ate esgotar \code{max_retries}).
+\item \code{tokens_entrada}, \code{tokens_saida}: tokens de entrada/saida da rodada
+principal, via \code{chat$get_tokens()} (\code{NA} se o provedor nao expoe).
 \item \code{segundos}: tempo total da rodada principal, incluindo novas
 tentativas.
 \item \code{tokens_por_segundo}: \code{tokens_saida / segundos}.
 }
 
-O resultado carrega também um atributo \code{run_info} (ver
-\code{\link{attributes}()}) com metadados da execução: versões de \code{acR} e
-\code{ellmer}, modelo, \code{base_url}, parâmetros efetivos aplicados ao
+O resultado carrega tambem um atributo \code{run_info} (ver
+\code{\link[=attributes]{attributes()}}) com metadados da execucao: versoes de \code{acR} e
+\code{ellmer}, modelo, \code{base_url}, parametros efetivos aplicados ao
 provedor, temperaturas pedidas, \code{k_consistency}, hash do codebook e
-timestamps de início/fim.
+timestamps de inicio/fim.
 }
 \description{
 \code{ac_qual_code()} classifica os textos de um \code{ac_corpus} de acordo com um
 \code{ac_codebook}, usando um modelo de linguagem via \code{ellmer}. Retorna um tibble
-com a classificação, grau de certeza (via self-consistency) e raciocínio
+com a classificacao, grau de certeza (via self-consistency) e raciocinio
 da LLM para cada documento.
 
-É o \strong{motor de classificação} do pipeline qualitativo do \code{acR}. Assume
-que o codebook já foi construído com \code{\link[=ac_qual_codebook]{ac_qual_codebook()}} e (idealmente)
-testado numa amostra piloto. A saída é sempre validada com
-\code{\link[=ac_qual_reliability]{ac_qual_reliability()}} contra uma amostra codificada por humano —
-nenhuma análise categorial publicável dispensa essa etapa.
+E o \strong{motor de classificacao} do pipeline qualitativo do \code{acR}. Assume
+que o codebook ja foi construido com \code{\link[=ac_qual_codebook]{ac_qual_codebook()}} e (idealmente)
+testado numa amostra piloto. A saida e sempre validada com
+\code{\link[=ac_qual_reliability]{ac_qual_reliability()}} contra uma amostra codificada por humano --
+nenhuma analise categorial publicavel dispensa essa etapa.
 
-Três parâmetros determinam qualidade e custo:
+Tres parametros determinam qualidade e custo:
 \itemize{
-\item \code{k_consistency}: número de rodadas de \emph{self-consistency} (Wang et al.,
-2023). O mesmo texto é classificado k vezes com pequena variação de
-temperatura, e a categoria final é a moda. O \code{confidence_score} sai
-dessa concordância — 1,0 significa que todas as k rodadas concordaram.
-Padrão \code{k = 3} custa 3x mais tokens que uma rodada única, e é a
-configuração mínima para reportar confiança de forma defensável.
-\item \code{reasoning}: pede raciocínio estruturado. Melhora a qualidade em casos
-ambíguos mas praticamente dobra o custo por documento. Use \code{"short"}
-como padrão e \code{"detailed"} só quando planeja auditar decisões
+\item \code{k_consistency}: numero de rodadas de \emph{self-consistency} (Wang et al.,
+2023). O mesmo texto e classificado k vezes com pequena variacao de
+temperatura, e a categoria final e a moda. O \code{confidence_score} sai
+dessa concordancia -- 1,0 significa que todas as k rodadas concordaram.
+Padrao \code{k = 3} custa 3x mais tokens que uma rodada unica, e e a
+configuracao minima para reportar confianca de forma defensavel.
+\item \code{reasoning}: pede raciocinio estruturado. Melhora a qualidade em casos
+ambiguos mas praticamente dobra o custo por documento. Use \code{"short"}
+como padrao e \code{"detailed"} so quando planeja auditar decisoes
 individuais.
-\item \code{live}: tira a classificação do modo "caixa-preta" mostrando cada
-documento em tempo real. Numa rodada de 500 discursos, você percebe
-nos primeiros 10 se o codebook está funcionando — antes de gastar
-todo o orçamento de tokens.
+\item \code{live}: tira a classificacao do modo "caixa-preta" mostrando cada
+documento em tempo real. Numa rodada de 500 discursos, voce percebe
+nos primeiros 10 se o codebook esta funcionando -- antes de gastar
+todo o orcamento de tokens.
 }
 }
 \examples{

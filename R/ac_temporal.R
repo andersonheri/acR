@@ -62,11 +62,11 @@ ac_temporal <- function(data,
   if (!date_col %in% names(data)) {
     cli::cli_abort("{.arg date_col} ({.val {date_col}}) n\u00e3o existe em {.arg data}.")
   }
+  unit <- match.arg(unit)
+  stat <- match.arg(stat)
   if (!value_col %in% names(data) && stat != "n") {
     cli::cli_abort("{.arg value_col} ({.val {value_col}}) n\u00e3o existe em {.arg data}.")
   }
-  unit <- match.arg(unit)
-  stat <- match.arg(stat)
 
   datas <- as.Date(data[[date_col]])
   if (all(is.na(datas))) {
