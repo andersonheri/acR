@@ -3,7 +3,7 @@
 ## Visão geral
 
 Esta vignette cobre o fluxo de
-[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
 quando o modelo roda **localmente** (LM Studio, llama.cpp, vLLM, Ollama
 em modo OpenAI) em vez de um provedor em nuvem — o cenário mais comum
 quando os documentos não podem sair do ambiente do pesquisador (dados
@@ -63,11 +63,11 @@ summary(tamanhos)
 sum(tamanhos > 8000)
 ```
 
-[`ac_estimate_tokens()`](https://ahenriquecp.com/acR/reference/ac_estimate_tokens.md)
+[`ac_estimate_tokens()`](https://andersonheri.github.io/acR/reference/ac_estimate_tokens.md)
 é uma heurística (caracteres por token) — não faz nenhuma chamada de
 rede. Para uma estimativa calibrada contra o modelo e tokenizador real,
 rode
-[`ac_calibrate_tokens()`](https://ahenriquecp.com/acR/reference/ac_calibrate_tokens.md)
+[`ac_calibrate_tokens()`](https://andersonheri.github.io/acR/reference/ac_calibrate_tokens.md)
 numa amostra pequena antes da rodada completa:
 
 ``` r
@@ -84,8 +84,8 @@ tamanhos_calibrados <- ac_estimate_tokens(corpus$text, chars_per_token = razao)
 Documentos que excedem a janela de contexto do servidor não devem ser
 enviados como estão — considere dividir manualmente em partes menores
 antes de montar o
-[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md), ou
-reduzir `reasoning_length` para liberar espaço para a resposta.
+[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
+ou reduzir `reasoning_length` para liberar espaço para a resposta.
 
 ## 3. Rodando em lotes com checkpoint
 
@@ -198,7 +198,7 @@ info$codebook_hash
 Compare `params_efetivos$temperature` com `temperatura_pedida` antes de
 reportar `confidence_score` num artigo: se um `Chat` pré-configurado não
 confirmar a temperatura pedida,
-[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
 já emite um aviso explícito no momento da rodada — mas `run_info`
 permite auditar isso depois, inclusive em rodadas de terceiros.
 

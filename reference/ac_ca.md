@@ -6,9 +6,9 @@ geométrico de modo que unidades e termos próximos no gráfico tendem a
 co-ocorrer mais do que o esperado pelo acaso (Greenacre, 2007). É uma
 alternativa simples e determinística à Alocação de Dirichlet Latente
 (LDA, já disponível em
-[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md)) para
-visualizar associações entre vocabulário e grupos em duas dimensões —
-sem assumir um número de tópicos latentes, e com uma interpretação
+[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md))
+para visualizar associações entre vocabulário e grupos em duas dimensões
+— sem assumir um número de tópicos latentes, e com uma interpretação
 geométrica direta (distâncias no biplot ~ dissimilaridade de perfis de
 frequência).
 
@@ -66,7 +66,7 @@ ac_ca(
 - drop_punct:
 
   Lógico, encaminhado para
-  [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md).
+  [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
   Padrão: `TRUE`.
 
 ## Value
@@ -90,9 +90,9 @@ Chapman and Hall/CRC.
 
 ## See also
 
-[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
-[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md),
-[`ac_plot_ca()`](https://ahenriquecp.com/acR/reference/ac_plot_ca.md)
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
+[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md),
+[`ac_plot_ca()`](https://andersonheri.github.io/acR/reference/ac_plot_ca.md)
 
 ## Examples
 

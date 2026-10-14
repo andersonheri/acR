@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Inter_Tight-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +55,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
     <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
     <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/llm-local-em-escala.html">  ↳ LLM local em escala (LM Studio, llama.cpp)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
@@ -86,7 +87,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Análise de proposições legislativas</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/HEAD/vignettes/analise-proposicoes.Rmd" class="external-link"><code>vignettes/analise-proposicoes.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/main/vignettes/analise-proposicoes.Rmd" class="external-link"><code>vignettes/analise-proposicoes.Rmd</code></a></small>
       <div class="d-none name"><code>analise-proposicoes.Rmd</code></div>
     </div>
 
@@ -110,11 +111,11 @@ validar os resultados com revisão humana.</p>
 <h2 id="instalar-e-configurar">1. Instalar e configurar<a class="anchor" aria-label="anchor" href="#instalar-e-configurar"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ellmer"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Configurar chave de API no .Renviron</span></span>
-<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># Adicione: GROQ_API_KEY=sua_chave</span></span></code></pre></div>
 <hr>
 </div>
@@ -257,7 +258,7 @@ referências bibliográficas buscadas via LLM, preservando os exemplos
 manuais:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"openai/gpt-oss-120b"</span>,</span>
 <span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -345,11 +346,11 @@ posicionamento:</p>
 </h2>
 <p>O argumento <code>chat =</code> recebe qualquer objeto
 <code>Chat</code> do <strong>ellmer</strong>. Aqui usamos o Groq com
-<code>llama-3.3-70b-versatile</code>, que oferece plano gratuito e
-latência baixa — ideal para corpora de tamanho médio como este.</p>
+<code>openai/gpt-oss-120b</code>, que oferece plano gratuito e latência
+baixa — ideal para corpora de tamanho médio como este.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"openai/gpt-oss-120b"</span>,</span>
 <span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -502,7 +503,7 @@ Models</strong>. Posit, 2025. Disponível em: <a href="https://ellmer.tidyverse.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

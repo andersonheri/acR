@@ -69,7 +69,8 @@ ac_qual_search_literature(
 
 - ...:
 
-  Argumentos adicionais passados a `ellmer::chat()`.
+  Argumentos adicionais passados a
+  [`ellmer::chat()`](https://ellmer.tidyverse.org/reference/chat-any.html).
 
 ## Value
 
@@ -90,8 +91,8 @@ Workers for Text-Annotation Tasks. *PNAS*, 120(30).
 if (FALSE) { # \dontrun{
 # Requer internet (busca no OpenAlex) e credenciais da LLM (para sintese)
 
-# Chat via Groq (plano gratuito com llama-3.3-70b)
-chat_obj <- ellmer::chat_groq(model = "llama-3.3-70b-versatile", echo = "none")
+# Chat via Groq (plano gratuito com gpt-oss-120b)
+chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
 # Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma
 lit <- ac_qual_search_literature(

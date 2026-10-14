@@ -2,7 +2,7 @@
 
 `ac_wordcloud()` cria uma nuvem de palavras a partir de uma tabela de
 frequências, tipicamente gerada por
-[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md).
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
 
 Por padrão prefere `ggwordcloud` (retorna `ggplot`, layout mais
 agradável, tipografia melhor); cai para `wordcloud` clássico se o
@@ -41,7 +41,7 @@ ac_wordcloud(
 - colors:
 
   Vetor de cores usado no gráfico. Padrão: paleta
-  [`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md).
+  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md).
 
 - backend:
 
@@ -73,9 +73,9 @@ Um objeto `ggplot` (backend `ggwordcloud`) ou, invisivelmente, o
 
 ## See also
 
-[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
-[`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md),
-[`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
+[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md),
+[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
 
 ## Examples
 
@@ -110,12 +110,13 @@ if (requireNamespace("ggwordcloud", quietly = TRUE)) {
 if (requireNamespace("wordcloud", quietly = TRUE)) {
   ac_wordcloud(freq, max_words = 30, backend = "wordcloud")
 }
+#> Warning: empresas could not be fit on page. It will not be plotted.
+#> Warning: empresas could not be fit on page. It will not be plotted.
 #> Warning: impostos could not be fit on page. It will not be plotted.
 #> Warning: impostos could not be fit on page. It will not be plotted.
 #> Warning: indiretos could not be fit on page. It will not be plotted.
-#> Warning: moderniza could not be fit on page. It will not be plotted.
+#> Warning: modernizacao could not be fit on page. It will not be plotted.
 #> Warning: prejudica could not be fit on page. It will not be plotted.
-#> Warning: reduz could not be fit on page. It will not be plotted.
 
 #> Warning: reforma could not be fit on page. It will not be plotted.
 #> Warning: reforma could not be fit on page. It will not be plotted.

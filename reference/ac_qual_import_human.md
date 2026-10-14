@@ -2,7 +2,7 @@
 
 `ac_qual_import_human()` importa um arquivo Excel preenchido por um
 codificador humano, retornando um tibble compatível com
-[`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md).
+[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md).
 
 ## Usage
 
@@ -56,8 +56,7 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
   humano <- ac_qual_import_human(arquivo)
   humano
 }
-#> ✅ 3 classificações humanas importadas de
-#> /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpxhhqVY/file1c313ede38c0.xlsx
+#> ✅ 3 classificações humanas importadas de /tmp/Rtmps8R1aT/file1ce625bb0dfd.xlsx
 #> # A tibble: 3 × 2
 #>   doc_id categoria
 #>   <chr>  <chr>    

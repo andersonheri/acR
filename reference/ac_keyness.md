@@ -4,12 +4,11 @@
 distribuicao de termos entre dois grupos. O criterio que define os
 grupos e do pesquisador: partido, periodo, tema, regiao, autor, condicao
 experimental ou qualquer variavel categorica no corpus. A funcao e
-inspirada em
-[`quanteda.textstats::textstat_keyness()`](https://quanteda.io/reference/textstat_keyness.html)
-e utiliza tabelas 2x2 por termo.
+inspirada em `quanteda.textstats::textstat_keyness()` e utiliza tabelas
+2x2 por termo.
 
 A entrada tipica e uma tabela de frequencias gerada por
-[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
 agregada por uma coluna de grupo:
 
 - `ac_count(corp, by = "grupo")` seguido de
@@ -100,9 +99,9 @@ referencia.
 
 ## See also
 
-[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
-[`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md),
-[`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md)
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
+[`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md),
+[`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
 
 ## Examples
 

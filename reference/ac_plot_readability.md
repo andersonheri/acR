@@ -1,7 +1,7 @@
 # Visualizar legibilidade por grupo
 
 `ac_plot_readability()` compara a distribuição do Índice de Flesch (ver
-[`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md))
+[`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md))
 entre grupos, com boxplots — a forma usual de reportar legibilidade
 comparada na literatura de linguística computacional e comunicação.
 
@@ -45,7 +45,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md)
+[`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md)
 
 ## Examples
 

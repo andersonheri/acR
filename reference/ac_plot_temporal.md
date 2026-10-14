@@ -2,7 +2,7 @@
 
 `ac_plot_temporal()` traça a evolução de uma métrica agregada por
 período, saída de
-[`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md),
+[`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md),
 com uma linha de tendência suavizada opcional.
 
 ## Usage
@@ -16,7 +16,7 @@ ac_plot_temporal(temporal_tbl, smooth = TRUE, title = NULL, ylab = "Valor")
 - temporal_tbl:
 
   Tibble retornado por
-  [`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md).
+  [`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md).
 
 - smooth:
 
@@ -37,7 +37,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md)
+[`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md)
 
 ## Examples
 

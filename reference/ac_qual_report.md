@@ -41,7 +41,7 @@ ac_qual_report(
 - coded:
 
   Tibble com resultado de
-  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md).
+  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md).
 
 - codebook:
 
@@ -50,7 +50,7 @@ ac_qual_report(
 - reliability:
 
   Opcional. Saida de
-  [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md);
+  [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md);
   se fornecido, adiciona secao de confiabilidade inter-codificador.
 
 - chat:
@@ -118,7 +118,6 @@ coded <- tibble::tibble(
 # Gerar relatorio em markdown temporario
 arquivo <- tempfile(fileext = ".md")
 ac_qual_report(coded, cb, path = arquivo, author = "Fulano de Tal")
-#> ✔ Relatorio salvo em
-#>   /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpxhhqVY/file1c31390eb18a.md
+#> ✔ Relatorio salvo em /tmp/Rtmps8R1aT/file1ce61aa6ebfd.md
 # readLines(arquivo, n = 20)
 ```

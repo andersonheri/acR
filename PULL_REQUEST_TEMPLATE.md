@@ -27,16 +27,13 @@ Meu código segue o estilo do projeto (tidyverse style guide)
 
 Adicionei testes para o código novo
 
-Todos os testes passam localmente
-([`devtools::test()`](https://devtools.r-lib.org/reference/test.html))
+Todos os testes passam localmente (`devtools::test()`)
 
-[`devtools::check()`](https://devtools.r-lib.org/reference/check.html)
-retorna 0 errors, 0 warnings, 0 notes
+`devtools::check()` retorna 0 errors, 0 warnings, 0 notes
 
 Atualizei o `NEWS.md` na seção “development version”
 
-Atualizei a documentação (roxygen2) e rodei
-[`devtools::document()`](https://devtools.r-lib.org/reference/document.html)
+Atualizei a documentação (roxygen2) e rodei `devtools::document()`
 
 Se a mudança altera comportamento visível, atualizei vignettes
 correspondentes

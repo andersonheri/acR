@@ -2,7 +2,7 @@
 
 `ac_qual_list_models()` retorna um tibble com os modelos LLM disponíveis
 para uso com
-[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md),
+[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md),
 incluindo informações de custo, janela de contexto e compatibilidade com
 análise de conteúdo qualitativa em Ciências Sociais.
 
@@ -60,7 +60,7 @@ Tibble com colunas:
 - `provider`: nome do provedor;
 
 - `model_id`: identificador do modelo para uso em
-  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md);
+  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md);
 
 - `name`: nome legível;
 
@@ -81,8 +81,8 @@ Tibble com colunas:
 
 ## See also
 
-[`ac_qual_recommend_model()`](https://ahenriquecp.com/acR/reference/ac_qual_recommend_model.md),
-[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+[`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md),
+[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
 
 ## Examples
 
@@ -92,7 +92,7 @@ ac_qual_list_models()
 #> # A tibble: 25 × 9
 #>    provider model_id     name  context_k cost_input cost_output tier  pt_support
 #>    <chr>    <chr>        <chr>     <dbl>      <dbl>       <dbl> <chr> <chr>     
-#>  1 groq     groq/llama-… Llam…       128      0.05         0.08 fast  baixo     
+#>  1 groq     groq/openai… GPT-…       128      0.05         0.08 fast  baixo     
 #>  2 google   google/gemi… Gemi…      1000      0.075        0.3  fast  medio     
 #>  3 openai   openai/gpt-… GPT-…       128      0.1          0.4  fast  medio     
 #>  4 google   google/gemi… Gemi…      1000      0.1          0.4  fast  alto      
@@ -101,7 +101,7 @@ ac_qual_list_models()
 #>  7 deepseek deepseek/de… Deep…        64      0.27         1.1  bala… medio     
 #>  8 openai   openai/gpt-… GPT-…       128      0.4          1.6  fast  alto      
 #>  9 deepseek deepseek/de… Deep…        64      0.55         2.19 bala… medio     
-#> 10 groq     groq/llama-… Llam…       128      0.59         0.79 bala… medio     
+#> 10 groq     groq/openai… GPT-…       128      0.59         0.79 bala… medio     
 #> # ℹ 15 more rows
 #> # ℹ 1 more variable: acr_string <chr>
 

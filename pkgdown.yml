@@ -1,17 +1,18 @@
-pandoc: '3.10'
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   analise-proposicoes: analise-proposicoes.html
   cluster: cluster.html
   introducao-acR: introducao-acR.html
   lda: lda.html
+  llm-local-em-escala: llm-local-em-escala.html
   qualitativo-llm: qualitativo-llm.html
   quantitativo: quantitativo.html
   quickstart: quickstart.html
   replicabilidade: replicabilidade.html
   sentimento: sentimento.html
-last_built: 2026-08-07T15:18Z
+last_built: 2026-10-14T23:34Z
 urls:
-  reference: https://ahenriquecp.com/acR/reference
-  article: https://ahenriquecp.com/acR/articles
+  reference: https://andersonheri.github.io/acR/reference
+  article: https://andersonheri.github.io/acR/articles
