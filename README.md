@@ -481,7 +481,7 @@ referência de todas as funções e changelog.
 ### Referência de funções
 
 - [Índice completo por área](https://andersonheri.github.io/acR/reference/) — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
-- [Notícias / changelog](https://andersonheri.github.io/acR/news/) — histórico de versões (atual: **0.5.0**).
+- [Notícias / changelog](https://andersonheri.github.io/acR/news/) — histórico de versões (atual: **0.6.0**).
 
 ---
 
@@ -493,7 +493,7 @@ citation("acR")
 
 ```
 Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.5.0. ORCID: 0000-0002-1842-2725.
+R package version 0.6.0. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://andersonheri.github.io/acR/
 ```

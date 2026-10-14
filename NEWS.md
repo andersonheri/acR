@@ -1,4 +1,17 @@
-# acR (development version)
+# acR 0.6.0
+
+Release de manutencao, sem mudanca de codigo em relacao a 0.5.0.
+
+* Corrigidas referencias ao dominio pessoal do mantenedor
+  (`ahenriquecp.com`) que estavam, por engano, apontadas como site do
+  pacote em `_pkgdown.yml`, README, `DESCRIPTION` e
+  `cran-comments.md`; agora todas apontam para a URL real do pkgdown
+  (`https://andersonheri.github.io/acR/`).
+* Removida do controle de versao a pasta `docs/` que vinha sendo
+  comitada por engano em `main` desde uma configuracao antiga de
+  publicacao (hoje o site e publicado via GitHub Actions na branch
+  `gh-pages`); ja estava em `.Rbuildignore` e agora tambem esta em
+  `.gitignore`.
 
 # acR 0.5.0
 
