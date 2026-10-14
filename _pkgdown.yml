@@ -148,6 +148,19 @@ reference:
   - ac_lda
   - ac_lda_tune
   - ac_cluster_documents
+  - ac_readability
+  - ac_lexical_diversity
+  - ac_kwic
+  - ac_collocations
+  - ac_temporal
+  - ac_wordscores
+  - ac_ca
+  - ac_dictionary
+  - ac_build_dictionary
+  - ac_dictionary_save
+  - ac_dictionary_load
+  - ac_dictionary_import
+  - ac_emotion
 - title: "Codificacao qualitativa via LLM"
   desc: >
     Pipeline de analise de conteudo qualitativa assistida por LLMs:
@@ -175,6 +188,7 @@ reference:
   contents:
   - ac_qual_irr
   - ac_qual_reliability
+  - ac_dictionary_validate
   - ac_qual_sample
   - ac_qual_export_for_review
   - ac_qual_import_human

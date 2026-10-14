@@ -1,0 +1,77 @@
+# Testes para ac_wordscores()
+
+make_wordscores_corpus <- function() {
+  df <- data.frame(
+    id = c("r1", "r2", "r3", "v1"),
+    texto = c(
+      "bom bom otimo",
+      "bom razoavel",
+      "ruim ruim pessimo",
+      "bom bom bom"
+    ),
+    stringsAsFactors = FALSE
+  )
+  ac_corpus(df, text = texto, docid = id)
+}
+
+test_that("ac_wordscores() rejeita corpus invalido", {
+  expect_error(ac_wordscores("nao e corpus", c(a = 1, b = 2)), regexp = "ac_corpus")
+})
+
+test_that("ac_wordscores() rejeita scores nao-nomeado", {
+  corpus <- make_wordscores_corpus()
+  expect_error(ac_wordscores(corpus, c(1, 2, 3)), regexp = "nomeado")
+})
+
+test_that("ac_wordscores() rejeita menos de 2 referencias validas", {
+  corpus <- make_wordscores_corpus()
+  expect_error(ac_wordscores(corpus, c(r1 = 5)), regexp = "2 documentos")
+})
+
+test_that("ac_wordscores() avisa sobre doc_id de referencia ausente do corpus", {
+  corpus <- make_wordscores_corpus()
+  expect_warning(
+    ac_wordscores(corpus, c(r1 = 5, r2 = 3, inexistente = 9)),
+    regexp = "ausentes"
+  )
+})
+
+test_that("ac_wordscores() calcula escores brutos corretamente (verificado a mao)", {
+  corpus <- make_wordscores_corpus()
+  notas <- c(r1 = 5, r2 = 3, r3 = 1)
+
+  out <- ac_wordscores(corpus, notas, rescale = "none")
+
+  expect_equal(out$is_reference, c(TRUE, TRUE, TRUE, FALSE))
+  expect_equal(out$score[out$doc_id == "r1"], 4.428571428571429, tolerance = 1e-8)
+  expect_equal(out$score[out$doc_id == "r2"], 3.571428571428571, tolerance = 1e-8)
+  expect_equal(out$score[out$doc_id == "r3"], 1, tolerance = 1e-8)
+  expect_equal(out$score[out$doc_id == "v1"], 4.142857142857143, tolerance = 1e-8)
+  expect_equal(out$score, out$score_raw)
+})
+
+test_that("ac_wordscores() reescalona com rescale = 'lbg' (verificado a mao)", {
+  corpus <- make_wordscores_corpus()
+  notas <- c(r1 = 5, r2 = 3, r3 = 1)
+
+  out <- ac_wordscores(corpus, notas, rescale = "lbg")
+
+  expect_equal(out$score[out$doc_id == "v1"], 4.281025230440697, tolerance = 1e-6)
+})
+
+test_that("ac_wordscores() reescalona com rescale = 'mv' (verificado a mao)", {
+  corpus <- make_wordscores_corpus()
+  notas <- c(r1 = 5, r2 = 3, r3 = 1)
+
+  out <- ac_wordscores(corpus, notas, rescale = "mv")
+
+  expect_equal(out$score[out$doc_id == "v1"], 4.666666666666667, tolerance = 1e-6)
+})
+
+test_that("ac_wordscores() aceita scores como tibble", {
+  corpus <- make_wordscores_corpus()
+  notas <- tibble::tibble(doc_id = c("r1", "r2", "r3"), score = c(5, 3, 1))
+
+  out <- ac_wordscores(corpus, notas, rescale = "none")
+  expect_equal(out$score[out$doc_id == "v1"], 4.142857142857143, tolerance = 1e-8)
+})

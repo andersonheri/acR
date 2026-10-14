@@ -2,33 +2,32 @@
 % Please edit documentation in R/ac_estimate_tokens.R
 \name{ac_calibrate_tokens}
 \alias{ac_calibrate_tokens}
-\title{Calibrar a razão caracteres/token contra um modelo real}
+\title{Calibrar a razao caracteres/token contra um modelo real}
 \usage{
 ac_calibrate_tokens(chat_factory, textos)
 }
 \arguments{
-\item{chat_factory}{Função \code{function(temperature, system_prompt) Chat}
-que constrói o chat a usar (o mesmo padrão aceito por \code{model} em
+\item{chat_factory}{Funcao \code{function(temperature, system_prompt) Chat}
+que constroi o chat a usar (o mesmo padrao aceito por \code{model} em
 \code{\link[=ac_qual_code]{ac_qual_code()}}). Permite calibrar contra o provedor/modelo exato que
-será usado na rodada real.}
+sera usado na rodada real.}
 
 \item{textos}{Vetor de caracteres com textos de amostra (poucos bastam;
 ideal variar o tamanho).}
 }
 \value{
-Número: a mediana de caracteres por token observada na amostra.
+Numero: a mediana de caracteres por token observada na amostra.
 }
 \description{
 \code{ac_calibrate_tokens()} mede, contra um \code{Chat} real, quantos tokens de
 entrada um conjunto de textos de amostra realmente consome, e devolve a
-razão caracteres/token observada — para usar como \code{chars_per_token} em
-\code{\link[=ac_estimate_tokens]{ac_estimate_tokens()}} (ou como \code{chars_per_token} em \verb{ac_qual_code()} /
-futuras funções que dependam da estimativa).
-}
-\details{
+razao caracteres/token observada -- para usar como \code{chars_per_token} em
+\code{\link[=ac_estimate_tokens]{ac_estimate_tokens()}} (ou como \code{chars_per_token} em \code{ac_qual_code()} /
+futuras funcoes que dependam da estimativa).
+
 Faz uma chamada real ao modelo por texto de amostra (com uma mensagem
-mínima, para medir só o consumo de tokens de entrada), então usa poucos
-textos — o suficiente para calibrar, não uma amostra representativa de
+minima, para medir so o consumo de tokens de entrada), entao usa poucos
+textos -- o suficiente para calibrar, nao uma amostra representativa de
 todo o corpus.
 }
 \examples{

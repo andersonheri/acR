@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_chat_local.R
 \name{ac_chat_local}
 \alias{ac_chat_local}
-\title{Conectar a um servidor LLM local compatível com OpenAI}
+\title{Conectar a um servidor LLM local compativel com OpenAI}
 \usage{
 ac_chat_local(
   model,
@@ -18,18 +18,18 @@ ac_chat_local(
 reconhece (ex.: o nome exibido pelo LM Studio, ou o \code{--model} passado
 ao \code{llama-server}).}
 
-\item{base_url}{URL base do servidor OpenAI-compatible. Padrão:
-\code{"http://localhost:1234/v1"} (porta padrão do LM Studio).}
+\item{base_url}{URL base do servidor OpenAI-compatible. Padrao:
+\code{"http://localhost:1234/v1"} (porta padrao do LM Studio).}
 
-\item{api}{Qual API o servidor expõe: \code{"chat_completions"} (padrão —
+\item{api}{Qual API o servidor expoe: \code{"chat_completions"} (padrao --
 a maioria dos servidores locais: LM Studio, llama.cpp, vLLM) ou
 \code{"responses"} (servidores que implementam a API Responses da
 OpenAI).}
 
-\item{temperature}{Temperatura padrão do chat. \code{NULL} (padrão): usa o
-padrão do servidor.}
+\item{temperature}{Temperatura padrao do chat. \code{NULL} (padrao): usa o
+padrao do servidor.}
 
-\item{system_prompt}{Prompt de sistema inicial. \code{NULL} (padrão).}
+\item{system_prompt}{Prompt de sistema inicial. \code{NULL} (padrao).}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat_openai()} ou
 \code{ellmer::chat_openai_compatible()}.}
@@ -40,16 +40,15 @@ Objeto \code{Chat} do \code{ellmer}, pronto para uso em
 }
 \description{
 \code{ac_chat_local()} cria um \code{Chat} do \code{ellmer} apontando para um servidor
-local compatível com a API da OpenAI — LM Studio, llama.cpp
-(\code{llama-server}), vLLM, Ollama em modo OpenAI, etc. — sem exigir uma
+local compativel com a API da OpenAI -- LM Studio, llama.cpp
+(\code{llama-server}), vLLM, Ollama em modo OpenAI, etc. -- sem exigir uma
 chave de API real.
-}
-\details{
+
 Classificar com um modelo local (via \code{\link[=ac_qual_code]{ac_qual_code()}}) elimina o custo
-por token e mantém os documentos fora de qualquer rede externa, ao
-preço de gerência própria do servidor: tamanho de contexto, tempo de
+por token e mantem os documentos fora de qualquer rede externa, ao
+preco de gerencia propria do servidor: tamanho de contexto, tempo de
 resposta e throughput passam a depender do hardware local. Use junto
-com \code{checkpoint_dir} e \code{max_retries} em \code{\link[=ac_qual_code]{ac_qual_code()}} para rodadas
+com \code{checkpoint_dir} e \code{max_retries} em \code{ac_qual_code()} para rodadas
 longas, e \code{\link[=ac_estimate_tokens]{ac_estimate_tokens()}} para evitar estouro de contexto.
 }
 \examples{

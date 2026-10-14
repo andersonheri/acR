@@ -61,7 +61,7 @@ bibliograficas comuns quando a LLM opera sem fonte externa.
 \dontrun{
 # Requer internet (busca no OpenAlex) e credenciais da LLM (para sintese)
 
-# Chat via Groq (plano gratuito com llama-3.3-70b)
+# Chat via Groq (plano gratuito com gpt-oss-120b)
 chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
 # Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma

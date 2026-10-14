@@ -473,6 +473,14 @@ Para análises publicáveis, valores acima de **0.67** (Krippendorff) ou
 **0.61** (Landis-Koch) são geralmente aceitos, com discussão dos casos
 divergentes na seção de método.
 
+> **E se eu usar dicionário em vez de LLM?** A mesma exigência de validação
+> vale para classificação por dicionário (`ac_dictionary()`/`ac_emotion()`,
+> ver `vignette("quantitativo")`): um dicionário é determinístico e
+> transparente, mas insensível a contexto, negação e ironia. Use
+> `ac_dictionary_validate()` — o equivalente de `ac_qual_reliability()` para
+> esse método — antes de reportar qualquer classificação por dicionário
+> como válida (Grimmer & Stewart, 2013).
+
 ---
 
 ## Diagnosticando problemas comuns
@@ -605,6 +613,10 @@ repositório de dados junto com o codebook em YAML
 Gilardi, F., Alizadeh, M., & Kubli, M. (2023). ChatGPT outperforms crowd workers
 for text-annotation tasks. *PNAS*, 120(30).
 https://doi.org/10.1073/pnas.2305016120
+
+Grimmer, J., & Stewart, B. M. (2013). Text as Data: The Promise and Pitfalls
+of Automatic Content Analysis Methods for Political Texts. *Political
+Analysis*, 21(3), 267-297.
 
 Gwet, K. L. (2014). *Handbook of Inter-Rater Reliability* (4th ed.). Advanced
 Analytics.

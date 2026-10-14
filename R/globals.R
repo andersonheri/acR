@@ -28,5 +28,19 @@ utils::globalVariables(c(
   # ac_qual_models
   "rank", "justificativa", "model_id", "input", "output",
   # ac_cluster / ac_plot_cluster
-  "PC1", "PC2", "cluster", "dist", "sil_width", "x", "y", "xend", "yend"
+  "PC1", "PC2", "cluster", "dist", "sil_width", "x", "y", "xend", "yend",
+  # ac_collocations
+  "count",
+  # ac_lexical_diversity
+  "n_tokens", "n_types",
+  # ac_plot_ca
+  "dim1", "dim2", "unit",
+  # ac_plot_readability
+  "flesch",
+  # ac_temporal / ac_plot_temporal
+  "period", "value",
+  # ac_plot_wordscores
+  "is_reference",
+  # ac_plot_zipf
+  "ideal"
 ))

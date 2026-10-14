@@ -21,6 +21,33 @@
 Do texto bruto ao resultado publicável — codebook, LLM, *keyness*, LDA, sentimento
 e concordância inter-codificador, num único fluxo reprodutível.
 
+## Novidades
+
+Última leva traz 12 técnicas novas de diagnóstico, escalonamento e
+dicionários para o módulo quantitativo — veja a seção
+["Novidades: diagnóstico de corpus, escalas e
+dicionários"](https://ahenriquecp.com/acR/articles/quantitativo.html) da
+vignette quantitativa para exemplos completos:
+
+* **Diagnóstico de corpus**: legibilidade (`ac_readability()`, Flesch
+  adaptado ao português), diversidade lexical (`ac_lexical_diversity()`:
+  TTR, Herdan's C, MTLD) e Lei de Zipf (`ac_plot_zipf()`).
+* **Leitura de contexto**: concordância/KWIC (`ac_kwic()`) e colocações
+  com medidas de associação — PMI, log-likelihood, qui-quadrado
+  (`ac_collocations()`).
+* **Série temporal**: agregação diacrônica de qualquer métrica por dia,
+  semana, mês ou ano (`ac_temporal()`).
+* **Escalas e mapas**: escalonamento ideológico via Wordscores
+  (`ac_wordscores()`) e análise de correspondência — biplot de
+  documentos/grupos × termos (`ac_ca()`).
+* **Dicionários customizados**: dicionário multi-categoria genérico
+  (`ac_dictionary()`), léxicos de emoção (`ac_emotion()`), construção e
+  importação de dicionários via YAML/CSV (`ac_build_dictionary()`,
+  `ac_dictionary_save()`/`ac_dictionary_load()`,
+  `ac_dictionary_import()`) e validação contra codificação humana
+  (`ac_dictionary_validate()`) — o mesmo rigor de `ac_qual_reliability()`,
+  agora para o método de dicionário.
+
 ## Para quem é
 
 <table>
@@ -88,8 +115,12 @@ humana, e a concordância inter-codificador (percent agreement, Cohen's/Fleiss'
 **Módulo quantitativo.** Ferramentas estatísticas clássicas de análise de conteúdo:
 frequência de termos e por grupo, TF-IDF, *keyness* (χ²/*log-likelihood*), redes
 de co-ocorrência com PMI, análise de sentimento em português (OpLexicon), modelagem
-de tópicos com LDA e seleção automática de *k*. Visualizações prontas para
-publicação em `ggplot2`, compatíveis com `ipeaplot`.
+de tópicos com LDA e seleção automática de *k*. Inclui também diagnóstico de corpus
+(legibilidade, diversidade lexical, Lei de Zipf), concordância/colocações (KWIC,
+PMI/log-likelihood), séries temporais, escalonamento ideológico (Wordscores),
+análise de correspondência e dicionários multi-categoria customizáveis (incluindo
+léxicos de emoção, com validação contra codificação humana). Visualizações
+prontas para publicação em `ggplot2`, compatíveis com `ipeaplot`.
 
 **Coleta nativa** de discursos da Câmara dos Deputados (por período, partido, UF)
 e do Senado Federal (via `senatebR`).
@@ -349,6 +380,21 @@ ac_plot_cooccurrence(cooc, top_n = 30)
 
 lda  <- ac_lda(tokens, k = 5)
 ac_plot_lda_topics(lda)
+
+# Novidades: diagnostico, escalas e dicionarios
+ac_readability(corpus_limpo)
+ac_lexical_diversity(corpus_limpo)
+ac_kwic(corpus_limpo, pattern = "reforma", window = 5)
+ac_collocations(corpus_limpo, measure = "pmi")
+
+dicionario <- ac_build_dictionary(
+  economia = c("imposto", "orcamento", "deficit"),
+  saude    = c("saude", "vacina", "hospital")
+)
+ac_dictionary(corpus_limpo, dicionario)
+
+ca <- ac_ca(corpus_limpo, by = "partido")
+ac_plot_ca(ca)
 ```
 
 ---
@@ -384,12 +430,24 @@ utilitários — veja **[Funções disponíveis (completo)](https://ahenriquecp.
 | Classificar com modelo local em escala (checkpoint, retries, tokens) | `ac_chat_local()` · `ac_estimate_tokens()` | [LLM local em escala](https://ahenriquecp.com/acR/articles/llm-local-em-escala.html) |
 | Relatório metodológico reprodutível | `ac_qual_report()` | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
 | Exportar (CSV, LaTeX, Excel, RDS) | `ac_export()` | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
+| Legibilidade (Flesch em português) | `ac_readability()` → `ac_plot_readability()` | [Quantitativo §10](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Diversidade lexical (TTR, Herdan's C, MTLD) | `ac_lexical_diversity()` → `ac_plot_lexical_diversity()` | [Quantitativo §10](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Diagnóstico de corpus (Lei de Zipf) | `ac_plot_zipf()` | [Quantitativo §11](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Concordância/contexto de um termo (KWIC) | `ac_kwic()` | [Quantitativo §12](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Bigramas/trigramas estatisticamente associados | `ac_collocations()` | [Quantitativo §12](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Série temporal/diacrônica de uma métrica | `ac_temporal()` → `ac_plot_temporal()` | [Quantitativo §13](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Posicionar documentos numa escala (Wordscores) | `ac_wordscores()` → `ac_plot_wordscores()` | [Quantitativo §14](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Dicionário multi-categoria (temas, enquadramentos) | `ac_dictionary()` · `ac_build_dictionary()` | [Quantitativo §15](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Léxico de emoções (tipo NRC) | `ac_emotion()` | [Quantitativo §15](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Importar/salvar dicionário (YAML/CSV) | `ac_dictionary_import()` · `ac_dictionary_save()`/`ac_dictionary_load()` | [Quantitativo §15](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Validar dicionário contra codificação humana | `ac_dictionary_validate()` | [Quantitativo §15](https://ahenriquecp.com/acR/articles/quantitativo.html) |
+| Biplot documentos/grupos × termos (análise de correspondência) | `ac_ca()` → `ac_plot_ca()` | [Quantitativo §16](https://ahenriquecp.com/acR/articles/quantitativo.html) |
 
 ---
 
 ## Cobertura de testes
 
-Suite de **487 blocos `test_that`**, cobrindo boa parte do código
+Suite de **561 blocos `test_that`**, cobrindo boa parte do código
 (medido com `covr::package_coverage()`). Testes de
 integração com APIs externas (Câmara, Senado, LLM) usam `skip_on_cran()`
 e verificação prévia de disponibilidade — não bloqueiam CI offline nem
@@ -423,7 +481,7 @@ referência de todas as funções e changelog.
 ### Referência de funções
 
 - [Índice completo por área](https://ahenriquecp.com/acR/reference/) — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
-- [Notícias / changelog](https://ahenriquecp.com/acR/news/) — histórico de versões (atual: **0.3.3**).
+- [Notícias / changelog](https://ahenriquecp.com/acR/news/) — histórico de versões (atual: **0.5.0**).
 
 ---
 
@@ -435,7 +493,7 @@ citation("acR")
 
 ```
 Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.3.3. ORCID: 0000-0002-1842-2725.
+R package version 0.5.0. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://ahenriquecp.com/acR/
 ```

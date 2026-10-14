@@ -2,36 +2,35 @@
 % Please edit documentation in R/ac_estimate_tokens.R
 \name{ac_estimate_tokens}
 \alias{ac_estimate_tokens}
-\title{Estimar número de tokens de um texto}
+\title{Estimar numero de tokens de um texto}
 \usage{
 ac_estimate_tokens(text, chat = NULL, chars_per_token = 3.2)
 }
 \arguments{
 \item{text}{Vetor de caracteres com os textos.}
 
-\item{chat}{Ignorado nesta versão (reservado para uma futura estimativa
-específica de provedor via \code{chat$token_count()}). Receber o argumento
-já na assinatura evita quebrar código que o passar.}
+\item{chat}{Ignorado nesta versao (reservado para uma futura estimativa
+especifica de provedor via \code{chat$token_count()}). Receber o argumento
+ja na assinatura evita quebrar codigo que o passar.}
 
 \item{chars_per_token}{Caracteres por token, usado para a estimativa.
-Padrão \code{3.2} (razoável para português via BPE; varia por tokenizador
+Padrao \code{3.2} (razoavel para portugues via BPE; varia por tokenizador
 e idioma). Calibre com \code{\link[=ac_calibrate_tokens]{ac_calibrate_tokens()}} se precisar de
-precisão maior para um modelo específico.}
+precisao maior para um modelo especifico.}
 }
 \value{
 Vetor inteiro com a estimativa de tokens por texto.
 }
 \description{
-\code{ac_estimate_tokens()} estima o número de tokens de entrada que um texto
-vai consumir, usando uma heurística de caracteres por token. Útil para
+\code{ac_estimate_tokens()} estima o numero de tokens de entrada que um texto
+vai consumir, usando uma heuristica de caracteres por token. Util para
 prever o custo de uma rodada de \code{\link[=ac_qual_code]{ac_qual_code()}} ou para detectar, antes
-de enviar ao LLM, documentos que provavelmente excederão a janela de
+de enviar ao LLM, documentos que provavelmente excederao a janela de
 contexto do modelo.
-}
-\details{
-É uma estimativa deliberadamente barata: não faz nenhuma chamada de rede
-nem depende do tokenizador exato de um modelo específico (que varia por
-provedor e às vezes nem é público). Para calibrar a heurística contra um
+
+E uma estimativa deliberadamente barata: nao faz nenhuma chamada de rede
+nem depende do tokenizador exato de um modelo especifico (que varia por
+provedor e as vezes nem e publico). Para calibrar a heuristica contra um
 modelo real, use \code{\link[=ac_calibrate_tokens]{ac_calibrate_tokens()}} com uma amostra pequena de
 textos.
 }
