@@ -145,7 +145,7 @@ Local, `--as-cran`, confirmed:
 The NOTE is:
 
 1. **Invalid URL** — `README.md` links to
-   `https://ahenriquecp.com/acR/articles/llm-local-em-escala.html`
+   `https://andersonheri.github.io/acR/articles/llm-local-em-escala.html`
    (the new vignette added in this release), which 404s because the
    pkgdown site has not been rebuilt yet on this branch. The `pkgdown`
    GitHub Action rebuilds the site automatically once this branch
