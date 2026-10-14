@@ -455,3 +455,86 @@ test_that(".ac_classify_one injeta ellmer::params(temperature) quando ausente (b
   # E deve ser um objeto do ellmer::params()
   expect_true(!is.null(captured$args$params))
 })
+
+
+# ============================================================
+# Bug fix (item 1 da revisao de producao): quando `model` e um
+# objeto `Chat` pre-configurado, `temperature` era descartado em
+# silencio sempre que a reconstrucao via .ac_ellmer_chat falhava --
+# o que acontecia sistematicamente no ellmer >= 0.5.0, porque
+# `class(provider)[1]` passou a vir qualificado por namespace
+# ("ellmer::ProviderOpenAI"), quebrando o `sub("^provider", "", ...)`.
+# Fix: .ac_chat_with_temperature() muta o `Model` via
+# set_model()/get_model_object() (API estavel), e avisa
+# explicitamente (cli::cli_warn) se a mutacao falhar -- nunca mais
+# um fallback silencioso.
+# ============================================================
+
+make_fake_chat <- function(model_obj = list(params = NULL)) {
+  self <- new.env()
+  self$model <- model_obj
+  self$system_prompt <- NULL
+  self$clone <- function(...) make_fake_chat(self$model)
+  self$set_system_prompt <- function(p) { self$system_prompt <<- p; invisible(self) }
+  self$get_model_object <- function() self$model
+  self$set_model <- function(m) { self$model <<- m; invisible(self) }
+  self$chat <- function(msg) '{"categoria": "a"}'
+  class(self) <- "Chat"
+  self
+}
+
+test_that(".ac_chat_with_temperature() aplica temperature via set_model/get_model_object", {
+  skip_if_not_installed("ellmer")
+
+  fake <- make_fake_chat()
+  out <- acR:::.ac_chat_with_temperature(fake, "sys prompt", 0.7)
+
+  expect_equal(out$system_prompt, "sys prompt")
+  expect_false(is.null(out$model$params))
+})
+
+test_that(".ac_chat_with_temperature() avisa (nao falha em silencio) quando mutacao falha", {
+  self <- new.env()
+  self$system_prompt <- NULL
+  self$clone <- function(...) self
+  self$set_system_prompt <- function(p) { self$system_prompt <<- p; invisible(self) }
+  self$get_model_object <- function() stop("API indisponivel nesta versao")
+  self$chat <- function(msg) '{"categoria": "a"}'
+  class(self) <- "Chat"
+
+  expect_warning(
+    out <- acR:::.ac_chat_with_temperature(self, "sys", 0.5),
+    regexp = "Não foi possível aplicar"
+  )
+  expect_equal(out$system_prompt, "sys")
+})
+
+test_that(".ac_chat_with_temperature() nao tenta mutar quando temperature e NULL", {
+  fake <- make_fake_chat()
+  expect_no_warning(
+    out <- acR:::.ac_chat_with_temperature(fake, "sys", NULL)
+  )
+  expect_equal(out$system_prompt, "sys")
+})
+
+test_that(".ac_make_chat() aceita funcao-fabrica function(temperature, system_prompt)", {
+  captured <- list()
+  factory <- function(temperature, system_prompt) {
+    captured$temperature <<- temperature
+    captured$system_prompt <<- system_prompt
+    make_fake_chat()
+  }
+
+  chat <- acR:::.ac_make_chat(factory, "sys prompt", 0.42, list())
+
+  expect_equal(captured$temperature, 0.42)
+  expect_equal(captured$system_prompt, "sys prompt")
+  expect_s3_class(chat, "Chat")
+})
+
+test_that(".ac_make_chat() aplica temperature a objeto Chat pre-configurado", {
+  fake <- make_fake_chat()
+  chat <- acR:::.ac_make_chat(fake, "sys", 0.9, list())
+  expect_false(is.null(chat$model$params))
+  expect_equal(chat$system_prompt, "sys")
+})

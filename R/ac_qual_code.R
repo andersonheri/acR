@@ -33,8 +33,11 @@
 #' @param codebook Objeto `ac_codebook`, saída de [ac_qual_codebook()].
 #' @param model Modelo LLM a usar. Aceita string no formato
 #'   `"provedor/modelo"` (ex: `"anthropic/claude-sonnet-4-5"`,
-#'   `"openai/gpt-4.1"`) ou objeto `Chat` do pacote `ellmer`
-#'   pré-configurado. Quando `chat` é fornecido, `model` é ignorado.
+#'   `"openai/gpt-4.1"`), objeto `Chat` do pacote `ellmer`
+#'   pré-configurado, ou função fábrica
+#'   `function(temperature, system_prompt) Chat` para controle total
+#'   sobre a construção do chat a cada rodada. Quando `chat` é fornecido,
+#'   `model` é ignorado.
 #' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
 #'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
 #'   `model`. Permite usar qualquer provedor suportado pelo `ellmer`.
@@ -333,66 +336,80 @@ ac_qual_code <- function(corpus,
 
 #' @keywords internal
 #' @noRd
+#'
+#' Aplica `temperature` a um `Chat` ja construido, mutando o objeto
+#' `Model` associado via `set_model()`/`get_model_object()` (API estavel
+#' desde o ellmer 0.5.0). Se a API nao existir ou a mutacao falhar, avisa
+#' explicitamente -- nunca degrada em silencio para a temperatura padrao
+#' do provedor, que e o bug original (self-consistency rodando as k
+#' rodadas na mesma temperatura, inflando `confidence_score`).
+.ac_chat_with_temperature <- function(chat, system_prompt, temperature) {
+  out <- chat$clone()
+  out$set_system_prompt(system_prompt)
+
+  if (is.null(temperature)) return(out)
+
+  applied <- tryCatch({
+    mod <- out$get_model_object()
+    mod@params <- ellmer::params(temperature = temperature)
+    out$set_model(mod)
+    TRUE
+  }, error = function(e) FALSE)
+
+  if (!applied) {
+    cli::cli_warn(c(
+      "Nao foi possivel aplicar {.arg temperature} = {temperature} ao objeto {.cls Chat} fornecido.",
+      "i" = "A rodada usara a temperatura padrao do provedor; self-consistency pode ficar inflado.",
+      "i" = "Verifique a versao de {.pkg ellmer} instalada ({.code packageVersion(\"ellmer\")})."
+    ))
+  }
+
+  out
+}
+
+
+#' @keywords internal
+#' @noRd
+#'
+#' Constroi (ou reutiliza) o `Chat` usado para uma unica rodada de
+#' classificacao, garantindo que `temperature` e `system_prompt` sejam
+#' de fato aplicados -- seja `model` uma string `"provedor/modelo"`, um
+#' objeto `Chat` pre-configurado, ou uma funcao-fabrica
+#' `function(temperature, system_prompt) Chat`.
+.ac_make_chat <- function(model, system_prompt, temperature, dots) {
+  if (is.function(model)) {
+    return(model(temperature = temperature, system_prompt = system_prompt))
+  }
+
+  if (inherits(model, "Chat")) {
+    return(.ac_chat_with_temperature(model, system_prompt, temperature))
+  }
+
+  if (!is.null(temperature) && is.null(dots$params)) {
+    dots$params <- ellmer::params(temperature = temperature)
+  }
+
+  chat_args <- c(list(name = model, system_prompt = system_prompt), dots)
+  tryCatch(
+    do.call(.ac_ellmer_chat, chat_args),
+    error = function(e) {
+      cli::cli_abort(c(
+        "Erro ao inicializar {.pkg ellmer}. Verifique o modelo e as credenciais.",
+        "i" = "Modelo: {.val {model}}",
+        "x" = conditionMessage(e)
+      ))
+    }
+  )
+}
+
+
+#' @keywords internal
+#' @noRd
 .ac_classify_one <- function(text, codebook, model, system_prompt,
                               temperature, reasoning, ...) {
   dots <- list(...)
 
-  # Injeta temperature no objeto `params` do ellmer. Isso e essencial
-  # para self-consistency (Wang et al., 2023) funcionar de fato: sem
-  # variacao real de temperatura entre as k rodadas, `confidence_score`
-  # infla espuriamente. Nao sobrescreve `params` explicitos passados
-  # via `...` (usuario prevalece).
-  if (!is.null(temperature) && requireNamespace("ellmer", quietly = TRUE) &&
-      is.null(dots$params)) {
-    dots$params <- ellmer::params(temperature = temperature)
-  }
-
-  if (inherits(model, "Chat")) {
-    # Chat pre-configurado pelo usuario: nao ha API publica no ellmer
-    # atual para mutar `params` em runtime. Clonamos e reutilizamos o
-    # provider por meio de um novo chat_<provider>() com params ajustado,
-    # preservando system_prompt. Se algo falhar, degradamos para o
-    # comportamento antigo (clone sem alterar params) e avisamos.
-    chat <- tryCatch({
-      provider <- model$get_provider()
-      provider_name <- tolower(class(provider)[1])
-      # class names: ProviderAnthropic, ProviderOpenAI, ProviderGoogleGemini...
-      provider_name <- sub("^provider", "", provider_name)
-      # Modelo atual do chat (get_model devolve string)
-      current_model <- tryCatch(model$get_model(), error = function(e) NULL)
-      if (!is.null(current_model) && !is.null(dots$params)) {
-        # Reconstroi via .ac_ellmer_chat para respeitar aliases
-        new_name <- paste0(provider_name, "/", current_model)
-        new_chat <- do.call(.ac_ellmer_chat,
-                            c(list(name = new_name, system_prompt = system_prompt),
-                              dots))
-        new_chat
-      } else {
-        c2 <- model$clone()
-        c2$set_system_prompt(system_prompt)
-        c2
-      }
-    }, error = function(e) {
-      c2 <- model$clone()
-      c2$set_system_prompt(system_prompt)
-      c2
-    })
-  } else {
-    chat_args <- c(
-      list(name = model, system_prompt = system_prompt),
-      dots
-    )
-    chat <- tryCatch(
-      do.call(.ac_ellmer_chat, chat_args),
-      error = function(e) {
-        cli::cli_abort(c(
-          "Erro ao inicializar {.pkg ellmer}. Verifique o modelo e as credenciais.",
-          "i" = "Modelo: {.val {model}}",
-          "x" = conditionMessage(e)
-        ))
-      }
-    )
-  }
+  chat <- .ac_make_chat(model, system_prompt, temperature, dots)
 
   user_msg <- paste0(
     "Classifique o seguinte texto:\n\n---\n", text, "\n---"

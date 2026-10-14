@@ -25,8 +25,11 @@ ac_qual_code(
 
 \item{model}{Modelo LLM a usar. Aceita string no formato
 \code{"provedor/modelo"} (ex: \code{"anthropic/claude-sonnet-4-5"},
-\code{"openai/gpt-4.1"}) ou objeto \code{Chat} do pacote \code{ellmer}
-pré-configurado. Quando \code{chat} é fornecido, \code{model} é ignorado.}
+\code{"openai/gpt-4.1"}), objeto \code{Chat} do pacote \code{ellmer}
+pré-configurado, ou função fábrica
+\code{function(temperature, system_prompt) Chat} para controle total
+sobre a construção do chat a cada rodada. Quando \code{chat} é
+fornecido, \code{model} é ignorado.}
 
 \item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
 \code{chat_openai()}, \code{chat_ollama()}). Quando fornecido, tem prioridade sobre

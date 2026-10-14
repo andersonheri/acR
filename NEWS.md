@@ -1,3 +1,28 @@
+# acR 0.4.0
+
+Pacote de ajustes derivados de uso em producao (872 atos normativos do
+SIGEPE, `ellmer` + LM Studio com dois modelos locais, validacao humana,
+documentos de ate 1,4M de caracteres).
+
+## Correcoes
+
+* **`ac_qual_code()` com `model`/`chat` como objeto `Chat` do `ellmer`**:
+  `temperature` era silenciosamente descartado sempre que a tentativa de
+  reconstruir o chat via `.ac_ellmer_chat()` falhava -- o que passou a
+  acontecer sistematicamente no `ellmer >= 0.5.0`, porque
+  `class(provider)[1]` passou a vir qualificado por namespace
+  (`"ellmer::ProviderOpenAI"`), quebrando o `sub("^provider", "", ...)`
+  usado para remontar o nome `"provedor/modelo"`. O fallback silencioso
+  fazia as `k_consistency` rodadas de self-consistency (Wang et al.,
+  2023) rodarem todas na mesma temperatura padrao do provedor, inflando
+  `confidence_score` sem aviso. Corrigido com uma nova rota que muta o
+  objeto `Model` do chat diretamente via `set_model()`/
+  `get_model_object()` (API estavel desde o `ellmer` 0.5.0), e que avisa
+  explicitamente (`cli::cli_warn()`) quando a mutacao falha -- nunca
+  mais em silencio. `model` agora tambem aceita uma funcao fabrica
+  `function(temperature, system_prompt) Chat` para controle total sobre
+  a construcao do chat a cada rodada.
+
 # acR 0.3.4
 
 ## Correcoes
