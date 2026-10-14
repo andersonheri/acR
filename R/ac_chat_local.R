@@ -1,14 +1,14 @@
-#' Conectar a um servidor LLM local compatível com OpenAI
+#' Conectar a um servidor LLM local compativel com OpenAI
 #'
 #' @description
 #' `ac_chat_local()` cria um `Chat` do `ellmer` apontando para um servidor
-#' local compatível com a API da OpenAI — LM Studio, llama.cpp
-#' (`llama-server`), vLLM, Ollama em modo OpenAI, etc. — sem exigir uma
+#' local compativel com a API da OpenAI -- LM Studio, llama.cpp
+#' (`llama-server`), vLLM, Ollama em modo OpenAI, etc. -- sem exigir uma
 #' chave de API real.
 #'
 #' Classificar com um modelo local (via [ac_qual_code()]) elimina o custo
-#' por token e mantém os documentos fora de qualquer rede externa, ao
-#' preço de gerência própria do servidor: tamanho de contexto, tempo de
+#' por token e mantem os documentos fora de qualquer rede externa, ao
+#' preco de gerencia propria do servidor: tamanho de contexto, tempo de
 #' resposta e throughput passam a depender do hardware local. Use junto
 #' com `checkpoint_dir` e `max_retries` em `ac_qual_code()` para rodadas
 #' longas, e [ac_estimate_tokens()] para evitar estouro de contexto.
@@ -16,15 +16,15 @@
 #' @param model Nome/identificador do modelo como o servidor local o
 #'   reconhece (ex.: o nome exibido pelo LM Studio, ou o `--model` passado
 #'   ao `llama-server`).
-#' @param base_url URL base do servidor OpenAI-compatible. Padrão:
-#'   `"http://localhost:1234/v1"` (porta padrão do LM Studio).
-#' @param api Qual API o servidor expõe: `"chat_completions"` (padrão —
+#' @param base_url URL base do servidor OpenAI-compatible. Padrao:
+#'   `"http://localhost:1234/v1"` (porta padrao do LM Studio).
+#' @param api Qual API o servidor expoe: `"chat_completions"` (padrao --
 #'   a maioria dos servidores locais: LM Studio, llama.cpp, vLLM) ou
 #'   `"responses"` (servidores que implementam a API Responses da
 #'   OpenAI).
-#' @param temperature Temperatura padrão do chat. `NULL` (padrão): usa o
-#'   padrão do servidor.
-#' @param system_prompt Prompt de sistema inicial. `NULL` (padrão).
+#' @param temperature Temperatura padrao do chat. `NULL` (padrao): usa o
+#'   padrao do servidor.
+#' @param system_prompt Prompt de sistema inicial. `NULL` (padrao).
 #' @param ... Argumentos adicionais passados a `ellmer::chat_openai()` ou
 #'   `ellmer::chat_openai_compatible()`.
 #'
@@ -58,7 +58,7 @@ ac_chat_local <- function(model,
                            system_prompt = NULL,
                            ...) {
   if (!requireNamespace("ellmer", quietly = TRUE)) {
-    cli::cli_abort("O pacote {.pkg ellmer} é necessário.")
+    cli::cli_abort("O pacote {.pkg ellmer} \u00e9 necess\u00e1rio.")
   }
 
   api <- match.arg(api)
@@ -67,7 +67,7 @@ ac_chat_local <- function(model,
 
   if (!fn_name %in% ellmer_exports) {
     cli::cli_abort(c(
-      "{.fn {fn_name}} não disponível nesta versão de {.pkg ellmer}.",
+      "{.fn {fn_name}} n\u00e3o dispon\u00edvel nesta vers\u00e3o de {.pkg ellmer}.",
       "i" = "Tente {.code api = \"responses\"} ou atualize o {.pkg ellmer}."
     ))
   }

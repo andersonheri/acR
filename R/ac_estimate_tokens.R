@@ -1,26 +1,26 @@
-#' Estimar número de tokens de um texto
+#' Estimar numero de tokens de um texto
 #'
 #' @description
-#' `ac_estimate_tokens()` estima o número de tokens de entrada que um texto
-#' vai consumir, usando uma heurística de caracteres por token. Útil para
+#' `ac_estimate_tokens()` estima o numero de tokens de entrada que um texto
+#' vai consumir, usando uma heuristica de caracteres por token. Util para
 #' prever o custo de uma rodada de [ac_qual_code()] ou para detectar, antes
-#' de enviar ao LLM, documentos que provavelmente excederão a janela de
+#' de enviar ao LLM, documentos que provavelmente excederao a janela de
 #' contexto do modelo.
 #'
-#' É uma estimativa deliberadamente barata: não faz nenhuma chamada de rede
-#' nem depende do tokenizador exato de um modelo específico (que varia por
-#' provedor e às vezes nem é público). Para calibrar a heurística contra um
+#' E uma estimativa deliberadamente barata: nao faz nenhuma chamada de rede
+#' nem depende do tokenizador exato de um modelo especifico (que varia por
+#' provedor e as vezes nem e publico). Para calibrar a heuristica contra um
 #' modelo real, use [ac_calibrate_tokens()] com uma amostra pequena de
 #' textos.
 #'
 #' @param text Vetor de caracteres com os textos.
-#' @param chat Ignorado nesta versão (reservado para uma futura estimativa
-#'   específica de provedor via `chat$token_count()`). Receber o argumento
-#'   já na assinatura evita quebrar código que o passar.
+#' @param chat Ignorado nesta versao (reservado para uma futura estimativa
+#'   especifica de provedor via `chat$token_count()`). Receber o argumento
+#'   ja na assinatura evita quebrar codigo que o passar.
 #' @param chars_per_token Caracteres por token, usado para a estimativa.
-#'   Padrão `3.2` (razoável para português via BPE; varia por tokenizador
+#'   Padrao `3.2` (razoavel para portugues via BPE; varia por tokenizador
 #'   e idioma). Calibre com [ac_calibrate_tokens()] se precisar de
-#'   precisão maior para um modelo específico.
+#'   precisao maior para um modelo especifico.
 #'
 #' @return Vetor inteiro com a estimativa de tokens por texto.
 #'
@@ -35,28 +35,28 @@ ac_estimate_tokens <- function(text, chat = NULL, chars_per_token = 3.2) {
 }
 
 
-#' Calibrar a razão caracteres/token contra um modelo real
+#' Calibrar a razao caracteres/token contra um modelo real
 #'
 #' @description
 #' `ac_calibrate_tokens()` mede, contra um `Chat` real, quantos tokens de
 #' entrada um conjunto de textos de amostra realmente consome, e devolve a
-#' razão caracteres/token observada — para usar como `chars_per_token` em
+#' razao caracteres/token observada -- para usar como `chars_per_token` em
 #' [ac_estimate_tokens()] (ou como `chars_per_token` em `ac_qual_code()` /
-#' futuras funções que dependam da estimativa).
+#' futuras funcoes que dependam da estimativa).
 #'
 #' Faz uma chamada real ao modelo por texto de amostra (com uma mensagem
-#' mínima, para medir só o consumo de tokens de entrada), então usa poucos
-#' textos — o suficiente para calibrar, não uma amostra representativa de
+#' minima, para medir so o consumo de tokens de entrada), entao usa poucos
+#' textos -- o suficiente para calibrar, nao uma amostra representativa de
 #' todo o corpus.
 #'
-#' @param chat_factory Função `function(temperature, system_prompt) Chat`
-#'   que constrói o chat a usar (o mesmo padrão aceito por `model` em
+#' @param chat_factory Funcao `function(temperature, system_prompt) Chat`
+#'   que constroi o chat a usar (o mesmo padrao aceito por `model` em
 #'   [ac_qual_code()]). Permite calibrar contra o provedor/modelo exato que
-#'   será usado na rodada real.
+#'   sera usado na rodada real.
 #' @param textos Vetor de caracteres com textos de amostra (poucos bastam;
 #'   ideal variar o tamanho).
 #'
-#' @return Número: a mediana de caracteres por token observada na amostra.
+#' @return Numero: a mediana de caracteres por token observada na amostra.
 #'
 #' @examples
 #' \dontrun{
@@ -73,7 +73,7 @@ ac_estimate_tokens <- function(text, chat = NULL, chars_per_token = 3.2) {
 #' @export
 ac_calibrate_tokens <- function(chat_factory, textos) {
   if (!is.function(chat_factory)) {
-    cli::cli_abort("{.arg chat_factory} deve ser uma função {.code function(temperature, system_prompt) Chat}.")
+    cli::cli_abort("{.arg chat_factory} deve ser uma fun\u00e7\u00e3o {.code function(temperature, system_prompt) Chat}.")
   }
 
   uso <- vapply(textos, function(tx) {
