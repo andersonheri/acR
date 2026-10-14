@@ -164,6 +164,9 @@ reference:
   - as_prompt
   - ac_qual_search_literature
   - ac_qual_code
+  - ac_chat_local
+  - ac_estimate_tokens
+  - ac_calibrate_tokens
   - ac_qual_save_codebook
   - ac_qual_load_codebook
 - title: "Validacao e confiabilidade"

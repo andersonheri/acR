@@ -144,7 +144,6 @@ O resultado carrega também um atributo \code{run_info} (ver
 provedor, temperaturas pedidas, \code{k_consistency}, hash do codebook e
 timestamps de início/fim.
 }
-}
 \description{
 \code{ac_qual_code()} classifica os textos de um \code{ac_corpus} de acordo com um
 \code{ac_codebook}, usando um modelo de linguagem via \code{ellmer}. Retorna um tibble
