@@ -59,12 +59,36 @@
 #'   com justificativa da classificação.
 #' @param reasoning_length Tamanho do raciocínio: `"short"` (1 frase, padrão),
 #'   `"medium"` (3 frases), `"detailed"` (parágrafo).
+#' @param main_temperature Temperatura da rodada principal (a que gera
+#'   `categoria`, `categoria_label` e `raciocinio` no resultado final).
+#'   Padrão `0` (determinística). Separado de `temperature` (usado só nas
+#'   rodadas extras de self-consistency) porque os dois cumprem papéis
+#'   diferentes: a rodada principal deve ser reprodutível, as extras devem
+#'   variar para medir concordância.
+#' @param reasoning_extras Lógico. Se `TRUE`, pede raciocínio também nas
+#'   rodadas extras de self-consistency (mais caro, não usado no resultado
+#'   final). Padrão `FALSE`.
 #' @param live Visualização em tempo real da classificação:
 #'   * `"off"` (padrão): sem live view;
 #'   * `"terminal"`: barra de progresso com doc atual, categoria, confiança e
 #'     início do raciocínio a cada iteração;
+#'   * `"progress"`: barra de progresso enxuta (doc atual e status), sem
+#'     ecoar categoria/raciocínio — útil para rodadas grandes onde o
+#'     terminal ficaria poluído;
 #'   * `"shiny"`: abre janela Shiny em background com tabela atualizando
 #'     conforme documentos são classificados (requer `shiny` e `callr`).
+#' @param max_retries Número máximo de novas tentativas por rodada quando a
+#'   chamada ao LLM falha (erro de rede, timeout, resposta inválida).
+#'   Padrão `2`. Espera exponencial entre tentativas (até 30s). Quando o
+#'   erro é classificado como `"estouro_contexto"`, não há nova tentativa
+#'   (repetir não resolve). Se mais da metade dos últimos 5+ documentos
+#'   falhar, a execução é abortada com sugestão de usar `checkpoint_dir`.
+#' @param checkpoint_dir Diretório para salvar o resultado de cada documento
+#'   assim que classificado. Se já existir um checkpoint válido para um
+#'   `doc_id` (mesmos `codebook`, `model`, `k_consistency` e `temperature`),
+#'   o documento é pulado e o resultado salvo é reutilizado — permite
+#'   retomar uma rodada interrompida sem reclassificar tudo. `NULL`
+#'   (padrão): sem checkpoint.
 #' @param ... Argumentos adicionais passados a `ellmer::chat()`.
 #'   Permite uso de APIs OpenAI-compatible self-hosted via `base_url`.
 #'
@@ -88,6 +112,22 @@
 #'     categoria. Presentes quando `confidence` é `"by_variable"` ou
 #'     `"both"`.
 #'   * `raciocinio`: justificativa da classificação (se `reasoning = TRUE`).
+#'   * `status`: resultado da rodada principal: `"ok"`, `"resposta_invalida"`
+#'     (JSON não parseável), `"estouro_contexto"`, `"timeout"` ou
+#'     `"erro_servidor"`.
+#'   * `n_tentativas`: número de tentativas até obter `status = "ok"` (ou
+#'     até esgotar `max_retries`).
+#'   * `tokens_entrada`, `tokens_saida`: tokens de entrada/saída da rodada
+#'     principal, via `chat$get_tokens()` (`NA` se o provedor não expõe).
+#'   * `segundos`: tempo total da rodada principal, incluindo novas
+#'     tentativas.
+#'   * `tokens_por_segundo`: `tokens_saida / segundos`.
+#'
+#'   O resultado carrega também um atributo `run_info` (ver
+#'   [attributes()]) com metadados da execução: versões de `acR` e
+#'   `ellmer`, modelo, `base_url`, parâmetros efetivos aplicados ao
+#'   provedor, temperaturas pedidas, `k_consistency`, hash do codebook e
+#'   timestamps de início/fim.
 #'
 #' @references
 #' Wang, X. et al. (2023). Self-Consistency Improves Chain of Thought Reasoning
@@ -153,7 +193,12 @@ ac_qual_code <- function(corpus,
                           temperature        = 0.3,
                           reasoning          = TRUE,
                           reasoning_length   = c("short", "medium", "detailed"),
-                          live               = c("off", "terminal", "shiny"),
+                          main_temperature   = 0,
+                          reasoning_extras   = FALSE,
+                          live               = c("off", "terminal", "progress",
+                                                 "shiny"),
+                          max_retries        = 2L,
+                          checkpoint_dir     = NULL,
                           ...) {
 
   # === Validacoes =============================================================
@@ -179,6 +224,7 @@ ac_qual_code <- function(corpus,
   reasoning_length <- match.arg(reasoning_length)
   live             <- match.arg(live)
   k_consistency    <- as.integer(k_consistency)
+  max_retries      <- as.integer(max_retries)
   do_confidence    <- confidence != "none"
 
   if (live == "shiny" && !requireNamespace("shiny", quietly = TRUE)) {
@@ -188,6 +234,15 @@ ac_qual_code <- function(corpus,
     ))
     live <- "terminal"
   }
+
+  if (!is.null(checkpoint_dir)) {
+    if (!dir.exists(checkpoint_dir)) dir.create(checkpoint_dir, recursive = TRUE)
+  }
+  ck_hash <- if (!is.null(checkpoint_dir)) {
+    rlang::hash(list(codebook = codebook, model = model, k_consistency = k_consistency,
+                     temperature = temperature, main_temperature = main_temperature))
+  } else NULL
+  if (!is.null(checkpoint_dir)) .ac_ck_check_meta(checkpoint_dir, ck_hash)
 
   # chat tem prioridade sobre model
   effective_model <- if (!is.null(chat)) chat else model
@@ -207,7 +262,9 @@ ac_qual_code <- function(corpus,
     if (do_confidence) "i" = "Self-consistency: k = {k_consistency} rodadas"
   ))
 
-  results <- vector("list", n_docs)
+  results      <- vector("list", n_docs)
+  status_hist  <- character(0)
+  start_time   <- Sys.time()
 
   live_ctx <- .ac_live_start(live, n_docs)
   on.exit(.ac_live_finish(live_ctx), add = TRUE)
@@ -216,32 +273,44 @@ ac_qual_code <- function(corpus,
     texto  <- corpus$text[i]
     doc_id <- corpus$doc_id[i]
 
-    main_result <- .ac_classify_one(
+    ck_path <- if (!is.null(checkpoint_dir)) .ac_ck_path(checkpoint_dir, doc_id) else NULL
+    if (!is.null(ck_path) && file.exists(ck_path)) {
+      results[[i]] <- readRDS(ck_path)
+      status_hist  <- c(status_hist, results[[i]]$status %||% "ok")
+      .ac_live_update(live_ctx, i, n_docs, doc_id, results[[i]]$main, results[[i]]$conf_scores,
+                      doc_status = results[[i]]$status)
+      next
+    }
+
+    main_attempt <- .ac_classify_with_retry(
       text          = texto,
       codebook      = codebook,
       model         = effective_model,
       system_prompt = system_prompt,
-      temperature   = 0,
+      temperature   = main_temperature,
       reasoning     = reasoning,
+      max_retries   = max_retries,
       ...
     )
+    main_result <- main_attempt$parsed
 
-    if (do_confidence && k_consistency > 1L) {
-      consistency_results <- purrr::map(
+    if (do_confidence && k_consistency > 1L && main_attempt$status == "ok") {
+      consistency_attempts <- purrr::map(
         seq_len(k_consistency - 1L),
         function(k) {
-          .ac_classify_one(
+          .ac_classify_with_retry(
             text          = texto,
             codebook      = codebook,
             model         = effective_model,
             system_prompt = system_prompt,
             temperature   = temperature,
-            reasoning     = FALSE,
+            reasoning     = reasoning_extras,
+            max_retries   = max_retries,
             ...
           )
         }
       )
-      all_results <- c(list(main_result), consistency_results)
+      all_results <- c(list(main_result), purrr::map(consistency_attempts, "parsed"))
       conf_scores <- .ac_compute_confidence(
         results    = all_results,
         cat_names  = cat_names,
@@ -251,17 +320,47 @@ ac_qual_code <- function(corpus,
       conf_scores <- NULL
     }
 
+    status_hist <- c(status_hist, main_attempt$status)
+    if (length(status_hist) >= 5L) {
+      janela <- utils::tail(status_hist, max(5L, length(status_hist)))
+      taxa_falha <- mean(janela != "ok")
+      if (taxa_falha > 0.5) {
+        pct_falha <- round(taxa_falha * 100)
+        cli::cli_abort(c(
+          "Mais da metade dos últimos {length(janela)} documentos falhou ({pct_falha}%).",
+          "i" = "Interrompendo para evitar desperdiçar cota de tokens em um provedor/servidor instavel.",
+          "i" = if (is.null(checkpoint_dir)) {
+            "Use {.arg checkpoint_dir} para salvar o progresso e poder retomar depois de investigar."
+          } else {
+            "O progresso ate aqui foi salvo em {.path {checkpoint_dir}}; corrija o problema e rode novamente."
+          }
+        ))
+      }
+    }
+
     results[[i]] <- list(
-      doc_id      = doc_id,
-      main        = main_result,
-      conf_scores = conf_scores
+      doc_id        = doc_id,
+      main          = main_result,
+      conf_scores   = conf_scores,
+      status        = main_attempt$status,
+      n_tentativas  = main_attempt$n_tentativas,
+      tokens_entrada = main_attempt$tokens$input,
+      tokens_saida   = main_attempt$tokens$output,
+      segundos       = main_attempt$segundos
     )
 
-    .ac_live_update(live_ctx, i, n_docs, doc_id, main_result, conf_scores)
+    if (!is.null(ck_path)) {
+      tmp <- paste0(ck_path, ".tmp")
+      saveRDS(results[[i]], tmp)
+      file.rename(tmp, ck_path)
+    }
+
+    .ac_live_update(live_ctx, i, n_docs, doc_id, main_result, conf_scores,
+                    doc_status = main_attempt$status)
   }
 
   # === Montar tibble final ====================================================
-  .ac_build_result_tibble(
+  resultado <- .ac_build_result_tibble(
     results    = results,
     corpus     = corpus,
     cat_names  = cat_names,
@@ -269,6 +368,15 @@ ac_qual_code <- function(corpus,
     confidence = confidence,
     reasoning  = reasoning
   )
+
+  attr(resultado, "run_info") <- .ac_build_run_info(
+    effective_model = effective_model, model = model, chat = chat,
+    temperature = temperature, main_temperature = main_temperature,
+    k_consistency = k_consistency, codebook = codebook,
+    n_docs = n_docs, start_time = start_time
+  )
+
+  resultado
 }
 
 
@@ -388,6 +496,12 @@ ac_qual_code <- function(corpus,
   if (!is.null(temperature) && is.null(dots$params)) {
     dots$params <- ellmer::params(temperature = temperature)
   }
+  # Saida enxuta por padrao: chats construidos internamente pelo acR nao
+  # devem ecoar tokens no console a cada rodada de self-consistency --
+  # com k = 3+ por documento isso polui o terminal sem acrescentar nada
+  # que `live` ja nao mostre de forma resumida. Usuario pode sobrescrever
+  # passando `echo` explicitamente em `...`.
+  if (is.null(dots$echo)) dots$echo <- "none"
 
   chat_args <- c(list(name = model, system_prompt = system_prompt), dots)
   tryCatch(
@@ -405,6 +519,29 @@ ac_qual_code <- function(corpus,
 
 #' @keywords internal
 #' @noRd
+#'
+#' Classifica categorias de erro de rede/servidor em um rotulo estavel
+#' para a coluna `status`, usado para decidir se vale a pena tentar de
+#' novo (estouro de contexto nao se resolve com retry) e para o relatorio
+#' de qualidade de execucao.
+.ac_status_do_erro <- function(msg) {
+  msg <- tolower(msg %||% "")
+  if (grepl("context|token|too long|maximum|context_length", msg)) {
+    "estouro_contexto"
+  } else if (grepl("timeout|timed out", msg)) {
+    "timeout"
+  } else {
+    "erro_servidor"
+  }
+}
+
+
+#' @keywords internal
+#' @noRd
+#'
+#' Executa uma rodada de classificacao e devolve status/tokens/tempo
+#' junto com o JSON parseado (ou NULL). Nao tenta de novo sozinha -- isso
+#' e responsabilidade de `.ac_classify_with_retry()`.
 .ac_classify_one <- function(text, codebook, model, system_prompt,
                               temperature, reasoning, ...) {
   dots <- list(...)
@@ -415,15 +552,23 @@ ac_qual_code <- function(corpus,
     "Classifique o seguinte texto:\n\n---\n", text, "\n---"
   )
 
+  erro_msg <- NULL
   resposta <- tryCatch(
     chat$chat(user_msg),
     error = function(e) {
-      cli::cli_warn("Erro ao classificar documento: {conditionMessage(e)}")
-      return(NULL)
+      erro_msg <<- conditionMessage(e)
+      NULL
     }
   )
 
-  if (is.null(resposta)) return(NULL)
+  tokens <- tryCatch({
+    tk <- chat$get_tokens()
+    list(input = utils::tail(tk$input, 1L), output = utils::tail(tk$output, 1L))
+  }, error = function(e) list(input = NA_real_, output = NA_real_))
+
+  if (is.null(resposta)) {
+    return(list(parsed = NULL, status = .ac_status_do_erro(erro_msg), tokens = tokens))
+  }
 
   json_str <- stringr::str_extract(resposta, "\\{[^\\{\\}]*\\}")
   if (is.na(json_str)) json_str <- resposta
@@ -433,7 +578,110 @@ ac_qual_code <- function(corpus,
     error = function(e) NULL
   )
 
-  parsed
+  status <- if (is.null(parsed)) "resposta_invalida" else "ok"
+  list(parsed = parsed, status = status, tokens = tokens)
+}
+
+
+#' @keywords internal
+#' @noRd
+#'
+#' Envolve `.ac_classify_one()` com novas tentativas e espera
+#' exponencial. Nao tenta de novo quando o erro e `"estouro_contexto"`
+#' (repetir a mesma chamada nao resolve). Devolve `n_tentativas` e
+#' `segundos` (tempo total gasto, incluindo as tentativas) junto com o
+#' resultado da ultima tentativa.
+.ac_classify_with_retry <- function(text, codebook, model, system_prompt,
+                                     temperature, reasoning, max_retries, ...) {
+  inicio    <- Sys.time()
+  tentativa <- 0L
+  repeat {
+    res <- .ac_classify_one(text, codebook, model, system_prompt,
+                            temperature, reasoning, ...)
+    tentativa <- tentativa + 1L
+    if (res$status == "ok" || res$status == "estouro_contexto") break
+    if (tentativa > max_retries) break
+    Sys.sleep(min(2^tentativa, 30))
+  }
+  res$n_tentativas <- tentativa
+  res$segundos     <- as.numeric(difftime(Sys.time(), inicio, units = "secs"))
+  res
+}
+
+
+#' @keywords internal
+#' @noRd
+.ac_ck_path <- function(dir, doc_id) {
+  file.path(dir, paste0(gsub("[^A-Za-z0-9._-]+", "_", doc_id), ".rds"))
+}
+
+
+#' @keywords internal
+#' @noRd
+#'
+#' Invalida checkpoints de uma rodada anterior com parametros diferentes
+#' (codebook, model, k_consistency ou temperature mudaram) -- sem isso,
+#' retomar uma pasta de checkpoint com um codebook revisado silenciosamente
+#' reaproveitaria classificacoes do codebook antigo.
+.ac_ck_check_meta <- function(dir, hash) {
+  meta_path <- file.path(dir, "_meta.rds")
+  if (!file.exists(meta_path)) {
+    saveRDS(list(hash = hash), meta_path)
+    return(invisible())
+  }
+  meta_antigo <- readRDS(meta_path)
+  if (!identical(meta_antigo$hash, hash)) {
+    cli::cli_warn(c(
+      "Parametros mudaram desde o ultimo checkpoint em {.path {dir}}.",
+      "i" = "Checkpoints antigos (codebook/model/k_consistency/temperature diferentes) serao ignorados e sobrescritos."
+    ))
+    old_rds <- list.files(dir, pattern = "\\.rds$", full.names = TRUE)
+    old_rds <- setdiff(old_rds, meta_path)
+    unlink(old_rds)
+    saveRDS(list(hash = hash), meta_path)
+  }
+  invisible()
+}
+
+
+#' @keywords internal
+#' @noRd
+.ac_build_run_info <- function(effective_model, model, chat, temperature,
+                                main_temperature, k_consistency, codebook,
+                                n_docs, start_time) {
+  params_efetivos <- NULL
+  base_url <- NULL
+  model_name <- if (!is.null(chat)) tryCatch(chat$get_model(), error = function(e) NULL) else model
+
+  if (inherits(effective_model, "Chat")) {
+    params_efetivos <- tryCatch(as.list(effective_model$get_model_object()@params),
+                                error = function(e) NULL)
+    base_url <- tryCatch(effective_model$get_provider()@base_url, error = function(e) NULL)
+  }
+
+  if (inherits(effective_model, "Chat") && !is.null(temperature) &&
+      is.null(params_efetivos$temperature)) {
+    cli::cli_warn(c(
+      "!" = "Nao foi possivel confirmar que {.arg temperature} foi aplicada ao provedor.",
+      "i" = "Verifique {.code attr(resultado, \"run_info\")$params_efetivos} antes de reportar confidence_score."
+    ))
+  }
+
+  list(
+    acR_version      = as.character(utils::packageVersion("acR")),
+    ellmer_version    = tryCatch(as.character(utils::packageVersion("ellmer")), error = function(e) NA_character_),
+    model             = model_name,
+    base_url          = base_url,
+    params_efetivos   = params_efetivos,
+    temperatura_pedida = list(principal = main_temperature, extras = temperature),
+    k_consistency     = k_consistency,
+    codebook_hash     = rlang::hash(codebook),
+    n_docs            = n_docs,
+    inicio            = start_time,
+    fim               = Sys.time(),
+    r_version         = R.version.string,
+    plataforma        = R.version$platform
+  )
 }
 
 
@@ -465,10 +713,20 @@ ac_qual_code <- function(corpus,
   # varia "por variavel". Calculado para "by_variable" e "both" (o if
   # anterior testava confidence %in% c("total", "both") primeiro, entao
   # "both" nunca alcancava o ramo que populava by_var).
+  #
+  # Usa %in% apos strsplit("|") em vez de igualdade de string inteira:
+  # em multilabel, `cats` pode ser "tecnica|politica", e `cats == "tecnica"`
+  # nunca seria TRUE mesmo quando a rodada de fato escolheu "tecnica" --
+  # subestimando a confianca por variavel sempre que mais de uma categoria
+  # e escolhida na mesma rodada. Para single-label (sem "|"), o resultado
+  # e identico ao de igualdade de string.
   by_var <- if (confidence %in% c("by_variable", "both")) {
     stats::setNames(
       as.list(vapply(cat_names, function(cn) {
-        mean(cats == cn, na.rm = TRUE)
+        mean(vapply(cats, function(c_) {
+          if (is.na(c_)) return(NA)
+          cn %in% strsplit(c_, "|", fixed = TRUE)[[1]]
+        }, logical(1)), na.rm = TRUE)
       }, numeric(1))),
       cat_names
     )
@@ -543,12 +801,25 @@ ac_qual_code <- function(corpus,
       .ac_confidence_level(conf_score)
     } else NA_character_
 
+    tokens_in  <- r$tokens_entrada %||% NA_real_
+    tokens_out <- r$tokens_saida %||% NA_real_
+    segundos   <- r$segundos %||% NA_real_
+    tok_por_s  <- if (!is.na(tokens_out) && !is.na(segundos) && segundos > 0) {
+      tokens_out / segundos
+    } else NA_real_
+
     row <- tibble::tibble(
       doc_id           = r$doc_id,
       categoria        = cat_val,
       categoria_label  = cat_label,
       confidence_score = conf_score,
-      confidence_level = conf_level
+      confidence_level = conf_level,
+      status           = r$status %||% NA_character_,
+      n_tentativas     = r$n_tentativas %||% NA_integer_,
+      tokens_entrada   = tokens_in,
+      tokens_saida     = tokens_out,
+      segundos         = segundos,
+      tokens_por_segundo = tok_por_s
     )
 
     # Adiciona uma coluna `<categoria>_confidence` por categoria do

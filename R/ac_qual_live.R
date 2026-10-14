@@ -3,7 +3,7 @@
 .ac_live_start <- function(mode, n_docs, .envir = parent.frame()) {
   ctx <- list(mode = mode, n = n_docs, results = list())
 
-  if (mode == "terminal") {
+  if (mode %in% c("terminal", "progress")) {
     # `.envir` amarra o ciclo de vida da barra ao frame do CHAMADOR
     # (tipicamente ac_qual_code), nao ao frame de .ac_live_start() -- que
     # retorna imediatamente e destruiria a barra antes do primeiro update.
@@ -27,8 +27,19 @@
 
 #' @keywords internal
 #' @noRd
-.ac_live_update <- function(ctx, i, n_docs, doc_id, main_result, conf_scores) {
+.ac_live_update <- function(ctx, i, n_docs, doc_id, main_result, conf_scores,
+                             doc_status = NULL) {
   if (ctx$mode == "off") return(invisible())
+
+  if (ctx$mode == "progress") {
+    # Saida enxuta: so doc atual + status, sem categoria/raciocinio --
+    # pensada para rodadas grandes (centenas/milhares de docs) onde o
+    # modo "terminal" (que ecoa categoria + inicio do raciocinio a cada
+    # iteracao) deixaria o console ilegivel.
+    status_txt <- sprintf("%s [%s]", format(doc_id, width = 12L), doc_status %||% "ok")
+    cli::cli_progress_update(id = ctx$pb, status = status_txt)
+    return(invisible())
+  }
 
   categoria <- main_result$categoria %||% main_result$categoria_all[1] %||% "?"
   raciocinio <- main_result$raciocinio %||% ""
@@ -72,7 +83,7 @@
 .ac_live_finish <- function(ctx, .envir = parent.frame()) {
   if (is.null(ctx)) return(invisible())
 
-  if (identical(ctx$mode, "terminal") && !is.null(ctx$pb)) {
+  if (ctx$mode %in% c("terminal", "progress") && !is.null(ctx$pb)) {
     cli::cli_progress_done(id = ctx$pb, .envir = .envir)
   } else if (identical(ctx$mode, "shiny")) {
     if (!is.null(ctx$shiny_data)) ctx$shiny_data$done <- TRUE

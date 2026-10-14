@@ -470,7 +470,15 @@ test_that(".ac_classify_one injeta ellmer::params(temperature) quando ausente (b
 # um fallback silencioso.
 # ============================================================
 
-make_fake_chat <- function(model_obj = list(params = NULL)) {
+# Objetos `Model` do ellmer sao S4/S7 e expoem `@params` como slot
+# mutavel (ver codigo-fonte de .ac_chat_with_temperature). Uma lista
+# comum nao suporta `@<-` (erro "trying to get slot ... from an object
+# of a basic class"), entao o fake precisa ser uma classe S4 de verdade
+# para exercitar o mesmo caminho que roda contra o ellmer real.
+methods::setClass("FakeAcRModel", representation(params = "ANY"),
+                  prototype(params = NULL))
+
+make_fake_chat <- function(model_obj = methods::new("FakeAcRModel")) {
   self <- new.env()
   self$model <- model_obj
   self$system_prompt <- NULL
@@ -490,7 +498,7 @@ test_that(".ac_chat_with_temperature() aplica temperature via set_model/get_mode
   out <- acR:::.ac_chat_with_temperature(fake, "sys prompt", 0.7)
 
   expect_equal(out$system_prompt, "sys prompt")
-  expect_false(is.null(out$model$params))
+  expect_false(is.null(out$model@params))
 })
 
 test_that(".ac_chat_with_temperature() avisa (nao falha em silencio) quando mutacao falha", {
@@ -535,6 +543,266 @@ test_that(".ac_make_chat() aceita funcao-fabrica function(temperature, system_pr
 test_that(".ac_make_chat() aplica temperature a objeto Chat pre-configurado", {
   fake <- make_fake_chat()
   chat <- acR:::.ac_make_chat(fake, "sys", 0.9, list())
-  expect_false(is.null(chat$model$params))
+  expect_false(is.null(chat$model@params))
   expect_equal(chat$system_prompt, "sys")
+})
+
+
+# ============================================================
+# Item 3: status + max_retries. .ac_status_do_erro() classifica a
+# mensagem de erro para decidir se vale a pena tentar de novo;
+# .ac_classify_with_retry() aplica a politica de retry.
+# ============================================================
+
+test_that(".ac_status_do_erro() classifica mensagens de erro conhecidas", {
+  expect_equal(acR:::.ac_status_do_erro("context_length_exceeded: too many tokens"), "estouro_contexto")
+  expect_equal(acR:::.ac_status_do_erro("Request timed out"), "timeout")
+  expect_equal(acR:::.ac_status_do_erro("500 Internal Server Error"), "erro_servidor")
+  expect_equal(acR:::.ac_status_do_erro(NULL), "erro_servidor")
+})
+
+make_fake_chat_with_responses <- function(respostas, tokens = list(input = 10, output = 5)) {
+  i <- 0L
+  self <- new.env()
+  self$system_prompt <- NULL
+  self$clone <- function(...) self
+  self$set_system_prompt <- function(p) { self$system_prompt <<- p; invisible(self) }
+  self$model <- methods::new("FakeAcRModel")
+  self$get_model_object <- function() self$model
+  self$set_model <- function(m) { self$model <<- m; invisible(self) }
+  self$chat <- function(msg) {
+    i <<- i + 1L
+    r <- respostas[[min(i, length(respostas))]]
+    if (inherits(r, "error")) stop(r)
+    r
+  }
+  self$get_tokens <- function() data.frame(input = tokens$input, output = tokens$output)
+  class(self) <- "Chat"
+  self
+}
+
+test_that(".ac_classify_one() devolve status 'ok' quando resposta e JSON valido", {
+  skip_if_not_installed("ellmer")
+  fake <- make_fake_chat_with_responses(list('{"categoria": "a"}'))
+  res <- acR:::.ac_classify_one("t", list(), fake, "sys", 0, FALSE)
+  expect_equal(res$status, "ok")
+  expect_equal(res$parsed$categoria, "a")
+  expect_equal(res$tokens$input, 10)
+  expect_equal(res$tokens$output, 5)
+})
+
+test_that(".ac_classify_one() devolve status 'resposta_invalida' quando JSON nao parseia", {
+  skip_if_not_installed("ellmer")
+  fake <- make_fake_chat_with_responses(list("isto nao e json"))
+  res <- acR:::.ac_classify_one("t", list(), fake, "sys", 0, FALSE)
+  expect_equal(res$status, "resposta_invalida")
+  expect_null(res$parsed)
+})
+
+test_that(".ac_classify_one() devolve status de erro do servidor quando chat$chat() falha", {
+  skip_if_not_installed("ellmer")
+  fake <- make_fake_chat_with_responses(list(simpleError("connection reset")))
+  res <- acR:::.ac_classify_one("t", list(), fake, "sys", 0, FALSE)
+  expect_equal(res$status, "erro_servidor")
+  expect_null(res$parsed)
+})
+
+test_that(".ac_classify_with_retry() tenta de novo ate max_retries e conta tentativas", {
+  skip_if_not_installed("ellmer")
+  fake <- make_fake_chat_with_responses(list(
+    simpleError("500 server error"),
+    simpleError("500 server error"),
+    '{"categoria": "a"}'
+  ))
+  res <- acR:::.ac_classify_with_retry(
+    text = "t", codebook = list(), model = fake, system_prompt = "sys",
+    temperature = 0, reasoning = FALSE, max_retries = 2L
+  )
+  expect_equal(res$status, "ok")
+  expect_equal(res$n_tentativas, 3L)
+  expect_true(res$segundos >= 0)
+})
+
+test_that(".ac_classify_with_retry() nao tenta de novo quando erro e estouro_contexto", {
+  skip_if_not_installed("ellmer")
+  fake <- make_fake_chat_with_responses(list(
+    simpleError("context_length_exceeded"),
+    '{"categoria": "a"}'  # nao deve ser alcancado
+  ))
+  res <- acR:::.ac_classify_with_retry(
+    text = "t", codebook = list(), model = fake, system_prompt = "sys",
+    temperature = 0, reasoning = FALSE, max_retries = 3L
+  )
+  expect_equal(res$status, "estouro_contexto")
+  expect_equal(res$n_tentativas, 1L)
+})
+
+test_that(".ac_classify_with_retry() para em max_retries + 1 tentativas quando erro persiste", {
+  skip_if_not_installed("ellmer")
+  fake <- make_fake_chat_with_responses(list(
+    simpleError("500 server error"),
+    simpleError("500 server error")
+  ))
+  res <- acR:::.ac_classify_with_retry(
+    text = "t", codebook = list(), model = fake, system_prompt = "sys",
+    temperature = 0, reasoning = FALSE, max_retries = 1L
+  )
+  expect_equal(res$status, "erro_servidor")
+  expect_equal(res$n_tentativas, 2L)
+})
+
+
+# ============================================================
+# Item 4: checkpoint_dir. Grava cada doc atomicamente, invalida
+# checkpoints antigos quando os parametros da rodada mudam.
+# ============================================================
+
+test_that(".ac_ck_path() sanitiza doc_id para nome de arquivo seguro", {
+  expect_equal(acR:::.ac_ck_path("/tmp/ck", "doc 1/raro:nome"), "/tmp/ck/doc_1_raro_nome.rds")
+})
+
+test_that(".ac_ck_check_meta() grava meta na primeira vez e nao reclama", {
+  dir <- withr::local_tempdir()
+  expect_no_warning(acR:::.ac_ck_check_meta(dir, "hash_abc"))
+  expect_true(file.exists(file.path(dir, "_meta.rds")))
+  expect_equal(readRDS(file.path(dir, "_meta.rds"))$hash, "hash_abc")
+})
+
+test_that(".ac_ck_check_meta() avisa e limpa checkpoints quando o hash muda", {
+  dir <- withr::local_tempdir()
+  acR:::.ac_ck_check_meta(dir, "hash_v1")
+  saveRDS(list(status = "ok"), file.path(dir, "doc_1.rds"))
+
+  expect_warning(
+    acR:::.ac_ck_check_meta(dir, "hash_v2"),
+    regexp = "Parâmetros mudaram"
+  )
+  expect_false(file.exists(file.path(dir, "doc_1.rds")))
+  expect_equal(readRDS(file.path(dir, "_meta.rds"))$hash, "hash_v2")
+})
+
+test_that(".ac_ck_check_meta() nao reclama quando o hash nao muda", {
+  dir <- withr::local_tempdir()
+  acR:::.ac_ck_check_meta(dir, "hash_v1")
+  saveRDS(list(status = "ok"), file.path(dir, "doc_1.rds"))
+
+  expect_no_warning(acR:::.ac_ck_check_meta(dir, "hash_v1"))
+  expect_true(file.exists(file.path(dir, "doc_1.rds")))
+})
+
+
+# ============================================================
+# Item 13: colunas de tokens/tempo no tibble final.
+# ============================================================
+
+test_that(".ac_build_result_tibble() inclui status/n_tentativas/tokens/segundos", {
+  cb     <- make_codebook_test()
+  corpus <- data.frame(doc_id = "d1", text = "t1", stringsAsFactors = FALSE)
+
+  results <- list(
+    list(doc_id = "d1", main = list(categoria = "positivo"),
+         conf_scores = list(total = 1, by_var = NULL, dominant = "positivo"),
+         status = "ok", n_tentativas = 1L,
+         tokens_entrada = 120, tokens_saida = 40, segundos = 2)
+  )
+
+  out <- acR:::.ac_build_result_tibble(
+    results = results, corpus = corpus,
+    cat_names = c("positivo", "negativo", "neutro"),
+    codebook = cb, confidence = "total", reasoning = FALSE
+  )
+
+  expect_equal(out$status, "ok")
+  expect_equal(out$n_tentativas, 1L)
+  expect_equal(out$tokens_entrada, 120)
+  expect_equal(out$tokens_saida, 40)
+  expect_equal(out$segundos, 2)
+  expect_equal(out$tokens_por_segundo, 20)
+})
+
+test_that(".ac_build_result_tibble() preenche NA para status/tokens quando ausentes (compat)", {
+  cb     <- make_codebook_test()
+  corpus <- data.frame(doc_id = "d1", text = "t1", stringsAsFactors = FALSE)
+
+  results <- list(
+    list(doc_id = "d1", main = list(categoria = "positivo"),
+         conf_scores = list(total = 1, by_var = NULL, dominant = "positivo"))
+  )
+
+  out <- acR:::.ac_build_result_tibble(
+    results = results, corpus = corpus,
+    cat_names = c("positivo", "negativo", "neutro"),
+    codebook = cb, confidence = "total", reasoning = FALSE
+  )
+
+  expect_true(is.na(out$status))
+  expect_true(is.na(out$tokens_por_segundo))
+})
+
+
+# ============================================================
+# Item 2 (revisitado): by_variable em multilabel subestimava
+# confianca por variavel porque usava igualdade de string inteira
+# ("tecnica|politica" == "tecnica" nunca e TRUE). Fix: %in% apos
+# strsplit("|").
+# ============================================================
+
+test_that(".ac_compute_confidence() calcula by_variable corretamente em multilabel", {
+  results <- list(
+    list(categoria = "tecnica|politica"),
+    list(categoria = "tecnica"),
+    list(categoria = "politica")
+  )
+  cat_names <- c("tecnica", "politica")
+
+  conf <- acR:::.ac_compute_confidence(results, cat_names, "by_variable")
+
+  # tecnica aparece em 2 das 3 rodadas (rodada 1 e 2)
+  expect_equal(conf$by_var$tecnica, 2/3)
+  # politica aparece em 2 das 3 rodadas (rodada 1 e 3)
+  expect_equal(conf$by_var$politica, 2/3)
+})
+
+
+# ============================================================
+# Item 11: run_info. Registra versoes, modelo, parametros efetivos
+# e hash do codebook na execucao, para auditoria/reproducibilidade.
+# ============================================================
+
+test_that(".ac_build_run_info() monta metadados da execucao", {
+  cb <- make_codebook_test()
+  info <- acR:::.ac_build_run_info(
+    effective_model = "anthropic/claude-sonnet-4-5",
+    model = "anthropic/claude-sonnet-4-5",
+    chat = NULL,
+    temperature = 0.3,
+    main_temperature = 0,
+    k_consistency = 3L,
+    codebook = cb,
+    n_docs = 5L,
+    start_time = Sys.time()
+  )
+
+  expect_equal(info$acR_version, as.character(utils::packageVersion("acR")))
+  expect_equal(info$model, "anthropic/claude-sonnet-4-5")
+  expect_equal(info$k_consistency, 3L)
+  expect_equal(info$n_docs, 5L)
+  expect_equal(info$temperatura_pedida$principal, 0)
+  expect_equal(info$temperatura_pedida$extras, 0.3)
+  expect_equal(info$codebook_hash, rlang::hash(cb))
+})
+
+test_that(".ac_build_run_info() avisa quando Chat pre-configurado nao confirma temperature", {
+  fake <- make_fake_chat()
+  fake$get_provider <- function() list(base_url = "http://x")
+  fake$get_model_object <- function() list(params = NULL)
+
+  expect_warning(
+    acR:::.ac_build_run_info(
+      effective_model = fake, model = "x", chat = fake,
+      temperature = 0.3, main_temperature = 0, k_consistency = 3L,
+      codebook = make_codebook_test(), n_docs = 1L, start_time = Sys.time()
+    ),
+    regexp = "Nao foi possivel confirmar"
+  )
 })

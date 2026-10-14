@@ -14,7 +14,11 @@ ac_qual_code(
   temperature = 0.3,
   reasoning = TRUE,
   reasoning_length = c("short", "medium", "detailed"),
-  live = c("off", "terminal", "shiny"),
+  main_temperature = 0,
+  reasoning_extras = FALSE,
+  live = c("off", "terminal", "progress", "shiny"),
+  max_retries = 2L,
+  checkpoint_dir = NULL,
   ...
 )
 }
@@ -60,14 +64,42 @@ com justificativa da classificação.}
 \item{reasoning_length}{Tamanho do raciocínio: \code{"short"} (1 frase, padrão),
 \code{"medium"} (3 frases), \code{"detailed"} (parágrafo).}
 
+\item{main_temperature}{Temperatura da rodada principal (a que gera
+\code{categoria}, \code{categoria_label} e \code{raciocinio} no resultado final).
+Padrão \code{0} (determinística). Separado de \code{temperature} (usado só nas
+rodadas extras de self-consistency) porque os dois cumprem papéis
+diferentes: a rodada principal deve ser reprodutível, as extras devem
+variar para medir concordância.}
+
+\item{reasoning_extras}{Lógico. Se \code{TRUE}, pede raciocínio também nas
+rodadas extras de self-consistency (mais caro, não usado no resultado
+final). Padrão \code{FALSE}.}
+
 \item{live}{Visualização em tempo real da classificação:
 \itemize{
 \item \code{"off"} (padrão): sem live view;
 \item \code{"terminal"}: barra de progresso com doc atual, categoria, confiança e
 início do raciocínio a cada iteração;
+\item \code{"progress"}: barra de progresso enxuta (doc atual e status), sem
+ecoar categoria/raciocínio — útil para rodadas grandes onde o
+terminal ficaria poluído;
 \item \code{"shiny"}: abre janela Shiny em background com tabela atualizando
 conforme documentos são classificados (requer \code{shiny} e \code{callr}).
 }}
+
+\item{max_retries}{Número máximo de novas tentativas por rodada quando a
+chamada ao LLM falha (erro de rede, timeout, resposta inválida).
+Padrão \code{2}. Espera exponencial entre tentativas (até 30s). Quando o
+erro é classificado como \code{"estouro_contexto"}, não há nova tentativa
+(repetir não resolve). Se mais da metade dos últimos 5+ documentos
+falhar, a execução é abortada com sugestão de usar \code{checkpoint_dir}.}
+
+\item{checkpoint_dir}{Diretório para salvar o resultado de cada documento
+assim que classificado. Se já existir um checkpoint válido para um
+\code{doc_id} (mesmos \code{codebook}, \code{model}, \code{k_consistency} e \code{temperature}),
+o documento é pulado e o resultado salvo é reutilizado — permite
+retomar uma rodada interrompida sem reclassificar tudo. \code{NULL}
+(padrão): sem checkpoint.}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.
 Permite uso de APIs OpenAI-compatible self-hosted via \code{base_url}.}
@@ -94,6 +126,23 @@ proporção de rodadas de self-consistency que escolheram aquela
 categoria. Presentes quando \code{confidence} é \code{"by_variable"} ou
 \code{"both"}.
 \item \code{raciocinio}: justificativa da classificação (se \code{reasoning = TRUE}).
+\item \code{status}: resultado da rodada principal: \code{"ok"}, \code{"resposta_invalida"}
+(JSON não parseável), \code{"estouro_contexto"}, \code{"timeout"} ou
+\code{"erro_servidor"}.
+\item \code{n_tentativas}: número de tentativas até obter \code{status = "ok"} (ou
+até esgotar \code{max_retries}).
+\item \code{tokens_entrada}, \code{tokens_saida}: tokens de entrada/saída da rodada
+principal, via \code{chat$get_tokens()} (\code{NA} se o provedor não expõe).
+\item \code{segundos}: tempo total da rodada principal, incluindo novas
+tentativas.
+\item \code{tokens_por_segundo}: \code{tokens_saida / segundos}.
+}
+
+O resultado carrega também um atributo \code{run_info} (ver
+\code{\link{attributes}()}) com metadados da execução: versões de \code{acR} e
+\code{ellmer}, modelo, \code{base_url}, parâmetros efetivos aplicados ao
+provedor, temperaturas pedidas, \code{k_consistency}, hash do codebook e
+timestamps de início/fim.
 }
 }
 \description{

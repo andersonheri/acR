@@ -23,6 +23,51 @@ documentos de ate 1,4M de caracteres).
   `function(temperature, system_prompt) Chat` para controle total sobre
   a construcao do chat a cada rodada.
 
+* **`ac_qual_code(confidence = "by_variable" | "both")` com `multilabel =
+  TRUE`**: a confianca por variavel subestimava sistematicamente
+  categorias presentes junto com outras na mesma rodada, porque
+  comparava a string inteira (`"tecnica|politica" == "tecnica"` nunca e
+  `TRUE`) em vez de testar se a categoria estava entre as escolhidas
+  naquela rodada. Corrigido para usar `%in%` apos separar a string por
+  `"|"`; o comportamento para rotulagem unica (sem `"|"`) nao muda.
+
+## Novidades
+
+* **`ac_qual_code(max_retries = 2L)`**: novas tentativas automaticas
+  (espera exponencial, ate 30s) quando uma rodada falha por erro de
+  rede, timeout ou resposta invalida. Nova coluna `status` no tibble de
+  saida (`"ok"`, `"resposta_invalida"`, `"estouro_contexto"`,
+  `"timeout"`, `"erro_servidor"`) e `n_tentativas`. Erros classificados
+  como `"estouro_contexto"` nao sao repetidos (retry nao resolve). Se
+  mais da metade dos ultimos 5+ documentos falhar, a execucao e
+  abortada com sugestao de `checkpoint_dir`.
+* **`ac_qual_code(checkpoint_dir = ...)`**: salva o resultado de cada
+  documento assim que classificado (gravacao atomica via arquivo
+  temporario + `file.rename()`), permitindo retomar uma rodada
+  interrompida sem reclassificar documentos ja concluidos. Checkpoints
+  de uma rodada com `codebook`/`model`/`k_consistency`/`temperature`
+  diferentes sao invalidados e sobrescritos automaticamente (com
+  aviso).
+* **`ac_qual_code()` ganha colunas `tokens_entrada`, `tokens_saida`,
+  `segundos` e `tokens_por_segundo`** (via `chat$get_tokens()`),
+  medidos na rodada principal de cada documento.
+* **`ac_qual_code()` ganha o atributo `run_info`** (`attr(resultado,
+  "run_info")`): versoes de `acR`/`ellmer`, modelo, `base_url`,
+  parametros efetivos aplicados ao provedor, temperaturas pedidas,
+  `k_consistency`, hash do codebook e timestamps de inicio/fim. Avisa
+  quando nao e possivel confirmar que `temperature` foi de fato
+  aplicada a um `Chat` pre-configurado.
+* **`ac_qual_code(main_temperature = 0, reasoning_extras = FALSE)`**:
+  parametros antes fixos no codigo agora expostos. `main_temperature`
+  controla a temperatura da rodada que gera o resultado final (antes
+  sempre `0`); `reasoning_extras` controla se as rodadas extras de
+  self-consistency tambem pedem raciocinio (antes sempre `FALSE`).
+* **`ac_qual_code(live = "progress")`**: novo modo de barra de progresso
+  enxuta (doc atual + status, sem ecoar categoria/raciocinio) para
+  rodadas grandes. Chats construidos internamente pelo `acR` agora usam
+  `echo = "none"` por padrao (configuravel via `...`), evitando poluir
+  o console a cada uma das `k_consistency` rodadas por documento.
+
 # acR 0.3.4
 
 ## Correcoes
