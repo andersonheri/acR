@@ -7,7 +7,12 @@
 ac_qual_sample(
   coded,
   n = 50L,
-  strategy = c("uncertainty", "stratified", "random", "disagreement"),
+  strategy = c("uncertainty", "stratified", "random", "disagreement",
+    "proportional"),
+  strata = NULL,
+  min_per_stratum = 1L,
+  min_stratum_size = 10L,
+  exclude_ids = NULL,
   seed = 42L,
   ...
 )
@@ -25,8 +30,31 @@ ac_qual_sample(
 categorias;
 \item \code{"random"}: amostra aleatória simples;
 \item \code{"disagreement"}: prioriza documentos onde rodadas de self-consistency
-divergiram (requer \code{confidence_score < 1}).
+divergiram (requer \code{confidence_score < 1});
+\item \code{"proportional"}: amostragem estratificada com alocação
+proporcional ao tamanho de cada estrato (método do maior resto),
+respeitando um mínimo por estrato. Diferente de \code{"stratified"}
+(que divide \code{n} igualmente entre categorias), preserva a
+distribuição original de \code{strata} na amostra — a escolha correta
+quando a amostra alimenta uma estimativa populacional (ex.:
+\code{ac_qual_reliability()} ponderada), não só uma checagem
+qualitativa de cada categoria.
 }}
+
+\item{strata}{Nome da coluna usada para estratificar quando
+\code{strategy = "proportional"}. Obrigatório nesse caso.}
+
+\item{min_per_stratum}{Mínimo de documentos por estrato na amostra
+proporcional, mesmo que a alocação exata dê menos. Padrão \code{1}.}
+
+\item{min_stratum_size}{Estratos da população com menos documentos
+que isso são agrupados em \code{"Outras"} antes de alocar — evita
+alocar uma fração ínfima da amostra a uma categoria com 2
+documentos na população inteira. Padrão \code{10}.}
+
+\item{exclude_ids}{Vetor de \code{doc_id} a excluir do universo amostrado
+(ex.: documentos já validados em uma rodada anterior). Padrão
+\code{NULL}.}
 
 \item{seed}{Semente para reprodutibilidade. Padrão: \code{42}.}
 
@@ -35,6 +63,9 @@ divergiram (requer \code{confidence_score < 1}).
 \value{
 Tibble com os documentos selecionados, incluindo uma coluna
 \code{sample_reason} indicando por que cada documento foi selecionado.
+Com \code{strategy = "proportional"}, ganha também \code{peso_amostral}
+(\code{n_populacao_estrato / n_amostra_estrato}) para uso em estimativas
+ponderadas.
 }
 \description{
 \code{ac_qual_sample()} seleciona uma amostra de documentos classificados pela

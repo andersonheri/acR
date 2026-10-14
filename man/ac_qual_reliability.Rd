@@ -11,6 +11,8 @@ ac_qual_reliability(
   metrics = c("krippendorff", "gwet_ac1", "f1_macro", "percent_agreement"),
   bootstrap = 1000L,
   ci_level = 0.95,
+  by_variable = FALSE,
+  exclude_status = c("estouro_contexto", "timeout", "erro_servidor", "parcial"),
   ...
 )
 }
@@ -29,11 +31,32 @@ ac_qual_reliability(
 
 \item{ci_level}{Nível de confiança do IC. Padrão: \code{0.95}.}
 
+\item{by_variable}{Lógico. Se \code{TRUE}, calcula também métricas binárias
+(concordância, precisão, recall, F1, Gwet AC1, alfa de Krippendorff)
+para cada categoria do codebook individualmente, tratando a presença
+de cada categoria como um problema sim/não — essencial quando
+\code{multilabel = TRUE}, onde um único \code{categoria} (\code{"a|b"}) mistura
+várias decisões binárias independentes que as métricas agregadas
+(acima) não conseguem diagnosticar separadamente. Denominadores
+zero (ex.: uma categoria nunca escolhida por nenhum dos dois lados)
+geram \code{NA}, nunca \code{0} ou \code{1} artificiais. Padrão \code{FALSE}.}
+
+\item{exclude_status}{Vetor de valores da coluna \code{status} (ver
+\code{\link[=ac_qual_code]{ac_qual_code()}}) a excluir da comparação antes de calcular as
+métricas por variável — documentos que falharam na classificação
+não têm uma categoria confiável para comparar. Ignorado se \code{llm}
+não tiver coluna \code{status}. Padrão:
+\code{c("estouro_contexto", "timeout", "erro_servidor", "parcial")}.}
+
 \item{...}{Ignorado.}
 }
 \value{
 Tibble com colunas: \code{metric}, \code{estimate}, \code{ci_lower}, \code{ci_upper},
-\code{interpretation}.
+\code{interpretation}. Quando \code{by_variable = TRUE}, o resultado carrega
+também um atributo \code{by_variable}: um tibble com uma linha por
+categoria do codebook e colunas \code{categoria}, \code{n}, \code{vp}, \code{fp}, \code{fn},
+\code{vn}, \code{concordancia}, \code{precisao}, \code{recall}, \code{f1}, \code{gwet_ac1},
+\code{krippendorff_alfa}.
 }
 \description{
 \code{ac_qual_reliability()} calcula métricas de concordância entre a

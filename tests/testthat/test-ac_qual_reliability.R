@@ -321,3 +321,170 @@ test_that("ac_qual_import_human() avisa e remove linhas sem classificacao", {
                  regexp = "sem classifica")
   expect_equal(nrow(human), 1L)
 })
+
+
+# ============================================================
+# Item 8: ac_qual_reliability(by_variable = TRUE). Metricas
+# binarias por categoria do codebook, essencial em multilabel onde
+# a metrica agregada mistura decisoes independentes.
+# ============================================================
+
+test_that(".ac_metricas_binarias() calcula metricas conhecidas sem NA quando ha positivos dos dois lados", {
+  h <- c(1, 1, 0, 0)
+  m <- c(1, 0, 0, 0)
+  res <- acR:::.ac_metricas_binarias(h, m)
+
+  expect_equal(res$vp, 1)
+  expect_equal(res$fp, 0)
+  expect_equal(res$fn, 1)
+  expect_equal(res$vn, 2)
+  expect_equal(res$concordancia, 3/4)
+  expect_equal(res$precisao, 1)
+  expect_equal(res$recall, 0.5)
+})
+
+test_that(".ac_metricas_binarias() devolve NA (nao 0 nem 1) quando denominador e zero", {
+  # Nenhum positivo em nenhum dos dois lados -- precisao/recall/f1
+  # sao indefinidos, nao zero.
+  h <- c(0, 0, 0)
+  m <- c(0, 0, 0)
+  res <- acR:::.ac_metricas_binarias(h, m)
+
+  expect_true(is.na(res$precisao))
+  expect_true(is.na(res$recall))
+  expect_true(is.na(res$f1))
+  expect_equal(res$concordancia, 1)
+})
+
+test_that("ac_qual_reliability(by_variable = TRUE) calcula uma linha por categoria em multilabel", {
+  llm <- tibble::tibble(
+    doc_id    = paste0("d", 1:4),
+    categoria = c("tecnica|politica", "tecnica", "politica", "tecnica")
+  )
+  human <- tibble::tibble(
+    doc_id    = paste0("d", 1:4),
+    categoria = c("tecnica", "tecnica", "politica", "politica")
+  )
+
+  rel <- suppressMessages(ac_qual_reliability(
+    llm = llm, human = human, bootstrap = 10, by_variable = TRUE
+  ))
+
+  bv <- attr(rel, "by_variable")
+  expect_s3_class(bv, "tbl_df")
+  expect_setequal(bv$categoria, c("tecnica", "politica"))
+  # tecnica: llm = {1,2,4} (3 docs), human = {1,2} (2 docs) -> vp=2 (d1,d2), fp=1 (d4), fn=0
+  tecnica <- bv[bv$categoria == "tecnica", ]
+  expect_equal(tecnica$vp, 2)
+  expect_equal(tecnica$fp, 1)
+  expect_equal(tecnica$fn, 0)
+})
+
+test_that("ac_qual_reliability(by_variable = TRUE) exclui documentos com status de falha", {
+  llm <- tibble::tibble(
+    doc_id    = paste0("d", 1:3),
+    categoria = c("tecnica", "politica", "tecnica"),
+    status    = c("ok", "estouro_contexto", "ok")
+  )
+  human <- tibble::tibble(
+    doc_id    = paste0("d", 1:3),
+    categoria = c("tecnica", "tecnica", "tecnica")
+  )
+
+  rel <- suppressMessages(ac_qual_reliability(
+    llm = llm, human = human, bootstrap = 10, by_variable = TRUE
+  ))
+  bv <- attr(rel, "by_variable")
+
+  # d2 (status = estouro_contexto) deve ter sido excluido -- so d1 e d3
+  # restam, ambos concordando em "tecnica".
+  tecnica <- bv[bv$categoria == "tecnica", ]
+  expect_equal(tecnica$n, 2L)
+  expect_equal(tecnica$concordancia, 1)
+})
+
+test_that("ac_qual_reliability() sem by_variable nao adiciona o atributo", {
+  llm   <- tibble::tibble(doc_id = c("d1", "d2"), categoria = c("a", "b"))
+  human <- tibble::tibble(doc_id = c("d1", "d2"), categoria = c("a", "b"))
+  rel <- suppressMessages(ac_qual_reliability(llm = llm, human = human, bootstrap = 10))
+  expect_null(attr(rel, "by_variable"))
+})
+
+
+# ============================================================
+# Item 9: ac_qual_sample(strategy = "proportional"). Alocacao pelo
+# metodo do maior resto, preservando a distribuicao original dos
+# estratos (ao contrario de "stratified", que divide n igualmente).
+# ============================================================
+
+test_that(".ac_allocate() aloca pelo metodo do maior resto e soma exatamente n_total", {
+  pop <- c(100, 50, 10)
+  aloc <- acR:::.ac_allocate(pop, 16L, minimo = 1L)
+  expect_equal(sum(aloc), 16L)
+  # proporcional: 100/160*16=10, 50/160*16=5, 10/160*16=1
+  expect_equal(aloc, c(10, 5, 1))
+})
+
+test_that(".ac_allocate() respeita o minimo mesmo quando a fracao exata e menor", {
+  pop <- c(1000, 5)
+  aloc <- acR:::.ac_allocate(pop, 10L, minimo = 2L)
+  expect_true(aloc[2] >= 2L)
+  expect_equal(sum(aloc), 10L)
+})
+
+test_that("ac_qual_sample(strategy = 'proportional') exige strata", {
+  coded <- tibble::tibble(doc_id = paste0("d", 1:10), categoria = "a",
+                          orgao = rep(c("A", "B"), 5))
+  expect_error(
+    ac_qual_sample(coded, n = 4, strategy = "proportional"),
+    regexp = "strata"
+  )
+})
+
+test_that("ac_qual_sample(strategy = 'proportional') preserva proporcao dos estratos e soma peso_amostral", {
+  set.seed(1)
+  coded <- tibble::tibble(
+    doc_id = paste0("d", 1:100),
+    categoria = "a",
+    orgao = c(rep("Grande", 80), rep("Pequeno", 20))
+  )
+
+  amostra <- suppressMessages(ac_qual_sample(
+    coded, n = 20, strategy = "proportional", strata = "orgao", seed = 1
+  ))
+
+  expect_equal(nrow(amostra), 20L)
+  tab <- table(amostra$orgao)
+  # 80% da populacao e "Grande" -> ~80% da amostra (16 de 20)
+  expect_equal(unname(tab["Grande"]), 16L)
+  expect_equal(unname(tab["Pequeno"]), 4L)
+  expect_true("peso_amostral" %in% names(amostra))
+  # peso_amostral = n_populacao_estrato / n_amostra_estrato
+  expect_equal(unique(amostra$peso_amostral[amostra$orgao == "Grande"]), 80 / 16)
+})
+
+test_that("ac_qual_sample(strategy = 'proportional') agrupa estratos pequenos em 'Outras'", {
+  set.seed(1)
+  coded <- tibble::tibble(
+    doc_id = paste0("d", 1:50),
+    categoria = "a",
+    orgao = c(rep("Grande", 45), rep("Raro", 5))
+  )
+
+  amostra <- suppressMessages(ac_qual_sample(
+    coded, n = 10, strategy = "proportional", strata = "orgao",
+    min_stratum_size = 10L, seed = 1
+  ))
+
+  expect_true(all(amostra$sample_reason %in%
+    c("proportional (estrato=Grande)", "proportional (estrato=Outras)")))
+})
+
+test_that("ac_qual_sample(exclude_ids = ...) remove documentos do universo amostrado", {
+  coded <- tibble::tibble(doc_id = paste0("d", 1:10), categoria = "a")
+  amostra <- suppressMessages(ac_qual_sample(
+    coded, n = 10, strategy = "random", exclude_ids = c("d1", "d2"), seed = 1
+  ))
+  expect_false(any(amostra$doc_id %in% c("d1", "d2")))
+  expect_equal(nrow(amostra), 8L)
+})

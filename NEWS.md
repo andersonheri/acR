@@ -62,6 +62,21 @@ documentos de ate 1,4M de caracteres).
   controla a temperatura da rodada que gera o resultado final (antes
   sempre `0`); `reasoning_extras` controla se as rodadas extras de
   self-consistency tambem pedem raciocinio (antes sempre `FALSE`).
+* **`ac_qual_reliability(by_variable = TRUE)`**: calcula métricas
+  binárias (concordância, precisão, recall, F1, Gwet AC1, alfa de
+  Krippendorff) para cada categoria do codebook individualmente —
+  essencial em `multilabel = TRUE`, onde a métrica agregada mistura
+  várias decisões binárias independentes. Denominadores zero geram
+  `NA`, nunca `0`/`1` artificiais. `exclude_status` remove documentos
+  cuja rodada falhou (ver `status` em [ac_qual_code()]) antes de
+  comparar. Resultado fica em `attr(resultado, "by_variable")`.
+* **`ac_qual_sample(strategy = "proportional")`**: amostragem
+  estratificada com alocação proporcional ao tamanho de cada estrato
+  (método do maior resto), preservando a distribuição original —
+  diferente de `"stratified"`, que divide `n` igualmente entre
+  categorias. Ganha `strata`, `min_per_stratum`, `min_stratum_size`
+  (agrupa estratos pequenos em `"Outras"`) e `exclude_ids`. A amostra
+  ganha a coluna `peso_amostral` para uso em estimativas ponderadas.
 * **`ac_qual_code(live = "progress")`**: novo modo de barra de progresso
   enxuta (doc atual + status, sem ecoar categoria/raciocinio) para
   rodadas grandes. Chats construidos internamente pelo `acR` agora usam
