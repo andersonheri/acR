@@ -512,7 +512,7 @@ test_that(".ac_chat_with_temperature() avisa (nao falha em silencio) quando muta
 
   expect_warning(
     out <- acR:::.ac_chat_with_temperature(self, "sys", 0.5),
-    regexp = "Não foi possível aplicar"
+    regexp = "Nao foi possivel aplicar"
   )
   expect_equal(out$system_prompt, "sys")
 })
@@ -675,7 +675,7 @@ test_that(".ac_ck_check_meta() avisa e limpa checkpoints quando o hash muda", {
 
   expect_warning(
     acR:::.ac_ck_check_meta(dir, "hash_v2"),
-    regexp = "Parâmetros mudaram"
+    regexp = "Parametros mudaram"
   )
   expect_false(file.exists(file.path(dir, "doc_1.rds")))
   expect_equal(readRDS(file.path(dir, "_meta.rds"))$hash, "hash_v2")

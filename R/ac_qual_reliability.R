@@ -585,14 +585,13 @@ ac_qual_import_human <- function(path,
 # Auxiliares de confiabilidade
 # ============================================================================
 
+# Aloca n_total itens entre estratos de tamanho n_pop com o metodo do
+# maior resto (largest remainder): cada estrato recebe pelo menos
+# minimo, o resto e distribuido um a um aos estratos com a maior parte
+# fracionaria perdida, ate fechar a soma em n_total (para mais ou para
+# menos, dependendo se o piso ja ultrapassa n_total).
 #' @keywords internal
 #' @noRd
-#'
-#' Aloca `n_total` itens entre estratos de tamanho `n_pop` com o metodo
-#' do maior resto (largest remainder): cada estrato recebe pelo menos
-#' `minimo`, o resto e distribuido um a um aos estratos com a maior
-#' parte fracionaria perdida, ate fechar a soma em `n_total` (para mais
-#' ou para menos, dependendo se o piso ja ultrapassa `n_total`).
 .ac_allocate <- function(n_pop, n_total, minimo = 1L) {
   exato <- n_total * n_pop / sum(n_pop)
   alocado <- pmax(minimo, floor(exato))
@@ -612,15 +611,14 @@ ac_qual_import_human <- function(path,
 }
 
 
+# Amostragem estratificada com alocacao proporcional (metodo do maior
+# resto). Estratos pequenos (< min_stratum_size na POPULACAO, nao na
+# amostra) sao agrupados em "Outras" antes de alocar, para nao dar a
+# uma categoria residual uma fracao da amostra menor que 1 documento de
+# forma instavel. peso_amostral e o inverso da fracao amostrada dentro
+# do estrato -- use para ponderar estimativas populacionais.
 #' @keywords internal
 #' @noRd
-#'
-#' Amostragem estratificada com alocacao proporcional (metodo do maior
-#' resto). Estratos pequenos (< min_stratum_size na POPULACAO, nao na
-#' amostra) sao agrupados em "Outras" antes de alocar, para nao dar a
-#' uma categoria residual uma fracao da amostra menor que 1 documento
-#' de forma instavel. `peso_amostral` e o inverso da fracao amostrada
-#' dentro do estrato -- use para ponderar estimativas populacionais.
 .ac_sample_proportional <- function(coded, n, strata, min_per_stratum, min_stratum_size) {
   estrato_original <- as.character(coded[[strata]])
   contagem <- table(estrato_original)
@@ -702,14 +700,13 @@ ac_qual_import_human <- function(path,
   }
 }
 
+# Metricas de concordancia para um UNICO par de vetores binarios 0/1
+# (presenca/ausencia de uma categoria especifica em cada rodada).
+# Denominadores zero (precisao/recall sem nenhum positivo, por exemplo)
+# sempre geram NA -- nunca 0 ou 1 artificiais, que mascarariam uma
+# categoria rara que nenhum dos dois lados escolheu.
 #' @keywords internal
 #' @noRd
-#'
-#' Metricas de concordancia para um UNICO par de vetores binarios 0/1
-#' (presenca/ausencia de uma categoria especifica em cada rodada).
-#' Denominadores zero (precisao/recall sem nenhum positivo, por
-#' exemplo) sempre geram NA -- nunca 0 ou 1 artificiais, que
-#' mascarariam uma categoria rara que nenhum dos dois lados escolheu.
 .ac_metricas_binarias <- function(h, m) {
   n  <- length(h)
   vp <- sum(h == 1L & m == 1L)
@@ -740,16 +737,14 @@ ac_qual_import_human <- function(path,
 }
 
 
+# Constroi, para cada categoria presente em llm/human, um par de
+# vetores binarios de presenca (apos separar categoria por "|" --
+# suporta multilabel) e aplica .ac_metricas_binarias(). Documentos cujo
+# status (ver ac_qual_code()) esta em exclude_status sao removidos
+# antes: uma categoria vinda de uma rodada que falhou (estouro de
+# contexto, timeout, etc.) nao e um dado confiavel sobre concordancia.
 #' @keywords internal
 #' @noRd
-#'
-#' Constroi, para cada categoria presente em `llm`/`human`, um par de
-#' vetores binarios de presenca (apos separar `categoria` por "|" --
-#' suporta multilabel) e aplica `.ac_metricas_binarias()`. Documentos
-#' cujo `status` (ver ac_qual_code()) esta em `exclude_status` sao
-#' removidos antes: uma categoria vinda de uma rodada que falhou
-#' (estouro de contexto, timeout, etc.) nao e um dado confiavel sobre
-#' concordancia.
 .ac_reliability_by_variable <- function(llm, human, cat_col, exclude_status) {
   if ("status" %in% names(llm) && length(exclude_status) > 0L) {
     llm <- llm[is.na(llm$status) | !llm$status %in% exclude_status, , drop = FALSE]

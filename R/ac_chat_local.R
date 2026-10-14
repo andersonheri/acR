@@ -83,15 +83,14 @@ ac_chat_local <- function(model,
 }
 
 
+# Monta os argumentos de chat_openai()/chat_openai_compatible() para um
+# servidor local. Injeta uma credencial placeholder apenas quando o
+# usuario nao forneceu uma via ... E o parametro existir na assinatura
+# da funcao de destino -- o nome do parametro de credencial mudou entre
+# versoes do ellmer (api_key vs credentials), por isso a checagem usa
+# os formais da funcao real em vez de supor um nome fixo.
 #' @keywords internal
 #' @noRd
-#'
-#' Monta os argumentos de `chat_openai()`/`chat_openai_compatible()` para
-#' um servidor local. Injeta uma credencial placeholder apenas quando o
-#' usuario nao forneceu uma via `...` E o parametro existir na assinatura
-#' da funcao de destino -- o nome do parametro de credencial mudou entre
-#' versoes do ellmer (`api_key` vs `credentials`), por isso a checagem
-#' usa os formais da funcao real em vez de supor um nome fixo.
 .ac_chat_local_build_args <- function(base_url, model, system_prompt,
                                        temperature, dots, formais) {
   args <- c(

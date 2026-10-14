@@ -442,15 +442,14 @@ ac_qual_code <- function(corpus,
 }
 
 
+# Aplica temperature a um Chat ja construido, mutando o objeto Model
+# associado via set_model()/get_model_object() (API estavel desde o
+# ellmer 0.5.0). Se a API nao existir ou a mutacao falhar, avisa
+# explicitamente -- nunca degrada em silencio para a temperatura padrao
+# do provedor, que e o bug original (self-consistency rodando as k
+# rodadas na mesma temperatura, inflando confidence_score).
 #' @keywords internal
 #' @noRd
-#'
-#' Aplica `temperature` a um `Chat` ja construido, mutando o objeto
-#' `Model` associado via `set_model()`/`get_model_object()` (API estavel
-#' desde o ellmer 0.5.0). Se a API nao existir ou a mutacao falhar, avisa
-#' explicitamente -- nunca degrada em silencio para a temperatura padrao
-#' do provedor, que e o bug original (self-consistency rodando as k
-#' rodadas na mesma temperatura, inflando `confidence_score`).
 .ac_chat_with_temperature <- function(chat, system_prompt, temperature) {
   out <- chat$clone()
   out$set_system_prompt(system_prompt)
@@ -476,14 +475,13 @@ ac_qual_code <- function(corpus,
 }
 
 
+# Constroi (ou reutiliza) o Chat usado para uma unica rodada de
+# classificacao, garantindo que temperature e system_prompt sejam de
+# fato aplicados -- seja model uma string "provedor/modelo", um objeto
+# Chat pre-configurado, ou uma funcao-fabrica
+# function(temperature, system_prompt) Chat.
 #' @keywords internal
 #' @noRd
-#'
-#' Constroi (ou reutiliza) o `Chat` usado para uma unica rodada de
-#' classificacao, garantindo que `temperature` e `system_prompt` sejam
-#' de fato aplicados -- seja `model` uma string `"provedor/modelo"`, um
-#' objeto `Chat` pre-configurado, ou uma funcao-fabrica
-#' `function(temperature, system_prompt) Chat`.
 .ac_make_chat <- function(model, system_prompt, temperature, dots) {
   if (is.function(model)) {
     return(model(temperature = temperature, system_prompt = system_prompt))
@@ -517,13 +515,12 @@ ac_qual_code <- function(corpus,
 }
 
 
+# Classifica categorias de erro de rede/servidor em um rotulo estavel
+# para a coluna status, usado para decidir se vale a pena tentar de novo
+# (estouro de contexto nao se resolve com retry) e para o relatorio de
+# qualidade de execucao.
 #' @keywords internal
 #' @noRd
-#'
-#' Classifica categorias de erro de rede/servidor em um rotulo estavel
-#' para a coluna `status`, usado para decidir se vale a pena tentar de
-#' novo (estouro de contexto nao se resolve com retry) e para o relatorio
-#' de qualidade de execucao.
 .ac_status_do_erro <- function(msg) {
   msg <- tolower(msg %||% "")
   if (grepl("context|token|too long|maximum|context_length", msg)) {
@@ -536,12 +533,11 @@ ac_qual_code <- function(corpus,
 }
 
 
+# Executa uma rodada de classificacao e devolve status/tokens/tempo
+# junto com o JSON parseado (ou NULL). Nao tenta de novo sozinha -- isso
+# e responsabilidade de .ac_classify_with_retry().
 #' @keywords internal
 #' @noRd
-#'
-#' Executa uma rodada de classificacao e devolve status/tokens/tempo
-#' junto com o JSON parseado (ou NULL). Nao tenta de novo sozinha -- isso
-#' e responsabilidade de `.ac_classify_with_retry()`.
 .ac_classify_one <- function(text, codebook, model, system_prompt,
                               temperature, reasoning, ...) {
   dots <- list(...)
@@ -583,14 +579,13 @@ ac_qual_code <- function(corpus,
 }
 
 
+# Envolve .ac_classify_one() com novas tentativas e espera exponencial.
+# Nao tenta de novo quando o erro e "estouro_contexto" (repetir a mesma
+# chamada nao resolve). Devolve n_tentativas e segundos (tempo total
+# gasto, incluindo as tentativas) junto com o resultado da ultima
+# tentativa.
 #' @keywords internal
 #' @noRd
-#'
-#' Envolve `.ac_classify_one()` com novas tentativas e espera
-#' exponencial. Nao tenta de novo quando o erro e `"estouro_contexto"`
-#' (repetir a mesma chamada nao resolve). Devolve `n_tentativas` e
-#' `segundos` (tempo total gasto, incluindo as tentativas) junto com o
-#' resultado da ultima tentativa.
 .ac_classify_with_retry <- function(text, codebook, model, system_prompt,
                                      temperature, reasoning, max_retries, ...) {
   inicio    <- Sys.time()
@@ -616,13 +611,12 @@ ac_qual_code <- function(corpus,
 }
 
 
+# Invalida checkpoints de uma rodada anterior com parametros diferentes
+# (codebook, model, k_consistency ou temperature mudaram) -- sem isso,
+# retomar uma pasta de checkpoint com um codebook revisado
+# silenciosamente reaproveitaria classificacoes do codebook antigo.
 #' @keywords internal
 #' @noRd
-#'
-#' Invalida checkpoints de uma rodada anterior com parametros diferentes
-#' (codebook, model, k_consistency ou temperature mudaram) -- sem isso,
-#' retomar uma pasta de checkpoint com um codebook revisado silenciosamente
-#' reaproveitaria classificacoes do codebook antigo.
 .ac_ck_check_meta <- function(dir, hash) {
   meta_path <- file.path(dir, "_meta.rds")
   if (!file.exists(meta_path)) {
