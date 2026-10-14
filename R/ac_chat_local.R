@@ -58,7 +58,7 @@ ac_chat_local <- function(model,
                            system_prompt = NULL,
                            ...) {
   if (!requireNamespace("ellmer", quietly = TRUE)) {
-    cli::cli_abort("O pacote {.pkg ellmer} é necessário.")
+    cli::cli_abort("O pacote {.pkg ellmer} \u00e9 necess\u00e1rio.")
   }
 
   api <- match.arg(api)
@@ -67,7 +67,7 @@ ac_chat_local <- function(model,
 
   if (!fn_name %in% ellmer_exports) {
     cli::cli_abort(c(
-      "{.fn {fn_name}} não disponível nesta versão de {.pkg ellmer}.",
+      "{.fn {fn_name}} n\u00e3o dispon\u00edvel nesta vers\u00e3o de {.pkg ellmer}.",
       "i" = "Tente {.code api = \"responses\"} ou atualize o {.pkg ellmer}."
     ))
   }

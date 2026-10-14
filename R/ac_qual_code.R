@@ -327,8 +327,8 @@ ac_qual_code <- function(corpus,
       if (taxa_falha > 0.5) {
         pct_falha <- round(taxa_falha * 100)
         cli::cli_abort(c(
-          "Mais da metade dos últimos {length(janela)} documentos falhou ({pct_falha}%).",
-          "i" = "Interrompendo para evitar desperdiçar cota de tokens em um provedor/servidor instavel.",
+          "Mais da metade dos \u00faltimos {length(janela)} documentos falhou ({pct_falha}%).",
+          "i" = "Interrompendo para evitar desperdi\u00e7ar cota de tokens em um provedor/servidor instavel.",
           "i" = if (is.null(checkpoint_dir)) {
             "Use {.arg checkpoint_dir} para salvar o progresso e poder retomar depois de investigar."
           } else {

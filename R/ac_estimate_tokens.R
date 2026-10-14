@@ -73,7 +73,7 @@ ac_estimate_tokens <- function(text, chat = NULL, chars_per_token = 3.2) {
 #' @export
 ac_calibrate_tokens <- function(chat_factory, textos) {
   if (!is.function(chat_factory)) {
-    cli::cli_abort("{.arg chat_factory} deve ser uma função {.code function(temperature, system_prompt) Chat}.")
+    cli::cli_abort("{.arg chat_factory} deve ser uma fun\u00e7\u00e3o {.code function(temperature, system_prompt) Chat}.")
   }
 
   uso <- vapply(textos, function(tx) {
