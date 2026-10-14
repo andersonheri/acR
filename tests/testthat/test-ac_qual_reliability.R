@@ -366,9 +366,9 @@ test_that("ac_qual_reliability(by_variable = TRUE) calcula uma linha por categor
     categoria = c("tecnica", "tecnica", "politica", "politica")
   )
 
-  rel <- suppressMessages(ac_qual_reliability(
+  rel <- suppressWarnings(suppressMessages(ac_qual_reliability(
     llm = llm, human = human, bootstrap = 10, by_variable = TRUE
-  ))
+  )))
 
   bv <- attr(rel, "by_variable")
   expect_s3_class(bv, "tbl_df")
@@ -391,9 +391,9 @@ test_that("ac_qual_reliability(by_variable = TRUE) exclui documentos com status 
     categoria = c("tecnica", "tecnica", "tecnica")
   )
 
-  rel <- suppressMessages(ac_qual_reliability(
+  rel <- suppressWarnings(suppressMessages(ac_qual_reliability(
     llm = llm, human = human, bootstrap = 10, by_variable = TRUE
-  ))
+  )))
   bv <- attr(rel, "by_variable")
 
   # d2 (status = estouro_contexto) deve ter sido excluido -- so d1 e d3
@@ -406,7 +406,7 @@ test_that("ac_qual_reliability(by_variable = TRUE) exclui documentos com status 
 test_that("ac_qual_reliability() sem by_variable nao adiciona o atributo", {
   llm   <- tibble::tibble(doc_id = c("d1", "d2"), categoria = c("a", "b"))
   human <- tibble::tibble(doc_id = c("d1", "d2"), categoria = c("a", "b"))
-  rel <- suppressMessages(ac_qual_reliability(llm = llm, human = human, bootstrap = 10))
+  rel <- suppressWarnings(suppressMessages(ac_qual_reliability(llm = llm, human = human, bootstrap = 10)))
   expect_null(attr(rel, "by_variable"))
 })
 
