@@ -5,8 +5,8 @@
 #' (saída de [ac_dictionary()], [ac_emotion()] ou [ac_sentiment()] com
 #' categorias binarizadas) contra uma codificação de referência humana,
 #' categoria por categoria — a mesma lógica de validação que
-#' [ac_qual_reliability(by_variable = TRUE)] aplica à classificação por
-#' LLM, agora para o método de dicionário.
+#' [ac_qual_reliability()] aplica à classificação por LLM (com
+#' `by_variable = TRUE`), agora para o método de dicionário.
 #'
 #' Nenhum dicionário deveria ser usado numa análise publicável sem essa
 #' etapa (Grimmer & Stewart, 2013): um dicionário construído à mão pode

@@ -41,7 +41,7 @@
 #'     escores de referência conhecidos e os escores brutos estimados
 #'     para os próprios documentos de referência.
 #'   - `"mv"`: reescalona linearmente para o intervalo
-#'     [min, max] dos escores de referência conhecidos (Martin &
+#'     `[min, max]` dos escores de referência conhecidos (Martin &
 #'     Vanberg, 2007).
 #' @param drop_punct Logico, encaminhado para [ac_count()]. Padrão:
 #'   `TRUE`.

@@ -36,8 +36,8 @@ lados marcou) geram \code{NA}, nunca \code{0} ou \code{1} artificiais.
 (saída de \code{\link[=ac_dictionary]{ac_dictionary()}}, \code{\link[=ac_emotion]{ac_emotion()}} ou \code{\link[=ac_sentiment]{ac_sentiment()}} com
 categorias binarizadas) contra uma codificação de referência humana,
 categoria por categoria — a mesma lógica de validação que
-\link{ac_qual_reliability(by_variable = TRUE)} aplica à classificação por
-LLM, agora para o método de dicionário.
+\code{\link[=ac_qual_reliability]{ac_qual_reliability()}} aplica à classificação por LLM (com
+\code{by_variable = TRUE}), agora para o método de dicionário.
 
 Nenhum dicionário deveria ser usado numa análise publicável sem essa
 etapa (Grimmer & Stewart, 2013): um dicionário construído à mão pode

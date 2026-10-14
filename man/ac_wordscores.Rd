@@ -30,7 +30,7 @@ Martin & Vanberg, 2007):
 escores de referência conhecidos e os escores brutos estimados
 para os próprios documentos de referência.
 \item \code{"mv"}: reescalona linearmente para o intervalo
-\link{min, max} dos escores de referência conhecidos (Martin &
+\verb{[min, max]} dos escores de referência conhecidos (Martin &
 Vanberg, 2007).
 }}
 
