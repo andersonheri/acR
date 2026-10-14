@@ -287,6 +287,31 @@ chat_obj <- chat_anthropic(model = "claude-sonnet-4-20250514", echo = "none")
 As chaves de API devem ser configuradas no `.Renviron` com
 `usethis::edit_r_environ()`, nunca diretamente no código.
 
+### Rodando localmente, em escala
+
+Para servidores locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM),
+`ac_chat_local()` dispensa configurar uma chave de API real:
+
+```r
+chat_local <- ac_chat_local(model = "qwen2.5-14b-instruct")
+
+resultado <- ac_qual_code(
+  corpus, codebook,
+  chat           = chat_local,
+  checkpoint_dir = "checkpoints/",  # retoma sem reclassificar em caso de interrupcao
+  max_retries    = 2L,              # novas tentativas com espera exponencial
+  live           = "progress"       # barra de progresso enxuta para rodadas grandes
+)
+
+table(resultado$status)             # ok / resposta_invalida / estouro_contexto / timeout / erro_servidor
+attr(resultado, "run_info")$params_efetivos$temperature  # auditar o que o provedor confirmou
+```
+
+Veja a vignette [LLM local em escala](https://ahenriquecp.com/acR/articles/llm-local-em-escala.html)
+para o fluxo completo (dimensionamento de contexto com `ac_estimate_tokens()`,
+checkpoint, tratamento de falhas e validação por categoria com
+`ac_qual_reliability(by_variable = TRUE)`).
+
 ---
 
 ## Busca de literatura via OpenAlex
@@ -356,6 +381,7 @@ utilitários — veja **[Funções disponíveis (completo)](https://ahenriquecp.
 | Amostrar documentos para revisão humana | `ac_qual_sample()` · `ac_qual_export_for_review()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
 | Concordância humano × LLM (Kappa, Krippendorff) | `ac_qual_irr()` · `ac_qual_reliability()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
 | Escolher o modelo LLM certo | `ac_qual_recommend_model()` | [Qualitativo LLM](https://ahenriquecp.com/acR/articles/qualitativo-llm.html) |
+| Classificar com modelo local em escala (checkpoint, retries, tokens) | `ac_chat_local()` · `ac_estimate_tokens()` | [LLM local em escala](https://ahenriquecp.com/acR/articles/llm-local-em-escala.html) |
 | Relatório metodológico reprodutível | `ac_qual_report()` | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
 | Exportar (CSV, LaTeX, Excel, RDS) | `ac_export()` | [Replicabilidade](https://ahenriquecp.com/acR/articles/replicabilidade.html) |
 
@@ -363,8 +389,8 @@ utilitários — veja **[Funções disponíveis (completo)](https://ahenriquecp.
 
 ## Cobertura de testes
 
-Suite de **431 blocos `test_that`** com 779 assertions, cobrindo
-**~66%** do código (medido com `covr::package_coverage()`). Testes de
+Suite de **487 blocos `test_that`**, cobrindo boa parte do código
+(medido com `covr::package_coverage()`). Testes de
 integração com APIs externas (Câmara, Senado, LLM) usam `skip_on_cran()`
 e verificação prévia de disponibilidade — não bloqueiam CI offline nem
 o `R CMD check` da CRAN.

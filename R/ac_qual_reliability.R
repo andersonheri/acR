@@ -40,10 +40,29 @@
 #'   `c("krippendorff", "gwet_ac1", "f1_macro", "percent_agreement")`.
 #' @param bootstrap Número de amostras bootstrap para IC. Padrão: `1000`.
 #' @param ci_level Nível de confiança do IC. Padrão: `0.95`.
+#' @param by_variable Lógico. Se `TRUE`, calcula também métricas binárias
+#'   (concordância, precisão, recall, F1, Gwet AC1, alfa de Krippendorff)
+#'   para cada categoria do codebook individualmente, tratando a presença
+#'   de cada categoria como um problema sim/não — essencial quando
+#'   `multilabel = TRUE`, onde um único `categoria` (`"a|b"`) mistura
+#'   várias decisões binárias independentes que as métricas agregadas
+#'   (acima) não conseguem diagnosticar separadamente. Denominadores
+#'   zero (ex.: uma categoria nunca escolhida por nenhum dos dois lados)
+#'   geram `NA`, nunca `0` ou `1` artificiais. Padrão `FALSE`.
+#' @param exclude_status Vetor de valores da coluna `status` (ver
+#'   [ac_qual_code()]) a excluir da comparação antes de calcular as
+#'   métricas por variável — documentos que falharam na classificação
+#'   não têm uma categoria confiável para comparar. Ignorado se `llm`
+#'   não tiver coluna `status`. Padrão:
+#'   `c("estouro_contexto", "timeout", "erro_servidor", "parcial")`.
 #' @param ... Ignorado.
 #'
 #' @return Tibble com colunas: `metric`, `estimate`, `ci_lower`, `ci_upper`,
-#'   `interpretation`.
+#'   `interpretation`. Quando `by_variable = TRUE`, o resultado carrega
+#'   também um atributo `by_variable`: um tibble com uma linha por
+#'   categoria do codebook e colunas `categoria`, `n`, `vp`, `fp`, `fn`,
+#'   `vn`, `concordancia`, `precisao`, `recall`, `f1`, `gwet_ac1`,
+#'   `krippendorff_alfa`.
 #'
 #' @references
 #' Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
@@ -85,6 +104,9 @@ ac_qual_reliability <- function(llm,
                                                "f1_macro", "percent_agreement"),
                                  bootstrap = 1000L,
                                  ci_level  = 0.95,
+                                 by_variable    = FALSE,
+                                 exclude_status = c("estouro_contexto", "timeout",
+                                                    "erro_servidor", "parcial"),
                                  ...) {
 
   if (!is.data.frame(llm) || !cat_col %in% names(llm)) {
@@ -208,6 +230,12 @@ ac_qual_reliability <- function(llm,
     "i" = "IC {ci_level*100}% via bootstrap (n = {bootstrap})."
   ))
 
+  if (by_variable) {
+    attr(result, "by_variable") <- .ac_reliability_by_variable(
+      llm, human, cat_col, exclude_status
+    )
+  }
+
   result
 }
 
@@ -228,12 +256,34 @@ ac_qual_reliability <- function(llm,
 #'     categorias;
 #'   * `"random"`: amostra aleatória simples;
 #'   * `"disagreement"`: prioriza documentos onde rodadas de self-consistency
-#'     divergiram (requer `confidence_score < 1`).
+#'     divergiram (requer `confidence_score < 1`);
+#'   * `"proportional"`: amostragem estratificada com alocação
+#'     proporcional ao tamanho de cada estrato (método do maior resto),
+#'     respeitando um mínimo por estrato. Diferente de `"stratified"`
+#'     (que divide `n` igualmente entre categorias), preserva a
+#'     distribuição original de `strata` na amostra — a escolha correta
+#'     quando a amostra alimenta uma estimativa populacional (ex.:
+#'     `ac_qual_reliability()` ponderada), não só uma checagem
+#'     qualitativa de cada categoria.
+#' @param strata Nome da coluna usada para estratificar quando
+#'   `strategy = "proportional"`. Obrigatório nesse caso.
+#' @param min_per_stratum Mínimo de documentos por estrato na amostra
+#'   proporcional, mesmo que a alocação exata dê menos. Padrão `1`.
+#' @param min_stratum_size Estratos da população com menos documentos
+#'   que isso são agrupados em `"Outras"` antes de alocar — evita
+#'   alocar uma fração ínfima da amostra a uma categoria com 2
+#'   documentos na população inteira. Padrão `10`.
+#' @param exclude_ids Vetor de `doc_id` a excluir do universo amostrado
+#'   (ex.: documentos já validados em uma rodada anterior). Padrão
+#'   `NULL`.
 #' @param seed Semente para reprodutibilidade. Padrão: `42`.
 #' @param ... Ignorado.
 #'
 #' @return Tibble com os documentos selecionados, incluindo uma coluna
 #'   `sample_reason` indicando por que cada documento foi selecionado.
+#'   Com `strategy = "proportional"`, ganha também `peso_amostral`
+#'   (`n_populacao_estrato / n_amostra_estrato`) para uso em estimativas
+#'   ponderadas.
 #'
 #' @examples
 #' # Simular saida de ac_qual_code() com 20 documentos ja classificados
@@ -255,7 +305,12 @@ ac_qual_reliability <- function(llm,
 ac_qual_sample <- function(coded,
                             n        = 50L,
                             strategy = c("uncertainty", "stratified",
-                                         "random", "disagreement"),
+                                         "random", "disagreement",
+                                         "proportional"),
+                            strata           = NULL,
+                            min_per_stratum  = 1L,
+                            min_stratum_size = 10L,
+                            exclude_ids      = NULL,
                             seed     = 42L,
                             ...) {
 
@@ -264,6 +319,20 @@ ac_qual_sample <- function(coded,
   }
 
   strategy <- match.arg(strategy)
+
+  if (!is.null(exclude_ids) && "doc_id" %in% names(coded)) {
+    coded <- coded[!coded$doc_id %in% exclude_ids, , drop = FALSE]
+  }
+
+  if (strategy == "proportional") {
+    if (is.null(strata) || !strata %in% names(coded)) {
+      cli::cli_abort(c(
+        "{.arg strata} deve ser o nome de uma coluna existente em {.arg coded} quando {.code strategy = \"proportional\"}.",
+        "i" = "Colunas dispon\u00edveis: {.val {names(coded)}}."
+      ))
+    }
+  }
+
   n <- min(as.integer(n), nrow(coded))
 
   # withr::with_seed escopa o RNG apenas na amostragem; nao altera o
@@ -321,6 +390,10 @@ ac_qual_sample <- function(coded,
     result <- coded |>
       dplyr::slice_sample(n = n) |>
       dplyr::mutate(sample_reason = "random")
+  }
+
+  if (strategy == "proportional") {
+    result <- .ac_sample_proportional(coded, n, strata, min_per_stratum, min_stratum_size)
   }
 
   result
@@ -512,6 +585,72 @@ ac_qual_import_human <- function(path,
 # Auxiliares de confiabilidade
 # ============================================================================
 
+# Aloca n_total itens entre estratos de tamanho n_pop com o metodo do
+# maior resto (largest remainder): cada estrato recebe pelo menos
+# minimo, o resto e distribuido um a um aos estratos com a maior parte
+# fracionaria perdida, ate fechar a soma em n_total (para mais ou para
+# menos, dependendo se o piso ja ultrapassa n_total).
+#' @keywords internal
+#' @noRd
+.ac_allocate <- function(n_pop, n_total, minimo = 1L) {
+  exato <- n_total * n_pop / sum(n_pop)
+  alocado <- pmax(minimo, floor(exato))
+
+  while (sum(alocado) < n_total) {
+    resto <- exato - alocado
+    alocado[which.max(resto)] <- alocado[which.max(resto)] + 1L
+  }
+  while (sum(alocado) > n_total) {
+    candidatos <- which(alocado > minimo)
+    if (length(candidatos) == 0L) break
+    i <- candidatos[which.min((exato - alocado)[candidatos])]
+    alocado[i] <- alocado[i] - 1L
+  }
+
+  alocado
+}
+
+
+# Amostragem estratificada com alocacao proporcional (metodo do maior
+# resto). Estratos pequenos (< min_stratum_size na POPULACAO, nao na
+# amostra) sao agrupados em "Outras" antes de alocar, para nao dar a
+# uma categoria residual uma fracao da amostra menor que 1 documento de
+# forma instavel. peso_amostral e o inverso da fracao amostrada dentro
+# do estrato -- use para ponderar estimativas populacionais.
+#' @keywords internal
+#' @noRd
+.ac_sample_proportional <- function(coded, n, strata, min_per_stratum, min_stratum_size) {
+  estrato_original <- as.character(coded[[strata]])
+  contagem <- table(estrato_original)
+
+  pequenos <- names(contagem)[contagem < min_stratum_size]
+  estrato  <- ifelse(estrato_original %in% pequenos, "Outras", estrato_original)
+
+  tab   <- table(estrato)
+  nomes <- names(tab)
+  n_use <- min(n, nrow(coded))
+
+  alocacao <- .ac_allocate(as.integer(tab), n_use, as.integer(min_per_stratum))
+  names(alocacao) <- nomes
+
+  coded_estrato <- coded
+  coded_estrato$.ac_estrato <- estrato
+
+  partes <- purrr::map(nomes, function(nm) {
+    sub_df <- coded_estrato[coded_estrato$.ac_estrato == nm, , drop = FALSE]
+    k      <- min(alocacao[[nm]], nrow(sub_df))
+    sub_df[sample(nrow(sub_df), k), , drop = FALSE]
+  })
+
+  result <- dplyr::bind_rows(partes)
+  result$peso_amostral <- as.numeric(tab[result$.ac_estrato]) / as.numeric(alocacao[result$.ac_estrato])
+  result$sample_reason <- paste0("proportional (estrato=", result$.ac_estrato, ")")
+  result$.ac_estrato <- NULL
+
+  result
+}
+
+
 #' @keywords internal
 #' @noRd
 .ac_bootstrap_metric <- function(v1, v2, B, ci_level, fn) {
@@ -560,6 +699,82 @@ ac_qual_import_human <- function(path,
     )
   }
 }
+
+# Metricas de concordancia para um UNICO par de vetores binarios 0/1
+# (presenca/ausencia de uma categoria especifica em cada rodada).
+# Denominadores zero (precisao/recall sem nenhum positivo, por exemplo)
+# sempre geram NA -- nunca 0 ou 1 artificiais, que mascarariam uma
+# categoria rara que nenhum dos dois lados escolheu.
+#' @keywords internal
+#' @noRd
+.ac_metricas_binarias <- function(h, m) {
+  n  <- length(h)
+  vp <- sum(h == 1L & m == 1L)
+  fp <- sum(h == 0L & m == 1L)
+  fn <- sum(h == 1L & m == 0L)
+  vn <- sum(h == 0L & m == 0L)
+
+  conc <- (vp + vn) / n
+  prec <- if (vp + fp > 0L) vp / (vp + fp) else NA_real_
+  rec  <- if (vp + fn > 0L) vp / (vp + fn) else NA_real_
+  f1   <- if (!is.na(prec) && !is.na(rec) && (prec + rec) > 0) {
+    2 * prec * rec / (prec + rec)
+  } else NA_real_
+
+  pi_pos <- (mean(h == 1L) + mean(m == 1L)) / 2
+  pe     <- 2 * pi_pos * (1 - pi_pos)
+  ac1    <- if (!is.na(pe) && abs(1 - pe) > 1e-10) (conc - pe) / (1 - pe) else NA_real_
+
+  p1  <- mean(c(h, m) == 1L)
+  de  <- if (n > 1L) 2 * p1 * (1 - p1) * (2 * n) / (2 * n - 1) else 0
+  alfa <- if (de > 0) 1 - (1 - conc) / de else NA_real_
+
+  tibble::tibble(
+    n = n, vp = vp, fp = fp, fn = fn, vn = vn,
+    concordancia = conc, precisao = prec, recall = rec, f1 = f1,
+    gwet_ac1 = ac1, krippendorff_alfa = alfa
+  )
+}
+
+
+# Constroi, para cada categoria presente em llm/human, um par de
+# vetores binarios de presenca (apos separar categoria por "|" --
+# suporta multilabel) e aplica .ac_metricas_binarias(). Documentos cujo
+# status (ver ac_qual_code()) esta em exclude_status sao removidos
+# antes: uma categoria vinda de uma rodada que falhou (estouro de
+# contexto, timeout, etc.) nao e um dado confiavel sobre concordancia.
+#' @keywords internal
+#' @noRd
+.ac_reliability_by_variable <- function(llm, human, cat_col, exclude_status) {
+  if ("status" %in% names(llm) && length(exclude_status) > 0L) {
+    llm <- llm[is.na(llm$status) | !llm$status %in% exclude_status, , drop = FALSE]
+  }
+
+  joined <- dplyr::inner_join(
+    llm   |> dplyr::select("doc_id", llm_cat   = dplyr::all_of(cat_col)),
+    human |> dplyr::select("doc_id", human_cat = dplyr::all_of(cat_col)),
+    by = "doc_id"
+  )
+  joined <- joined[!is.na(joined$llm_cat) & !is.na(joined$human_cat), , drop = FALSE]
+
+  if (nrow(joined) == 0L) {
+    cli::cli_warn("Nenhum documento comum valido para calcular confiabilidade por variavel.")
+    return(tibble::tibble())
+  }
+
+  llm_sets   <- strsplit(joined$llm_cat, "|", fixed = TRUE)
+  human_sets <- strsplit(joined$human_cat, "|", fixed = TRUE)
+  todas_cats <- sort(unique(c(unlist(llm_sets), unlist(human_sets))))
+
+  linhas <- purrr::map(todas_cats, function(cat) {
+    m <- as.integer(vapply(llm_sets,   function(s) cat %in% s, logical(1)))
+    h <- as.integer(vapply(human_sets, function(s) cat %in% s, logical(1)))
+    dplyr::bind_cols(tibble::tibble(categoria = cat), .ac_metricas_binarias(h, m))
+  })
+
+  dplyr::bind_rows(linhas)
+}
+
 
 #' @keywords internal
 #' @noRd

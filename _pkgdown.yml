@@ -72,6 +72,8 @@ navbar:
         href: articles/qualitativo-llm.html
       - text: "  ↳ Estudo de caso: proposições legislativas"
         href: articles/analise-proposicoes.html
+      - text: "  ↳ LLM local em escala (LM Studio, llama.cpp)"
+        href: articles/llm-local-em-escala.html
       - text: "---"
       - text: "PIPELINE QUANTITATIVO"
       - text: "Frequências, keyness e coocorrência"
@@ -98,6 +100,7 @@ articles:
     contents:
       - qualitativo-llm
       - analise-proposicoes
+      - llm-local-em-escala
   - title: "Pipeline quantitativo"
     desc: >
       Análises estatísticas clássicas de conteúdo textual.

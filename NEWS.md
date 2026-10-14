@@ -1,3 +1,98 @@
+# acR 0.4.0
+
+Pacote de ajustes derivados de uso em producao (872 atos normativos do
+SIGEPE, `ellmer` + LM Studio com dois modelos locais, validacao humana,
+documentos de ate 1,4M de caracteres).
+
+## Correcoes
+
+* **`ac_qual_code()` com `model`/`chat` como objeto `Chat` do `ellmer`**:
+  `temperature` era silenciosamente descartado sempre que a tentativa de
+  reconstruir o chat via `.ac_ellmer_chat()` falhava -- o que passou a
+  acontecer sistematicamente no `ellmer >= 0.5.0`, porque
+  `class(provider)[1]` passou a vir qualificado por namespace
+  (`"ellmer::ProviderOpenAI"`), quebrando o `sub("^provider", "", ...)`
+  usado para remontar o nome `"provedor/modelo"`. O fallback silencioso
+  fazia as `k_consistency` rodadas de self-consistency (Wang et al.,
+  2023) rodarem todas na mesma temperatura padrao do provedor, inflando
+  `confidence_score` sem aviso. Corrigido com uma nova rota que muta o
+  objeto `Model` do chat diretamente via `set_model()`/
+  `get_model_object()` (API estavel desde o `ellmer` 0.5.0), e que avisa
+  explicitamente (`cli::cli_warn()`) quando a mutacao falha -- nunca
+  mais em silencio. `model` agora tambem aceita uma funcao fabrica
+  `function(temperature, system_prompt) Chat` para controle total sobre
+  a construcao do chat a cada rodada.
+
+* **`ac_qual_code(confidence = "by_variable" | "both")` com `multilabel =
+  TRUE`**: a confianca por variavel subestimava sistematicamente
+  categorias presentes junto com outras na mesma rodada, porque
+  comparava a string inteira (`"tecnica|politica" == "tecnica"` nunca e
+  `TRUE`) em vez de testar se a categoria estava entre as escolhidas
+  naquela rodada. Corrigido para usar `%in%` apos separar a string por
+  `"|"`; o comportamento para rotulagem unica (sem `"|"`) nao muda.
+
+## Novidades
+
+* **`ac_qual_code(max_retries = 2L)`**: novas tentativas automaticas
+  (espera exponencial, ate 30s) quando uma rodada falha por erro de
+  rede, timeout ou resposta invalida. Nova coluna `status` no tibble de
+  saida (`"ok"`, `"resposta_invalida"`, `"estouro_contexto"`,
+  `"timeout"`, `"erro_servidor"`) e `n_tentativas`. Erros classificados
+  como `"estouro_contexto"` nao sao repetidos (retry nao resolve). Se
+  mais da metade dos ultimos 5+ documentos falhar, a execucao e
+  abortada com sugestao de `checkpoint_dir`.
+* **`ac_qual_code(checkpoint_dir = ...)`**: salva o resultado de cada
+  documento assim que classificado (gravacao atomica via arquivo
+  temporario + `file.rename()`), permitindo retomar uma rodada
+  interrompida sem reclassificar documentos ja concluidos. Checkpoints
+  de uma rodada com `codebook`/`model`/`k_consistency`/`temperature`
+  diferentes sao invalidados e sobrescritos automaticamente (com
+  aviso).
+* **`ac_qual_code()` ganha colunas `tokens_entrada`, `tokens_saida`,
+  `segundos` e `tokens_por_segundo`** (via `chat$get_tokens()`),
+  medidos na rodada principal de cada documento.
+* **`ac_qual_code()` ganha o atributo `run_info`** (`attr(resultado,
+  "run_info")`): versoes de `acR`/`ellmer`, modelo, `base_url`,
+  parametros efetivos aplicados ao provedor, temperaturas pedidas,
+  `k_consistency`, hash do codebook e timestamps de inicio/fim. Avisa
+  quando nao e possivel confirmar que `temperature` foi de fato
+  aplicada a um `Chat` pre-configurado.
+* **`ac_qual_code(main_temperature = 0, reasoning_extras = FALSE)`**:
+  parametros antes fixos no codigo agora expostos. `main_temperature`
+  controla a temperatura da rodada que gera o resultado final (antes
+  sempre `0`); `reasoning_extras` controla se as rodadas extras de
+  self-consistency tambem pedem raciocinio (antes sempre `FALSE`).
+* **`ac_qual_reliability(by_variable = TRUE)`**: calcula métricas
+  binárias (concordância, precisão, recall, F1, Gwet AC1, alfa de
+  Krippendorff) para cada categoria do codebook individualmente —
+  essencial em `multilabel = TRUE`, onde a métrica agregada mistura
+  várias decisões binárias independentes. Denominadores zero geram
+  `NA`, nunca `0`/`1` artificiais. `exclude_status` remove documentos
+  cuja rodada falhou (ver `status` em [ac_qual_code()]) antes de
+  comparar. Resultado fica em `attr(resultado, "by_variable")`.
+* **`ac_qual_sample(strategy = "proportional")`**: amostragem
+  estratificada com alocação proporcional ao tamanho de cada estrato
+  (método do maior resto), preservando a distribuição original —
+  diferente de `"stratified"`, que divide `n` igualmente entre
+  categorias. Ganha `strata`, `min_per_stratum`, `min_stratum_size`
+  (agrupa estratos pequenos em `"Outras"`) e `exclude_ids`. A amostra
+  ganha a coluna `peso_amostral` para uso em estimativas ponderadas.
+* **`ac_chat_local()`**: provedor de primeira classe para servidores LLM
+  locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM, Ollama em
+  modo OpenAI), sem exigir uma chave de API real. Adapta-se ao nome do
+  parâmetro de credencial (`api_key` vs `credentials`) conforme a
+  versão instalada do `ellmer`.
+* **`ac_estimate_tokens()`**: estimativa barata (heurística de
+  caracteres por token, sem chamada de rede) do consumo de tokens de
+  um texto -- útil para prever estouro de contexto antes de enviar ao
+  LLM. **`ac_calibrate_tokens()`**: calibra a razão caracteres/token
+  contra um modelo real usando uma amostra pequena de textos.
+* **`ac_qual_code(live = "progress")`**: novo modo de barra de progresso
+  enxuta (doc atual + status, sem ecoar categoria/raciocinio) para
+  rodadas grandes. Chats construidos internamente pelo `acR` agora usam
+  `echo = "none"` por padrao (configuravel via `...`), evitando poluir
+  o console a cada uma das `k_consistency` rodadas por documento.
+
 # acR 0.3.4
 
 ## Correcoes
