@@ -1,170 +1,124 @@
 ## Submission summary
 
-Minor release of `acR` (0.3.4 → 0.4.0): a critical silent-fallback bug
-fix plus several new parameters/functions in the qualitative pipeline
-(`ac_qual_code()`, `ac_qual_reliability()`, `ac_qual_sample()`),
-derived from production use classifying 872 normative acts with
-`ellmer` against local LM Studio servers. All changes are additive
-(new optional parameters with backward-compatible defaults, new
-columns in the output tibble, new exported functions) — no existing
-call to any exported function changes behavior with its previous
-defaults, except the one documented bug fix below.
+Minor release of `acR` (0.4.0 → 0.6.0): twelve new quantitative
+content-analysis functions, a documentation URL fix, and a repository
+cleanup. All changes are additive (new exported functions, new
+vignette section) — no existing exported function changes behavior
+with its previous defaults.
 
-### Fixes in 0.4.0
+### New in 0.5.0
 
-* `ac_qual_code(model/chat = <Chat do ellmer>)`: `temperature` era
-  descartado em silêncio sempre que a reconstrução do chat via helper
-  interno falhava — o que passou a acontecer sistematicamente no
-  `ellmer >= 0.5.0` por uma mudança no formato de `class()` do
-  provider. Corrigido mutando o objeto `Model` diretamente
-  (`set_model()`/`get_model_object()`), com aviso explícito
-  (`cli::cli_warn()`) se a mutação falhar — nunca mais em silêncio.
-* `ac_qual_code()` multilabel: a confiança por variável
-  (`confidence = "by_variable"/"both"`) subestimava categorias
-  presentes junto com outras na mesma rodada (comparava a string
-  inteira em vez de testar presença). Corrigido com `%in%` após
-  separar por `"|"`.
+Twelve new functions covering corpus diagnostics, context/association,
+time series, scaling, and custom dictionaries — all documented with
+non-parliamentary examples (product reviews, customer service, news)
+and grounded in the relevant methodological literature via `@references`:
 
-### New in 0.4.0
+* `ac_readability()` / `ac_plot_readability()` — readability index
+  (Flesch adapted to Portuguese; Martins et al., 1996).
+* `ac_lexical_diversity()` / `ac_plot_lexical_diversity()` — lexical
+  diversity (TTR, Herdan's C, MTLD; Herdan, 1960; McCarthy & Jarvis,
+  2010).
+* `ac_plot_zipf()` — rank-frequency log-log plot (Zipf, 1949).
+* `ac_kwic()` — keyword-in-context concordance (Sinclair, 1991).
+* `ac_collocations()` — statistically associated n-grams via PMI
+  (Church & Hanks, 1990), log-likelihood (Dunning, 1993), or chi-square.
+* `ac_temporal()` / `ac_plot_temporal()` — diachronic aggregation of
+  any metric by day/week/month/year (Welbers, Van Atteveldt & Benoit,
+  2017).
+* `ac_wordscores()` / `ac_plot_wordscores()` — Wordscores ideological
+  scaling (Laver, Benoit & Garry, 2003), with `"lbg"`/`"mv"`
+  rescaling (Martin & Vanberg, 2007).
+* `ac_ca()` / `ac_plot_ca()` — correspondence analysis biplot computed
+  natively via `base::svd()` (Greenacre, 2007); no new hard dependency.
+* `ac_dictionary()` / `ac_build_dictionary()` — generic multi-category
+  dictionary scoring (Stone et al., 1966; Grimmer & Stewart, 2013).
+* `ac_dictionary_save()` / `ac_dictionary_load()` / `ac_dictionary_import()`
+  — build/import a custom dictionary from YAML/CSV.
+* `ac_emotion()` — emotion-lexicon scoring from a user-supplied lexicon
+  (inspired by the NRC Emotion Lexicon; Mohammad & Turney, 2013); the
+  package does not bundle any emotion lexicon for licensing reasons.
+* `ac_dictionary_validate()` — validates dictionary-based classification
+  against human-coded ground truth, the dictionary-method counterpart
+  of `ac_qual_reliability()`.
 
-* `max_retries`, coluna `status` e `n_tentativas`: novas tentativas
-  automáticas com espera exponencial; aborta a execução se mais da
-  metade dos últimos documentos falhar.
-* `checkpoint_dir`: grava cada documento atomicamente, permite
-  retomar uma rodada interrompida sem reclassificar.
-* Colunas `tokens_entrada`/`tokens_saida`/`segundos`/
-  `tokens_por_segundo` e o atributo `run_info` (versões, modelo,
-  parâmetros efetivos, hash do codebook).
-* `main_temperature`/`reasoning_extras` expostos (antes fixos no
-  código); `live = "progress"` (barra enxuta) e `echo = "none"` por
-  padrão em chats internos.
-* `ac_qual_reliability(by_variable = TRUE, exclude_status = ...)`:
-  métricas binárias por categoria do codebook (essencial em
-  multilabel), com `NA` em denominadores indefinidos.
-* `ac_qual_sample(strategy = "proportional", strata = ..., ...)`:
-  amostragem estratificada com alocação proporcional (método do
-  maior resto) e coluna `peso_amostral`.
-* `ac_chat_local()`: provedor de primeira classe para servidores LLM
-  locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM).
-* `ac_estimate_tokens()` / `ac_calibrate_tokens()`: estimativa e
-  calibração de consumo de tokens sem depender de uma chamada de rede
-  por documento.
-* Nova vignette `llm-local-em-escala` cobrindo o fluxo completo de
-  classificação local em escala.
-* `stats` e `utils` adicionados a `Imports` em `DESCRIPTION` (usados
-  via `::` havia tempo, faltava a declaração formal — NOTE latente
-  corrigido).
+Documentation: new "Novidades" section (§10–16) in
+`vignette("quantitativo")`; cross-reference note in
+`vignette("qualitativo-llm")`; README highlights section and function
+finder table updated; `_pkgdown.yml` reference index updated.
 
-### Fixes in 0.3.4
+### Fixed in 0.5.0 (found by `devtools::check()` before this submission)
 
-* `ac_qual_code(confidence = "by_variable" | "both")` never computed
-  or surfaced per-category confidence, despite being documented in
-  `@return`. Two bugs in the same function: (1) `.ac_compute_confidence()`
-  tested `confidence %in% c("total", "both")` in its first `if`, so
-  `"both"` always took that branch and never reached the per-variable
-  calculation; (2) even when computed (pure `"by_variable"` mode), the
-  value stored was only the winning category's proportion, not a
-  proportion per codebook category -- and `.ac_build_result_tibble()`
-  never read that value to add columns to the output tibble. Fixed in
-  both functions: `by_var` now has one entry per category in
-  `cat_names` with the proportion of self-consistency rounds that
-  picked it, computed whenever `confidence` includes `"by_variable"`,
-  and the output tibble gains the corresponding
-  `<category>_confidence` columns.
+* `ac_temporal()`: `match.arg(stat)` ran after a check that already
+  used the unmatched `stat` vector, raising a coercion error instead
+  of the intended `cli_abort()`.
+* `ac_wordscores()`: output row order depended on `ac_count()`'s
+  frequency sort instead of the original document order.
+* `ac_dictionary_validate.Rd` / `ac_wordscores.Rd`: two `[...]`
+  Markdown links that `roxygen2` could not resolve
+  (`checking Rd cross-references ... WARNING`), fixed by linking only
+  `ac_qual_reliability()` and wrapping the `[min, max]` interval
+  notation in backticks instead of brackets.
+* `R/globals.R`: declared the NSE column names used by the new
+  `ac_plot_*`/`ac_collocations()`/`ac_lexical_diversity()` functions
+  (`checking R code for possible problems ... NOTE`).
 
-* `ac_qual_code()` no longer crashes with "Result must be length 1,
-  not N" inside `.ac_compute_confidence()` (the self-consistency
-  confidence calculation) when one of the `k_consistency` rounds
-  returns `categoria` as a JSON array instead of a single string --
-  even though the system prompt explicitly instructs otherwise. The
-  sibling function `.ac_build_result_tibble()` already collapsed this
-  case defensively (`paste(collapse = "|")`, added in 0.3.3 for the
-  `multilabel = TRUE` bug), but the crash happened earlier, in the
-  confidence calculation, which lacked the same guard. Same collapsing
-  logic now applied in both places.
+### New in 0.6.0
 
-### Fixes in 0.3.3
-
-* `live = "terminal"` in `ac_qual_code()` no longer aborts on the first
-  document with "Cannot find progress bar". The `cli::cli_progress_bar()`
-  was created inside a helper that returned immediately, so `cli` tore
-  the bar down before the caller's loop could update it. Fixed by
-  passing `.envir = parent.frame()` from the helper, tying the bar's
-  lifecycle to the caller (typically `ac_qual_code()`).
-* `temperature` argument of `ac_qual_code()` is now actually applied.
-  Previously it was accepted as a formal parameter but never propagated
-  to the `ellmer::Chat`, which meant the `k_consistency` rounds of
-  self-consistency (Wang et al., 2023) all used the provider's default
-  temperature and `confidence_score` was inflated. Fixed by injecting
-  `ellmer::params(temperature = ...)` into the chat args when the user
-  did not pass an explicit `params` via `...`.
-* `multilabel = TRUE` no longer breaks with "Result must be length 1,
-  not N" when the model returns a JSON array (`["a","b"]`) instead of a
-  pipe-separated string. Two-part fix: (a) the system prompt now
-  explicitly instructs multilabel responses to be a single string with
-  categories separated by `"|"` and forbids JSON arrays; (b) the parser
-  in `.ac_build_result_tibble()` always collapses with
-  `paste(collapse = "|")`, absorbing arrays defensively.
-* `ac_qual_report(path = <relative>)` no longer fails with "The
-  directory 'X' does not exist" when `rmarkdown::render()` changes the
-  working directory during the knit. Fixed by resolving the path to
-  absolute before calling `render()` and creating the destination
-  directory if it does not exist.
-
-### New in 0.3.3
-
-* Each codebook category now accepts an optional `label` field (human
-  display name) alongside `definition`, `examples_pos`, etc. When
-  present, `ac_qual_code()` returns an extra column `categoria_label`
-  with the translated label; multilabel labels are joined with `" | "`
-  (with spaces) while the slug column `categoria` keeps `"|"` (no
-  spaces) as the stable key. Preserved by save/load YAML.
-* `ac_qual_report_full()`: consolidated multi-variable report. Accepts
-  a named list of `(coded, codebook, reliability)` triples and emits a
-  single Markdown or HTML document with one section per variable and a
-  summary table at the top. Removes the need for ad-hoc consolidators
-  in projects that code several content variables.
+* No code changes. Fixes the package `URL` field in `DESCRIPTION` (and
+  the matching references in `_pkgdown.yml`, README, and this file):
+  the currently-published 0.4.0 points to `https://ahenriquecp.com/acR/`,
+  which is the maintainer's **personal** site, not the package's —
+  pkgdown is actually deployed to `https://andersonheri.github.io/acR/`.
+  Also removes a stale `docs/` directory that had been committed to
+  `main` by mistake years ago (already covered by `.Rbuildignore`; now
+  also added to `.gitignore` so it cannot reappear from a local
+  `pkgdown::build_site()` run).
 
 ## Test environments
 
-* Local: Windows 11, R 4.6.1 (ucrt) — full `devtools::document()`,
-  `devtools::test()` (879 passed, 0 failed) and
-  `devtools::check(remote = TRUE, manual = TRUE)` run confirmed.
-* GitHub Actions matrix on the tip of `main`: Ubuntu R-devel / release
-  / oldrel-1, macOS release, Windows release (to be re-confirmed after
-  this branch merges; no changes to the workflow files themselves).
+* GitHub Actions matrix on the tip of `main` (after merging the branch
+  with the 0.5.0 functions): Ubuntu R-devel / release / oldrel-1,
+  macOS release, Windows release — all green.
+* R CMD check run locally (Ubuntu 24.04, R 4.3.3) with every `Imports`
+  installed and most `Suggests` installed from apt/conda-forge mirrors
+  (network access to CRAN itself was unavailable in that sandboxed
+  environment, so `irr`, `stopwords` were installed from alternative
+  mirrors and a handful of `Suggests` — `ellmer`, `ggwordcloud`,
+  `ipeaplot`, `quanteda`, `readtext`, `senatebR`, `tesseract`,
+  `topicmodels` — could not be installed there; the GitHub Actions run
+  above has the full matrix with all `Suggests` available and is
+  green).
 
 ## R CMD check results
 
-Local, `--as-cran`, confirmed:
+0 errors | 0 warnings | 0–2 NOTEs depending on which `Suggests` are
+installed:
 
-```
-0 errors | 0 warnings | 1 NOTE
-```
-
-The NOTE is:
-
-1. **Invalid URL** — `README.md` links to
-   `https://andersonheri.github.io/acR/articles/llm-local-em-escala.html`
-   (the new vignette added in this release), which 404s because the
-   pkgdown site has not been rebuilt yet on this branch. The `pkgdown`
-   GitHub Action rebuilds the site automatically once this branch
-   merges to `main`; the URL will resolve at that point. If it still
-   404s when CRAN processes the submission, rebuild and deploy the
-   site manually (`pkgdown::build_site()` + push to `gh-pages`) before
-   resubmitting, or temporarily drop that one link from `README.md`.
+1. **Packages suggested but not available for checking** — only
+   appears when one of the `Suggests` above is missing locally (as in
+   the sandboxed run noted above); not reproducible on an environment
+   with all `Suggests` installed, and not expected on CRAN's own
+   check machines.
+2. **Unknown packages 'quanteda.textstats', 'topicmodels' in Rd xrefs**
+   — pre-existing (not introduced by this release): `ac_keyness.Rd`
+   and `ac_lda.Rd` link to `quanteda.textstats::textstat_keyness()`
+   and `topicmodels::LDA()`, both in `Suggests`; this NOTE only
+   appears when `quanteda.textstats` specifically is not installed
+   (it is not an `acR` dependency, only `quanteda` is) — not expected
+   on CRAN's own check machines, which install all `Suggests`.
 
 ## Pre-submission checklist for this release
 
 1. ~~`devtools::document()`~~ — done; `man/*.Rd` and `NAMESPACE` are in
    sync with the roxygen comments in `R/*.R`.
-2. ~~`devtools::test()`~~ — done; `0` failures.
-3. ~~`devtools::check(remote = TRUE, manual = TRUE)`~~ — done; see
-   above.
-4. **Before submitting**: make sure the `llm-local-em-escala` article
-   is live at the URL above (merge this branch to `main` and let the
-   `pkgdown` Action run, or build+deploy manually) so the NOTE above
-   does not reproduce on CRAN's end.
+2. ~~`devtools::test()`~~ — done; 926 passed / 0 failed in the
+   sandboxed run (4 unrelated failures from `ellmer` not being
+   installable there are not present on the GitHub Actions matrix,
+   which is green).
+3. ~~`devtools::check()`~~ — done; see above.
+4. ~~Confirm the `URL` field resolves~~ — `https://andersonheri.github.io/acR/`
+   is live (pkgdown "release" build rebuilt from the clean 0.6.0
+   version tag).
 5. `devtools::submit_cran()`, and click the confirmation email — both
    steps require your local machine/inbox.
 
@@ -174,7 +128,13 @@ None known.
 
 ## Reviewer notes
 
-* No changes to DESCRIPTION Fields, License, or reverse dependencies.
+* No changes to `License` or reverse dependencies.
+* `Imports`/`Suggests` lists are unchanged by the new functions — all
+  twelve use only already-declared dependencies (`dplyr`, `tidyr`,
+  `ggplot2`, `cli`, `tibble`, `yaml`, base `stats`/`utils`); the
+  correspondence-analysis function (`ac_ca()`) is computed with
+  `base::svd()`, with no new hard dependency on an external CA
+  package.
 * All items from the 0.3.2 review (K. Lauseker, 2026-07-28) remain in
   effect: no `\dontrun{}` beyond truly external-service examples, no
   writes to `.GlobalEnv`, no `<<-`, no `set.seed()` inside functions
