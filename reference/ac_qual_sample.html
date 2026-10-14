@@ -11,7 +11,7 @@ para maximizar a eficiência da validação."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,7 @@ para maximizar a eficiência da validação."><meta property="og:image" content=
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
     <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
     <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/llm-local-em-escala.html">  ↳ LLM local em escala (LM Studio, llama.cpp)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
@@ -66,7 +67,12 @@ para maximizar a eficiência da validação.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ac_qual_sample</span><span class="op">(</span></span>
 <span>  <span class="va">coded</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">50L</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"uncertainty"</span>, <span class="st">"stratified"</span>, <span class="st">"random"</span>, <span class="st">"disagreement"</span><span class="op">)</span>,</span>
+<span>  strategy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"uncertainty"</span>, <span class="st">"stratified"</span>, <span class="st">"random"</span>, <span class="st">"disagreement"</span>,</span>
+<span>    <span class="st">"proportional"</span><span class="op">)</span>,</span>
+<span>  strata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min_per_stratum <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  min_stratum_size <span class="op">=</span> <span class="fl">10L</span>,</span>
+<span>  exclude_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">42L</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -91,8 +97,39 @@ para maximizar a eficiência da validação.</p>
 categorias;</p></li>
 <li><p><code>"random"</code>: amostra aleatória simples;</p></li>
 <li><p><code>"disagreement"</code>: prioriza documentos onde rodadas de self-consistency
-divergiram (requer <code>confidence_score &lt; 1</code>).</p></li>
+divergiram (requer <code>confidence_score &lt; 1</code>);</p></li>
+<li><p><code>"proportional"</code>: amostragem estratificada com alocação
+proporcional ao tamanho de cada estrato (método do maior resto),
+respeitando um mínimo por estrato. Diferente de <code>"stratified"</code>
+(que divide <code>n</code> igualmente entre categorias), preserva a
+distribuição original de <code>strata</code> na amostra — a escolha correta
+quando a amostra alimenta uma estimativa populacional (ex.:
+<code><a href="ac_qual_reliability.html">ac_qual_reliability()</a></code> ponderada), não só uma checagem
+qualitativa de cada categoria.</p></li>
 </ul></dd>
+
+
+<dt id="arg-strata">strata<a class="anchor" aria-label="anchor" href="#arg-strata"></a></dt>
+<dd><p>Nome da coluna usada para estratificar quando
+<code>strategy = "proportional"</code>. Obrigatório nesse caso.</p></dd>
+
+
+<dt id="arg-min-per-stratum">min_per_stratum<a class="anchor" aria-label="anchor" href="#arg-min-per-stratum"></a></dt>
+<dd><p>Mínimo de documentos por estrato na amostra
+proporcional, mesmo que a alocação exata dê menos. Padrão <code>1</code>.</p></dd>
+
+
+<dt id="arg-min-stratum-size">min_stratum_size<a class="anchor" aria-label="anchor" href="#arg-min-stratum-size"></a></dt>
+<dd><p>Estratos da população com menos documentos
+que isso são agrupados em <code>"Outras"</code> antes de alocar — evita
+alocar uma fração ínfima da amostra a uma categoria com 2
+documentos na população inteira. Padrão <code>10</code>.</p></dd>
+
+
+<dt id="arg-exclude-ids">exclude_ids<a class="anchor" aria-label="anchor" href="#arg-exclude-ids"></a></dt>
+<dd><p>Vetor de <code>doc_id</code> a excluir do universo amostrado
+(ex.: documentos já validados em uma rodada anterior). Padrão
+<code>NULL</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -106,7 +143,10 @@ divergiram (requer <code>confidence_score &lt; 1</code>).</p></li>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Tibble com os documentos selecionados, incluindo uma coluna
-<code>sample_reason</code> indicando por que cada documento foi selecionado.</p>
+<code>sample_reason</code> indicando por que cada documento foi selecionado.
+Com <code>strategy = "proportional"</code>, ganha também <code>peso_amostral</code>
+(<code>n_populacao_estrato / n_amostra_estrato</code>) para uso em estimativas
+ponderadas.</p>
     </div>
 
     <div class="section level2">

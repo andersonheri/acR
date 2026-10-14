@@ -6,12 +6,13 @@ articles:
   cluster: cluster.html
   introducao-acR: introducao-acR.html
   lda: lda.html
+  llm-local-em-escala: llm-local-em-escala.html
   qualitativo-llm: qualitativo-llm.html
   quantitativo: quantitativo.html
   quickstart: quickstart.html
   replicabilidade: replicabilidade.html
   sentimento: sentimento.html
-last_built: 2026-09-17T17:42Z
+last_built: 2026-10-14T18:19Z
 urls:
   reference: https://ahenriquecp.com/acR/reference
   article: https://ahenriquecp.com/acR/articles

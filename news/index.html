@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,6 +27,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
     <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
     <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/llm-local-em-escala.html">  ↳ LLM local em escala (LM Studio, llama.cpp)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
@@ -50,6 +51,42 @@
       <small>Source: <a href="https://github.com/andersonheri/acR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="acr-040">acR 0.4.0<a class="anchor" aria-label="anchor" href="#acr-040"></a></h2>
+<p>Pacote de ajustes derivados de uso em producao (872 atos normativos do SIGEPE, <code>ellmer</code> + LM Studio com dois modelos locais, validacao humana, documentos de ate 1,4M de caracteres).</p>
+<div class="section level3">
+<h3 id="correcoes-0-4-0">Correcoes<a class="anchor" aria-label="anchor" href="#correcoes-0-4-0"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> com <code>model</code>/<code>chat</code> como objeto <code>Chat</code> do <code>ellmer</code></strong>: <code>temperature</code> era silenciosamente descartado sempre que a tentativa de reconstruir o chat via <code>.ac_ellmer_chat()</code> falhava – o que passou a acontecer sistematicamente no <code>ellmer &gt;= 0.5.0</code>, porque <code>class(provider)[1]</code> passou a vir qualificado por namespace (<code>"ellmer::ProviderOpenAI"</code>), quebrando o <code>sub("^provider", "", ...)</code> usado para remontar o nome <code>"provedor/modelo"</code>. O fallback silencioso fazia as <code>k_consistency</code> rodadas de self-consistency (Wang et al.,
+<ol start="2023" style="list-style-type: decimal"><li>rodarem todas na mesma temperatura padrao do provedor, inflando <code>confidence_score</code> sem aviso. Corrigido com uma nova rota que muta o objeto <code>Model</code> do chat diretamente via <code>set_model()</code>/ <code>get_model_object()</code> (API estavel desde o <code>ellmer</code> 0.5.0), e que avisa explicitamente (<code><a href="https://cli.r-lib.org/reference/cli_abort.html" class="external-link">cli::cli_warn()</a></code>) quando a mutacao falha – nunca mais em silencio. <code>model</code> agora tambem aceita uma funcao fabrica <code>function(temperature, system_prompt) Chat</code> para controle total sobre a construcao do chat a cada rodada.</li>
+</ol></li>
+<li>
+<strong><code>ac_qual_code(confidence = "by_variable" | "both")</code> com <code>multilabel = TRUE</code></strong>: a confianca por variavel subestimava sistematicamente categorias presentes junto com outras na mesma rodada, porque comparava a string inteira (<code>"tecnica|politica" == "tecnica"</code> nunca e <code>TRUE</code>) em vez de testar se a categoria estava entre as escolhidas naquela rodada. Corrigido para usar <code>%in%</code> apos separar a string por <code>"|"</code>; o comportamento para rotulagem unica (sem <code>"|"</code>) nao muda.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="novidades-0-4-0">Novidades<a class="anchor" aria-label="anchor" href="#novidades-0-4-0"></a></h3>
+<ul><li>
+<strong><code>ac_qual_code(max_retries = 2L)</code></strong>: novas tentativas automaticas (espera exponencial, ate 30s) quando uma rodada falha por erro de rede, timeout ou resposta invalida. Nova coluna <code>status</code> no tibble de saida (<code>"ok"</code>, <code>"resposta_invalida"</code>, <code>"estouro_contexto"</code>, <code>"timeout"</code>, <code>"erro_servidor"</code>) e <code>n_tentativas</code>. Erros classificados como <code>"estouro_contexto"</code> nao sao repetidos (retry nao resolve). Se mais da metade dos ultimos 5+ documentos falhar, a execucao e abortada com sugestao de <code>checkpoint_dir</code>.</li>
+<li>
+<strong><code>ac_qual_code(checkpoint_dir = ...)</code></strong>: salva o resultado de cada documento assim que classificado (gravacao atomica via arquivo temporario + <code><a href="https://rdrr.io/r/base/files.html" class="external-link">file.rename()</a></code>), permitindo retomar uma rodada interrompida sem reclassificar documentos ja concluidos. Checkpoints de uma rodada com <code>codebook</code>/<code>model</code>/<code>k_consistency</code>/<code>temperature</code> diferentes sao invalidados e sobrescritos automaticamente (com aviso).</li>
+<li>
+<strong><code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> ganha colunas <code>tokens_entrada</code>, <code>tokens_saida</code>, <code>segundos</code> e <code>tokens_por_segundo</code></strong> (via <code>chat$get_tokens()</code>), medidos na rodada principal de cada documento.</li>
+<li>
+<strong><code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> ganha o atributo <code>run_info</code></strong> (<code>attr(resultado, "run_info")</code>): versoes de <code>acR</code>/<code>ellmer</code>, modelo, <code>base_url</code>, parametros efetivos aplicados ao provedor, temperaturas pedidas, <code>k_consistency</code>, hash do codebook e timestamps de inicio/fim. Avisa quando nao e possivel confirmar que <code>temperature</code> foi de fato aplicada a um <code>Chat</code> pre-configurado.</li>
+<li>
+<strong><code>ac_qual_code(main_temperature = 0, reasoning_extras = FALSE)</code></strong>: parametros antes fixos no codigo agora expostos. <code>main_temperature</code> controla a temperatura da rodada que gera o resultado final (antes sempre <code>0</code>); <code>reasoning_extras</code> controla se as rodadas extras de self-consistency tambem pedem raciocinio (antes sempre <code>FALSE</code>).</li>
+<li>
+<strong><code>ac_qual_reliability(by_variable = TRUE)</code></strong>: calcula métricas binárias (concordância, precisão, recall, F1, Gwet AC1, alfa de Krippendorff) para cada categoria do codebook individualmente — essencial em <code>multilabel = TRUE</code>, onde a métrica agregada mistura várias decisões binárias independentes. Denominadores zero geram <code>NA</code>, nunca <code>0</code>/<code>1</code> artificiais. <code>exclude_status</code> remove documentos cuja rodada falhou (ver <code>status</code> em [ac_qual_code()]) antes de comparar. Resultado fica em <code>attr(resultado, "by_variable")</code>.</li>
+<li>
+<strong><code>ac_qual_sample(strategy = "proportional")</code></strong>: amostragem estratificada com alocação proporcional ao tamanho de cada estrato (método do maior resto), preservando a distribuição original — diferente de <code>"stratified"</code>, que divide <code>n</code> igualmente entre categorias. Ganha <code>strata</code>, <code>min_per_stratum</code>, <code>min_stratum_size</code> (agrupa estratos pequenos em <code>"Outras"</code>) e <code>exclude_ids</code>. A amostra ganha a coluna <code>peso_amostral</code> para uso em estimativas ponderadas.</li>
+<li>
+<strong><code><a href="../reference/ac_chat_local.html">ac_chat_local()</a></code></strong>: provedor de primeira classe para servidores LLM locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM, Ollama em modo OpenAI), sem exigir uma chave de API real. Adapta-se ao nome do parâmetro de credencial (<code>api_key</code> vs <code>credentials</code>) conforme a versão instalada do <code>ellmer</code>.</li>
+<li>
+<strong><code><a href="../reference/ac_estimate_tokens.html">ac_estimate_tokens()</a></code></strong>: estimativa barata (heurística de caracteres por token, sem chamada de rede) do consumo de tokens de um texto – útil para prever estouro de contexto antes de enviar ao LLM. <strong><code><a href="../reference/ac_calibrate_tokens.html">ac_calibrate_tokens()</a></code></strong>: calibra a razão caracteres/token contra um modelo real usando uma amostra pequena de textos.</li>
+<li>
+<strong><code>ac_qual_code(live = "progress")</code></strong>: novo modo de barra de progresso enxuta (doc atual + status, sem ecoar categoria/raciocinio) para rodadas grandes. Chats construidos internamente pelo <code>acR</code> agora usam <code>echo = "none"</code> por padrao (configuravel via <code>...</code>), evitando poluir o console a cada uma das <code>k_consistency</code> rodadas por documento.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.4" id="acr-034">acR 0.3.4<a class="anchor" aria-label="anchor" href="#acr-034"></a></h2><p class="text-muted">CRAN release: 2026-09-10</p>
 <div class="section level3">

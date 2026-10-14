@@ -10,7 +10,12 @@ estratégias para maximizar a eficiência da validação.
 ac_qual_sample(
   coded,
   n = 50L,
-  strategy = c("uncertainty", "stratified", "random", "disagreement"),
+  strategy = c("uncertainty", "stratified", "random", "disagreement",
+    "proportional"),
+  strata = NULL,
+  min_per_stratum = 1L,
+  min_stratum_size = 10L,
+  exclude_ids = NULL,
   seed = 42L,
   ...
 )
@@ -40,7 +45,37 @@ ac_qual_sample(
   - `"random"`: amostra aleatória simples;
 
   - `"disagreement"`: prioriza documentos onde rodadas de
-    self-consistency divergiram (requer `confidence_score < 1`).
+    self-consistency divergiram (requer `confidence_score < 1`);
+
+  - `"proportional"`: amostragem estratificada com alocação proporcional
+    ao tamanho de cada estrato (método do maior resto), respeitando um
+    mínimo por estrato. Diferente de `"stratified"` (que divide `n`
+    igualmente entre categorias), preserva a distribuição original de
+    `strata` na amostra — a escolha correta quando a amostra alimenta
+    uma estimativa populacional (ex.:
+    [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
+    ponderada), não só uma checagem qualitativa de cada categoria.
+
+- strata:
+
+  Nome da coluna usada para estratificar quando
+  `strategy = "proportional"`. Obrigatório nesse caso.
+
+- min_per_stratum:
+
+  Mínimo de documentos por estrato na amostra proporcional, mesmo que a
+  alocação exata dê menos. Padrão `1`.
+
+- min_stratum_size:
+
+  Estratos da população com menos documentos que isso são agrupados em
+  `"Outras"` antes de alocar — evita alocar uma fração ínfima da amostra
+  a uma categoria com 2 documentos na população inteira. Padrão `10`.
+
+- exclude_ids:
+
+  Vetor de `doc_id` a excluir do universo amostrado (ex.: documentos já
+  validados em uma rodada anterior). Padrão `NULL`.
 
 - seed:
 
@@ -53,7 +88,10 @@ ac_qual_sample(
 ## Value
 
 Tibble com os documentos selecionados, incluindo uma coluna
-`sample_reason` indicando por que cada documento foi selecionado.
+`sample_reason` indicando por que cada documento foi selecionado. Com
+`strategy = "proportional"`, ganha também `peso_amostral`
+(`n_populacao_estrato / n_amostra_estrato`) para uso em estimativas
+ponderadas.
 
 ## Examples
 

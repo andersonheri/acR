@@ -102,6 +102,12 @@ geracao de system prompts.
   LLM
 - [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
   : Classificar textos com LLM usando um codebook
+- [`ac_chat_local()`](https://ahenriquecp.com/acR/reference/ac_chat_local.md)
+  : Conectar a um servidor LLM local compatível com OpenAI
+- [`ac_estimate_tokens()`](https://ahenriquecp.com/acR/reference/ac_estimate_tokens.md)
+  : Estimar número de tokens de um texto
+- [`ac_calibrate_tokens()`](https://ahenriquecp.com/acR/reference/ac_calibrate_tokens.md)
+  : Calibrar a razão caracteres/token contra um modelo real
 - [`ac_qual_save_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_save_codebook.md)
   : Salvar codebook em arquivo YAML
 - [`ac_qual_load_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_load_codebook.md)

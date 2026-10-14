@@ -44,6 +44,8 @@ ac_qual_reliability(
   metrics = c("krippendorff", "gwet_ac1", "f1_macro", "percent_agreement"),
   bootstrap = 1000L,
   ci_level = 0.95,
+  by_variable = FALSE,
+  exclude_status = c("estouro_contexto", "timeout", "erro_servidor", "parcial"),
   ...
 )
 ```
@@ -77,6 +79,28 @@ ac_qual_reliability(
 
   Nível de confiança do IC. Padrão: `0.95`.
 
+- by_variable:
+
+  Lógico. Se `TRUE`, calcula também métricas binárias (concordância,
+  precisão, recall, F1, Gwet AC1, alfa de Krippendorff) para cada
+  categoria do codebook individualmente, tratando a presença de cada
+  categoria como um problema sim/não — essencial quando
+  `multilabel = TRUE`, onde um único `categoria` (`"a|b"`) mistura
+  várias decisões binárias independentes que as métricas agregadas
+  (acima) não conseguem diagnosticar separadamente. Denominadores zero
+  (ex.: uma categoria nunca escolhida por nenhum dos dois lados) geram
+  `NA`, nunca `0` ou `1` artificiais. Padrão `FALSE`.
+
+- exclude_status:
+
+  Vetor de valores da coluna `status` (ver
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md))
+  a excluir da comparação antes de calcular as métricas por variável —
+  documentos que falharam na classificação não têm uma categoria
+  confiável para comparar. Ignorado se `llm` não tiver coluna `status`.
+  Padrão:
+  `c("estouro_contexto", "timeout", "erro_servidor", "parcial")`.
+
 - ...:
 
   Ignorado.
@@ -84,7 +108,11 @@ ac_qual_reliability(
 ## Value
 
 Tibble com colunas: `metric`, `estimate`, `ci_lower`, `ci_upper`,
-`interpretation`.
+`interpretation`. Quando `by_variable = TRUE`, o resultado carrega
+também um atributo `by_variable`: um tibble com uma linha por categoria
+do codebook e colunas `categoria`, `n`, `vp`, `fp`, `fn`, `vn`,
+`concordancia`, `precisao`, `recall`, `f1`, `gwet_ac1`,
+`krippendorff_alfa`.
 
 ## References
 

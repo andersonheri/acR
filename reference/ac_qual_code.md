@@ -46,7 +46,11 @@ ac_qual_code(
   temperature = 0.3,
   reasoning = TRUE,
   reasoning_length = c("short", "medium", "detailed"),
-  live = c("off", "terminal", "shiny"),
+  main_temperature = 0,
+  reasoning_extras = FALSE,
+  live = c("off", "terminal", "progress", "shiny"),
+  max_retries = 2L,
+  checkpoint_dir = NULL,
   ...
 )
 ```
@@ -65,8 +69,10 @@ ac_qual_code(
 - model:
 
   Modelo LLM a usar. Aceita string no formato `"provedor/modelo"` (ex:
-  `"anthropic/claude-sonnet-4-5"`, `"openai/gpt-4.1"`) ou objeto `Chat`
-  do pacote `ellmer` pré-configurado. Quando `chat` é fornecido, `model`
+  `"anthropic/claude-sonnet-4-5"`, `"openai/gpt-4.1"`), objeto `Chat` do
+  pacote `ellmer` pré-configurado, ou função fábrica
+  `function(temperature, system_prompt) Chat` para controle total sobre
+  a construção do chat a cada rodada. Quando `chat` é fornecido, `model`
   é ignorado.
 
 - chat:
@@ -115,6 +121,21 @@ ac_qual_code(
   Tamanho do raciocínio: `"short"` (1 frase, padrão), `"medium"` (3
   frases), `"detailed"` (parágrafo).
 
+- main_temperature:
+
+  Temperatura da rodada principal (a que gera `categoria`,
+  `categoria_label` e `raciocinio` no resultado final). Padrão `0`
+  (determinística). Separado de `temperature` (usado só nas rodadas
+  extras de self-consistency) porque os dois cumprem papéis diferentes:
+  a rodada principal deve ser reprodutível, as extras devem variar para
+  medir concordância.
+
+- reasoning_extras:
+
+  Lógico. Se `TRUE`, pede raciocínio também nas rodadas extras de
+  self-consistency (mais caro, não usado no resultado final). Padrão
+  `FALSE`.
+
 - live:
 
   Visualização em tempo real da classificação:
@@ -124,8 +145,30 @@ ac_qual_code(
   - `"terminal"`: barra de progresso com doc atual, categoria, confiança
     e início do raciocínio a cada iteração;
 
+  - `"progress"`: barra de progresso enxuta (doc atual e status), sem
+    ecoar categoria/raciocínio — útil para rodadas grandes onde o
+    terminal ficaria poluído;
+
   - `"shiny"`: abre janela Shiny em background com tabela atualizando
     conforme documentos são classificados (requer `shiny` e `callr`).
+
+- max_retries:
+
+  Número máximo de novas tentativas por rodada quando a chamada ao LLM
+  falha (erro de rede, timeout, resposta inválida). Padrão `2`. Espera
+  exponencial entre tentativas (até 30s). Quando o erro é classificado
+  como `"estouro_contexto"`, não há nova tentativa (repetir não
+  resolve). Se mais da metade dos últimos 5+ documentos falhar, a
+  execução é abortada com sugestão de usar `checkpoint_dir`.
+
+- checkpoint_dir:
+
+  Diretório para salvar o resultado de cada documento assim que
+  classificado. Se já existir um checkpoint válido para um `doc_id`
+  (mesmos `codebook`, `model`, `k_consistency` e `temperature`), o
+  documento é pulado e o resultado salvo é reutilizado — permite retomar
+  uma rodada interrompida sem reclassificar tudo. `NULL` (padrão): sem
+  checkpoint.
 
 - ...:
 
@@ -162,6 +205,27 @@ Tibble com colunas:
   quando `confidence` é `"by_variable"` ou `"both"`.
 
 - `raciocinio`: justificativa da classificação (se `reasoning = TRUE`).
+
+- `status`: resultado da rodada principal: `"ok"`, `"resposta_invalida"`
+  (JSON não parseável), `"estouro_contexto"`, `"timeout"` ou
+  `"erro_servidor"`.
+
+- `n_tentativas`: número de tentativas até obter `status = "ok"` (ou até
+  esgotar `max_retries`).
+
+- `tokens_entrada`, `tokens_saida`: tokens de entrada/saída da rodada
+  principal, via `chat$get_tokens()` (`NA` se o provedor não expõe).
+
+- `segundos`: tempo total da rodada principal, incluindo novas
+  tentativas.
+
+- `tokens_por_segundo`: `tokens_saida / segundos`.
+
+O resultado carrega também um atributo `run_info` (ver
+[`attributes()`](https://rdrr.io/r/base/attributes.html)) com metadados
+da execução: versões de `acR` e `ellmer`, modelo, `base_url`, parâmetros
+efetivos aplicados ao provedor, temperaturas pedidas, `k_consistency`,
+hash do codebook e timestamps de início/fim.
 
 ## References
 

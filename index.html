@@ -38,7 +38,7 @@
 
     <a class="navbar-brand me-2" href="index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
     <li><a class="dropdown-item" href="articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
     <li><a class="dropdown-item" href="articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
+    <li><a class="dropdown-item" href="articles/llm-local-em-escala.html">  ↳ LLM local em escala (LM Studio, llama.cpp)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
@@ -305,12 +306,31 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-4.1"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"claude-sonnet-4-20250514"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <p>As chaves de API devem ser configuradas no <code>.Renviron</code> com <code>usethis::edit_r_environ()</code>, nunca diretamente no código.</p>
+<div class="section level3">
+<h3 id="rodando-localmente-em-escala">Rodando localmente, em escala<a class="anchor" aria-label="anchor" href="#rodando-localmente-em-escala"></a>
+</h3>
+<p>Para servidores locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM), <code><a href="reference/ac_chat_local.html">ac_chat_local()</a></code> dispensa configurar uma chave de API real:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">chat_local</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_chat_local.html">ac_chat_local</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"qwen2.5-14b-instruct"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
+<span>  <span class="va">corpus</span>, <span class="va">codebook</span>,</span>
+<span>  chat           <span class="op">=</span> <span class="va">chat_local</span>,</span>
+<span>  checkpoint_dir <span class="op">=</span> <span class="st">"checkpoints/"</span>,  <span class="co"># retoma sem reclassificar em caso de interrupcao</span></span>
+<span>  max_retries    <span class="op">=</span> <span class="fl">2L</span>,              <span class="co"># novas tentativas com espera exponencial</span></span>
+<span>  live           <span class="op">=</span> <span class="st">"progress"</span>       <span class="co"># barra de progresso enxuta para rodadas grandes</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">$</span><span class="va">status</span><span class="op">)</span>             <span class="co"># ok / resposta_invalida / estouro_contexto / timeout / erro_servidor</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="st">"run_info"</span><span class="op">)</span><span class="op">$</span><span class="va">params_efetivos</span><span class="op">$</span><span class="va">temperature</span>  <span class="co"># auditar o que o provedor confirmou</span></span></code></pre></div>
+<p>Veja a vignette <a href="https://ahenriquecp.com/acR/articles/llm-local-em-escala.html">LLM local em escala</a> para o fluxo completo (dimensionamento de contexto com <code><a href="reference/ac_estimate_tokens.html">ac_estimate_tokens()</a></code>, checkpoint, tratamento de falhas e validação por categoria com <code>ac_qual_reliability(by_variable = TRUE)</code>).</p>
 <hr>
+</div>
 </div>
 <div class="section level2">
 <h2 id="busca-de-literatura-via-openalex">Busca de literatura via OpenAlex<a class="anchor" aria-label="anchor" href="#busca-de-literatura-via-openalex"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
 <span>  concept       <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span>
 <span>  n_refs        <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -323,7 +343,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="pipeline-quantitativo">Pipeline quantitativo<a class="anchor" aria-label="anchor" href="#pipeline-quantitativo"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tokens</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
 <span><span class="va">contagem</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">contagem</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
@@ -483,6 +503,13 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
 </tr>
 <tr>
+<td>Classificar com modelo local em escala (checkpoint, retries, tokens)</td>
+<td>
+<code><a href="reference/ac_chat_local.html">ac_chat_local()</a></code> · <code><a href="reference/ac_estimate_tokens.html">ac_estimate_tokens()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/llm-local-em-escala.html">LLM local em escala</a></td>
+</tr>
+<tr>
 <td>Relatório metodológico reprodutível</td>
 <td><code><a href="reference/ac_qual_report.html">ac_qual_report()</a></code></td>
 <td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html">Replicabilidade</a></td>
@@ -499,7 +526,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="cobertura-de-testes">Cobertura de testes<a class="anchor" aria-label="anchor" href="#cobertura-de-testes"></a>
 </h2>
-<p>Suite de <strong>431 blocos <code>test_that</code></strong> com 779 assertions, cobrindo <strong>~66%</strong> do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
+<p>Suite de <strong>487 blocos <code>test_that</code></strong>, cobrindo boa parte do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -557,7 +584,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="como-citar">Como citar<a class="anchor" aria-label="anchor" href="#como-citar"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2026). acR: Análise de Conteúdo em R.
 R package version 0.3.3. ORCID: 0000-0002-1842-2725.

@@ -61,7 +61,7 @@ de casos representativos.'><meta property="og:image" content="https://ahenriquec
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,6 +81,7 @@ de casos representativos.'><meta property="og:image" content="https://ahenriquec
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
     <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
     <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
+    <li><a class="dropdown-item" href="../articles/llm-local-em-escala.html">  ↳ LLM local em escala (LM Studio, llama.cpp)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
@@ -142,6 +143,8 @@ de casos representativos.</p>
 <span>  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"krippendorff"</span>, <span class="st">"gwet_ac1"</span>, <span class="st">"f1_macro"</span>, <span class="st">"percent_agreement"</span><span class="op">)</span>,</span>
 <span>  bootstrap <span class="op">=</span> <span class="fl">1000L</span>,</span>
 <span>  ci_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  by_variable <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  exclude_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"estouro_contexto"</span>, <span class="st">"timeout"</span>, <span class="st">"erro_servidor"</span>, <span class="st">"parcial"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -176,6 +179,27 @@ de casos representativos.</p>
 <dd><p>Nível de confiança do IC. Padrão: <code>0.95</code>.</p></dd>
 
 
+<dt id="arg-by-variable">by_variable<a class="anchor" aria-label="anchor" href="#arg-by-variable"></a></dt>
+<dd><p>Lógico. Se <code>TRUE</code>, calcula também métricas binárias
+(concordância, precisão, recall, F1, Gwet AC1, alfa de Krippendorff)
+para cada categoria do codebook individualmente, tratando a presença
+de cada categoria como um problema sim/não — essencial quando
+<code>multilabel = TRUE</code>, onde um único <code>categoria</code> (<code>"a|b"</code>) mistura
+várias decisões binárias independentes que as métricas agregadas
+(acima) não conseguem diagnosticar separadamente. Denominadores
+zero (ex.: uma categoria nunca escolhida por nenhum dos dois lados)
+geram <code>NA</code>, nunca <code>0</code> ou <code>1</code> artificiais. Padrão <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-exclude-status">exclude_status<a class="anchor" aria-label="anchor" href="#arg-exclude-status"></a></dt>
+<dd><p>Vetor de valores da coluna <code>status</code> (ver
+<code><a href="ac_qual_code.html">ac_qual_code()</a></code>) a excluir da comparação antes de calcular as
+métricas por variável — documentos que falharam na classificação
+não têm uma categoria confiável para comparar. Ignorado se <code>llm</code>
+não tiver coluna <code>status</code>. Padrão:
+<code>c("estouro_contexto", "timeout", "erro_servidor", "parcial")</code>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Ignorado.</p></dd>
 
@@ -183,7 +207,11 @@ de casos representativos.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Tibble com colunas: <code>metric</code>, <code>estimate</code>, <code>ci_lower</code>, <code>ci_upper</code>,
-<code>interpretation</code>.</p>
+<code>interpretation</code>. Quando <code>by_variable = TRUE</code>, o resultado carrega
+também um atributo <code>by_variable</code>: um tibble com uma linha por
+categoria do codebook e colunas <code>categoria</code>, <code>n</code>, <code>vp</code>, <code>fp</code>, <code>fn</code>,
+<code>vn</code>, <code>concordancia</code>, <code>precisao</code>, <code>recall</code>, <code>f1</code>, <code>gwet_ac1</code>,
+<code>krippendorff_alfa</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
