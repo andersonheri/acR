@@ -30,6 +30,7 @@ Imports:
     jsonlite,
     purrr,
     rlang,
+    stats,
     stringr,
     tibble,
     tidyr,

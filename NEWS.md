@@ -77,6 +77,16 @@ documentos de ate 1,4M de caracteres).
   categorias. Ganha `strata`, `min_per_stratum`, `min_stratum_size`
   (agrupa estratos pequenos em `"Outras"`) e `exclude_ids`. A amostra
   ganha a coluna `peso_amostral` para uso em estimativas ponderadas.
+* **`ac_chat_local()`**: provedor de primeira classe para servidores LLM
+  locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM, Ollama em
+  modo OpenAI), sem exigir uma chave de API real. Adapta-se ao nome do
+  parâmetro de credencial (`api_key` vs `credentials`) conforme a
+  versão instalada do `ellmer`.
+* **`ac_estimate_tokens()`**: estimativa barata (heurística de
+  caracteres por token, sem chamada de rede) do consumo de tokens de
+  um texto -- útil para prever estouro de contexto antes de enviar ao
+  LLM. **`ac_calibrate_tokens()`**: calibra a razão caracteres/token
+  contra um modelo real usando uma amostra pequena de textos.
 * **`ac_qual_code(live = "progress")`**: novo modo de barra de progresso
   enxuta (doc atual + status, sem ecoar categoria/raciocinio) para
   rodadas grandes. Chats construidos internamente pelo `acR` agora usam
