@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -326,7 +326,7 @@ categorias similares.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"positivo"</span>, <span style="color: #0000BB;">"negativo"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 14/10/2026 18:20</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 14/10/2026 20:18</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique o tom geral do discurso parlamentar.</span></span>
@@ -686,6 +686,17 @@ errar).</p>
 <p>Para análises publicáveis, valores acima de <strong>0.67</strong>
 (Krippendorff) ou <strong>0.61</strong> (Landis-Koch) são geralmente
 aceitos, com discussão dos casos divergentes na seção de método.</p>
+<blockquote>
+<p><strong>E se eu usar dicionário em vez de LLM?</strong> A mesma
+exigência de validação vale para classificação por dicionário
+(<code><a href="../reference/ac_dictionary.html">ac_dictionary()</a></code>/<code><a href="../reference/ac_emotion.html">ac_emotion()</a></code>, ver
+<code><a href="../articles/quantitativo.html">vignette("quantitativo")</a></code>): um dicionário é determinístico e
+transparente, mas insensível a contexto, negação e ironia. Use
+<code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code> — o equivalente de
+<code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> para esse método — antes de reportar
+qualquer classificação por dicionário como válida (Grimmer &amp;
+Stewart, 2013).</p>
+</blockquote>
 <hr>
 </div>
 <div class="section level2">
@@ -842,6 +853,9 @@ comando.</p>
 <p>Gilardi, F., Alizadeh, M., &amp; Kubli, M. (2023). ChatGPT
 outperforms crowd workers for text-annotation tasks. <em>PNAS</em>,
 120(30). <a href="https://doi.org/10.1073/pnas.2305016120" class="external-link uri">https://doi.org/10.1073/pnas.2305016120</a></p>
+<p>Grimmer, J., &amp; Stewart, B. M. (2013). Text as Data: The Promise
+and Pitfalls of Automatic Content Analysis Methods for Political Texts.
+<em>Political Analysis</em>, 21(3), 267-297.</p>
 <p>Gwet, K. L. (2014). <em>Handbook of Inter-Rater Reliability</em> (4th
 ed.). Advanced Analytics.</p>
 <p>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to Its

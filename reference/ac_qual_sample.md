@@ -10,8 +10,7 @@ estratégias para maximizar a eficiência da validação.
 ac_qual_sample(
   coded,
   n = 50L,
-  strategy = c("uncertainty", "stratified", "random", "disagreement",
-    "proportional"),
+  strategy = c("uncertainty", "stratified", "random", "disagreement", "proportional"),
   strata = NULL,
   min_per_stratum = 1L,
   min_stratum_size = 10L,

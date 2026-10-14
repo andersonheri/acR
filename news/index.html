@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,39 @@
       <small>Source: <a href="https://github.com/andersonheri/acR/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="acr-050">acR 0.5.0<a class="anchor" aria-label="anchor" href="#acr-050"></a></h2>
+<p>Doze novas tecnicas quantitativas de diagnostico de corpus, escalas e dicionarios, todas documentadas na vignette <code><a href="../articles/quantitativo.html">vignette("quantitativo")</a></code> (secao “Novidades”), com exemplos fora do dominio parlamentar (avaliacoes de produto, atendimento ao cliente, noticias).</p>
+<div class="section level3">
+<h3 id="novidades-0-5-0">Novidades<a class="anchor" aria-label="anchor" href="#novidades-0-5-0"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/ac_readability.html">ac_readability()</a></code>/<code><a href="../reference/ac_plot_readability.html">ac_plot_readability()</a></code></strong>: legibilidade/ complexidade textual via indice de Flesch adaptado ao portugues (Martins et al., 1996).</li>
+<li>
+<strong><code><a href="../reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code>/<code><a href="../reference/ac_plot_lexical_diversity.html">ac_plot_lexical_diversity()</a></code></strong>: diversidade lexical (TTR, C de Herdan, MTLD; Herdan, 1960; McCarthy &amp; Jarvis, 2010).</li>
+<li>
+<strong><code><a href="../reference/ac_plot_zipf.html">ac_plot_zipf()</a></code></strong>: grafico log-log de frequencia por ranking (Lei de Zipf, 1949), diagnostico classico de corpus.</li>
+<li>
+<strong><code><a href="../reference/ac_kwic.html">ac_kwic()</a></code></strong>: concordancia/<em>keyword-in-context</em> (Sinclair, 1991), complementar a <code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code>.</li>
+<li>
+<strong><code><a href="../reference/ac_collocations.html">ac_collocations()</a></code></strong>: bigramas/trigramas estatisticamente associados via PMI (Church &amp; Hanks, 1990), log-likelihood (Dunning,
+<ol start="1993" style="list-style-type: decimal"><li>ou qui-quadrado – nao so frequencia bruta.</li>
+</ol></li>
+<li>
+<strong><code><a href="../reference/ac_temporal.html">ac_temporal()</a></code>/<code><a href="../reference/ac_plot_temporal.html">ac_plot_temporal()</a></code></strong>: agregacao diacronica de qualquer metrica por dia/semana/mes/ano (Welbers, Van Atteveldt &amp; Benoit, 2017).</li>
+<li>
+<strong><code><a href="../reference/ac_wordscores.html">ac_wordscores()</a></code>/<code><a href="../reference/ac_plot_wordscores.html">ac_plot_wordscores()</a></code></strong>: escalonamento ideologico/continuo de documentos a partir de um pequeno conjunto de referencia com posicao conhecida (Laver, Benoit &amp; Garry, 2003), com reescalonamento <code>"lbg"</code> ou <code>"mv"</code> (Martin &amp; Vanberg, 2007).</li>
+<li>
+<strong><code><a href="../reference/ac_ca.html">ac_ca()</a></code>/<code><a href="../reference/ac_plot_ca.html">ac_plot_ca()</a></code></strong>: analise de correspondencia (biplot de documentos/grupos x termos) calculada nativamente via <code><a href="https://rdrr.io/r/base/svd.html" class="external-link">base::svd()</a></code> (Greenacre, 2007), alternativa geometrica e deterministica a <code><a href="../reference/ac_lda.html">ac_lda()</a></code>.</li>
+<li>
+<strong><code><a href="../reference/ac_dictionary.html">ac_dictionary()</a></code>/<code><a href="../reference/ac_build_dictionary.html">ac_build_dictionary()</a></code></strong>: dicionario multi-categoria generico (temas, enquadramentos, emocoes), nao apenas polaridade positivo/negativo (Stone et al., 1966; Grimmer &amp; Stewart, 2013).</li>
+<li>
+<strong><code><a href="../reference/ac_dictionary_save.html">ac_dictionary_save()</a></code>/<code><a href="../reference/ac_dictionary_save.html">ac_dictionary_load()</a></code>/ <code><a href="../reference/ac_dictionary_import.html">ac_dictionary_import()</a></code></strong>: construcao e importacao de dicionario customizado via YAML/CSV, unificando o fluxo deterministico com o fluxo de codebook para LLM (<code><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook()</a></code>).</li>
+<li>
+<strong><code><a href="../reference/ac_emotion.html">ac_emotion()</a></code></strong>: classificacao de emocoes a partir de um lexico fornecido pelo usuario, inspirada no NRC Emotion Lexicon (Mohammad &amp; Turney, 2013); o pacote nao distribui lexico de emocao em portugues por motivos de licenciamento.</li>
+<li>
+<strong><code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code></strong>: validacao de classificacao por dicionario contra uma codificacao humana de referencia, categoria por categoria – o equivalente de <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> para o metodo de dicionario (Grimmer &amp; Stewart, 2013).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="acr-040">acR 0.4.0<a class="anchor" aria-label="anchor" href="#acr-040"></a></h2>
 <p>Pacote de ajustes derivados de uso em producao (872 atos normativos do SIGEPE, <code>ellmer</code> + LM Studio com dois modelos locais, validacao humana, documentos de ate 1,4M de caracteres).</p>

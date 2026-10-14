@@ -1,5 +1,64 @@
 # Changelog
 
+## acR 0.5.0
+
+Doze novas tecnicas quantitativas de diagnostico de corpus, escalas e
+dicionarios, todas documentadas na vignette
+[`vignette("quantitativo")`](https://ahenriquecp.com/acR/articles/quantitativo.md)
+(secao “Novidades”), com exemplos fora do dominio parlamentar
+(avaliacoes de produto, atendimento ao cliente, noticias).
+
+### Novidades
+
+- **[`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md)/[`ac_plot_readability()`](https://ahenriquecp.com/acR/reference/ac_plot_readability.md)**:
+  legibilidade/ complexidade textual via indice de Flesch adaptado ao
+  portugues (Martins et al., 1996).
+- **[`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md)/[`ac_plot_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_plot_lexical_diversity.md)**:
+  diversidade lexical (TTR, C de Herdan, MTLD; Herdan, 1960; McCarthy &
+  Jarvis, 2010).
+- **[`ac_plot_zipf()`](https://ahenriquecp.com/acR/reference/ac_plot_zipf.md)**:
+  grafico log-log de frequencia por ranking (Lei de Zipf, 1949),
+  diagnostico classico de corpus.
+- **[`ac_kwic()`](https://ahenriquecp.com/acR/reference/ac_kwic.md)**:
+  concordancia/*keyword-in-context* (Sinclair, 1991), complementar a
+  [`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md).
+- **[`ac_collocations()`](https://ahenriquecp.com/acR/reference/ac_collocations.md)**:
+  bigramas/trigramas estatisticamente associados via PMI (Church &
+  Hanks, 1990), log-likelihood (Dunning,
+  1993. ou qui-quadrado – nao so frequencia bruta.
+- **[`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md)/[`ac_plot_temporal()`](https://ahenriquecp.com/acR/reference/ac_plot_temporal.md)**:
+  agregacao diacronica de qualquer metrica por dia/semana/mes/ano
+  (Welbers, Van Atteveldt & Benoit, 2017).
+- **[`ac_wordscores()`](https://ahenriquecp.com/acR/reference/ac_wordscores.md)/[`ac_plot_wordscores()`](https://ahenriquecp.com/acR/reference/ac_plot_wordscores.md)**:
+  escalonamento ideologico/continuo de documentos a partir de um pequeno
+  conjunto de referencia com posicao conhecida (Laver, Benoit & Garry,
+  2003), com reescalonamento `"lbg"` ou `"mv"` (Martin & Vanberg, 2007).
+- **[`ac_ca()`](https://ahenriquecp.com/acR/reference/ac_ca.md)/[`ac_plot_ca()`](https://ahenriquecp.com/acR/reference/ac_plot_ca.md)**:
+  analise de correspondencia (biplot de documentos/grupos x termos)
+  calculada nativamente via
+  [`base::svd()`](https://rdrr.io/r/base/svd.html) (Greenacre, 2007),
+  alternativa geometrica e deterministica a
+  [`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md).
+- **[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md)/[`ac_build_dictionary()`](https://ahenriquecp.com/acR/reference/ac_build_dictionary.md)**:
+  dicionario multi-categoria generico (temas, enquadramentos, emocoes),
+  nao apenas polaridade positivo/negativo (Stone et al., 1966; Grimmer &
+  Stewart, 2013).
+- **[`ac_dictionary_save()`](https://ahenriquecp.com/acR/reference/ac_dictionary_save.md)/[`ac_dictionary_load()`](https://ahenriquecp.com/acR/reference/ac_dictionary_save.md)/
+  [`ac_dictionary_import()`](https://ahenriquecp.com/acR/reference/ac_dictionary_import.md)**:
+  construcao e importacao de dicionario customizado via YAML/CSV,
+  unificando o fluxo deterministico com o fluxo de codebook para LLM
+  ([`ac_qual_save_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_save_codebook.md)).
+- **[`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md)**:
+  classificacao de emocoes a partir de um lexico fornecido pelo usuario,
+  inspirada no NRC Emotion Lexicon (Mohammad & Turney, 2013); o pacote
+  nao distribui lexico de emocao em portugues por motivos de
+  licenciamento.
+- **[`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md)**:
+  validacao de classificacao por dicionario contra uma codificacao
+  humana de referencia, categoria por categoria – o equivalente de
+  [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
+  para o metodo de dicionario (Grimmer & Stewart, 2013).
+
 ## acR 0.4.0
 
 Pacote de ajustes derivados de uso em producao (872 atos normativos do

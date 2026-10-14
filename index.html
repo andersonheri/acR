@@ -38,7 +38,7 @@
 
     <a class="navbar-brand me-2" href="index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,23 @@
 <p>Do texto bruto ao resultado publicável — codebook, LLM, <em>keyness</em>, LDA, sentimento e concordância inter-codificador, num único fluxo reprodutível.</p>
 </div>
 <div class="section level2">
+<h2 id="novidades">Novidades<a class="anchor" aria-label="anchor" href="#novidades"></a>
+</h2>
+<p>Última leva traz 12 técnicas novas de diagnóstico, escalonamento e dicionários para o módulo quantitativo — veja a seção <a href="https://ahenriquecp.com/acR/articles/quantitativo.html">“Novidades: diagnóstico de corpus, escalas e dicionários”</a> da vignette quantitativa para exemplos completos:</p>
+<ul>
+<li>
+<strong>Diagnóstico de corpus</strong>: legibilidade (<code><a href="reference/ac_readability.html">ac_readability()</a></code>, Flesch adaptado ao português), diversidade lexical (<code><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code>: TTR, Herdan’s C, MTLD) e Lei de Zipf (<code><a href="reference/ac_plot_zipf.html">ac_plot_zipf()</a></code>).</li>
+<li>
+<strong>Leitura de contexto</strong>: concordância/KWIC (<code><a href="reference/ac_kwic.html">ac_kwic()</a></code>) e colocações com medidas de associação — PMI, log-likelihood, qui-quadrado (<code><a href="reference/ac_collocations.html">ac_collocations()</a></code>).</li>
+<li>
+<strong>Série temporal</strong>: agregação diacrônica de qualquer métrica por dia, semana, mês ou ano (<code><a href="reference/ac_temporal.html">ac_temporal()</a></code>).</li>
+<li>
+<strong>Escalas e mapas</strong>: escalonamento ideológico via Wordscores (<code><a href="reference/ac_wordscores.html">ac_wordscores()</a></code>) e análise de correspondência — biplot de documentos/grupos × termos (<code><a href="reference/ac_ca.html">ac_ca()</a></code>).</li>
+<li>
+<strong>Dicionários customizados</strong>: dicionário multi-categoria genérico (<code><a href="reference/ac_dictionary.html">ac_dictionary()</a></code>), léxicos de emoção (<code><a href="reference/ac_emotion.html">ac_emotion()</a></code>), construção e importação de dicionários via YAML/CSV (<code><a href="reference/ac_build_dictionary.html">ac_build_dictionary()</a></code>, <code><a href="reference/ac_dictionary_save.html">ac_dictionary_save()</a></code>/<code><a href="reference/ac_dictionary_save.html">ac_dictionary_load()</a></code>, <code><a href="reference/ac_dictionary_import.html">ac_dictionary_import()</a></code>) e validação contra codificação humana (<code><a href="reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>) — o mesmo rigor de <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>, agora para o método de dicionário.</li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="para-quem-é">Para quem é<a class="anchor" aria-label="anchor" href="#para-quem-%C3%A9"></a>
 </h2>
 <table class="table"><tr>
@@ -145,7 +162,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <h2 id="o-que-o-acr-faz">O que o <code>acR</code> faz<a class="anchor" aria-label="anchor" href="#o-que-o-acr-faz"></a>
 </h2>
 <p><strong>Módulo qualitativo.</strong> Você escreve um <em>codebook</em> (categorias + definições + exemplos), e a LLM classifica cada documento, reportando categoria, nível de confiança via <em>self-consistency</em> e um raciocínio estruturado. Uma amostra é exportada para revisão humana, e a concordância inter-codificador (percent agreement, Cohen’s/Fleiss’ <em>kappa</em>, Krippendorff’s <em>alpha</em>, Gwet’s AC1, F1 macro) é calculada com IC via <em>bootstrap</em>.</p>
-<p><strong>Módulo quantitativo.</strong> Ferramentas estatísticas clássicas de análise de conteúdo: frequência de termos e por grupo, TF-IDF, <em>keyness</em> (χ²/<em>log-likelihood</em>), redes de co-ocorrência com PMI, análise de sentimento em português (OpLexicon), modelagem de tópicos com LDA e seleção automática de <em>k</em>. Visualizações prontas para publicação em <code>ggplot2</code>, compatíveis com <code>ipeaplot</code>.</p>
+<p><strong>Módulo quantitativo.</strong> Ferramentas estatísticas clássicas de análise de conteúdo: frequência de termos e por grupo, TF-IDF, <em>keyness</em> (χ²/<em>log-likelihood</em>), redes de co-ocorrência com PMI, análise de sentimento em português (OpLexicon), modelagem de tópicos com LDA e seleção automática de <em>k</em>. Inclui também diagnóstico de corpus (legibilidade, diversidade lexical, Lei de Zipf), concordância/colocações (KWIC, PMI/log-likelihood), séries temporais, escalonamento ideológico (Wordscores), análise de correspondência e dicionários multi-categoria customizáveis (incluindo léxicos de emoção, com validação contra codificação humana). Visualizações prontas para publicação em <code>ggplot2</code>, compatíveis com <code>ipeaplot</code>.</p>
 <p><strong>Coleta nativa</strong> de discursos da Câmara dos Deputados (por período, partido, UF) e do Senado Federal (via <code>senatebR</code>).</p>
 </div>
 <div class="section level2">
@@ -361,7 +378,22 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="fu"><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lda</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">tokens</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">lda</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">lda</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Novidades: diagnostico, escalas e dicionarios</span></span>
+<span><span class="fu"><a href="reference/ac_readability.html">ac_readability</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_kwic.html">ac_kwic</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, pattern <span class="op">=</span> <span class="st">"reforma"</span>, window <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_collocations.html">ac_collocations</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, measure <span class="op">=</span> <span class="st">"pmi"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dicionario</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
+<span>  economia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"imposto"</span>, <span class="st">"orcamento"</span>, <span class="st">"deficit"</span><span class="op">)</span>,</span>
+<span>  saude    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saude"</span>, <span class="st">"vacina"</span>, <span class="st">"hospital"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, <span class="va">dicionario</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_ca.html">ac_ca</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_plot_ca.html">ac_plot_ca</a></span><span class="op">(</span><span class="va">ca</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -519,6 +551,80 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <td><code><a href="reference/ac_export.html">ac_export()</a></code></td>
 <td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html">Replicabilidade</a></td>
 </tr>
+<tr>
+<td>Legibilidade (Flesch em português)</td>
+<td>
+<code><a href="reference/ac_readability.html">ac_readability()</a></code> → <code><a href="reference/ac_plot_readability.html">ac_plot_readability()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §10</a></td>
+</tr>
+<tr>
+<td>Diversidade lexical (TTR, Herdan’s C, MTLD)</td>
+<td>
+<code><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code> → <code><a href="reference/ac_plot_lexical_diversity.html">ac_plot_lexical_diversity()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §10</a></td>
+</tr>
+<tr>
+<td>Diagnóstico de corpus (Lei de Zipf)</td>
+<td><code><a href="reference/ac_plot_zipf.html">ac_plot_zipf()</a></code></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §11</a></td>
+</tr>
+<tr>
+<td>Concordância/contexto de um termo (KWIC)</td>
+<td><code><a href="reference/ac_kwic.html">ac_kwic()</a></code></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §12</a></td>
+</tr>
+<tr>
+<td>Bigramas/trigramas estatisticamente associados</td>
+<td><code><a href="reference/ac_collocations.html">ac_collocations()</a></code></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §12</a></td>
+</tr>
+<tr>
+<td>Série temporal/diacrônica de uma métrica</td>
+<td>
+<code><a href="reference/ac_temporal.html">ac_temporal()</a></code> → <code><a href="reference/ac_plot_temporal.html">ac_plot_temporal()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §13</a></td>
+</tr>
+<tr>
+<td>Posicionar documentos numa escala (Wordscores)</td>
+<td>
+<code><a href="reference/ac_wordscores.html">ac_wordscores()</a></code> → <code><a href="reference/ac_plot_wordscores.html">ac_plot_wordscores()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §14</a></td>
+</tr>
+<tr>
+<td>Dicionário multi-categoria (temas, enquadramentos)</td>
+<td>
+<code><a href="reference/ac_dictionary.html">ac_dictionary()</a></code> · <code><a href="reference/ac_build_dictionary.html">ac_build_dictionary()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
+</tr>
+<tr>
+<td>Léxico de emoções (tipo NRC)</td>
+<td><code><a href="reference/ac_emotion.html">ac_emotion()</a></code></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
+</tr>
+<tr>
+<td>Importar/salvar dicionário (YAML/CSV)</td>
+<td>
+<code><a href="reference/ac_dictionary_import.html">ac_dictionary_import()</a></code> · <code><a href="reference/ac_dictionary_save.html">ac_dictionary_save()</a></code>/<code><a href="reference/ac_dictionary_save.html">ac_dictionary_load()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
+</tr>
+<tr>
+<td>Validar dicionário contra codificação humana</td>
+<td><code><a href="reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code></td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
+</tr>
+<tr>
+<td>Biplot documentos/grupos × termos (análise de correspondência)</td>
+<td>
+<code><a href="reference/ac_ca.html">ac_ca()</a></code> → <code><a href="reference/ac_plot_ca.html">ac_plot_ca()</a></code>
+</td>
+<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §16</a></td>
+</tr>
 </tbody>
 </table>
 <hr>
@@ -526,7 +632,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="cobertura-de-testes">Cobertura de testes<a class="anchor" aria-label="anchor" href="#cobertura-de-testes"></a>
 </h2>
-<p>Suite de <strong>487 blocos <code>test_that</code></strong>, cobrindo boa parte do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
+<p>Suite de <strong>561 blocos <code>test_that</code></strong>, cobrindo boa parte do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -576,7 +682,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <li>
 <a href="https://ahenriquecp.com/acR/reference/">Índice completo por área</a> — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/news/">Notícias / changelog</a> — histórico de versões (atual: <strong>0.3.3</strong>).</li>
+<a href="https://ahenriquecp.com/acR/news/">Notícias / changelog</a> — histórico de versões (atual: <strong>0.5.0</strong>).</li>
 </ul>
 <hr>
 </div>
@@ -587,7 +693,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.3.3. ORCID: 0000-0002-1842-2725.
+R package version 0.5.0. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://ahenriquecp.com/acR/</code></pre>
 <hr>

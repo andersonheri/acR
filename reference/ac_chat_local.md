@@ -1,9 +1,20 @@
-# Conectar a um servidor LLM local compatível com OpenAI
+# Conectar a um servidor LLM local compativel com OpenAI
 
 `ac_chat_local()` cria um `Chat` do `ellmer` apontando para um servidor
-local compatível com a API da OpenAI — LM Studio, llama.cpp
-(`llama-server`), vLLM, Ollama em modo OpenAI, etc. — sem exigir uma
+local compativel com a API da OpenAI – LM Studio, llama.cpp
+(`llama-server`), vLLM, Ollama em modo OpenAI, etc. – sem exigir uma
 chave de API real.
+
+Classificar com um modelo local (via
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md))
+elimina o custo por token e mantem os documentos fora de qualquer rede
+externa, ao preco de gerencia propria do servidor: tamanho de contexto,
+tempo de resposta e throughput passam a depender do hardware local. Use
+junto com `checkpoint_dir` e `max_retries` em
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+para rodadas longas, e
+[`ac_estimate_tokens()`](https://ahenriquecp.com/acR/reference/ac_estimate_tokens.md)
+para evitar estouro de contexto.
 
 ## Usage
 
@@ -28,22 +39,22 @@ ac_chat_local(
 
 - base_url:
 
-  URL base do servidor OpenAI-compatible. Padrão:
-  `"http://localhost:1234/v1"` (porta padrão do LM Studio).
+  URL base do servidor OpenAI-compatible. Padrao:
+  `"http://localhost:1234/v1"` (porta padrao do LM Studio).
 
 - api:
 
-  Qual API o servidor expõe: `"chat_completions"` (padrão — a maioria
+  Qual API o servidor expoe: `"chat_completions"` (padrao – a maioria
   dos servidores locais: LM Studio, llama.cpp, vLLM) ou `"responses"`
   (servidores que implementam a API Responses da OpenAI).
 
 - temperature:
 
-  Temperatura padrão do chat. `NULL` (padrão): usa o padrão do servidor.
+  Temperatura padrao do chat. `NULL` (padrao): usa o padrao do servidor.
 
 - system_prompt:
 
-  Prompt de sistema inicial. `NULL` (padrão).
+  Prompt de sistema inicial. `NULL` (padrao).
 
 - ...:
 
@@ -57,19 +68,6 @@ ac_chat_local(
 Objeto `Chat` do `ellmer`, pronto para uso em
 [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
 (via `chat = ac_chat_local(...)`).
-
-## Details
-
-Classificar com um modelo local (via
-[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md))
-elimina o custo por token e mantém os documentos fora de qualquer rede
-externa, ao preço de gerência própria do servidor: tamanho de contexto,
-tempo de resposta e throughput passam a depender do hardware local. Use
-junto com `checkpoint_dir` e `max_retries` em
-[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
-para rodadas longas, e
-[`ac_estimate_tokens()`](https://ahenriquecp.com/acR/reference/ac_estimate_tokens.md)
-para evitar estouro de contexto.
 
 ## Examples
 

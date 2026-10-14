@@ -1,11 +1,17 @@
-# Calibrar a razão caracteres/token contra um modelo real
+# Calibrar a razao caracteres/token contra um modelo real
 
 `ac_calibrate_tokens()` mede, contra um `Chat` real, quantos tokens de
 entrada um conjunto de textos de amostra realmente consome, e devolve a
-razão caracteres/token observada — para usar como `chars_per_token` em
+razao caracteres/token observada – para usar como `chars_per_token` em
 [`ac_estimate_tokens()`](https://ahenriquecp.com/acR/reference/ac_estimate_tokens.md)
-(ou como `chars_per_token` em `ac_qual_code()` / futuras funções que
-dependam da estimativa).
+(ou como `chars_per_token` em
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
+/ futuras funcoes que dependam da estimativa).
+
+Faz uma chamada real ao modelo por texto de amostra (com uma mensagem
+minima, para medir so o consumo de tokens de entrada), entao usa poucos
+textos – o suficiente para calibrar, nao uma amostra representativa de
+todo o corpus.
 
 ## Usage
 
@@ -17,10 +23,10 @@ ac_calibrate_tokens(chat_factory, textos)
 
 - chat_factory:
 
-  Função `function(temperature, system_prompt) Chat` que constrói o chat
-  a usar (o mesmo padrão aceito por `model` em
+  Funcao `function(temperature, system_prompt) Chat` que constroi o chat
+  a usar (o mesmo padrao aceito por `model` em
   [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)).
-  Permite calibrar contra o provedor/modelo exato que será usado na
+  Permite calibrar contra o provedor/modelo exato que sera usado na
   rodada real.
 
 - textos:
@@ -30,14 +36,7 @@ ac_calibrate_tokens(chat_factory, textos)
 
 ## Value
 
-Número: a mediana de caracteres por token observada na amostra.
-
-## Details
-
-Faz uma chamada real ao modelo por texto de amostra (com uma mensagem
-mínima, para medir só o consumo de tokens de entrada), então usa poucos
-textos — o suficiente para calibrar, não uma amostra representativa de
-todo o corpus.
+Numero: a mediana de caracteres por token observada na amostra.
 
 ## Examples
 

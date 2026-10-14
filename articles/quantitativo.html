@@ -33,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -539,15 +539,316 @@ a intensidade da célula é a coocorrência. Não requer
 </div>
 </div>
 <div class="section level2">
+<h2 id="novidades-diagnóstico-de-corpus-escalas-e-dicionários">Novidades: diagnóstico de corpus, escalas e dicionários<a class="anchor" aria-label="anchor" href="#novidades-diagn%C3%B3stico-de-corpus-escalas-e-dicion%C3%A1rios"></a>
+</h2>
+<p>As seções anteriores giram em torno de discursos parlamentares — um
+domínio comum na ciência política, mas o módulo quantitativo não é
+específico a ele. As técnicas a seguir são novas no pacote e são
+apresentadas com exemplos de <strong>outros domínios</strong>
+(avaliações de produto, atendimento ao cliente, notícias) para deixar
+claro que servem a qualquer corpus de texto.</p>
+<div class="section level3">
+<h3 id="legibilidade-e-diversidade-lexical">10. Legibilidade e diversidade lexical<a class="anchor" aria-label="anchor" href="#legibilidade-e-diversidade-lexical"></a>
+</h3>
+<p>Duas perguntas distintas sobre a <em>forma</em> do texto,
+independente do conteúdo:</p>
+<ul>
+<li>
+<strong>Legibilidade</strong> (<code><a href="../reference/ac_readability.html">ac_readability()</a></code>): o
+texto é fácil de ler? Adapta o índice de Flesch para português (Martins
+et al., 1996), combinando palavras por frase e sílabas por palavra. Útil
+para comparar, por exemplo, a complexidade de um manual técnico com a de
+um texto de divulgação para o público geral.</li>
+<li>
+<strong>Diversidade lexical</strong>
+(<code><a href="../reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code>): o vocabulário é rico ou
+repetitivo? TTR é sensível ao tamanho do texto; Herdan’s C (Herdan,
+<ol start="1960" style="list-style-type: decimal">
+<li>e o MTLD (McCarthy &amp; Jarvis, 2010) corrigem isso — o MTLD é a
+métrica recomendada para comparar textos de tamanhos diferentes.</li>
+</ol>
+</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">avaliacoes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"rev"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,</span>
+<span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Este produto é incrível. Funciona perfeitamente bem e chegou rápido."</span>,</span>
+<span>    <span class="st">"O manual técnico especifica que a calibração requer ajuste periódico do sensor piezoelétrico conforme a norma vigente, o que demanda qualificação especializada do operador responsável pela manutenção preventiva do equipamento."</span>,</span>
+<span>    <span class="st">"Bom. Chegou. Funciona. Recomendo."</span>,</span>
+<span>    <span class="st">"A experiência de uso revelou inconsistências na usabilidade da interface, comprometendo a jornada do consumidor e gerando fricção considerável ao longo do processo de integração do dispositivo ao ecossistema existente."</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">corpus_aval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">avaliacoes</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_readability.html">ac_readability</a></span><span class="op">(</span><span class="va">corpus_aval</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
+<span><span class="co">#&gt;   doc_id n_palavras n_frases n_silabas flesch nivel        </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> rev1           10        2        24   40.7 dificil      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> rev2           30        1        84  -<span style="color: #BB0000;">18.5</span> muito dificil</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> rev3            4        4        10   36.3 dificil      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> rev4           30        1        81  -<span style="color: #BB0000;">10.0</span> muito dificil</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_lexical_diversity.html">ac_lexical_diversity</a></span><span class="op">(</span><span class="va">corpus_aval</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
+<span><span class="co">#&gt;   doc_id n_tokens n_types   ttr herdan_c  mtld</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> rev1         10      10 1        1      10  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> rev2         30      25 0.833    0.946  50.4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> rev3          4       4 1        1       4  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> rev4         30      25 0.833    0.946  50.4</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lexical_diversity.html">ac_plot_lexical_diversity</a></span><span class="op">(</span><span class="fu"><a href="../reference/ac_lexical_diversity.html">ac_lexical_diversity</a></span><span class="op">(</span><span class="va">corpus_aval</span><span class="op">)</span>, group_col <span class="op">=</span> <span class="st">"doc_id"</span>,</span>
+<span>                           metric <span class="op">=</span> <span class="st">"mtld"</span>, type <span class="op">=</span> <span class="st">"bar"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/lexical-diversity-plot-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="lei-de-zipf-o-corpus-se-comporta-como-linguagem-natural">11. Lei de Zipf: o corpus se comporta como linguagem natural?<a class="anchor" aria-label="anchor" href="#lei-de-zipf-o-corpus-se-comporta-como-linguagem-natural"></a>
+</h3>
+<p>A Lei de Zipf (Zipf, 1949) prevê que a frequência de uma palavra é
+inversamente proporcional ao seu ranking — um diagnóstico clássico para
+saber se um corpus é “normal” (ex.: não dominado por um único termo
+repetido artificialmente, como aconteceria em dados mal limpos).</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">freq_aval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_aval</span>, drop_punct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_zipf.html">ac_plot_zipf</a></span><span class="op">(</span><span class="va">freq_aval</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/zipf-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="concordância-kwic-e-colocações">12. Concordância (KWIC) e colocações<a class="anchor" aria-label="anchor" href="#concord%C3%A2ncia-kwic-e-coloca%C3%A7%C3%B5es"></a>
+</h3>
+<p>Frequência bruta não mostra <em>como</em> uma palavra é usada. Duas
+ferramentas complementares:</p>
+<ul>
+<li>
+<strong>KWIC</strong> (<em>keyword-in-context</em>, Sinclair, 1991):
+lista cada ocorrência de um termo com o contexto antes/depois — o
+primeiro passo de qualquer análise de discurso de corpus
+(<em>corpus-based discourse analysis</em>).</li>
+<li>
+<strong>Colocações</strong> (<code><a href="../reference/ac_collocations.html">ac_collocations()</a></code>): quais
+bigramas/trigramas aparecem juntos mais do que o esperado pelo acaso,
+medido por PMI (Church &amp; Hanks, 1990), log-likelihood (Dunning,
+1993) ou qui-quadrado — não apenas frequência bruta de n-gramas.</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">atendimento</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"call"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span>
+<span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"o cliente reclamou que o produto chegou com defeito de fabrica"</span>,</span>
+<span>    <span class="st">"outro cliente relatou defeito no produto depois de uma semana de uso"</span>,</span>
+<span>    <span class="st">"o produto sem defeito foi elogiado pelo cliente no final da ligacao"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">corpus_atend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">atendimento</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/ac_kwic.html">ac_kwic</a></span><span class="op">(</span><span class="va">corpus_atend</span>, pattern <span class="op">=</span> <span class="st">"defeito"</span>, window <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
+<span><span class="co">#&gt;   doc_id position before                keyword after                    </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> call1         9 o produto chegou com  defeito de fabrica               </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> call2         4 outro cliente relatou defeito no produto depois de     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> call3         4 o produto sem         defeito foi elogiado pelo cliente</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_collocations.html">ac_collocations</a></span><span class="op">(</span><span class="va">corpus_atend</span>, n <span class="op">=</span> <span class="fl">2</span>, measure <span class="op">=</span> <span class="st">"pmi"</span>, min_count <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 31 × 3</span></span></span>
+<span><span class="co">#&gt;    collocation      count association</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chegou com           1        5.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> da ligacao           1        5.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> elogiado pelo        1        5.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> final da             1        5.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> foi elogiado         1        5.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> reclamou que         1        5.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> uma semana           1        5.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> no final             1        4.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> cliente reclamou     1        3.54</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> cliente relatou      1        3.54</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 21 more rows</span></span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="análise-temporaldiacrônica">13. Análise temporal/diacrônica<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-temporaldiacr%C3%B4nica"></a>
+</h3>
+<p>Quando o corpus tem datas, perguntas que antes eram estáticas (quanto
+um termo aparece?) passam a ter uma dimensão temporal (quando ele
+aparece mais?) — essencial para cobertura jornalística, séries de
+atendimento ao cliente, ou qualquer corpus com carimbo de data (Welbers,
+Van Atteveldt &amp; Benoit, 2017).</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">noticias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  data      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2024-01-01"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">65</span>, <span class="fl">80</span>, <span class="fl">95</span><span class="op">)</span>,</span>
+<span>  sentimento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="op">-</span><span class="fl">0.3</span>, <span class="fl">0.0</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">serie</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_temporal.html">ac_temporal</a></span><span class="op">(</span><span class="va">noticias</span>, date_col <span class="op">=</span> <span class="st">"data"</span>, value_col <span class="op">=</span> <span class="st">"sentimento"</span>,</span>
+<span>                      unit <span class="op">=</span> <span class="st">"month"</span>, stat <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_temporal.html">ac_plot_temporal</a></span><span class="op">(</span><span class="va">serie</span>, ylab <span class="op">=</span> <span class="st">"Sentimento medio"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : span too small.  fewer data values than degrees of freedom.</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : pseudoinverse used at 19723</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : neighborhood radius 60.455</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : reciprocal condition number 0</span></span>
+<span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
+<span><span class="co">#&gt; : There are other near singularities as well. 3654.8</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/temporal-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="escalonamento-wordscores-posicionar-documentos-numa-escala">14. Escalonamento Wordscores: posicionar documentos numa escala<a class="anchor" aria-label="anchor" href="#escalonamento-wordscores-posicionar-documentos-numa-escala"></a>
+</h3>
+<p>Às vezes queremos posicionar documentos num espectro contínuo
+(favorável↔︎ desfavorável, satisfeito↔︎insatisfeito) sem codificar
+manualmente todos eles. O método Wordscores (Laver, Benoit &amp; Garry,
+2003) estima a posição de documentos “virgens” a partir de um pequeno
+conjunto de referência com posição conhecida — aqui, avaliações de
+produto com nota conhecida servem de referência para estimar a
+satisfação implícita em avaliações sem nota.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">resenhas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
+<span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"produto excelente, superou expectativas, recomendo muito"</span>,</span>
+<span>    <span class="st">"muito bom, chegou rapido e funciona perfeitamente"</span>,</span>
+<span>    <span class="st">"produto regular, cumpre o basico"</span>,</span>
+<span>    <span class="st">"nao funcionou bem, qualidade ruim, nao recomendo"</span>,</span>
+<span>    <span class="st">"pessimo, quebrado e com defeito, decepcao total"</span>,</span>
+<span>    <span class="st">"produto ok, nada de especial mas atende"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">corpus_resenhas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">resenhas</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># r1, r2, r4, r5 com nota conhecida (1-5); r3 e r6 sao "virgens" a estimar</span></span>
+<span><span class="va">notas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r1 <span class="op">=</span> <span class="fl">5</span>, r2 <span class="op">=</span> <span class="fl">4</span>, r4 <span class="op">=</span> <span class="fl">2</span>, r5 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">wordscores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_wordscores.html">ac_wordscores</a></span><span class="op">(</span><span class="va">corpus_resenhas</span>, <span class="va">notas</span>, rescale <span class="op">=</span> <span class="st">"lbg"</span><span class="op">)</span></span>
+<span><span class="va">wordscores</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">#&gt;   doc_id score score_raw is_reference</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> r1     4.97       4.69 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> r2     4.00       3.86 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> r3     5.33       5    FALSE       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> r4     2.11       2.23 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> r5     0.923      1.21 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> r6     5.33       5    FALSE</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_wordscores.html">ac_plot_wordscores</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/wordscores-plot-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="dicionários-multi-categoria-emoções-e-validação">15. Dicionários multi-categoria, emoções e validação<a class="anchor" aria-label="anchor" href="#dicion%C3%A1rios-multi-categoria-emo%C3%A7%C3%B5es-e-valida%C3%A7%C3%A3o"></a>
+</h3>
+<p>Nem toda análise baseada em dicionário é positivo/negativo.
+<code><a href="../reference/ac_dictionary.html">ac_dictionary()</a></code> generaliza a lógica de
+<code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code> para <strong>qualquer</strong> conjunto de
+categorias (temas, enquadramentos, emoções), no espírito do General
+Inquirer (Stone et al., 1966) e de “Text as Data” (Grimmer &amp;
+Stewart, 2013). <code><a href="../reference/ac_emotion.html">ac_emotion()</a></code> é uma camada especializada
+para léxicos de emoção (inspirada no NRC Emotion Lexicon; Mohammad &amp;
+Turney, 2013).</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
+<span>  entrega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"atrasou"</span>, <span class="st">"atrasada"</span>, <span class="st">"rapida"</span>, <span class="st">"rastreio"</span><span class="op">)</span>,</span>
+<span>  produto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"defeito"</span>, <span class="st">"quebrado"</span>, <span class="st">"perfeito"</span>, <span class="st">"excelente"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
+<span><span class="co">#&gt;   doc_id total_tokens entrega_n produto_n entrega_prop produto_prop</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> call1            11         0         1            0       0.090<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> call2            12         0         1            0       0.083<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> call3            12         0         1            0       0.083<span style="text-decoration: underline;">3</span></span></span></code></pre></div>
+<p>Nenhum dicionário deveria ser usado numa análise publicável sem
+comparar sua classificação a uma amostra codificada por humano — a mesma
+lógica de <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> (para codificação por LLM),
+aplicada aqui ao método de dicionário:</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
+<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  doc_id    <span class="op">=</span> <span class="va">scored</span><span class="op">$</span><span class="va">doc_id</span>,</span>
+<span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"entrega|produto"</span>, <span class="st">"produto"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate</a></span><span class="op">(</span><span class="va">scored</span>, <span class="va">humano</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 12</span></span></span>
+<span><span class="co">#&gt;   categoria     n    vp    fp    fn    vn concordancia precisao recall    f1</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> entrega       3     0     0     2     1        0.333   <span style="color: #BB0000;">NA</span>          0  <span style="color: #BB0000;">NA</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> produto       3     2     1     0     0        0.667    0.667      1   0.8</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: gwet_ac1 &lt;dbl&gt;, krippendorff_alfa &lt;dbl&gt;</span></span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="análise-de-correspondência-ca-um-mapa-de-grupos-e-termos">16. Análise de correspondência (CA): um mapa de grupos e termos<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-de-correspond%C3%AAncia-ca-um-mapa-de-grupos-e-termos"></a>
+</h3>
+<p>Quando queremos visualizar em 2D como o vocabulário difere entre
+grupos, sem assumir um número de tópicos latentes (como em
+<code><a href="../reference/ac_lda.html">ac_lda()</a></code>), a Análise de Correspondência (Greenacre, 2007)
+posiciona grupos e termos no mesmo espaço geométrico — pontos próximos
+tendem a co-ocorrer mais do que o esperado pelo acaso.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">categorias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
+<span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"entrega atrasada rastreio sumiu"</span>,</span>
+<span>    <span class="st">"pedido atrasou rastreio sumiu"</span>,</span>
+<span>    <span class="st">"produto defeito quebrado chegou"</span>,</span>
+<span>    <span class="st">"veio quebrado produto pessimo"</span>,</span>
+<span>    <span class="st">"atendimento excelente resolveram rapido"</span>,</span>
+<span>    <span class="st">"suporte educado resolveu rapido"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"entrega"</span>, <span class="st">"produto"</span>, <span class="st">"produto"</span>,</span>
+<span>                <span class="st">"atendimento"</span>, <span class="st">"atendimento"</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">corpus_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">categorias</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">categoria</span><span class="op">)</span></span>
+<span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_ca.html">ac_ca</a></span><span class="op">(</span><span class="va">corpus_cat</span>, by <span class="op">=</span> <span class="st">"categoria"</span>, min_count <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_ca.html">ac_plot_ca</a></span><span class="op">(</span><span class="va">ca</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/ca-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
 </h2>
 <ul>
+<li>Church, K. W.; Hanks, P. (1990). Word Association Norms, Mutual
+Information, and Lexicography. <em>Computational Linguistics</em>,
+16(1), 22-29.</li>
+<li>Dunning, T. (1993). Accurate Methods for the Statistics of Surprise
+and Coincidence. <em>Computational Linguistics</em>, 19(1), 61-74.</li>
+<li>Greenacre, M. (2007). <em>Correspondence Analysis in Practice</em>
+(2nd ed.). Chapman and Hall/CRC.</li>
+<li>Grimmer, J.; Stewart, B. M. (2013). Text as Data: The Promise and
+Pitfalls of Automatic Content Analysis Methods for Political Texts.
+<em>Political Analysis</em>, 21(3), 267-297.</li>
+<li>Herdan, G. (1960). <em>Type-Token Mathematics</em>. Mouton.</li>
 <li>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to
 Its Methodology</em>. 4. ed. SAGE.</li>
+<li>Laver, M.; Benoit, K.; Garry, J. (2003). Extracting Policy Positions
+from Political Texts Using Words as Data. <em>American Political Science
+Review</em>, 97(2), 311-331.</li>
+<li>Martins, T. B. F. et al. (1996). Readability formulas applied to
+textbooks in Brazilian Portuguese. <em>Memorandum</em>, 28.</li>
+<li>McCarthy, P. M.; Jarvis, S. (2010). MTLD, vocd-D, and HD-D: A
+validation study of sophisticated approaches to lexical diversity
+assessment. <em>Behavior Research Methods</em>, 42(2), 381-392.</li>
+<li>Mohammad, S. M.; Turney, P. D. (2013). Crowdsourcing a Word-Emotion
+Association Lexicon. <em>Computational Intelligence</em>, 29(3),
+436-465.</li>
 <li>Sampaio, R. C.; Lycarião, D. (2021). <em>Análise de conteúdo
 categorial: manual de aplicação</em>. ENAP.</li>
 <li>Silge, J.; Robinson, D. (2017). <em>Text Mining with R</em>.
 O’Reilly.</li>
+<li>Sinclair, J. (1991). <em>Corpus, Concordance, Collocation</em>.
+Oxford University Press.</li>
+<li>Stone, P. J. et al. (1966). <em>The General Inquirer: A Computer
+Approach to Content Analysis</em>. MIT Press.</li>
+<li>Welbers, K.; Van Atteveldt, W.; Benoit, K. (2017). Text Analysis in
+R. <em>Communication Methods and Measures</em>, 11(4), 245-265.</li>
+<li>Zipf, G. K. (1949). <em>Human Behavior and the Principle of Least
+Effort</em>. Addison-Wesley.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
