@@ -1,7 +1,8 @@
 # Visualizar um biplot de análise de correspondência
 
 `ac_plot_ca()` plota um biplot com as duas primeiras dimensões da saída
-de [`ac_ca()`](https://ahenriquecp.com/acR/dev/reference/ac_ca.md):
+de
+[`ac_ca()`](https://andersonheri.github.io/acR/dev/reference/ac_ca.md):
 pontos de unidades (documentos/grupos) e de termos no mesmo espaço, com
 os eixos rotulados pela proporção de inércia explicada.
 
@@ -16,7 +17,7 @@ ac_plot_ca(ca, top_terms = 20L, title = NULL)
 - ca:
 
   Objeto de classe `ac_ca`, saída de
-  [`ac_ca()`](https://ahenriquecp.com/acR/dev/reference/ac_ca.md).
+  [`ac_ca()`](https://andersonheri.github.io/acR/dev/reference/ac_ca.md).
 
 - top_terms:
 
@@ -33,7 +34,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_ca()`](https://ahenriquecp.com/acR/dev/reference/ac_ca.md)
+[`ac_ca()`](https://andersonheri.github.io/acR/dev/reference/ac_ca.md)
 
 ## Examples
 

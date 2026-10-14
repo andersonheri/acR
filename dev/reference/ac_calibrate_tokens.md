@@ -3,9 +3,9 @@
 `ac_calibrate_tokens()` mede, contra um `Chat` real, quantos tokens de
 entrada um conjunto de textos de amostra realmente consome, e devolve a
 razao caracteres/token observada – para usar como `chars_per_token` em
-[`ac_estimate_tokens()`](https://ahenriquecp.com/acR/dev/reference/ac_estimate_tokens.md)
+[`ac_estimate_tokens()`](https://andersonheri.github.io/acR/dev/reference/ac_estimate_tokens.md)
 (ou como `chars_per_token` em
-[`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md)
+[`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md)
 / futuras funcoes que dependam da estimativa).
 
 Faz uma chamada real ao modelo por texto de amostra (com uma mensagem
@@ -25,7 +25,7 @@ ac_calibrate_tokens(chat_factory, textos)
 
   Funcao `function(temperature, system_prompt) Chat` que constroi o chat
   a usar (o mesmo padrao aceito por `model` em
-  [`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md)).
+  [`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md)).
   Permite calibrar contra o provedor/modelo exato que sera usado na
   rodada real.
 

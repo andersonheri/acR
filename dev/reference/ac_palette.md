@@ -22,7 +22,7 @@ Vetor `character` com códigos hex.
 
 ## See also
 
-[`theme_ac()`](https://ahenriquecp.com/acR/dev/reference/theme_ac.md)
+[`theme_ac()`](https://andersonheri.github.io/acR/dev/reference/theme_ac.md)
 
 ## Examples
 

@@ -4,7 +4,7 @@ Esta vignette percorre o pipeline completo do `acR` em um exemplo
 pequeno mas realista — discursos parlamentares favoráveis e contrários a
 uma reforma — mostrando o *output* efetivo de cada etapa. Se você
 prefere um tour de 5 minutos com só o essencial, veja o
-**[Quickstart](https://ahenriquecp.com/acR/dev/articles/quickstart.md)**.
+**[Quickstart](https://andersonheri.github.io/acR/dev/articles/quickstart.md)**.
 
 ``` r
 
@@ -380,14 +380,14 @@ Koch (1977) e Gwet (2014).
 ## Próximos passos
 
 - **[Codificação com
-  LLMs](https://ahenriquecp.com/acR/dev/articles/qualitativo-llm.md)** —
-  codebook completo, `ellmer`, *self-consistency*, tradução, fusão.
+  LLMs](https://andersonheri.github.io/acR/dev/articles/qualitativo-llm.md)**
+  — codebook completo, `ellmer`, *self-consistency*, tradução, fusão.
 - **[Análise de
-  proposições](https://ahenriquecp.com/acR/dev/articles/analise-proposicoes.md)**
+  proposições](https://andersonheri.github.io/acR/dev/articles/analise-proposicoes.md)**
   — pipeline real de ponta-a-ponta em texto legislativo brasileiro.
-- **[LDA](https://ahenriquecp.com/acR/dev/articles/lda.md)** — modelagem
-  de tópicos.
-- **[Sentimento](https://ahenriquecp.com/acR/dev/articles/sentimento.md)**
+- **[LDA](https://andersonheri.github.io/acR/dev/articles/lda.md)** —
+  modelagem de tópicos.
+- **[Sentimento](https://andersonheri.github.io/acR/dev/articles/sentimento.md)**
   — pipeline detalhado com OpLexicon.
 
 ## Referências

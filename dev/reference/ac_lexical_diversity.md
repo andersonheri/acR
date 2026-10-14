@@ -68,7 +68,7 @@ study of sophisticated approaches to lexical diversity assessment.
 
 ## See also
 
-[`ac_readability()`](https://ahenriquecp.com/acR/dev/reference/ac_readability.md)
+[`ac_readability()`](https://andersonheri.github.io/acR/dev/reference/ac_readability.md)
 
 ## Examples
 

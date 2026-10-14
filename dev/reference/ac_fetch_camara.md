@@ -139,7 +139,7 @@ Brasilia, 2024. Disponivel em:
 
 ## See also
 
-[`ac_corpus()`](https://ahenriquecp.com/acR/dev/reference/ac_corpus.md)
+[`ac_corpus()`](https://andersonheri.github.io/acR/dev/reference/ac_corpus.md)
 para transformar o resultado em corpus.
 
 ## Examples

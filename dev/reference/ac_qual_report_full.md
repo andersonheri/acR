@@ -3,17 +3,17 @@
 `ac_qual_report_full()` gera **um único** documento (Markdown ou HTML)
 consolidando resultados de N variáveis de codificação qualitativa — cada
 uma com seu próprio codebook, rodada de
-[`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md)
+[`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md)
 e, opcionalmente, métricas de
-[`ac_qual_reliability()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_reliability.md)
+[`ac_qual_reliability()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_reliability.md)
 ou
-[`ac_qual_irr()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_irr.md).
+[`ac_qual_irr()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_irr.md).
 
 É a resposta natural ao caso de uso mais comum de análise de conteúdo
 categorial (Krippendorff, 2018): um estudo tem várias variáveis de
 conteúdo (tom, posicionamento, tema, framing…). Antes desta função, o
 pesquisador precisava chamar
-[`ac_qual_report()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_report.md)
+[`ac_qual_report()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_report.md)
 N vezes e emendar os relatórios manualmente, ou escrever um consolidador
 ad hoc por projeto.
 
@@ -42,15 +42,15 @@ ac_qual_report_full(
   Lista **nomeada** onde cada elemento é uma lista com:
 
   - `coded`: tibble com resultado de
-    [`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md)
+    [`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md)
     (obrigatório).
 
   - `codebook`: objeto `ac_codebook` (obrigatório).
 
   - `reliability`: opcional, saída de
-    [`ac_qual_reliability()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_reliability.md)
+    [`ac_qual_reliability()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_reliability.md)
     ou
-    [`ac_qual_irr()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_irr.md).
+    [`ac_qual_irr()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_irr.md).
     Os nomes da lista viram os títulos das seções do relatório.
 
 - chat:
@@ -91,7 +91,7 @@ Invisível: caminho do arquivo gerado.
 
 ## See also
 
-[`ac_qual_report()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_report.md)
+[`ac_qual_report()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_report.md)
 para relatório de uma única variável.
 
 ## Examples
@@ -151,5 +151,5 @@ ac_qual_report_full(
   path = arquivo,
   author = "Fulano de Tal"
 )
-#> ✔ Relatorio salvo em /tmp/Rtmp2o3LqV/file1b4717c67e54.md
+#> ✔ Relatorio salvo em /tmp/RtmpEQwWEs/file1b665c080521.md
 ```

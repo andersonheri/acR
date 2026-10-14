@@ -6,14 +6,14 @@ local compativel com a API da OpenAI – LM Studio, llama.cpp
 chave de API real.
 
 Classificar com um modelo local (via
-[`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md))
+[`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md))
 elimina o custo por token e mantem os documentos fora de qualquer rede
 externa, ao preco de gerencia propria do servidor: tamanho de contexto,
 tempo de resposta e throughput passam a depender do hardware local. Use
 junto com `checkpoint_dir` e `max_retries` em
-[`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md)
+[`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md)
 para rodadas longas, e
-[`ac_estimate_tokens()`](https://ahenriquecp.com/acR/dev/reference/ac_estimate_tokens.md)
+[`ac_estimate_tokens()`](https://andersonheri.github.io/acR/dev/reference/ac_estimate_tokens.md)
 para evitar estouro de contexto.
 
 ## Usage
@@ -66,7 +66,7 @@ ac_chat_local(
 ## Value
 
 Objeto `Chat` do `ellmer`, pronto para uso em
-[`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md)
+[`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md)
 (via `chat = ac_chat_local(...)`).
 
 ## Examples

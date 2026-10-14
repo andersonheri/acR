@@ -20,7 +20,7 @@ ac_qual_export_for_review(
 - sample:
 
   Tibble, saída de
-  [`ac_qual_sample()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_sample.md).
+  [`ac_qual_sample()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_sample.md).
 
 - path:
 
@@ -58,7 +58,7 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
 }
 #> ℹ Amostra de 3 documentos selecionada (estratégia: "uncertainty").
 #> ℹ Use `ac_qual_export_for_review()` para exportar para Excel.
-#> ✅ Planilha exportada: /tmp/Rtmp2o3LqV/file1b473686fe95.xlsx
+#> ✅ Planilha exportada: /tmp/RtmpEQwWEs/file1b663d686911.xlsx
 #> ℹ Preencha a coluna "categoria_humano" com a classificação.
 #> ℹ Use `ac_qual_import_human()` para importar após preenchimento.
 #> [1] TRUE

@@ -1,7 +1,7 @@
 # Construir um dicionário multi-categoria
 
 `ac_build_dictionary()` monta um dicionário no formato esperado por
-[`ac_dictionary()`](https://ahenriquecp.com/acR/dev/reference/ac_dictionary.md)
+[`ac_dictionary()`](https://andersonheri.github.io/acR/dev/reference/ac_dictionary.md)
 a partir de argumentos nomeados — cada argumento é uma categoria, e seu
 valor é o vetor de palavras daquela categoria.
 
@@ -23,9 +23,9 @@ Lista nomeada de vetores de caracteres (um dicionário).
 
 ## See also
 
-[`ac_dictionary()`](https://ahenriquecp.com/acR/dev/reference/ac_dictionary.md),
-[`ac_dictionary_import()`](https://ahenriquecp.com/acR/dev/reference/ac_dictionary_import.md),
-[`ac_dictionary_save()`](https://ahenriquecp.com/acR/dev/reference/ac_dictionary_save.md)
+[`ac_dictionary()`](https://andersonheri.github.io/acR/dev/reference/ac_dictionary.md),
+[`ac_dictionary_import()`](https://andersonheri.github.io/acR/dev/reference/ac_dictionary_import.md),
+[`ac_dictionary_save()`](https://andersonheri.github.io/acR/dev/reference/ac_dictionary_save.md)
 
 ## Examples
 

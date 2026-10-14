@@ -1,7 +1,7 @@
 # Visualizar escores Wordscores por documento
 
 `ac_plot_wordscores()` plota os escores estimados por
-[`ac_wordscores()`](https://ahenriquecp.com/acR/dev/reference/ac_wordscores.md)
+[`ac_wordscores()`](https://andersonheri.github.io/acR/dev/reference/ac_wordscores.md)
 num eixo unico, destacando quais documentos foram usados como
 referência.
 
@@ -16,7 +16,7 @@ ac_plot_wordscores(wordscores_tbl, title = NULL)
 - wordscores_tbl:
 
   Tibble retornado por
-  [`ac_wordscores()`](https://ahenriquecp.com/acR/dev/reference/ac_wordscores.md).
+  [`ac_wordscores()`](https://andersonheri.github.io/acR/dev/reference/ac_wordscores.md).
 
 - title:
 
@@ -28,7 +28,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_wordscores()`](https://ahenriquecp.com/acR/dev/reference/ac_wordscores.md)
+[`ac_wordscores()`](https://andersonheri.github.io/acR/dev/reference/ac_wordscores.md)
 
 ## Examples
 

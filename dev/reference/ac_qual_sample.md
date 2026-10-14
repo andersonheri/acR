@@ -25,7 +25,7 @@ ac_qual_sample(
 - coded:
 
   Tibble com classificação LLM, saída de
-  [`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md).
+  [`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md).
 
 - n:
 
@@ -52,7 +52,7 @@ ac_qual_sample(
     igualmente entre categorias), preserva a distribuição original de
     `strata` na amostra — a escolha correta quando a amostra alimenta
     uma estimativa populacional (ex.:
-    [`ac_qual_reliability()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_reliability.md)
+    [`ac_qual_reliability()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_reliability.md)
     ponderada), não só uma checagem qualitativa de cada categoria.
 
 - strata:

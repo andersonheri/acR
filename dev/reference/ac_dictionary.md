@@ -3,7 +3,7 @@
 `ac_dictionary()` conta, para cada documento de um `ac_corpus`, quantas
 palavras caem em cada categoria de um dicionário — generalização do
 método que
-[`ac_sentiment()`](https://ahenriquecp.com/acR/dev/reference/ac_sentiment.md)
+[`ac_sentiment()`](https://andersonheri.github.io/acR/dev/reference/ac_sentiment.md)
 já aplica só para polaridade (positivo/negativo). Um dicionário aqui é
 qualquer lista nomeada de listas de palavras: temas ("economia",
 "saúde"), enquadramentos ("ameaça", "oportunidade"), categorias de
@@ -16,7 +16,7 @@ classificação é auditável — basta olhar a lista de palavras. O preço é a
 falta de sensibilidade a contexto: a palavra "não" imediatamente antes
 de um termo do dicionário não inverte a contagem, e sarcasmo ou negação
 sofisticada passam batido. Para esses casos, o pipeline de LLM
-([`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md))
+([`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md))
 é a alternativa — mais caro, menos transparente, mas sensível a
 contexto.
 
@@ -36,7 +36,7 @@ ac_dictionary(corpus, dictionary, by = NULL, case_insensitive = TRUE)
 
   Lista nomeada de vetores de caracteres — uma entrada por categoria,
   cada uma com as palavras daquela categoria (ver
-  [`ac_build_dictionary()`](https://ahenriquecp.com/acR/dev/reference/ac_build_dictionary.md)).
+  [`ac_build_dictionary()`](https://andersonheri.github.io/acR/dev/reference/ac_build_dictionary.md)).
   Palavras são comparadas a tokens individuais (correspondência exata,
   não substring).
 
@@ -68,9 +68,9 @@ Pitfalls of Automatic Content Analysis Methods for Political Texts.
 
 ## See also
 
-[`ac_build_dictionary()`](https://ahenriquecp.com/acR/dev/reference/ac_build_dictionary.md),
-[`ac_sentiment()`](https://ahenriquecp.com/acR/dev/reference/ac_sentiment.md),
-[`ac_qual_code()`](https://ahenriquecp.com/acR/dev/reference/ac_qual_code.md)
+[`ac_build_dictionary()`](https://andersonheri.github.io/acR/dev/reference/ac_build_dictionary.md),
+[`ac_sentiment()`](https://andersonheri.github.io/acR/dev/reference/ac_sentiment.md),
+[`ac_qual_code()`](https://andersonheri.github.io/acR/dev/reference/ac_qual_code.md)
 
 ## Examples
 

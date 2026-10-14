@@ -68,8 +68,8 @@ University Press.
 
 ## See also
 
-[`ac_plot_xray()`](https://ahenriquecp.com/acR/dev/reference/ac_plot_xray.md),
-[`ac_count()`](https://ahenriquecp.com/acR/dev/reference/ac_count.md)
+[`ac_plot_xray()`](https://andersonheri.github.io/acR/dev/reference/ac_plot_xray.md),
+[`ac_count()`](https://andersonheri.github.io/acR/dev/reference/ac_count.md)
 
 ## Examples
 

@@ -3,7 +3,7 @@
 `ac_tf_idf()` calcula a frequencia de termos (`tf`), a frequencia
 inversa de documentos (`idf`) e o produto `tf_idf` a partir de uma
 tabela de frequencias de termos (tipicamente o resultado de
-[`ac_count()`](https://ahenriquecp.com/acR/dev/reference/ac_count.md)).
+[`ac_count()`](https://andersonheri.github.io/acR/dev/reference/ac_count.md)).
 
 A funcao segue a mesma logica de
 [`tidytext::bind_tf_idf()`](https://juliasilge.github.io/tidytext/reference/bind_tf_idf.html),
@@ -28,7 +28,7 @@ ac_tf_idf(x, by = NULL)
   [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
   contendo, no minimo, as colunas `token` e `n`. Em geral, o resultado
   de
-  [`ac_count()`](https://ahenriquecp.com/acR/dev/reference/ac_count.md).
+  [`ac_count()`](https://andersonheri.github.io/acR/dev/reference/ac_count.md).
 
 - by:
 
@@ -66,8 +66,8 @@ documento/grupo e termo (isto e, uma linha por termo-em-documento).
 
 ## See also
 
-[`ac_count()`](https://ahenriquecp.com/acR/dev/reference/ac_count.md),
-[`ac_top_terms()`](https://ahenriquecp.com/acR/dev/reference/ac_top_terms.md),
+[`ac_count()`](https://andersonheri.github.io/acR/dev/reference/ac_count.md),
+[`ac_top_terms()`](https://andersonheri.github.io/acR/dev/reference/ac_top_terms.md),
 [`tidytext::bind_tf_idf()`](https://juliasilge.github.io/tidytext/reference/bind_tf_idf.html)
 
 ## Examples

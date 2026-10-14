@@ -26,7 +26,7 @@ ac_plot_zipf(freq_tbl, by = NULL, title = NULL)
 - freq_tbl:
 
   Tibble com colunas `token` e `n`, tipicamente a saída de
-  [`ac_count()`](https://ahenriquecp.com/acR/dev/reference/ac_count.md).
+  [`ac_count()`](https://andersonheri.github.io/acR/dev/reference/ac_count.md).
   Se vier com uma coluna de grupo (de `ac_count(corp, by = ...)`), use
   `by` para facetar.
 
@@ -50,8 +50,8 @@ Addison-Wesley.
 
 ## See also
 
-[`ac_count()`](https://ahenriquecp.com/acR/dev/reference/ac_count.md),
-[`ac_top_terms()`](https://ahenriquecp.com/acR/dev/reference/ac_top_terms.md)
+[`ac_count()`](https://andersonheri.github.io/acR/dev/reference/ac_count.md),
+[`ac_top_terms()`](https://andersonheri.github.io/acR/dev/reference/ac_top_terms.md)
 
 ## Examples
 
