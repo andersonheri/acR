@@ -67,3 +67,7 @@ inst/doc
 /Meta/
 inst/doc/
 CRAN-SUBMISSION
+
+# Build local do pkgdown (publicado via Actions na branch gh-pages,
+# nunca deve ser commitado em main)
+/docs/
