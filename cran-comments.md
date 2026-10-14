@@ -127,43 +127,46 @@ defaults, except the one documented bug fix below.
 
 ## Test environments
 
-**Pending for this 0.4.0 submission** — the changes above were made
-without a local R installation available; `devtools::document()`,
-`devtools::test()` and `devtools::check(remote = TRUE, manual = TRUE)`
-still need to be run locally before submitting, following the
-checklist at the end of this file. The entries below are from the
-last submission (0.3.4) and need to be re-confirmed:
-
-* Local: Windows 11, R 4.6.x.
-* Local: macOS 14.4 (Darwin arm64), R 4.5.x.
+* Local: Windows 11, R 4.6.1 (ucrt) — full `devtools::document()`,
+  `devtools::test()` (879 passed, 0 failed) and
+  `devtools::check(remote = TRUE, manual = TRUE)` run confirmed.
 * GitHub Actions matrix on the tip of `main`: Ubuntu R-devel / release
-  / oldrel-1, macOS release, Windows release.
+  / oldrel-1, macOS release, Windows release (to be re-confirmed after
+  this branch merges; no changes to the workflow files themselves).
 
 ## R CMD check results
 
-**Pending** for 0.4.0 — see checklist below. Last confirmed run
-(0.3.4, local `--as-cran`): `0 errors | 0 warnings | 2 NOTEs`, both
-environment false positives (clock skew; outdated local `tidy` on
-macOS), not expected to change for 0.4.0.
+Local, `--as-cran`, confirmed:
+
+```
+0 errors | 0 warnings | 1 NOTE
+```
+
+The NOTE is:
+
+1. **Invalid URL** — `README.md` links to
+   `https://ahenriquecp.com/acR/articles/llm-local-em-escala.html`
+   (the new vignette added in this release), which 404s because the
+   pkgdown site has not been rebuilt yet on this branch. The `pkgdown`
+   GitHub Action rebuilds the site automatically once this branch
+   merges to `main`; the URL will resolve at that point. If it still
+   404s when CRAN processes the submission, rebuild and deploy the
+   site manually (`pkgdown::build_site()` + push to `gh-pages`) before
+   resubmitting, or temporarily drop that one link from `README.md`.
 
 ## Pre-submission checklist for this release
 
-1. `devtools::document()` — regenerate `man/*.Rd` and `NAMESPACE` from
-   the roxygen comments in `R/*.R` (all `.Rd` files above were updated
-   by hand to match; this should produce **no diff**, but confirm).
-2. `devtools::test()` — full suite, including the new tests for
-   `.ac_make_chat()`/`.ac_chat_with_temperature()`, `.ac_status_do_erro()`/
-   `.ac_classify_with_retry()`, checkpoint helpers, `ac_qual_reliability(by_variable = TRUE)`,
-   `ac_qual_sample(strategy = "proportional")`, `ac_chat_local()` and
-   `ac_estimate_tokens()`/`ac_calibrate_tokens()`.
-3. `devtools::check(remote = TRUE, manual = TRUE)` — confirm `0 errors
-   | 0 warnings`, review NOTEs.
-4. `pkgdown::build_site()` or at least `pkgdown::build_article("llm-local-em-escala")`
-   — confirm the new vignette renders (all its runnable chunks are
-   `eval = FALSE`, consistent with the other LLM vignettes, since they
-   require a running local server or real API credentials).
-5. Only then: `devtools::submit_cran()`, and click the confirmation
-   email — both steps require your local machine/inbox.
+1. ~~`devtools::document()`~~ — done; `man/*.Rd` and `NAMESPACE` are in
+   sync with the roxygen comments in `R/*.R`.
+2. ~~`devtools::test()`~~ — done; `0` failures.
+3. ~~`devtools::check(remote = TRUE, manual = TRUE)`~~ — done; see
+   above.
+4. **Before submitting**: make sure the `llm-local-em-escala` article
+   is live at the URL above (merge this branch to `main` and let the
+   `pkgdown` Action run, or build+deploy manually) so the NOTE above
+   does not reproduce on CRAN's end.
+5. `devtools::submit_cran()`, and click the confirmation email — both
+   steps require your local machine/inbox.
 
 ## Downstream dependencies
 
