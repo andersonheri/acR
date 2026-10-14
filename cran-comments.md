@@ -1,8 +1,59 @@
 ## Submission summary
 
-Patch release of `acR` (0.3.3 → 0.3.4) fixing two crashes/bugs in the
-qualitative pipeline found in production use, on top of the fixes and
-addition already shipped in 0.3.3.
+Minor release of `acR` (0.3.4 → 0.4.0): a critical silent-fallback bug
+fix plus several new parameters/functions in the qualitative pipeline
+(`ac_qual_code()`, `ac_qual_reliability()`, `ac_qual_sample()`),
+derived from production use classifying 872 normative acts with
+`ellmer` against local LM Studio servers. All changes are additive
+(new optional parameters with backward-compatible defaults, new
+columns in the output tibble, new exported functions) — no existing
+call to any exported function changes behavior with its previous
+defaults, except the one documented bug fix below.
+
+### Fixes in 0.4.0
+
+* `ac_qual_code(model/chat = <Chat do ellmer>)`: `temperature` era
+  descartado em silêncio sempre que a reconstrução do chat via helper
+  interno falhava — o que passou a acontecer sistematicamente no
+  `ellmer >= 0.5.0` por uma mudança no formato de `class()` do
+  provider. Corrigido mutando o objeto `Model` diretamente
+  (`set_model()`/`get_model_object()`), com aviso explícito
+  (`cli::cli_warn()`) se a mutação falhar — nunca mais em silêncio.
+* `ac_qual_code()` multilabel: a confiança por variável
+  (`confidence = "by_variable"/"both"`) subestimava categorias
+  presentes junto com outras na mesma rodada (comparava a string
+  inteira em vez de testar presença). Corrigido com `%in%` após
+  separar por `"|"`.
+
+### New in 0.4.0
+
+* `max_retries`, coluna `status` e `n_tentativas`: novas tentativas
+  automáticas com espera exponencial; aborta a execução se mais da
+  metade dos últimos documentos falhar.
+* `checkpoint_dir`: grava cada documento atomicamente, permite
+  retomar uma rodada interrompida sem reclassificar.
+* Colunas `tokens_entrada`/`tokens_saida`/`segundos`/
+  `tokens_por_segundo` e o atributo `run_info` (versões, modelo,
+  parâmetros efetivos, hash do codebook).
+* `main_temperature`/`reasoning_extras` expostos (antes fixos no
+  código); `live = "progress"` (barra enxuta) e `echo = "none"` por
+  padrão em chats internos.
+* `ac_qual_reliability(by_variable = TRUE, exclude_status = ...)`:
+  métricas binárias por categoria do codebook (essencial em
+  multilabel), com `NA` em denominadores indefinidos.
+* `ac_qual_sample(strategy = "proportional", strata = ..., ...)`:
+  amostragem estratificada com alocação proporcional (método do
+  maior resto) e coluna `peso_amostral`.
+* `ac_chat_local()`: provedor de primeira classe para servidores LLM
+  locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM).
+* `ac_estimate_tokens()` / `ac_calibrate_tokens()`: estimativa e
+  calibração de consumo de tokens sem depender de uma chamada de rede
+  por documento.
+* Nova vignette `llm-local-em-escala` cobrindo o fluxo completo de
+  classificação local em escala.
+* `stats` e `utils` adicionados a `Imports` em `DESCRIPTION` (usados
+  via `::` havia tempo, faltava a declaração formal — NOTE latente
+  corrigido).
 
 ### Fixes in 0.3.4
 
@@ -76,30 +127,43 @@ addition already shipped in 0.3.3.
 
 ## Test environments
 
-* Local: Windows 11, R 4.6.x — reproduced and fixed the crash reported
-  from production use.
-* Local: macOS 14.4 (Darwin arm64), R 4.5.x — 0 errors, 0 warnings,
-  2 NOTEs (see below), confirmed against 0.3.3's own submission.
+**Pending for this 0.4.0 submission** — the changes above were made
+without a local R installation available; `devtools::document()`,
+`devtools::test()` and `devtools::check(remote = TRUE, manual = TRUE)`
+still need to be run locally before submitting, following the
+checklist at the end of this file. The entries below are from the
+last submission (0.3.4) and need to be re-confirmed:
+
+* Local: Windows 11, R 4.6.x.
+* Local: macOS 14.4 (Darwin arm64), R 4.5.x.
 * GitHub Actions matrix on the tip of `main`: Ubuntu R-devel / release
   / oldrel-1, macOS release, Windows release.
 
 ## R CMD check results
 
-Locally with `--as-cran`:
+**Pending** for 0.4.0 — see checklist below. Last confirmed run
+(0.3.4, local `--as-cran`): `0 errors | 0 warnings | 2 NOTEs`, both
+environment false positives (clock skew; outdated local `tidy` on
+macOS), not expected to change for 0.4.0.
 
-```
-0 errors | 0 warnings | 2 NOTEs
-```
+## Pre-submission checklist for this release
 
-The NOTEs are:
-
-1. **Unable to verify current time** — offline/VM check host clock
-   skew, unrelated to the package.
-2. **HTML version of manual** — validation warnings (`<link> inserting
-   "type" attribute`, `<table> lacks "summary" attribute`, etc.) from
-   an outdated local `tidy` bundled with macOS; a well-known false
-   positive on macOS local checks that does not reproduce on CRAN's
-   Linux build machines with a current `tidy`.
+1. `devtools::document()` — regenerate `man/*.Rd` and `NAMESPACE` from
+   the roxygen comments in `R/*.R` (all `.Rd` files above were updated
+   by hand to match; this should produce **no diff**, but confirm).
+2. `devtools::test()` — full suite, including the new tests for
+   `.ac_make_chat()`/`.ac_chat_with_temperature()`, `.ac_status_do_erro()`/
+   `.ac_classify_with_retry()`, checkpoint helpers, `ac_qual_reliability(by_variable = TRUE)`,
+   `ac_qual_sample(strategy = "proportional")`, `ac_chat_local()` and
+   `ac_estimate_tokens()`/`ac_calibrate_tokens()`.
+3. `devtools::check(remote = TRUE, manual = TRUE)` — confirm `0 errors
+   | 0 warnings`, review NOTEs.
+4. `pkgdown::build_site()` or at least `pkgdown::build_article("llm-local-em-escala")`
+   — confirm the new vignette renders (all its runnable chunks are
+   `eval = FALSE`, consistent with the other LLM vignettes, since they
+   require a running local server or real API credentials).
+5. Only then: `devtools::submit_cran()`, and click the confirmation
+   email — both steps require your local machine/inbox.
 
 ## Downstream dependencies
 
