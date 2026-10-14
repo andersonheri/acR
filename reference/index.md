@@ -74,32 +74,6 @@ Frequencias, associacoes e modelagem estatistica de textos.
   : Ajustar múltiplos modelos LDA para selecionar k
 - [`ac_cluster_documents()`](https://ahenriquecp.com/acR/reference/ac_cluster_documents.md)
   : Agrupamento nao supervisionado de documentos
-- [`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md)
-  : Calcular legibilidade textual (Índice de Flesch adaptado ao
-  português)
-- [`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md)
-  : Calcular diversidade lexical (riqueza de vocabulário)
-- [`ac_kwic()`](https://ahenriquecp.com/acR/reference/ac_kwic.md) :
-  Concordância (keyword-in-context, KWIC)
-- [`ac_collocations()`](https://ahenriquecp.com/acR/reference/ac_collocations.md)
-  : Identificar colocações com medidas de associação estatística
-- [`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md)
-  : Agregar uma métrica por período de tempo
-- [`ac_wordscores()`](https://ahenriquecp.com/acR/reference/ac_wordscores.md)
-  : Escalonamento ideológico de documentos pelo método Wordscores
-- [`ac_ca()`](https://ahenriquecp.com/acR/reference/ac_ca.md) : Análise
-  de correspondência (CA) entre documentos/grupos e termos
-- [`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md)
-  : Classificar conteúdo com um dicionário multi-categoria
-- [`ac_build_dictionary()`](https://ahenriquecp.com/acR/reference/ac_build_dictionary.md)
-  : Construir um dicionário multi-categoria
-- [`ac_dictionary_save()`](https://ahenriquecp.com/acR/reference/ac_dictionary_save.md)
-  [`ac_dictionary_load()`](https://ahenriquecp.com/acR/reference/ac_dictionary_save.md)
-  : Salvar ou carregar um dicionário em YAML
-- [`ac_dictionary_import()`](https://ahenriquecp.com/acR/reference/ac_dictionary_import.md)
-  : Importar um dicionário de uma tabela em formato longo
-- [`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md)
-  : Classificar emoções com um léxico de palavra-emoção
 
 ## Codificacao qualitativa via LLM
 
@@ -128,12 +102,6 @@ geracao de system prompts.
   LLM
 - [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
   : Classificar textos com LLM usando um codebook
-- [`ac_chat_local()`](https://ahenriquecp.com/acR/reference/ac_chat_local.md)
-  : Conectar a um servidor LLM local compativel com OpenAI
-- [`ac_estimate_tokens()`](https://ahenriquecp.com/acR/reference/ac_estimate_tokens.md)
-  : Estimar numero de tokens de um texto
-- [`ac_calibrate_tokens()`](https://ahenriquecp.com/acR/reference/ac_calibrate_tokens.md)
-  : Calibrar a razao caracteres/token contra um modelo real
 - [`ac_qual_save_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_save_codebook.md)
   : Salvar codebook em arquivo YAML
 - [`ac_qual_load_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_load_codebook.md)
@@ -147,8 +115,6 @@ Amostragem, concordancia inter-codificador e importacao/exportacao.
   : Calcular métricas de confiabilidade inter-anotador
 - [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
   : Calcular confiabilidade entre codificação LLM e humana
-- [`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md)
-  : Validar um dicionário contra codificação humana
 - [`ac_qual_sample()`](https://ahenriquecp.com/acR/reference/ac_qual_sample.md)
   : Amostrar documentos para validação humana
 - [`ac_qual_export_for_review()`](https://ahenriquecp.com/acR/reference/ac_qual_export_for_review.md)
@@ -179,8 +145,6 @@ Listagem e recomendacao de modelos LLM.
 
 Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 
-- [`ac_plot_ca()`](https://ahenriquecp.com/acR/reference/ac_plot_ca.md)
-  : Visualizar um biplot de análise de correspondência
 - [`ac_plot_cluster()`](https://ahenriquecp.com/acR/reference/ac_plot_cluster.md)
   : Visualiza um objeto ac_cluster
 - [`ac_plot_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_plot_cooccurrence.md)
@@ -191,26 +155,16 @@ Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
   : Visualizar top termos por tópico
 - [`ac_plot_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_plot_lda_tune.md)
   : Visualizar curva de seleção de k (perplexidade)
-- [`ac_plot_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_plot_lexical_diversity.md)
-  : Visualizar diversidade lexical por grupo
-- [`ac_plot_readability()`](https://ahenriquecp.com/acR/reference/ac_plot_readability.md)
-  : Visualizar legibilidade por grupo
 - [`ac_plot_sentiment()`](https://ahenriquecp.com/acR/reference/ac_plot_sentiment.md)
   : Visualizar sentimento ao longo dos documentos
-- [`ac_plot_temporal()`](https://ahenriquecp.com/acR/reference/ac_plot_temporal.md)
-  : Visualizar uma série temporal de conteúdo
 - [`ac_plot_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_plot_tf_idf.md)
   : Plotar termos mais caracteristicos por tf-idf
 - [`ac_plot_top_terms()`](https://ahenriquecp.com/acR/reference/ac_plot_top_terms.md)
   : Plotar termos mais frequentes
 - [`ac_plot_wordcloud_comparative()`](https://ahenriquecp.com/acR/reference/ac_plot_wordcloud_comparative.md)
   : Nuvem de palavras comparativa entre grupos
-- [`ac_plot_wordscores()`](https://ahenriquecp.com/acR/reference/ac_plot_wordscores.md)
-  : Visualizar escores Wordscores por documento
 - [`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md)
   : Gráfico X-ray — dispersão lexical de termos no corpus
-- [`ac_plot_zipf()`](https://ahenriquecp.com/acR/reference/ac_plot_zipf.md)
-  : Visualizar a Lei de Zipf (frequência × posto)
 - [`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md)
   : Criar nuvem de palavras
 - [`theme_ac()`](https://ahenriquecp.com/acR/reference/theme_ac.md) :

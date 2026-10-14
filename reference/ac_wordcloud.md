@@ -110,13 +110,12 @@ if (requireNamespace("ggwordcloud", quietly = TRUE)) {
 if (requireNamespace("wordcloud", quietly = TRUE)) {
   ac_wordcloud(freq, max_words = 30, backend = "wordcloud")
 }
-#> Warning: empresas could not be fit on page. It will not be plotted.
-#> Warning: empresas could not be fit on page. It will not be plotted.
 #> Warning: impostos could not be fit on page. It will not be plotted.
 #> Warning: impostos could not be fit on page. It will not be plotted.
 #> Warning: indiretos could not be fit on page. It will not be plotted.
-#> Warning: modernizacao could not be fit on page. It will not be plotted.
+#> Warning: moderniza could not be fit on page. It will not be plotted.
 #> Warning: prejudica could not be fit on page. It will not be plotted.
+#> Warning: reduz could not be fit on page. It will not be plotted.
 
 #> Warning: reforma could not be fit on page. It will not be plotted.
 #> Warning: reforma could not be fit on page. It will not be plotted.

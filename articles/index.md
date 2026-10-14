@@ -19,8 +19,6 @@ Codebook, self-consistency, revisão humana e casos aplicados.
   LLMs](https://ahenriquecp.com/acR/articles/qualitativo-llm.md):
 - [Análise de proposições
   legislativas](https://ahenriquecp.com/acR/articles/analise-proposicoes.md):
-- [Classificação com LLM Local em
-  Escala](https://ahenriquecp.com/acR/articles/llm-local-em-escala.md):
 
 ### Pipeline quantitativo
 

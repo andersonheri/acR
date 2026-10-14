@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/andersonheri/acR/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/andersonheri/acR/blob/HEAD/inst/CITATION)
 
 Henrique, A. (2026). acR: Analise de Conteudo em R. R package version
 0.3.0. Centro de Estudos da Metropole (CEM-Cepid) - Universidade de Sao

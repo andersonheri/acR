@@ -1,221 +1,6 @@
 # Changelog
 
-## acR 0.5.0
-
-Doze novas tecnicas quantitativas de diagnostico de corpus, escalas e
-dicionarios, todas documentadas na vignette
-[`vignette("quantitativo")`](https://ahenriquecp.com/acR/articles/quantitativo.md)
-(secao “Novidades”), com exemplos fora do dominio parlamentar
-(avaliacoes de produto, atendimento ao cliente, noticias).
-
-### Novidades
-
-- **[`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md)/[`ac_plot_readability()`](https://ahenriquecp.com/acR/reference/ac_plot_readability.md)**:
-  legibilidade/ complexidade textual via indice de Flesch adaptado ao
-  portugues (Martins et al., 1996).
-- **[`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md)/[`ac_plot_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_plot_lexical_diversity.md)**:
-  diversidade lexical (TTR, C de Herdan, MTLD; Herdan, 1960; McCarthy &
-  Jarvis, 2010).
-- **[`ac_plot_zipf()`](https://ahenriquecp.com/acR/reference/ac_plot_zipf.md)**:
-  grafico log-log de frequencia por ranking (Lei de Zipf, 1949),
-  diagnostico classico de corpus.
-- **[`ac_kwic()`](https://ahenriquecp.com/acR/reference/ac_kwic.md)**:
-  concordancia/*keyword-in-context* (Sinclair, 1991), complementar a
-  [`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md).
-- **[`ac_collocations()`](https://ahenriquecp.com/acR/reference/ac_collocations.md)**:
-  bigramas/trigramas estatisticamente associados via PMI (Church &
-  Hanks, 1990), log-likelihood (Dunning,
-  1993. ou qui-quadrado – nao so frequencia bruta.
-- **[`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md)/[`ac_plot_temporal()`](https://ahenriquecp.com/acR/reference/ac_plot_temporal.md)**:
-  agregacao diacronica de qualquer metrica por dia/semana/mes/ano
-  (Welbers, Van Atteveldt & Benoit, 2017).
-- **[`ac_wordscores()`](https://ahenriquecp.com/acR/reference/ac_wordscores.md)/[`ac_plot_wordscores()`](https://ahenriquecp.com/acR/reference/ac_plot_wordscores.md)**:
-  escalonamento ideologico/continuo de documentos a partir de um pequeno
-  conjunto de referencia com posicao conhecida (Laver, Benoit & Garry,
-  2003), com reescalonamento `"lbg"` ou `"mv"` (Martin & Vanberg, 2007).
-- **[`ac_ca()`](https://ahenriquecp.com/acR/reference/ac_ca.md)/[`ac_plot_ca()`](https://ahenriquecp.com/acR/reference/ac_plot_ca.md)**:
-  analise de correspondencia (biplot de documentos/grupos x termos)
-  calculada nativamente via
-  [`base::svd()`](https://rdrr.io/r/base/svd.html) (Greenacre, 2007),
-  alternativa geometrica e deterministica a
-  [`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md).
-- **[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md)/[`ac_build_dictionary()`](https://ahenriquecp.com/acR/reference/ac_build_dictionary.md)**:
-  dicionario multi-categoria generico (temas, enquadramentos, emocoes),
-  nao apenas polaridade positivo/negativo (Stone et al., 1966; Grimmer &
-  Stewart, 2013).
-- **[`ac_dictionary_save()`](https://ahenriquecp.com/acR/reference/ac_dictionary_save.md)/[`ac_dictionary_load()`](https://ahenriquecp.com/acR/reference/ac_dictionary_save.md)/
-  [`ac_dictionary_import()`](https://ahenriquecp.com/acR/reference/ac_dictionary_import.md)**:
-  construcao e importacao de dicionario customizado via YAML/CSV,
-  unificando o fluxo deterministico com o fluxo de codebook para LLM
-  ([`ac_qual_save_codebook()`](https://ahenriquecp.com/acR/reference/ac_qual_save_codebook.md)).
-- **[`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md)**:
-  classificacao de emocoes a partir de um lexico fornecido pelo usuario,
-  inspirada no NRC Emotion Lexicon (Mohammad & Turney, 2013); o pacote
-  nao distribui lexico de emocao em portugues por motivos de
-  licenciamento.
-- **[`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md)**:
-  validacao de classificacao por dicionario contra uma codificacao
-  humana de referencia, categoria por categoria – o equivalente de
-  [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
-  para o metodo de dicionario (Grimmer & Stewart, 2013).
-
-## acR 0.4.0
-
-Pacote de ajustes derivados de uso em producao (872 atos normativos do
-SIGEPE, `ellmer` + LM Studio com dois modelos locais, validacao humana,
-documentos de ate 1,4M de caracteres).
-
-### Correcoes
-
-- **[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
-  com `model`/`chat` como objeto `Chat` do `ellmer`**: `temperature` era
-  silenciosamente descartado sempre que a tentativa de reconstruir o
-  chat via `.ac_ellmer_chat()` falhava – o que passou a acontecer
-  sistematicamente no `ellmer >= 0.5.0`, porque `class(provider)[1]`
-  passou a vir qualificado por namespace (`"ellmer::ProviderOpenAI"`),
-  quebrando o `sub("^provider", "", ...)` usado para remontar o nome
-  `"provedor/modelo"`. O fallback silencioso fazia as `k_consistency`
-  rodadas de self-consistency (Wang et al.,
-  2023. rodarem todas na mesma temperatura padrao do provedor, inflando
-        `confidence_score` sem aviso. Corrigido com uma nova rota que
-        muta o objeto `Model` do chat diretamente via `set_model()`/
-        `get_model_object()` (API estavel desde o `ellmer` 0.5.0), e que
-        avisa explicitamente
-        ([`cli::cli_warn()`](https://cli.r-lib.org/reference/cli_abort.html))
-        quando a mutacao falha – nunca mais em silencio. `model` agora
-        tambem aceita uma funcao fabrica
-        `function(temperature, system_prompt) Chat` para controle total
-        sobre a construcao do chat a cada rodada.
-- **`ac_qual_code(confidence = "by_variable" | "both")` com
-  `multilabel = TRUE`**: a confianca por variavel subestimava
-  sistematicamente categorias presentes junto com outras na mesma
-  rodada, porque comparava a string inteira
-  (`"tecnica|politica" == "tecnica"` nunca e `TRUE`) em vez de testar se
-  a categoria estava entre as escolhidas naquela rodada. Corrigido para
-  usar `%in%` apos separar a string por `"|"`; o comportamento para
-  rotulagem unica (sem `"|"`) nao muda.
-
-### Novidades
-
-- **`ac_qual_code(max_retries = 2L)`**: novas tentativas automaticas
-  (espera exponencial, ate 30s) quando uma rodada falha por erro de
-  rede, timeout ou resposta invalida. Nova coluna `status` no tibble de
-  saida (`"ok"`, `"resposta_invalida"`, `"estouro_contexto"`,
-  `"timeout"`, `"erro_servidor"`) e `n_tentativas`. Erros classificados
-  como `"estouro_contexto"` nao sao repetidos (retry nao resolve). Se
-  mais da metade dos ultimos 5+ documentos falhar, a execucao e abortada
-  com sugestao de `checkpoint_dir`.
-- **`ac_qual_code(checkpoint_dir = ...)`**: salva o resultado de cada
-  documento assim que classificado (gravacao atomica via arquivo
-  temporario + [`file.rename()`](https://rdrr.io/r/base/files.html)),
-  permitindo retomar uma rodada interrompida sem reclassificar
-  documentos ja concluidos. Checkpoints de uma rodada com
-  `codebook`/`model`/`k_consistency`/`temperature` diferentes sao
-  invalidados e sobrescritos automaticamente (com aviso).
-- **[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
-  ganha colunas `tokens_entrada`, `tokens_saida`, `segundos` e
-  `tokens_por_segundo`** (via `chat$get_tokens()`), medidos na rodada
-  principal de cada documento.
-- **[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
-  ganha o atributo `run_info`** (`attr(resultado, "run_info")`): versoes
-  de `acR`/`ellmer`, modelo, `base_url`, parametros efetivos aplicados
-  ao provedor, temperaturas pedidas, `k_consistency`, hash do codebook e
-  timestamps de inicio/fim. Avisa quando nao e possivel confirmar que
-  `temperature` foi de fato aplicada a um `Chat` pre-configurado.
-- **`ac_qual_code(main_temperature = 0, reasoning_extras = FALSE)`**:
-  parametros antes fixos no codigo agora expostos. `main_temperature`
-  controla a temperatura da rodada que gera o resultado final (antes
-  sempre `0`); `reasoning_extras` controla se as rodadas extras de
-  self-consistency tambem pedem raciocinio (antes sempre `FALSE`).
-- **`ac_qual_reliability(by_variable = TRUE)`**: calcula métricas
-  binárias (concordância, precisão, recall, F1, Gwet AC1, alfa de
-  Krippendorff) para cada categoria do codebook individualmente —
-  essencial em `multilabel = TRUE`, onde a métrica agregada mistura
-  várias decisões binárias independentes. Denominadores zero geram `NA`,
-  nunca `0`/`1` artificiais. `exclude_status` remove documentos cuja
-  rodada falhou (ver `status` em \[ac_qual_code()\]) antes de comparar.
-  Resultado fica em `attr(resultado, "by_variable")`.
-- **`ac_qual_sample(strategy = "proportional")`**: amostragem
-  estratificada com alocação proporcional ao tamanho de cada estrato
-  (método do maior resto), preservando a distribuição original —
-  diferente de `"stratified"`, que divide `n` igualmente entre
-  categorias. Ganha `strata`, `min_per_stratum`, `min_stratum_size`
-  (agrupa estratos pequenos em `"Outras"`) e `exclude_ids`. A amostra
-  ganha a coluna `peso_amostral` para uso em estimativas ponderadas.
-- **[`ac_chat_local()`](https://ahenriquecp.com/acR/reference/ac_chat_local.md)**:
-  provedor de primeira classe para servidores LLM locais compatíveis com
-  OpenAI (LM Studio, llama.cpp, vLLM, Ollama em modo OpenAI), sem exigir
-  uma chave de API real. Adapta-se ao nome do parâmetro de credencial
-  (`api_key` vs `credentials`) conforme a versão instalada do `ellmer`.
-- **[`ac_estimate_tokens()`](https://ahenriquecp.com/acR/reference/ac_estimate_tokens.md)**:
-  estimativa barata (heurística de caracteres por token, sem chamada de
-  rede) do consumo de tokens de um texto – útil para prever estouro de
-  contexto antes de enviar ao LLM.
-  **[`ac_calibrate_tokens()`](https://ahenriquecp.com/acR/reference/ac_calibrate_tokens.md)**:
-  calibra a razão caracteres/token contra um modelo real usando uma
-  amostra pequena de textos.
-- **`ac_qual_code(live = "progress")`**: novo modo de barra de progresso
-  enxuta (doc atual + status, sem ecoar categoria/raciocinio) para
-  rodadas grandes. Chats construidos internamente pelo `acR` agora usam
-  `echo = "none"` por padrao (configuravel via `...`), evitando poluir o
-  console a cada uma das `k_consistency` rodadas por documento.
-
-## acR 0.3.4
-
-CRAN release: 2026-09-10
-
-### Correcoes
-
-- **`ac_qual_code(confidence = "by_variable" | "both")`**: a confianca
-  por variavel nunca era calculada nem chegava ao tibble de saida como
-  colunas `<categoria>_confidence`, apesar de documentado em `@return`.
-  Dois bugs na mesma funcao: (1) `.ac_compute_confidence()` testava
-  `confidence %in% c("total", "both")` no primeiro `if`, entao `"both"`
-  sempre caia nesse ramo e nunca calculava a confianca por variavel;
-  2.  mesmo quando calculada (modo `"by_variable"` puro), o valor era so
-      a proporcao da categoria vencedora, nao uma proporcao por
-      categoria do codebook – e `.ac_build_result_tibble()` nunca lia
-      esse valor para adicionar as colunas ao tibble final. Corrigido
-      nas duas funcoes: `by_var` agora tem uma entrada por categoria de
-      `cat_names` com a proporcao de rodadas de self-consistency que a
-      escolheram, calculada sempre que `confidence` inclui
-      `"by_variable"`, e o tibble final ganha as colunas
-      `<categoria>_confidence` correspondentes.
-- **[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)**:
-  corrigido crash “Result must be length 1, not N” em
-  `.ac_compute_confidence()` (calculo de confianca via self-consistency)
-  quando uma das k rodadas devolvia `categoria` como array JSON
-  (`["tema_a", "tema_b"]`) em vez de string unica – apesar do prompt
-  instruir explicitamente o contrario. A funcao irma
-  `.ac_build_result_tibble()` ja colapsava esse caso corretamente
-  (`paste(collapse = "|")`), mas o crash ocorria antes, no calculo de
-  confianca, que nao tinha a mesma protecao. Mesma logica aplicada agora
-  nas duas funcoes.
-
-## acR 0.3.3
-
-CRAN release: 2026-08-20
-
-### Compatibilidade
-
-- Teste `ac_plot_top_terms() gera ggplot valido` (em
-  `test-plots-snapshot.R:56`) usava `"labels" %in% names(p)` como
-  sanidade. Em ggplot2 4.x a estrutura interna do objeto ggplot mudou
-  (nova base S7) e a checagem por nome de slot passou a retornar
-  `FALSE`, quebrando o test na CRAN r-release-macos e r-oldrel-macos
-  (post-acceptance check, deadline 2026-08-21). Substituido por
-  `expect_no_error(ggplot2::ggplot_build(p))` – teste de buildabilidade
-  real, independente de versao do ggplot2.
-
-- Referencias ao modelo Groq `llama-3.3-70b-versatile` (e ao par
-  `llama-3.1-8b-instant`) foram atualizadas para `openai/gpt-oss-120b`
-  (e `openai/gpt-oss-20b`) em exemplos, vignettes, README, testes de
-  integracao e na tabela de
-  [`ac_qual_recommend_model()`](https://ahenriquecp.com/acR/reference/ac_qual_recommend_model.md).
-  A Groq descontinuou os modelos Llama em 2026-06-17; chamadas com o
-  nome antigo retornam HTTP 404. Nao afeta usuarios da CRAN diretamente
-  (sao apenas defaults sugeridos e testes com `skip_if()` de API key),
-  mas evita quebra de exemplos e de CI com `GROQ_API_KEY` configurada.
+## acR 0.3.3 (em desenvolvimento)
 
 ### Nova funcionalidade
 
@@ -301,8 +86,6 @@ corrigidos:
   arrays quando o modelo ignora a instrucao.
 
 ## acR 0.3.2
-
-CRAN release: 2026-08-07
 
 ### Novidades
 
@@ -483,8 +266,7 @@ CRAN release: 2026-08-07
   resolvido (linha em cinza neutro, pontos coloridos por sentimento).
 
 - `.ac_ellmer_chat()`: sempre usa dispatch direto ao invés de delegar a
-  [`ellmer::chat()`](https://ellmer.tidyverse.org/reference/chat-any.html),
-  garantindo resolução consistente de aliases
+  `ellmer::chat()`, garantindo resolução consistente de aliases
   (`gemini → chat_google_gemini`, `claude → chat_anthropic`,
   `azure → chat_azure_openai`, `bedrock → chat_aws_bedrock`).
 
@@ -515,13 +297,10 @@ CRAN release: 2026-08-07
   ([`chat_anthropic()`](https://ellmer.tidyverse.org/reference/chat_anthropic.html),
   [`chat_groq()`](https://ellmer.tidyverse.org/reference/chat_groq.html),
   [`chat_openai()`](https://ellmer.tidyverse.org/reference/chat_openai.html),
-  etc.). A função
-  [`ellmer::chat()`](https://ellmer.tidyverse.org/reference/chat-any.html)
-  foi removida em versões recentes do `ellmer`; o novo helper interno
-  `.ac_ellmer_chat()` roteia strings no formato `"provider/model"` para
-  o dispatcher correto, mantendo fallback para
-  [`ellmer::chat()`](https://ellmer.tidyverse.org/reference/chat-any.html)
-  quando disponível (retrocompatível).
+  etc.). A função `ellmer::chat()` foi removida em versões recentes do
+  `ellmer`; o novo helper interno `.ac_ellmer_chat()` roteia strings no
+  formato `"provider/model"` para o dispatcher correto, mantendo
+  fallback para `ellmer::chat()` quando disponível (retrocompatível).
 
 - `ellmer` movido de `Imports` para `Suggests`: o pacote agora carrega o
   `ellmer` apenas quando o usuário chama uma função qualitativa,
@@ -553,8 +332,7 @@ CRAN release: 2026-08-07
   [`ac_qual_codebook_translate()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_translate.md)
   e
   [`ac_qual_codebook_hybrid()`](https://ahenriquecp.com/acR/reference/ac_qual_codebook_hybrid.md)
-  ganham `skip_if()` defensivo para versões do `ellmer` sem
-  [`chat()`](https://ellmer.tidyverse.org/reference/chat-any.html).
+  ganham `skip_if()` defensivo para versões do `ellmer` sem `chat()`.
 
 - Total: 688 pass, 4 skips justificados.
 

@@ -32,8 +32,8 @@ hierárquico (`hclust`), `kmeans` e `pam`.
 
 Cada documento tem um **vetor de graus de pertencimento** que soma 1
 entre `k` clusters. Um documento “60% tipo A, 40% tipo B” existe. Fuzzy
-c-means (`e1071::cmeans()`) e misturas gaussianas (`mclust`) são os
-exemplos clássicos.
+c-means ([`e1071::cmeans()`](https://rdrr.io/pkg/e1071/man/cmeans.html))
+e misturas gaussianas (`mclust`) são os exemplos clássicos.
 
 - **Modelo mental:** documentos são pontos numa **zona cinzenta** entre
   protótipos.

@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="favicon.ico">
 <link rel="manifest" href="site.webmanifest">
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/Inter-0.4.10/font.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Inter-0.4.10/font.css" rel="stylesheet">
 <link href="deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="deps/Inter_Tight-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -38,7 +38,7 @@
 
     <a class="navbar-brand me-2" href="index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,6 @@
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
     <li><a class="dropdown-item" href="articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
     <li><a class="dropdown-item" href="articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
-    <li><a class="dropdown-item" href="articles/llm-local-em-escala.html">  ↳ LLM local em escala (LM Studio, llama.cpp)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
@@ -102,23 +101,6 @@
 <p>Do texto bruto ao resultado publicável — codebook, LLM, <em>keyness</em>, LDA, sentimento e concordância inter-codificador, num único fluxo reprodutível.</p>
 </div>
 <div class="section level2">
-<h2 id="novidades">Novidades<a class="anchor" aria-label="anchor" href="#novidades"></a>
-</h2>
-<p>Última leva traz 12 técnicas novas de diagnóstico, escalonamento e dicionários para o módulo quantitativo — veja a seção <a href="https://ahenriquecp.com/acR/articles/quantitativo.html">“Novidades: diagnóstico de corpus, escalas e dicionários”</a> da vignette quantitativa para exemplos completos:</p>
-<ul>
-<li>
-<strong>Diagnóstico de corpus</strong>: legibilidade (<code><a href="reference/ac_readability.html">ac_readability()</a></code>, Flesch adaptado ao português), diversidade lexical (<code><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code>: TTR, Herdan’s C, MTLD) e Lei de Zipf (<code><a href="reference/ac_plot_zipf.html">ac_plot_zipf()</a></code>).</li>
-<li>
-<strong>Leitura de contexto</strong>: concordância/KWIC (<code><a href="reference/ac_kwic.html">ac_kwic()</a></code>) e colocações com medidas de associação — PMI, log-likelihood, qui-quadrado (<code><a href="reference/ac_collocations.html">ac_collocations()</a></code>).</li>
-<li>
-<strong>Série temporal</strong>: agregação diacrônica de qualquer métrica por dia, semana, mês ou ano (<code><a href="reference/ac_temporal.html">ac_temporal()</a></code>).</li>
-<li>
-<strong>Escalas e mapas</strong>: escalonamento ideológico via Wordscores (<code><a href="reference/ac_wordscores.html">ac_wordscores()</a></code>) e análise de correspondência — biplot de documentos/grupos × termos (<code><a href="reference/ac_ca.html">ac_ca()</a></code>).</li>
-<li>
-<strong>Dicionários customizados</strong>: dicionário multi-categoria genérico (<code><a href="reference/ac_dictionary.html">ac_dictionary()</a></code>), léxicos de emoção (<code><a href="reference/ac_emotion.html">ac_emotion()</a></code>), construção e importação de dicionários via YAML/CSV (<code><a href="reference/ac_build_dictionary.html">ac_build_dictionary()</a></code>, <code><a href="reference/ac_dictionary_save.html">ac_dictionary_save()</a></code>/<code><a href="reference/ac_dictionary_save.html">ac_dictionary_load()</a></code>, <code><a href="reference/ac_dictionary_import.html">ac_dictionary_import()</a></code>) e validação contra codificação humana (<code><a href="reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>) — o mesmo rigor de <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>, agora para o método de dicionário.</li>
-</ul>
-</div>
-<div class="section level2">
 <h2 id="para-quem-é">Para quem é<a class="anchor" aria-label="anchor" href="#para-quem-%C3%A9"></a>
 </h2>
 <table class="table"><tr>
@@ -142,7 +124,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1. Instalar</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span>           <span class="co"># via CRAN</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span>  <span class="co"># ou versão dev</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span>  <span class="co"># ou versão dev</span></span>
 <span></span>
 <span><span class="co"># 2. Importar seus documentos (PDF, docx, xlsx, csv, txt, imagens com OCR)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/andersonheri/acR" class="external-link">acR</a></span><span class="op">)</span></span>
@@ -162,7 +144,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <h2 id="o-que-o-acr-faz">O que o <code>acR</code> faz<a class="anchor" aria-label="anchor" href="#o-que-o-acr-faz"></a>
 </h2>
 <p><strong>Módulo qualitativo.</strong> Você escreve um <em>codebook</em> (categorias + definições + exemplos), e a LLM classifica cada documento, reportando categoria, nível de confiança via <em>self-consistency</em> e um raciocínio estruturado. Uma amostra é exportada para revisão humana, e a concordância inter-codificador (percent agreement, Cohen’s/Fleiss’ <em>kappa</em>, Krippendorff’s <em>alpha</em>, Gwet’s AC1, F1 macro) é calculada com IC via <em>bootstrap</em>.</p>
-<p><strong>Módulo quantitativo.</strong> Ferramentas estatísticas clássicas de análise de conteúdo: frequência de termos e por grupo, TF-IDF, <em>keyness</em> (χ²/<em>log-likelihood</em>), redes de co-ocorrência com PMI, análise de sentimento em português (OpLexicon), modelagem de tópicos com LDA e seleção automática de <em>k</em>. Inclui também diagnóstico de corpus (legibilidade, diversidade lexical, Lei de Zipf), concordância/colocações (KWIC, PMI/log-likelihood), séries temporais, escalonamento ideológico (Wordscores), análise de correspondência e dicionários multi-categoria customizáveis (incluindo léxicos de emoção, com validação contra codificação humana). Visualizações prontas para publicação em <code>ggplot2</code>, compatíveis com <code>ipeaplot</code>.</p>
+<p><strong>Módulo quantitativo.</strong> Ferramentas estatísticas clássicas de análise de conteúdo: frequência de termos e por grupo, TF-IDF, <em>keyness</em> (χ²/<em>log-likelihood</em>), redes de co-ocorrência com PMI, análise de sentimento em português (OpLexicon), modelagem de tópicos com LDA e seleção automática de <em>k</em>. Visualizações prontas para publicação em <code>ggplot2</code>, compatíveis com <code>ipeaplot</code>.</p>
 <p><strong>Coleta nativa</strong> de discursos da Câmara dos Deputados (por período, partido, UF) e do Senado Federal (via <code>senatebR</code>).</p>
 </div>
 <div class="section level2">
@@ -183,7 +165,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span></span>
 <span><span class="co"># Versão de desenvolvimento do GitHub:</span></span>
 <span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"andersonheri/acR"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># O módulo qualitativo requer o ellmer para comunicação com LLMs</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ellmer"</span><span class="op">)</span></span></code></pre></div>
@@ -284,7 +266,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="st">"openai/gpt-oss-120b"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>,</span>
 <span>  echo  <span class="op">=</span> <span class="st">"none"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -317,37 +299,18 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h2>
 <p>O <code>acR</code> usa o pacote <a href="https://ellmer.tidyverse.org/" class="external-link">ellmer</a> como backend, o que significa que qualquer provedor suportado pelo ellmer funciona diretamente via <code>chat =</code>. Isso inclui modelos comerciais (OpenAI, Anthropic, Google, Mistral, DeepSeek), modelos locais via Ollama, e qualquer serviço que implemente a interface compatível com a API da OpenAI, como instâncias privadas ou servidores institucionais.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"openai/gpt-oss-120b"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama-3.3-70b-versatile"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_google_gemini.html" class="external-link">chat_google_gemini</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gemini-2.5-flash"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_ollama.html" class="external-link">chat_ollama</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"llama3.2"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_openai.html" class="external-link">chat_openai</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-4.1"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"claude-sonnet-4-20250514"</span>, echo <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p>As chaves de API devem ser configuradas no <code>.Renviron</code> com <code>usethis::edit_r_environ()</code>, nunca diretamente no código.</p>
-<div class="section level3">
-<h3 id="rodando-localmente-em-escala">Rodando localmente, em escala<a class="anchor" aria-label="anchor" href="#rodando-localmente-em-escala"></a>
-</h3>
-<p>Para servidores locais compatíveis com OpenAI (LM Studio, llama.cpp, vLLM), <code><a href="reference/ac_chat_local.html">ac_chat_local()</a></code> dispensa configurar uma chave de API real:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">chat_local</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_chat_local.html">ac_chat_local</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"qwen2.5-14b-instruct"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span></span>
-<span>  <span class="va">corpus</span>, <span class="va">codebook</span>,</span>
-<span>  chat           <span class="op">=</span> <span class="va">chat_local</span>,</span>
-<span>  checkpoint_dir <span class="op">=</span> <span class="st">"checkpoints/"</span>,  <span class="co"># retoma sem reclassificar em caso de interrupcao</span></span>
-<span>  max_retries    <span class="op">=</span> <span class="fl">2L</span>,              <span class="co"># novas tentativas com espera exponencial</span></span>
-<span>  live           <span class="op">=</span> <span class="st">"progress"</span>       <span class="co"># barra de progresso enxuta para rodadas grandes</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">resultado</span><span class="op">$</span><span class="va">status</span><span class="op">)</span>             <span class="co"># ok / resposta_invalida / estouro_contexto / timeout / erro_servidor</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="st">"run_info"</span><span class="op">)</span><span class="op">$</span><span class="va">params_efetivos</span><span class="op">$</span><span class="va">temperature</span>  <span class="co"># auditar o que o provedor confirmou</span></span></code></pre></div>
-<p>Veja a vignette <a href="https://ahenriquecp.com/acR/articles/llm-local-em-escala.html">LLM local em escala</a> para o fluxo completo (dimensionamento de contexto com <code><a href="reference/ac_estimate_tokens.html">ac_estimate_tokens()</a></code>, checkpoint, tratamento de falhas e validação por categoria com <code>ac_qual_reliability(by_variable = TRUE)</code>).</p>
+<p>As chaves de API devem ser configuradas no <code>.Renviron</code> com <code><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">usethis::edit_r_environ()</a></code>, nunca diretamente no código.</p>
 <hr>
-</div>
 </div>
 <div class="section level2">
 <h2 id="busca-de-literatura-via-openalex">Busca de literatura via OpenAlex<a class="anchor" aria-label="anchor" href="#busca-de-literatura-via-openalex"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_search_literature.html">ac_qual_search_literature</a></span><span class="op">(</span></span>
 <span>  concept       <span class="op">=</span> <span class="st">"democratic backsliding"</span>,</span>
 <span>  n_refs        <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -360,7 +323,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="pipeline-quantitativo">Pipeline quantitativo<a class="anchor" aria-label="anchor" href="#pipeline-quantitativo"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tokens</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
 <span><span class="va">contagem</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">tokens</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_top_terms.html">ac_plot_top_terms</a></span><span class="op">(</span><span class="fu"><a href="reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">contagem</span>, n <span class="op">=</span> <span class="fl">15</span><span class="op">)</span><span class="op">)</span></span>
@@ -378,22 +341,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="fu"><a href="reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">lda</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">tokens</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">lda</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Novidades: diagnostico, escalas e dicionarios</span></span>
-<span><span class="fu"><a href="reference/ac_readability.html">ac_readability</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_kwic.html">ac_kwic</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, pattern <span class="op">=</span> <span class="st">"reforma"</span>, window <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_collocations.html">ac_collocations</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, measure <span class="op">=</span> <span class="st">"pmi"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">dicionario</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
-<span>  economia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"imposto"</span>, <span class="st">"orcamento"</span>, <span class="st">"deficit"</span><span class="op">)</span>,</span>
-<span>  saude    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saude"</span>, <span class="st">"vacina"</span>, <span class="st">"hospital"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, <span class="va">dicionario</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_ca.html">ac_ca</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_plot_ca.html">ac_plot_ca</a></span><span class="op">(</span><span class="va">ca</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">lda</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -535,13 +483,6 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <td><a href="https://ahenriquecp.com/acR/articles/qualitativo-llm.html">Qualitativo LLM</a></td>
 </tr>
 <tr>
-<td>Classificar com modelo local em escala (checkpoint, retries, tokens)</td>
-<td>
-<code><a href="reference/ac_chat_local.html">ac_chat_local()</a></code> · <code><a href="reference/ac_estimate_tokens.html">ac_estimate_tokens()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/llm-local-em-escala.html">LLM local em escala</a></td>
-</tr>
-<tr>
 <td>Relatório metodológico reprodutível</td>
 <td><code><a href="reference/ac_qual_report.html">ac_qual_report()</a></code></td>
 <td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html">Replicabilidade</a></td>
@@ -551,80 +492,6 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <td><code><a href="reference/ac_export.html">ac_export()</a></code></td>
 <td><a href="https://ahenriquecp.com/acR/articles/replicabilidade.html">Replicabilidade</a></td>
 </tr>
-<tr>
-<td>Legibilidade (Flesch em português)</td>
-<td>
-<code><a href="reference/ac_readability.html">ac_readability()</a></code> → <code><a href="reference/ac_plot_readability.html">ac_plot_readability()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §10</a></td>
-</tr>
-<tr>
-<td>Diversidade lexical (TTR, Herdan’s C, MTLD)</td>
-<td>
-<code><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code> → <code><a href="reference/ac_plot_lexical_diversity.html">ac_plot_lexical_diversity()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §10</a></td>
-</tr>
-<tr>
-<td>Diagnóstico de corpus (Lei de Zipf)</td>
-<td><code><a href="reference/ac_plot_zipf.html">ac_plot_zipf()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §11</a></td>
-</tr>
-<tr>
-<td>Concordância/contexto de um termo (KWIC)</td>
-<td><code><a href="reference/ac_kwic.html">ac_kwic()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §12</a></td>
-</tr>
-<tr>
-<td>Bigramas/trigramas estatisticamente associados</td>
-<td><code><a href="reference/ac_collocations.html">ac_collocations()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §12</a></td>
-</tr>
-<tr>
-<td>Série temporal/diacrônica de uma métrica</td>
-<td>
-<code><a href="reference/ac_temporal.html">ac_temporal()</a></code> → <code><a href="reference/ac_plot_temporal.html">ac_plot_temporal()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §13</a></td>
-</tr>
-<tr>
-<td>Posicionar documentos numa escala (Wordscores)</td>
-<td>
-<code><a href="reference/ac_wordscores.html">ac_wordscores()</a></code> → <code><a href="reference/ac_plot_wordscores.html">ac_plot_wordscores()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §14</a></td>
-</tr>
-<tr>
-<td>Dicionário multi-categoria (temas, enquadramentos)</td>
-<td>
-<code><a href="reference/ac_dictionary.html">ac_dictionary()</a></code> · <code><a href="reference/ac_build_dictionary.html">ac_build_dictionary()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
-</tr>
-<tr>
-<td>Léxico de emoções (tipo NRC)</td>
-<td><code><a href="reference/ac_emotion.html">ac_emotion()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
-</tr>
-<tr>
-<td>Importar/salvar dicionário (YAML/CSV)</td>
-<td>
-<code><a href="reference/ac_dictionary_import.html">ac_dictionary_import()</a></code> · <code><a href="reference/ac_dictionary_save.html">ac_dictionary_save()</a></code>/<code><a href="reference/ac_dictionary_save.html">ac_dictionary_load()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
-</tr>
-<tr>
-<td>Validar dicionário contra codificação humana</td>
-<td><code><a href="reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code></td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §15</a></td>
-</tr>
-<tr>
-<td>Biplot documentos/grupos × termos (análise de correspondência)</td>
-<td>
-<code><a href="reference/ac_ca.html">ac_ca()</a></code> → <code><a href="reference/ac_plot_ca.html">ac_plot_ca()</a></code>
-</td>
-<td><a href="https://ahenriquecp.com/acR/articles/quantitativo.html">Quantitativo §16</a></td>
-</tr>
 </tbody>
 </table>
 <hr>
@@ -632,7 +499,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="cobertura-de-testes">Cobertura de testes<a class="anchor" aria-label="anchor" href="#cobertura-de-testes"></a>
 </h2>
-<p>Suite de <strong>561 blocos <code>test_that</code></strong>, cobrindo boa parte do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
+<p>Suite de <strong>431 blocos <code>test_that</code></strong> com 779 assertions, cobrindo <strong>~66%</strong> do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -682,7 +549,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <li>
 <a href="https://ahenriquecp.com/acR/reference/">Índice completo por área</a> — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.</li>
 <li>
-<a href="https://ahenriquecp.com/acR/news/">Notícias / changelog</a> — histórico de versões (atual: <strong>0.5.0</strong>).</li>
+<a href="https://ahenriquecp.com/acR/news/">Notícias / changelog</a> — histórico de versões (atual: <strong>0.3.3</strong>).</li>
 </ul>
 <hr>
 </div>
@@ -690,10 +557,10 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="como-citar">Como citar<a class="anchor" aria-label="anchor" href="#como-citar"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2026). acR: Análise de Conteúdo em R.
-R package version 0.5.0. ORCID: 0000-0002-1842-2725.
+R package version 0.3.3. ORCID: 0000-0002-1842-2725.
 Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
 https://ahenriquecp.com/acR/</code></pre>
 <hr>
@@ -779,7 +646,7 @@ https://ahenriquecp.com/acR/</code></pre>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

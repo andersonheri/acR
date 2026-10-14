@@ -151,5 +151,6 @@ ac_qual_report_full(
   path = arquivo,
   author = "Fulano de Tal"
 )
-#> ✔ Relatorio salvo em /tmp/Rtmpf321ra/file1b5533ca0e75.md
+#> ✔ Relatorio salvo em
+#>   /var/folders/wr/lsgxp5bj5vd2jgq9ybg24ng00000gn/T//RtmpxhhqVY/file1c3164647cdc.md
 ```

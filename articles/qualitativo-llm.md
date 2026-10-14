@@ -69,13 +69,13 @@ Para calibrar expectativas, estimativa em dólares para um corpus típico
 brasileiro (500 discursos parlamentares, ~800 tokens cada) com
 `k_consistency = 3` e `reasoning = TRUE, reasoning_length = "medium"`:
 
-| Modelo                        | Custo estimado | Tempo estimado   |
-|-------------------------------|----------------|------------------|
-| `groq/openai/gpt-oss-120b`    | US\$ 0,50 – 1  | ~10 min          |
-| `openai/gpt-4o-mini`          | US\$ 3 – 5     | ~15 min          |
-| `anthropic/claude-sonnet-4-5` | US\$ 10 – 20   | ~25 min          |
-| `anthropic/claude-opus-4-7`   | US\$ 40 – 80   | ~40 min          |
-| `ollama/llama3.1:70b` (local) | US\$ 0 (GPU)   | ~2 h em RTX 4090 |
+| Modelo                         | Custo estimado | Tempo estimado   |
+|--------------------------------|----------------|------------------|
+| `groq/llama-3.3-70b-versatile` | US\$ 0,50 – 1  | ~10 min          |
+| `openai/gpt-4o-mini`           | US\$ 3 – 5     | ~15 min          |
+| `anthropic/claude-sonnet-4-5`  | US\$ 10 – 20   | ~25 min          |
+| `anthropic/claude-opus-4-7`    | US\$ 40 – 80   | ~40 min          |
+| `ollama/llama3.1:70b` (local)  | US\$ 0 (GPU)   | ~2 h em RTX 4090 |
 
 [`ac_qual_recommend_model()`](https://ahenriquecp.com/acR/reference/ac_qual_recommend_model.md)
 (chamado a seguir) sugere o modelo mais custo-efetivo para o tamanho e a
@@ -163,7 +163,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 14/10/2026 20:18
+#> • Criado em: 07/08/2026 12:20
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
@@ -513,19 +513,6 @@ Para análises publicáveis, valores acima de **0.67** (Krippendorff) ou
 **0.61** (Landis-Koch) são geralmente aceitos, com discussão dos casos
 divergentes na seção de método.
 
-> **E se eu usar dicionário em vez de LLM?** A mesma exigência de
-> validação vale para classificação por dicionário
-> ([`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md)/[`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md),
-> ver
-> [`vignette("quantitativo")`](https://ahenriquecp.com/acR/articles/quantitativo.md)):
-> um dicionário é determinístico e transparente, mas insensível a
-> contexto, negação e ironia. Use
-> [`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md)
-> — o equivalente de
-> [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
-> para esse método — antes de reportar qualquer classificação por
-> dicionário como válida (Grimmer & Stewart, 2013).
-
 ------------------------------------------------------------------------
 
 ## Diagnosticando problemas comuns
@@ -671,10 +658,6 @@ e a saída bruta da LLM.
 Gilardi, F., Alizadeh, M., & Kubli, M. (2023). ChatGPT outperforms crowd
 workers for text-annotation tasks. *PNAS*, 120(30).
 <https://doi.org/10.1073/pnas.2305016120>
-
-Grimmer, J., & Stewart, B. M. (2013). Text as Data: The Promise and
-Pitfalls of Automatic Content Analysis Methods for Political Texts.
-*Political Analysis*, 21(3), 267-297.
 
 Gwet, K. L. (2014). *Handbook of Inter-Rater Reliability* (4th ed.).
 Advanced Analytics.
