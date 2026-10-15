@@ -150,9 +150,9 @@ técnica, um discurso favorável e um discurso contrário.</p>
 <span>  tema  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"6x1"</span>,     <span class="st">"6x1"</span>,     <span class="st">"6x1"</span>,</span>
 <span>            <span class="st">"anistia"</span>, <span class="st">"anistia"</span>, <span class="st">"anistia"</span>,</span>
 <span>            <span class="st">"reform"</span>,  <span class="st">"reform"</span>,  <span class="st">"reform"</span><span class="op">)</span>,</span>
-<span>  tipo  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrário"</span>,</span>
-<span>            <span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrário"</span>,</span>
-<span>            <span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrário"</span><span class="op">)</span>,</span>
+<span>  tipo  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrario"</span>,</span>
+<span>            <span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrario"</span>,</span>
+<span>            <span class="st">"ementa"</span>,   <span class="st">"favoravel"</span>, <span class="st">"contrario"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -181,10 +181,10 @@ parlamentares brasileiros.</p>
 <span>  <span class="op">)</span>,</span>
 <span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    favoravel      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apoio explícito à proposição com argumentação substantiva."</span><span class="op">)</span>,</span>
-<span>    contrário      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Oposição à proposição com argumentação substantiva."</span><span class="op">)</span>,</span>
+<span>    contrario      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Oposição à proposição com argumentação substantiva."</span><span class="op">)</span>,</span>
 <span>    neutro_tecnico <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Descrição jurídica ou técnica sem valoração explícita."</span><span class="op">)</span>,</span>
 <span>    populista      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Apelo emocional sem evidência ou argumentação técnica."</span><span class="op">)</span>,</span>
-<span>    ambíguo        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Posicionamento contraditório ou impossível de classificar."</span><span class="op">)</span></span>
+<span>    ambiguo        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>definition <span class="op">=</span> <span class="st">"Posicionamento contraditório ou impossível de classificar."</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  mode <span class="op">=</span> <span class="st">"manual"</span></span>
 <span><span class="op">)</span></span>
@@ -192,8 +192,8 @@ parlamentares brasileiros.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">codebook</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## -- Codebook acR: "posicionamento_proposicoes" --</span></span>
 <span><span class="co">## * Modo: "manual"</span></span>
-<span><span class="co">## * Categorias (5): "favoravel", "contrário", "neutro_tecnico",</span></span>
-<span><span class="co">##   "populista" and "ambíguo"</span></span>
+<span><span class="co">## * Categorias (5): "favoravel", "contrario", "neutro_tecnico",</span></span>
+<span><span class="co">##   "populista" and "ambiguo"</span></span>
 <span><span class="co">## * Multilabel: FALSE</span></span>
 <span><span class="co">## * Idioma: "pt"</span></span></code></pre>
 <hr>
@@ -210,7 +210,7 @@ sobrepostas.</p>
 </h3>
 <p>Exemplos positivos e negativos melhoram a precisão da classificação,
 especialmente em categorias limítrofes como <code>populista</code> e
-<code>ambíguo</code> (Sampaio &amp; Lycarião, 2021):</p>
+<code>ambiguo</code> (Sampaio &amp; Lycarião, 2021):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recriar com exemplos explícitos para as categorias mais difíceis</span></span>
 <span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
@@ -225,7 +225,7 @@ especialmente em categorias limítrofes como <code>populista</code> e
 <span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta reforma aumentará a produtividade e reduzirá custos."</span><span class="op">)</span>,</span>
 <span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Votaremos com o coração pela causa do povo."</span><span class="op">)</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    contrário <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    contrario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      definition   <span class="op">=</span> <span class="st">"Oposição à proposição com argumentação substantiva."</span>,</span>
 <span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Os dados mostram que esta medida aumentará o desemprego."</span><span class="op">)</span>,</span>
 <span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Esta proposta é uma vergonha nacional."</span><span class="op">)</span></span>
@@ -241,7 +241,7 @@ especialmente em categorias limítrofes como <code>populista</code> e
 <span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Estudos mostram que a medida reduz 15% dos custos."</span><span class="op">)</span>,</span>
 <span>      weight       <span class="op">=</span> <span class="fl">1.5</span>  <span class="co"># categoria mais difícil: peso maior</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    ambíguo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    ambiguo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      definition   <span class="op">=</span> <span class="st">"Posicionamento contraditório ou impossível de classificar."</span>,</span>
 <span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Apoio a reforma mas temo suas consequências sociais."</span><span class="op">)</span>,</span>
 <span>      weight       <span class="op">=</span> <span class="fl">1.2</span></span>
@@ -325,7 +325,7 @@ posicionamento:</p>
 <span><span class="co">## # A tibble: 1 x 3</span></span>
 <span><span class="co">##   timestamp           action detail</span></span>
 <span><span class="co">##   &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt;</span></span>
-<span><span class="co">## 1 2025-06-01 14:23:01 hybrid favoravel, contrário, neutro_tecnico, ...</span></span></code></pre>
+<span><span class="co">## 1 2025-06-01 14:23:01 hybrid favoravel, contrario, neutro_tecnico, ...</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="salvar-o-codebook-para-replicabilidade">Salvar o codebook para replicabilidade<a class="anchor" aria-label="anchor" href="#salvar-o-codebook-para-replicabilidade"></a>
@@ -371,13 +371,13 @@ documentos:</p>
 <span><span class="co">##   &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;</span></span>
 <span><span class="co">## 1 plp300_ementa   6x1     ementa     neutro_tecnico            1.000</span></span>
 <span><span class="co">## 2 plp300_favor    6x1     favoravel  favoravel                 1.000</span></span>
-<span><span class="co">## 3 plp300_contra   6x1     contrário  contrário                 1.000</span></span>
+<span><span class="co">## 3 plp300_contra   6x1     contrario  contrario                 1.000</span></span>
 <span><span class="co">## 4 pl2858_ementa   anistia ementa     neutro_tecnico            1.000</span></span>
 <span><span class="co">## 5 pl2858_favor    anistia favoravel  populista                 0.667</span></span>
-<span><span class="co">## 6 pl2858_contra   anistia contrário  contrário                 1.000</span></span>
+<span><span class="co">## 6 pl2858_contra   anistia contrario  contrario                 1.000</span></span>
 <span><span class="co">## 7 pec32_ementa    reform  ementa     neutro_tecnico            1.000</span></span>
 <span><span class="co">## 8 pec32_favor     reform  favoravel  favoravel                 1.000</span></span>
-<span><span class="co">## 9 pec32_contra    reform  contrário  contrário                 1.000</span></span></code></pre>
+<span><span class="co">## 9 pec32_contra    reform  contrario  contrario                 1.000</span></span></code></pre>
 <p>O texto <code>pl2858_favor</code> (“Presos políticos: votar pela
 anistia é votar pela democracia”) recebeu <code>populista</code> com
 confiança 0.667 — caso limítrofe que ilustra a utilidade do
@@ -412,7 +412,7 @@ humano.</p>
 <span>  id_col  <span class="op">=</span> <span class="st">"doc_id"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">concordância</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span></span>
+<span><span class="va">concordancia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_irr.html">ac_qual_irr</a></span><span class="op">(</span></span>
 <span>  gold      <span class="op">=</span> <span class="va">humano</span>,</span>
 <span>  predicted <span class="op">=</span> <span class="va">resultado</span>,</span>
 <span>  method    <span class="op">=</span> <span class="st">"all"</span>,</span>
@@ -420,7 +420,7 @@ humano.</p>
 <span>  cat_col   <span class="op">=</span> <span class="st">"categoria"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">concordância</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">concordancia</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## -- Confiabilidade inter-anotador (acR) --</span></span>
 <span><span class="co">## * Documentos comparados: 5</span></span>
 <span><span class="co">##</span></span>

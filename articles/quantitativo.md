@@ -10,8 +10,11 @@ limpeza → tokenização → frequências → distintividade → visualização
 
 ## Qual métrica responde qual pergunta?
 
-O módulo quantitativo tem seis técnicas centrais. Aprender qual usar em
-cada situação vale mais que decorar sintaxe:
+O módulo quantitativo tem dezoito técnicas, agrupadas em cinco famílias.
+Aprender qual usar em cada situação vale mais que decorar sintaxe: a
+pergunta de pesquisa escolhe a técnica, não o contrário.
+
+**Frequência, distintividade e coocorrência**
 
 | Pergunta | Técnica | Função |
 |----|----|----|
@@ -19,8 +22,39 @@ cada situação vale mais que decorar sintaxe:
 | Que palavras são **distintivas** de cada documento vs. o resto? | TF-IDF | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md) |
 | Que palavras separam **um grupo** do outro estatisticamente? | *Keyness* | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md) |
 | Que palavras **andam juntas** (associação sintagmática)? | Coocorrência | [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md) |
+| Que bigramas/trigramas aparecem juntos mais do que o esperado pelo acaso? | Colocações | [`ac_collocations()`](https://andersonheri.github.io/acR/reference/ac_collocations.md) |
 | **Onde no texto** um termo aparece com mais frequência? | X-ray plot | [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md) |
+| Em que contexto exato um termo aparece a cada ocorrência? | Concordância/KWIC | [`ac_kwic()`](https://andersonheri.github.io/acR/reference/ac_kwic.md) |
 | Panorama visual rápido para relatório ou apresentação | Nuvem de palavras | [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md) (`ggwordcloud`) |
+
+**Diagnóstico do corpus**
+
+| Pergunta | Técnica | Função |
+|----|----|----|
+| O texto é fácil ou difícil de ler? | Legibilidade | [`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md) |
+| O vocabulário é rico ou repetitivo? | Diversidade lexical | [`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md) |
+| O corpus se comporta como linguagem natural (não dominado por ruído)? | Lei de Zipf | [`ac_plot_zipf()`](https://andersonheri.github.io/acR/reference/ac_plot_zipf.md) |
+
+**Série temporal**
+
+| Pergunta | Técnica | Função |
+|----|----|----|
+| Um termo, sentimento ou qualquer métrica muda ao longo do tempo? | Série temporal | [`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md) → [`ac_plot_temporal()`](https://andersonheri.github.io/acR/reference/ac_plot_temporal.md) |
+
+**Escalas e mapas**
+
+| Pergunta | Técnica | Função |
+|----|----|----|
+| Onde cada documento se posiciona num espectro contínuo (favorável↔︎desfavorável)? | Wordscores | [`ac_wordscores()`](https://andersonheri.github.io/acR/reference/ac_wordscores.md) |
+| Como grupos e termos se relacionam num mapa 2D, sem assumir tópicos latentes? | Análise de correspondência | [`ac_ca()`](https://andersonheri.github.io/acR/reference/ac_ca.md) |
+
+**Dicionários e léxicos**
+
+| Pergunta | Técnica | Função |
+|----|----|----|
+| Quanto do texto pertence a cada categoria temática que eu defino? | Dicionário multi-categoria | [`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md) |
+| Que emoções (não só positivo/negativo) o texto expressa? | Léxico de emoção | [`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md) |
+| Meu dicionário classifica bem, comparado a uma codificação humana? | Validação de dicionário | [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md) |
 
 **Não é redundância.** As três métricas de frequência respondem
 perguntas diferentes:
@@ -457,7 +491,7 @@ conteúdo:
 
 ``` r
 
-avaliações <- data.frame(
+avaliacoes <- data.frame(
   id = paste0("rev", 1:4),
   texto = c(
     "Este produto é incrível. Funciona perfeitamente bem e chegou rápido.",
@@ -467,7 +501,7 @@ avaliações <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
-corpus_aval <- ac_corpus(avaliações, text = texto, docid = id)
+corpus_aval <- ac_corpus(avaliacoes, text = texto, docid = id)
 ```
 
 ``` r

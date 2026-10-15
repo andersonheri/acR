@@ -167,13 +167,13 @@ sent_sum   <- ac_sentiment(corpus, method = "sum")
 sent_mean  <- ac_sentiment(corpus, method = "mean")
 sent_ratio <- ac_sentiment(corpus, method = "ratio")
 
-comparação <- data.frame(
+comparacao <- data.frame(
   doc_id = sent_sum$doc_id,
   sum    = round(sent_sum$score,   2),
   mean   = round(sent_mean$score,  2),
   ratio  = round(sent_ratio$score, 2)
 )
-head(comparação, 10)
+head(comparacao, 10)
 #>    doc_id sum  mean ratio
 #> 1   doc_1   1  0.09     1
 #> 2  doc_10  -1 -0.10    -1

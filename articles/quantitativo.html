@@ -104,8 +104,10 @@ visualização</strong>.</p>
 <div class="section level2">
 <h2 id="qual-métrica-responde-qual-pergunta">Qual métrica responde qual pergunta?<a class="anchor" aria-label="anchor" href="#qual-m%C3%A9trica-responde-qual-pergunta"></a>
 </h2>
-<p>O módulo quantitativo tem seis técnicas centrais. Aprender qual usar
-em cada situação vale mais que decorar sintaxe:</p>
+<p>O módulo quantitativo tem dezoito técnicas, agrupadas em cinco
+famílias. Aprender qual usar em cada situação vale mais que decorar
+sintaxe: a pergunta de pesquisa escolhe a técnica, não o contrário.</p>
+<p><strong>Frequência, distintividade e coocorrência</strong></p>
 <table class="table">
 <colgroup>
 <col width="53%">
@@ -151,17 +153,139 @@ sintagmática)?</td>
 </td>
 </tr>
 <tr class="odd">
+<td>Que bigramas/trigramas aparecem juntos mais do que o esperado pelo
+acaso?</td>
+<td>Colocações</td>
+<td><code><a href="../reference/ac_collocations.html">ac_collocations()</a></code></td>
+</tr>
+<tr class="even">
 <td>
 <strong>Onde no texto</strong> um termo aparece com mais
 frequência?</td>
 <td>X-ray plot</td>
 <td><code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code></td>
 </tr>
+<tr class="odd">
+<td>Em que contexto exato um termo aparece a cada ocorrência?</td>
+<td>Concordância/KWIC</td>
+<td><code><a href="../reference/ac_kwic.html">ac_kwic()</a></code></td>
+</tr>
 <tr class="even">
 <td>Panorama visual rápido para relatório ou apresentação</td>
 <td>Nuvem de palavras</td>
 <td>
 <code><a href="../reference/ac_wordcloud.html">ac_wordcloud()</a></code> (<code>ggwordcloud</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Diagnóstico do corpus</strong></p>
+<table class="table">
+<colgroup>
+<col width="53%">
+<col width="12%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Pergunta</th>
+<th>Técnica</th>
+<th>Função</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>O texto é fácil ou difícil de ler?</td>
+<td>Legibilidade</td>
+<td><code><a href="../reference/ac_readability.html">ac_readability()</a></code></td>
+</tr>
+<tr class="even">
+<td>O vocabulário é rico ou repetitivo?</td>
+<td>Diversidade lexical</td>
+<td><code><a href="../reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code></td>
+</tr>
+<tr class="odd">
+<td>O corpus se comporta como linguagem natural (não dominado por
+ruído)?</td>
+<td>Lei de Zipf</td>
+<td><code><a href="../reference/ac_plot_zipf.html">ac_plot_zipf()</a></code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Série temporal</strong></p>
+<table class="table">
+<colgroup>
+<col width="53%">
+<col width="12%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Pergunta</th>
+<th>Técnica</th>
+<th>Função</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td>Um termo, sentimento ou qualquer métrica muda ao longo do
+tempo?</td>
+<td>Série temporal</td>
+<td>
+<code><a href="../reference/ac_temporal.html">ac_temporal()</a></code> → <code><a href="../reference/ac_plot_temporal.html">ac_plot_temporal()</a></code>
+</td>
+</tr></tbody>
+</table>
+<p><strong>Escalas e mapas</strong></p>
+<table class="table">
+<colgroup>
+<col width="53%">
+<col width="12%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Pergunta</th>
+<th>Técnica</th>
+<th>Função</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Onde cada documento se posiciona num espectro contínuo
+(favorável↔︎desfavorável)?</td>
+<td>Wordscores</td>
+<td><code><a href="../reference/ac_wordscores.html">ac_wordscores()</a></code></td>
+</tr>
+<tr class="even">
+<td>Como grupos e termos se relacionam num mapa 2D, sem assumir tópicos
+latentes?</td>
+<td>Análise de correspondência</td>
+<td><code><a href="../reference/ac_ca.html">ac_ca()</a></code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dicionários e léxicos</strong></p>
+<table class="table">
+<colgroup>
+<col width="53%">
+<col width="12%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Pergunta</th>
+<th>Técnica</th>
+<th>Função</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Quanto do texto pertence a cada categoria temática que eu
+defino?</td>
+<td>Dicionário multi-categoria</td>
+<td><code><a href="../reference/ac_dictionary.html">ac_dictionary()</a></code></td>
+</tr>
+<tr class="even">
+<td>Que emoções (não só positivo/negativo) o texto expressa?</td>
+<td>Léxico de emoção</td>
+<td><code><a href="../reference/ac_emotion.html">ac_emotion()</a></code></td>
+</tr>
+<tr class="odd">
+<td>Meu dicionário classifica bem, comparado a uma codificação
+humana?</td>
+<td>Validação de dicionário</td>
+<td><code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code></td>
 </tr>
 </tbody>
 </table>
@@ -570,7 +694,7 @@ métrica recomendada para comparar textos de tamanhos diferentes.</li>
 </li>
 </ul>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">avaliações</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">avaliacoes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"rev"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Este produto é incrível. Funciona perfeitamente bem e chegou rápido."</span>,</span>
@@ -580,7 +704,7 @@ métrica recomendada para comparar textos de tamanhos diferentes.</li>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">corpus_aval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">avaliações</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">corpus_aval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">avaliacoes</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_readability.html">ac_readability</a></span><span class="op">(</span><span class="va">corpus_aval</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>

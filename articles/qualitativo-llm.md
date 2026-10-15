@@ -163,7 +163,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 13:56
+#> • Criado em: 15/10/2026 14:00
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
@@ -184,7 +184,7 @@ Codebooks quase nunca ficam corretos na primeira tentativa. As funções
 e
 [`ac_qual_codebook_remove()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_remove.md)
 permitem **refinamento iterativo** — comum quando você roda o codebook
-numa amostra piloto e percebe que faltou uma categoria (“técnico”) ou
+numa amostra piloto e percebe que faltou uma categoria (“tecnico”) ou
 que duas se sobrepõem.
 
 Todas as modificações ficam registradas em `codebook$history` para
@@ -194,7 +194,7 @@ reprodutibilidade metodológica.
 
 # Adicionar categoria iterativamente
 cb <- ac_qual_codebook_add(cb,
-  técnico = list(
+  tecnico = list(
     definition   = "Discurso com linguagem técnica e referências normativas.",
     examples_pos = c("Conforme o art. 37 da CF, a administração pública..."),
     weight       = 1
@@ -202,7 +202,7 @@ cb <- ac_qual_codebook_add(cb,
 )
 
 # Remover se necessário
-cb <- ac_qual_codebook_remove(cb, "técnico")
+cb <- ac_qual_codebook_remove(cb, "tecnico")
 ```
 
 ------------------------------------------------------------------------

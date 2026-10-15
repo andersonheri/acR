@@ -386,11 +386,11 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="fu"><a href="reference/ac_kwic.html">ac_kwic</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, pattern <span class="op">=</span> <span class="st">"reforma"</span>, window <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_collocations.html">ac_collocations</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, measure <span class="op">=</span> <span class="st">"pmi"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">dicionário</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
+<span><span class="va">dicionario</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
 <span>  economia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"imposto"</span>, <span class="st">"orcamento"</span>, <span class="st">"deficit"</span><span class="op">)</span>,</span>
 <span>  saude    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saude"</span>, <span class="st">"vacina"</span>, <span class="st">"hospital"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, <span class="va">dicionário</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, <span class="va">dicionario</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_ca.html">ac_ca</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_ca.html">ac_plot_ca</a></span><span class="op">(</span><span class="va">ca</span><span class="op">)</span></span></code></pre></div>

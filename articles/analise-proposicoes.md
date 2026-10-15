@@ -61,9 +61,9 @@ df <- data.frame(
   tema  = c("6x1",     "6x1",     "6x1",
             "anistia", "anistia", "anistia",
             "reform",  "reform",  "reform"),
-  tipo  = c("ementa",   "favoravel", "contrário",
-            "ementa",   "favoravel", "contrário",
-            "ementa",   "favoravel", "contrário"),
+  tipo  = c("ementa",   "favoravel", "contrario",
+            "ementa",   "favoravel", "contrario",
+            "ementa",   "favoravel", "contrario"),
   stringsAsFactors = FALSE
 )
 
@@ -96,10 +96,10 @@ codebook <- ac_qual_codebook(
   ),
   categories = list(
     favoravel      = list(definition = "Apoio explícito à proposição com argumentação substantiva."),
-    contrário      = list(definition = "Oposição à proposição com argumentação substantiva."),
+    contrario      = list(definition = "Oposição à proposição com argumentação substantiva."),
     neutro_tecnico = list(definition = "Descrição jurídica ou técnica sem valoração explícita."),
     populista      = list(definition = "Apelo emocional sem evidência ou argumentação técnica."),
-    ambíguo        = list(definition = "Posicionamento contraditório ou impossível de classificar.")
+    ambiguo        = list(definition = "Posicionamento contraditório ou impossível de classificar.")
   ),
   mode = "manual"
 )
@@ -109,8 +109,8 @@ print(codebook)
 
     ## -- Codebook acR: "posicionamento_proposicoes" --
     ## * Modo: "manual"
-    ## * Categorias (5): "favoravel", "contrário", "neutro_tecnico",
-    ##   "populista" and "ambíguo"
+    ## * Categorias (5): "favoravel", "contrario", "neutro_tecnico",
+    ##   "populista" and "ambiguo"
     ## * Multilabel: FALSE
     ## * Idioma: "pt"
 
@@ -125,7 +125,7 @@ mas recomendado para análises com categorias complexas ou sobrepostas.
 ### Adicionar exemplos às categorias
 
 Exemplos positivos e negativos melhoram a precisão da classificação,
-especialmente em categorias limítrofes como `populista` e `ambíguo`
+especialmente em categorias limítrofes como `populista` e `ambiguo`
 (Sampaio & Lycarião, 2021):
 
 ``` r
@@ -143,7 +143,7 @@ codebook <- ac_qual_codebook(
       examples_pos = c("Esta reforma aumentará a produtividade e reduzirá custos."),
       examples_neg = c("Votaremos com o coração pela causa do povo.")
     ),
-    contrário = list(
+    contrario = list(
       definition   = "Oposição à proposição com argumentação substantiva.",
       examples_pos = c("Os dados mostram que esta medida aumentará o desemprego."),
       examples_neg = c("Esta proposta é uma vergonha nacional.")
@@ -159,7 +159,7 @@ codebook <- ac_qual_codebook(
       examples_neg = c("Estudos mostram que a medida reduz 15% dos custos."),
       weight       = 1.5  # categoria mais difícil: peso maior
     ),
-    ambíguo = list(
+    ambiguo = list(
       definition   = "Posicionamento contraditório ou impossível de classificar.",
       examples_pos = c("Apoio a reforma mas temo suas consequências sociais."),
       weight       = 1.2
@@ -250,7 +250,7 @@ ac_qual_codebook_history(codebook_enriquecido)
     ## # A tibble: 1 x 3
     ##   timestamp           action detail
     ##   <chr>               <chr>  <chr>
-    ## 1 2025-06-01 14:23:01 hybrid favoravel, contrário, neutro_tecnico, ...
+    ## 1 2025-06-01 14:23:01 hybrid favoravel, contrario, neutro_tecnico, ...
 
 ### Salvar o codebook para replicabilidade
 
@@ -300,13 +300,13 @@ documentos:
     ##   <chr>           <chr>   <chr>      <chr>                     <dbl>
     ## 1 plp300_ementa   6x1     ementa     neutro_tecnico            1.000
     ## 2 plp300_favor    6x1     favoravel  favoravel                 1.000
-    ## 3 plp300_contra   6x1     contrário  contrário                 1.000
+    ## 3 plp300_contra   6x1     contrario  contrario                 1.000
     ## 4 pl2858_ementa   anistia ementa     neutro_tecnico            1.000
     ## 5 pl2858_favor    anistia favoravel  populista                 0.667
-    ## 6 pl2858_contra   anistia contrário  contrário                 1.000
+    ## 6 pl2858_contra   anistia contrario  contrario                 1.000
     ## 7 pec32_ementa    reform  ementa     neutro_tecnico            1.000
     ## 8 pec32_favor     reform  favoravel  favoravel                 1.000
-    ## 9 pec32_contra    reform  contrário  contrário                 1.000
+    ## 9 pec32_contra    reform  contrario  contrario                 1.000
 
 O texto `pl2858_favor` (“Presos políticos: votar pela anistia é votar
 pela democracia”) recebeu `populista` com confiança 0.667 — caso
@@ -342,7 +342,7 @@ humano <- ac_qual_import_human(
   id_col  = "doc_id"
 )
 
-concordância <- ac_qual_irr(
+concordancia <- ac_qual_irr(
   gold      = humano,
   predicted = resultado,
   method    = "all",
@@ -350,7 +350,7 @@ concordância <- ac_qual_irr(
   cat_col   = "categoria"
 )
 
-print(concordância)
+print(concordancia)
 ```
 
     ## -- Confiabilidade inter-anotador (acR) --

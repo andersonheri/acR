@@ -282,13 +282,13 @@ foca só na intensidade emotiva relativa.</li>
 <span><span class="va">sent_mean</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
 <span><span class="va">sent_ratio</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_sentiment.html">ac_sentiment</a></span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"ratio"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">comparação</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span><span class="va">comparacao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  doc_id <span class="op">=</span> <span class="va">sent_sum</span><span class="op">$</span><span class="va">doc_id</span>,</span>
 <span>  sum    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sent_sum</span><span class="op">$</span><span class="va">score</span>,   <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  mean   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sent_mean</span><span class="op">$</span><span class="va">score</span>,  <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  ratio  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">sent_ratio</span><span class="op">$</span><span class="va">score</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">comparação</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">comparacao</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    doc_id sum  mean ratio</span></span>
 <span><span class="co">#&gt; 1   doc_1   1  0.09     1</span></span>
 <span><span class="co">#&gt; 2  doc_10  -1 -0.10    -1</span></span>
