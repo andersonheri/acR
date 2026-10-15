@@ -171,19 +171,31 @@ agrupamentos frouxos.
 ac_plot_cluster(clust, kind = "dendrogram")
 ```
 
-> **Como interpretar:** leia de baixo para cima. Documentos que se unem
-> em alturas baixas (perto de 0) são muito parecidos; a fusão final no
-> topo (altura ≈ 2,27 neste exemplo) é a mais "forçada" do dendrograma,
-> a última junção que o algoritmo faz antes de virar uma árvore só. Os 8
-> documentos de `democracia` (d01-d08) se reúnem num único ramo na
-> altura ≈ 1,52, enquanto os 8 de `mercado` (d09-d16) só se juntam em
-> ≈ 1,74: os dois blocos se formam bem abaixo da fusão final, mas o de
-> `mercado` é o mais heterogêneo internamente. Esse é o primeiro sinal
-> visual de que, se pedirmos 3 grupos, o algoritmo vai dividir
-> "mercado" em dois subgrupos (seção 5). A altura no método de Ward não
-> é a distância entre dois documentos, e sim o aumento da soma de
-> quadrados dentro dos grupos causado pela fusão (Murtagh & Legendre,
-> 2014): compare alturas entre si, não as leia como distâncias.
+> **Como ler este gráfico**
+>
+> 1. **Onde olhar.** Os documentos estão na base, coloridos pelo
+>    cluster. Leia **de baixo para cima**: cada "telhado" junta dois
+>    grupos, e a altura do telhado (eixo vertical) diz quão diferentes
+>    eram os grupos que ele juntou. Telhado baixo = documentos
+>    parecidos; telhado alto = junção forçada.
+>
+> 2. **O que este exemplo mostra.** O telhado mais alto, em ≈ 2,27,
+>    separa os 8 documentos de `democracia` (azul-escuro, à esquerda)
+>    dos 8 de `mercado` (à direita). O bloco de democracia termina de se
+>    juntar em ≈ 1,52; o de mercado só em ≈ 1,74, e ele se divide antes
+>    em dois ramos, laranja (d09, d10, d12, d14) e verde-azulado (d11,
+>    d13, d15, d16).
+>
+> 3. **Em palavras simples.** A primeira divisão do corpus é democracia
+>    × mercado. Dentro de mercado há uma segunda divisão quase tão
+>    forte, e é por isso que, pedindo 3 grupos, o algoritmo separa
+>    mercado em dois.
+>
+> 4. **Cuidado.** No método de Ward a altura não é a distância entre
+>    dois documentos: é o quanto a fusão aumenta a variação dentro dos
+>    grupos (Murtagh & Legendre, 2014). Compare alturas entre si, não as
+>    leia como distâncias. E a ordem das folhas na base dentro de um
+>    mesmo ramo é arbitrária.
 
 ### 4.2 Projeção PCA: a geometria do corpus
 
@@ -195,17 +207,27 @@ divisão do algoritmo.
 ac_plot_cluster(clust, kind = "scatter")
 ```
 
-> **Como interpretar:** PC1 e PC2 juntos explicam só uma fração da
-> variância total do corpus (ver o subtítulo do gráfico: PC1 ≈ 17,8%,
-> PC2 ≈ 11,5%, pouco menos de 30% somados): a maior parte da variação
-> entre documentos **não** está visível neste plano 2D.
-> Trate distâncias próximas como boa evidência de similaridade, mas não
-> super-interprete distâncias moderadas: elas podem ser maiores ou
-> menores no espaço de alta dimensão original do que parecem aqui. O
-> padrão esperado neste exemplo: o grupo `democracia` (cluster 1)
-> aparece compacto de um lado, enquanto os dois subgrupos de `mercado`
-> (clusters 2 e 3) ficam mais espalhados do outro lado — já visível
-> antes mesmo de olhar as cores.
+> **Como ler este gráfico**
+>
+> 1. **Onde olhar.** Cada ponto é um documento, colorido pelo cluster.
+>    Pontos próximos = vocabulário parecido. O subtítulo diz quanto da
+>    variação cada eixo resume (PC1: 17,8%; PC2: 11,5%).
+>
+> 2. **O que este exemplo mostra.** O eixo horizontal (PC1) separa os
+>    dois temas: os 8 documentos de democracia (azul-escuro) ficam
+>    amontoados à esquerda, tão juntos que os rótulos se sobrepõem; os
+>    de mercado ficam todos à direita. O eixo vertical (PC2) espalha só
+>    os de mercado: os laranja (cluster 2) embaixo, os verde-azulados
+>    (cluster 3) em cima.
+>
+> 3. **Em palavras simples.** Democracia é um bloco homogêneo; mercado é
+>    mais variado, e a variação dele tem uma direção, que é justamente a
+>    divisão entre os clusters 2 e 3.
+>
+> 4. **Cuidado.** Os dois eixos juntos mostram menos de 30% da variação:
+>    a maior parte das diferenças entre documentos não aparece neste
+>    plano. Confie nas separações nítidas (como a da esquerda × direita)
+>    e não interprete distâncias pequenas entre pontos próximos.
 
 ### 4.3 Mapa de calor: a assinatura da separação
 
@@ -217,17 +239,30 @@ de qualidade de um clustering bem-sucedido.
 ac_plot_cluster(clust, kind = "heatmap")
 ```
 
-> **Como interpretar:** procure blocos quadrados escuros ao longo da
-> diagonal; quanto mais nítida a borda entre um bloco e o resto da
-> matriz, mais "limpa" é a separação daquele grupo. Fora da diagonal, a
-> matriz deveria ficar clara (alta dissimilaridade entre grupos
-> diferentes) — um retângulo fora da diagonal com tom intermediário
-> sinaliza dois clusters que não são tão distintos entre si quanto o
-> número de clusters sugere. Neste exemplo, o bloco de `democracia`
-> (d01-d08) tem bordas nítidas; o bloco de `mercado` (d09-d16) também
-> aparece separado do resto, mas internamente um pouco menos uniforme,
-> condizente com ele conter dois subtemas (clusters 2 e 3) em vez de um
-> só.
+> **Como ler este gráfico**
+>
+> 1. **Onde olhar.** Cada célula compara dois documentos; a cor é a
+>    dissimilaridade (escuro = parecidos, claro = diferentes). A
+>    diagonal é sempre escura (cada documento comparado consigo mesmo).
+>    Procure **quadrados** de cinza mais escuro ao longo da diagonal:
+>    cada um é um grupo de documentos parecidos entre si.
+>
+> 2. **O que este exemplo mostra.** Há dois quadrados: d05 a d07 no
+>    canto superior esquerdo (democracia) e d09 a d15 no canto inferior
+>    direito (mercado), com tons de cinza médio por dentro. Os dois
+>    retângulos fora da diagonal, que cruzam democracia com mercado, são
+>    quase brancos: esses documentos não têm nenhuma palavra em comum.
+>    Dentro do quadrado de mercado, d09-d14 e d13-d15 formam dois
+>    quadrados menores, um pouco mais escuros.
+>
+> 3. **Em palavras simples.** A separação entre os temas é total; a
+>    separação interna de mercado em dois subgrupos existe, mas é mais
+>    fraca.
+>
+> 4. **Cuidado.** Em textos curtos quase todos os pares são bem
+>    diferentes, então mesmo dentro de um grupo as células ficam cinza,
+>    não escuras. Compare o tom **dentro** dos quadrados com o tom
+>    **entre** eles, não com o preto da diagonal.
 
 ### 4.4 Termos mais distintivos por cluster
 
@@ -267,19 +302,29 @@ ggplot(top_por_cluster, aes(tf_idf, token, fill = doc_id)) +
   theme_ac()
 ```
 
-> **Como interpretar:** compare os termos entre painéis, não dentro de
-> um painel só. Neste exemplo, o Cluster 1 fala claramente de
-> `democracia`, `voto`, `participação`, `cidadania` — confirma o tema
-> esperado. Já os clusters 2 e 3, ambos originados do tema `mercado`,
-> revelam **duas vertentes diferentes** dentro do mesmo assunto: o
-> Cluster 2 fala de eficiência e concorrência (`livre`, `produtividade`,
-> `eficiência`, `concorrência`, `privatização`), enquanto o Cluster 3
-> fala de investimento e crescimento (`investimento`, `capital`,
-> `privado`, `crescimento`, `juros`). Essa divisão não é ruído: é uma
-> distinção substantiva que a categoria original `mercado` (usada só
-> para montar o exemplo) não previa. Em dados reais, um cluster que
-> "deveria" ser um só mas se divide assim pode indicar que sua variável
-> de grupo original estava agregando demais.
+> **Como ler este gráfico**
+>
+> 1. **Onde olhar.** Um painel por cluster, com as 8 palavras de maior
+>    TF-IDF (as mais características daquele grupo em relação aos
+>    outros). Compare os painéis **entre si**: o que um grupo diz que os
+>    outros não dizem?
+>
+> 2. **O que este exemplo mostra.** O Cluster 1 traz *democracia*,
+>    *cidadania*, *participacao*, *voto*. O Cluster 2 traz *livre*,
+>    *produtividade*, *eficiência*, *concorrência*, *privatizacao*. O
+>    Cluster 3 traz *capital*, *investimento*, *crescimento*, *privado*,
+>    *juros*.
+>
+> 3. **Em palavras simples.** O tema `mercado` tem duas vertentes no
+>    corpus: uma de eficiência e concorrência (cluster 2) e outra de
+>    investimento e crescimento (cluster 3). A divisão que o dendrograma
+>    e o gráfico de projeção mostraram tem conteúdo, não é ruído.
+>
+> 4. **Cuidado.** Os nomes dos grupos são interpretação sua, a partir
+>    dessas palavras; o algoritmo só entrega números. Leia alguns
+>    documentos de cada cluster antes de batizá-los, e lembre que
+>    *mercado* aparece nos dois painéis de mercado: palavras
+>    compartilhadas podem aparecer em mais de um grupo.
 
 ### 4.5 Curva de silhueta: escolhendo `k` visualmente
 
@@ -316,23 +361,32 @@ if (requireNamespace("cluster", quietly = TRUE)) {
 }
 ```
 
-> **Como interpretar:** o círculo vazado marca o `k` escolhido
-> automaticamente (maior silhueta média). Neste exemplo, `k = 3`
-> (escolhido) fica em ≈ 0,128 e `k = 2` em ≈ 0,124, mas `k = 8`
-> (≈ 0,125) e `k = 5` (≈ 0,123) estão praticamente empatados: a curva é
-> quase plana, e o "máximo" é decidido por diferenças na terceira casa
-> decimal. Duas lições. Primeiro, quando a curva é plana, o `k`
-> automático é frágil; olhe os termos distintivos (seção 4.4) de cada
-> `k` candidato antes de decidir. Segundo, o nível absoluto importa:
-> Kaufman & Rousseeuw (1990, p. 88) leem silhueta média acima de 0,70
-> como estrutura forte, 0,51-0,70 razoável, 0,26-0,50 fraca e **até
-> 0,25 como ausência de estrutura substancial**. Aqui todos os valores
-> estão nessa última faixa, mesmo com os dois temas recuperados sem
-> erro (seção 6). A razão é o tamanho dos textos: com 6 palavras por
-> documento, quase todo par de documentos compartilha pouco vocabulário,
-> então a distância até o próprio grupo e até o grupo vizinho ficam
-> parecidas. Silhueta baixa em textos curtos pede cautela, não
-> necessariamente descarte, mas reporte o valor junto com os grupos.
+> **Como ler este gráfico**
+>
+> 1. **Onde olhar.** Cada ponto é um número de grupos (k) testado, e a
+>    altura é a silhueta média: o quanto, em média, cada documento está
+>    mais perto do próprio grupo do que do grupo vizinho (de −1 a 1;
+>    maior = grupos mais nítidos). O círculo vazado é o k que a função
+>    escolheu, o de maior silhueta.
+>
+> 2. **O que este exemplo mostra.** K = 3 vence com ≈ 0,128, mas k = 2
+>    (≈ 0,124) e k = 5 (≈ 0,123) estão praticamente empatados: as
+>    diferenças estão na terceira casa decimal. Note também a escala do
+>    eixo vertical: tudo está entre 0,11 e 0,13.
+>
+> 3. **Em palavras simples.** O corpus não aponta com clareza um número
+>    de grupos. A escolha automática de k = 3 é frágil, e a decisão deve
+>    vir também da leitura dos termos de cada grupo (seção 4.4).
+>
+> 4. **Cuidado.** O valor absoluto da silhueta importa. Kaufman &
+>    Rousseeuw (1990, p. 88) leem a silhueta média acima de 0,70 como
+>    estrutura forte, de 0,51 a 0,70 razoável, de 0,26 a 0,50 fraca e
+>    **até 0,25 como ausência de estrutura substancial**: todos os
+>    valores aqui estão nessa última faixa, mesmo com os dois temas
+>    sendo recuperados sem erro (seção 6). A causa é o tamanho dos
+>    textos: com 6 palavras por documento, a distância até o próprio
+>    grupo e até o vizinho ficam parecidas. Reporte a silhueta junto com
+>    os grupos.
 
 ### 4.6 Hard vs. soft: comparando com LDA
 
@@ -385,24 +439,33 @@ ggplot(plot_df, aes(tipo, doc_id, fill = valor)) +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 ```
 
-> **Como interpretar:** no painel "Hard clustering", cada linha pinta
-> **uma única célula** (o documento é *do* grupo A ou *do* grupo B,
-> nunca os dois). No painel "LDA (soft)", a cor poderia se distribuir
-> entre as colunas, mas neste corpus quase não se distribui: o LDA
-> separa os dois temas sem erro e dá ≈ 0,98 de γ ao tópico principal
-> de **todos** os 16 documentos. Isso é o resultado correto, não uma
-> falha da comparação: cada documento foi escrito sobre um único tema,
-> então não há mistura a revelar. O γ mede **pertencimento misto** (que
-> fração do documento é sobre cada tópico), não incerteza sobre qual é
-> o "verdadeiro" grupo do documento (Airoldi et al., 2014); ele só se
-> afasta do 0/1 do hard clustering quando os textos de fato misturam
-> temas, como os discursos longos e os casos ambíguos da
-> `vignette("lda")`, seção 8. Dois detalhes: (1) com o ajuste padrão
-> (`method = "VEM"`), este mesmo corpus dá γ ≈ 0,50/0,50 para todo
-> documento, um modelo que não aprendeu nada, daí o uso de Gibbs com
-> α baixo; (2) o gráfico compara o `clust` de **3** clusters (o `k`
-> automático da seção 3) com um LDA de `k = 2` **tópicos**: os números
-> de colunas não precisam bater, o que importa é a forma da matriz.
+> **Como ler este gráfico**
+>
+> 1. **Onde olhar.** Os dois painéis têm uma linha por documento. À
+>    esquerda, cada linha tem **uma** célula escura: o cluster do
+>    documento. À direita, cada célula é a proporção γ do documento
+>    atribuída a cada tópico do LDA; ela **pode** ser um tom
+>    intermediário quando o documento mistura temas.
+>
+> 2. **O que este exemplo mostra.** À direita, cada linha também tem uma
+>    única célula escura: os 8 documentos de democracia ficam ≈ 0,98 no
+>    Tópico 2, e os 8 de mercado ≈ 0,98 no Tópico 1. Não há tons
+>    intermediários.
+>
+> 3. **Em palavras simples.** Aqui o LDA concorda com o clustering
+>    porque cada documento foi escrito sobre um único tema: não há
+>    mistura a mostrar. O γ só fica "dividido" quando o texto de fato
+>    fala de mais de um assunto, como os casos ambíguos da
+>    `vignette("lda")`, seção 8.
+>
+> 4. **Cuidado.** Γ mede **pertencimento misto** (que fração do texto é
+>    de cada tópico), não incerteza sobre qual é o "grupo verdadeiro" do
+>    documento (Airoldi et al., 2014). Com o ajuste padrão do LDA
+>    (`method = "VEM"`), este corpus dá γ ≈ 0,50/0,50 para todo
+>    documento, um modelo que não aprendeu nada; por isso o exemplo usa
+>    Gibbs com α baixo. E o painel da esquerda tem 3 colunas e o da
+>    direita 2: o que se compara é a forma das linhas, não o número de
+>    colunas.
 
 ## 5. Validando contra a verdade
 
@@ -420,17 +483,27 @@ Se o algoritmo separou corretamente, cada `tema_real` deve concentrar-se
 num único cluster (permutação de rótulos é esperada: o clustering não
 sabe qual grupo é "democracia" ou "mercado", só que são diferentes).
 
-> **Como interpretar:** olhando a tabela, `democracia` cai inteiro no
-> Cluster 1 (8 de 8 documentos) — separação perfeita. Já `mercado` se
-> divide entre os Clusters 2 e 3 (4 documentos em cada), não porque o
-> algoritmo errou, mas porque o `k` automático (seção 4.5) escolheu
-> k = 3, e a seção 4.4 já mostrou que essa divisão captura uma distinção
-> real de vocabulário dentro do tema `mercado`. A lição metodológica:
-> uma tabela de validação "imperfeita" contra uma variável externa nem
-> sempre significa que o clustering falhou — pode significar que sua
-> variável de validação é mais grosseira que a estrutura que o algoritmo
-> encontrou no texto. Vale sempre olhar os termos distintivos antes de
-> concluir que um cluster "a mais" é erro.
+> **Como ler esta tabela**
+>
+> 1. **Onde olhar.** Cada linha cruza o tema real (que o algoritmo não
+>    viu) com o cluster atribuído; `n` é quantos documentos caem em cada
+>    combinação. O ideal é cada tema concentrado num cluster só. Os
+>    números dos clusters são arbitrários: importa o agrupamento, não o
+>    rótulo 1, 2 ou 3.
+>
+> 2. **O que este exemplo mostra.** `democracia` cai inteiro no cluster
+>    1 (8 de 8). `mercado` se divide em duas partes iguais: 4 documentos
+>    no cluster 2 e 4 no cluster 3.
+>
+> 3. **Em palavras simples.** O algoritmo acertou a fronteira entre os
+>    dois temas. A divisão de mercado não é erro: é a distinção
+>    eficiência × investimento que a seção 4.4 mostrou.
+>
+> 4. **Cuidado.** Uma tabela "imperfeita" contra uma variável externa
+>    nem sempre significa clustering ruim; pode significar que a
+>    variável de validação é mais grosseira que a estrutura do texto.
+>    Antes de chamar um cluster extra de erro, leia os termos e alguns
+>    documentos dele.
 
 ## 6. Escolhendo o método
 
@@ -450,16 +523,25 @@ clust_km <- ac_cluster_documents(corpus, method = "kmeans", k = 2)
 ac_plot_cluster(clust_km, kind = "scatter")
 ```
 
-> **Como interpretar:** forçar `k = 2` aqui recupera exatamente a
-> divisão original `democracia` vs. `mercado` (compare com a seção 4.2,
-> onde o `k = 3` automático dividiu `mercado` em dois). Nenhum dos dois
-> resultados está "errado": `k = 3` encontrou uma subdivisão temática
-> real (seção 4.4); `k = 2` corresponde à variável de dois níveis que
-> você já sabia existir de antemão. Quando você já tem uma hipótese
-> sobre o número de grupos (como aqui, "democracia vs. mercado"), fixar
-> `k` manualmente costuma dar um resultado mais fácil de comunicar do
-> que deixar a silhueta decidir; quando você está explorando um corpus
-> sem hipótese prévia, o `k` automático tende a revelar mais estrutura.
+> **Como ler este gráfico**
+>
+> 1. **Onde olhar.** O mesmo plano de projeção da seção 4.2, agora com
+>    as cores dadas pelo k-means com `k = 2` fixo.
+>
+> 2. **O que este exemplo mostra.** Os 8 documentos de democracia ficam
+>    todos de uma cor (à esquerda) e os 8 de mercado todos da outra (à
+>    direita): a divisão original, sem nenhum erro. Os pontos estão nos
+>    mesmos lugares do gráfico da seção 4.2; só as cores mudaram.
+>
+> 3. **Em palavras simples.** Fixar k = 2 recupera os dois temas; deixar
+>    a silhueta escolher (k = 3) acrescentou a subdivisão de mercado. Os
+>    dois resultados são corretos, em resoluções diferentes.
+>
+> 4. **Cuidado.** O rótulo do cluster é arbitrário (aqui, democracia
+>    virou 2 e mercado 1). Se você tem uma hipótese sobre o número de
+>    grupos, fixe k e diga isso no texto; se está explorando, compare
+>    alguns valores de k lendo os termos de cada solução, sem confiar só
+>    na silhueta, que neste corpus é baixa (seção 4.5).
 
 ## 7. E depois? Integrando com o pipeline
 

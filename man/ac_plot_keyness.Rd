@@ -18,7 +18,8 @@ as colunas \code{token}, \code{keyness} e \code{direction}.}
 
 \item{n}{Número de termos a exibir por direcao. Se \code{NULL} (padrao),
 usa todas as linhas de \code{x}. Se informado, seleciona os top \code{n}
-termos com \code{keyness} positivo e os top \code{n} com \code{keyness} negativo.}
+termos com \code{keyness} positivo e os top \code{n} com \code{keyness} negativo.
+Empates na última posição são desfeitos em ordem alfabética.}
 
 \item{style}{Estilo grafico. Pode ser \code{"default"} (padrao) ou \code{"ipea"}.
 Quando \code{"ipea"}, a função tenta aplicar \code{ipeaplot::theme_ipea()}.}

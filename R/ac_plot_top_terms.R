@@ -106,10 +106,14 @@ ac_plot_top_terms <- function(
   
   df_plot <- tibble::as_tibble(x)
   
+  # Com coord_flip(), o primeiro nivel do fator fica embaixo; invertendo,
+  # o termo mais frequente aparece no topo (leitura de cima para baixo).
+  ordem <- function(tk) if (isTRUE(flip)) rev(unique(tk)) else unique(tk)
+
   if (is.null(by)) {
     df_plot <- df_plot |>
       dplyr::arrange(dplyr::desc(n), token) |>
-      dplyr::mutate(token = factor(token, levels = unique(token)))
+      dplyr::mutate(token = factor(token, levels = ordem(token)))
   } else {
     facet_col <- "__facet_group__"
     df_plot[[facet_col]] <- do.call(paste, c(df_plot[by], sep = " | "))
@@ -117,7 +121,7 @@ ac_plot_top_terms <- function(
     df_plot <- df_plot |>
       dplyr::group_by(.data[[facet_col]]) |>
       dplyr::arrange(dplyr::desc(n), token, .by_group = TRUE) |>
-      dplyr::mutate(token = factor(token, levels = unique(token))) |>
+      dplyr::mutate(token = factor(token, levels = ordem(token))) |>
       dplyr::ungroup()
   }
   

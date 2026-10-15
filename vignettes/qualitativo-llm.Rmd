@@ -402,21 +402,31 @@ O tibble de saída traz: `doc_id`, `categoria`, `confidence_score` (via
 *self-consistency*), `reasoning` (raciocínio do modelo, se pedido) e os
 metadados originais do corpus.
 
-> **Como interpretar:** `confidence_score` mede *consistência interna* do
-> modelo, não *acerto*. Um documento com `confidence_score = 1.0` pode
-> ainda assim estar classificado errado, se o codebook for ambíguo o
-> suficiente para o modelo "errar com confiança" de forma sistemática.
-> Use `confidence_score` para achar os casos a revisar quando o objetivo
-> é **diagnosticar erros** (`ac_qual_sample(strategy = "uncertainty")`),
-> nunca como substituto da validação humana, que deve ser feita numa
-> amostra aleatória.
-> O valor é sempre a fração de rodadas de self-consistency que
-> concordaram, então os valores possíveis dependem de `k_consistency`:
-> com `k_consistency = 3` (usado neste exemplo), só existem os valores
-> 0, 0,33, 0,67 e 1,0. Documentos com menos da metade das rodadas
-> concordando — abaixo de 0,67 com `k_consistency = 3`, ou o equivalente
-> proporcional com outro `k_consistency` — quase sempre merecem segunda
-> leitura.
+> **Como ler esta tabela**
+>
+> 1. **Onde olhar.** Na saída de `head(resultado)`, olhe a coluna
+>    `confidence_score`: a fração das `k_consistency` rodadas que
+>    escolheram a categoria final. Com `k_consistency = 3` (este
+>    exemplo), ela só pode valer 0,33 (as três rodadas discordaram),
+>    0,67 (duas concordaram) ou 1,00 (todas concordaram).
+>
+> 2. **O que este exemplo mostra.** Num corpus de textos claros, a
+>    maioria das linhas tem 1,00; os documentos com 0,67 ou 0,33 são os
+>    que o modelo achou ambíguos, e são eles que você deve abrir
+>    primeiro.
+>
+> 3. **Em palavras simples.** `confidence_score` mede se o modelo
+>    **concorda consigo mesmo**, não se ele **acertou**. Um modelo pode
+>    errar as três rodadas do mesmo jeito (por exemplo, quando o
+>    codebook tem uma definição ambígua) e sair com 1,00.
+>
+> 4. **Cuidado.** A ideia de usar concordância entre rodadas como sinal
+>    de incerteza vem de Wang et al. (2023) e Xiong et al. (2024), que
+>    mostram que ela se relaciona com acerto, mas não oferecem cortes
+>    universais. Use os casos de confiança baixa para **diagnosticar** o
+>    codebook (`ac_qual_sample(strategy = "uncertainty")`); a validação
+>    que vai para o artigo tem de ser feita numa amostra **aleatória**
+>    codificada por humanos (Krippendorff, 2018, cap. 12).
 
 ### Live view: tirando o LLM do caixa-preta
 
@@ -535,7 +545,7 @@ falha mais frequentes de uma rodada com LLM, e o que cada um pede. Os
 limiares de `confidence_score` citados abaixo (0,67; 0,80) assumem
 `k_consistency = 3`, como no exemplo desta vignette: com outro
 `k_consistency`, ajuste para o valor proporcional mais próximo (ver
-"Como interpretar" na seção anterior).
+"Como ler" na seção anterior).
 
 ### 1. Categorias com concordância baixa entre `k_consistency`
 
@@ -684,5 +694,13 @@ Language Models in R*. GitHub. https://github.com/quallmer/quallmer
 Sampaio, R. C., & Lycarião, D. (2021). *Análise de conteúdo categorial: manual
 de aplicação*. Brasília: ENAP.
 
+Wang, X., et al. (2023). Self-consistency improves chain of thought reasoning in
+language models. *International Conference on Learning Representations (ICLR)*.
+
 Wickham, H., et al. (2025). *ellmer: Chat with Large Language Models*. R package.
 https://ellmer.tidyverse.org
+
+Xiong, M., et al. (2024). Can LLMs express their uncertainty? An empirical
+evaluation of confidence elicitation in LLMs. *International Conference on
+Learning Representations (ICLR)*.
+

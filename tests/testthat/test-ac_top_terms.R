@@ -79,3 +79,16 @@ test_that("ac_top_terms valida colunas inexistentes em by", {
     class = "rlang_error"
   )
 })
+
+test_that("ac_top_terms soma o termo entre documentos e devolve exatamente n", {
+  corp <- make_corpus_count(
+    texts = c("imposto renda", "imposto carga", "imposto saude"),
+    ids   = c("d1", "d2", "d3")
+  )
+  top <- ac_top_terms(ac_count(corp), n = 2)
+  expect_equal(nrow(top), 2L)
+  expect_equal(top$token[1], "imposto")
+  expect_equal(top$n[1], 3L)
+  # empate em n = 1 desfeito em ordem alfabetica
+  expect_equal(top$token[2], "carga")
+})

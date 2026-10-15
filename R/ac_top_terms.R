@@ -16,13 +16,17 @@
 #'   de agregacao. Se `NULL` (padrao), a selecao e feita no conjunto total.
 #'   Se não for `NULL`, os `n` termos mais frequentes sao selecionados
 #'   dentro de cada combinacao de `by`.
-#' @param sort Lógico. Se `TRUE` (padrao), ordena a saida em ordem
-#'   decrescente de frequência (`n`). Se `FALSE`, preserva a ordem
-#'   retornada pela operacao interna de selecao, apenas garantindo que
-#'   os grupos (quando houver) venham juntos.
+#' @param sort Lógico. Se `TRUE` (padrão), ordena a saída em ordem
+#'   decrescente de frequência (`n`). Se `FALSE`, ordena os termos
+#'   selecionados alfabeticamente (dentro de cada grupo, quando houver).
 #'
-#' @return Um [`tibble::tibble()`] com as mesmas colunas de `x`, mas
-#'   restrito aos `n` termos mais frequentes (no geral ou por grupo).
+#' @return Um [`tibble::tibble()`] com as colunas `token` e `n` (mais as
+#'   colunas de `by`, se houver), com exatamente `n` termos (ou menos, se
+#'   o vocabulário for menor) no geral ou por grupo. A frequência de cada
+#'   termo é **somada** sobre os documentos (ou dentro de cada grupo), de
+#'   modo que uma tabela por documento, saída padrão de [`ac_count()`],
+#'   dá o total do corpus. Empates na última posição são desfeitos em
+#'   ordem alfabética.
 #'
 #' @examples
 #' df <- data.frame(
@@ -72,10 +76,22 @@ ac_top_terms <- function(x, n = 20L, by = NULL, sort = TRUE) {
     ))
   }
   
+  # Soma cada termo no conjunto (ou dentro de cada grupo) antes de
+  # ranquear. Sem isso, uma tabela por documento (saida padrao de
+  # ac_count()) era ranqueada linha a linha: um termo presente em 3
+  # documentos aparecia 3 vezes com n = 1, e nunca com n = 3.
+  # Empates na ultima posicao sao desfeitos em ordem alfabetica, para
+  # devolver exatamente `n` termos (com empates mantidos, um corpus
+  # pequeno em que quase tudo vale 1 devolvia o vocabulario inteiro).
+  n_top <- n
   if (is.null(by)) {
-    out <- dplyr::slice_max(x, order_by = n, n = n, with_ties = TRUE)
-    if (sort) {
-      out <- dplyr::arrange(out, dplyr::desc(n), token)
+    out <- x |>
+      dplyr::group_by(token) |>
+      dplyr::summarise(n = sum(n), .groups = "drop") |>
+      dplyr::arrange(dplyr::desc(n), token) |>
+      utils::head(n_top)
+    if (!sort) {
+      out <- dplyr::arrange(out, token)
     }
   } else {
     if (!is.character(by)) {
@@ -92,8 +108,11 @@ ac_top_terms <- function(x, n = 20L, by = NULL, sort = TRUE) {
     }
     
     out <- x |>
+      dplyr::group_by(dplyr::across(dplyr::all_of(c(by, "token")))) |>
+      dplyr::summarise(n = sum(n), .groups = "drop") |>
       dplyr::group_by(dplyr::across(dplyr::all_of(by))) |>
-      dplyr::slice_max(order_by = n, n = n, with_ties = TRUE) |>
+      dplyr::arrange(dplyr::desc(n), token, .by_group = TRUE) |>
+      dplyr::slice_head(n = n_top) |>
       dplyr::ungroup()
     
     if (sort) {
@@ -104,7 +123,7 @@ ac_top_terms <- function(x, n = 20L, by = NULL, sort = TRUE) {
         token
       )
     } else {
-      out <- dplyr::arrange(out, dplyr::across(dplyr::all_of(by)))
+      out <- dplyr::arrange(out, dplyr::across(dplyr::all_of(by)), token)
     }
   }
   

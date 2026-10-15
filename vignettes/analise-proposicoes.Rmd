@@ -324,14 +324,28 @@ democracia") recebeu `populista` com confiança 0.667, caso limítrofe que
 ilustra a utilidade do self-consistency para identificar documentos ambíguos
 que merecem revisão humana prioritária.
 
-> **Como interpretar:** `confidence_score` mede o quanto as `k_consistency`
-> rodadas independentes concordaram entre si, não se a categoria escolhida
-> está "correta". 1.000 significa que todas as rodadas bateram na mesma
-> categoria; 0.667 com `k_consistency = 3L` significa que 2 das 3 rodadas
-> concordaram e 1 discordou. Documentos com confiança baixa são bons
-> candidatos a uma rodada de **diagnóstico** do codebook
-> (`strategy = "uncertainty"`), separada da amostra aleatória que a
-> seção 5 usa para estimar a confiabilidade.
+> **Como ler esta tabela**
+>
+> 1. **Onde olhar.** Olhe a última coluna, `confidence_score`, e procure
+>    valores **abaixo de 1,000**. Com `k_consistency = 3L`, 1,000 = as
+>    três rodadas escolheram a mesma categoria; 0,667 = duas escolheram,
+>    uma discordou.
+>
+> 2. **O que este exemplo mostra.** 8 dos 9 documentos têm 1,000. A
+>    exceção é `pl2858_favor` (0,667), classificado como `populista`:
+>    "Presos políticos: votar pela anistia é votar pela democracia"
+>    defende a proposta com um apelo à democracia em tom de slogan, e
+>    uma das três rodadas leu isso como discurso populista em vez de
+>    posição favorável.
+>
+> 3. **Em palavras simples.** O modelo teve dúvida justamente no texto
+>    que um leitor humano também acharia ambíguo.
+>
+> 4. **Cuidado.** Confiança alta não garante acerto: as três rodadas
+>    podem errar do mesmo jeito. Documentos como `pl2858_favor` são bons
+>    candidatos a uma rodada de **diagnóstico** do codebook (`strategy =
+>    "uncertainty"`), separada da amostra **aleatória** que a seção 5
+>    usa para estimar a confiabilidade.
 
 ---
 
@@ -388,23 +402,28 @@ print(concordancia)
 ## Krippendorff's Alpha (nominal)  1.000       [1.000, 1.000]  confiável (>= 0,800; Krippendorff, 2018)
 ```
 
-> **Como interpretar:** Percent Agreement ignora a chance de acerto
-> aleatório e por isso é sempre a métrica mais otimista da tabela; Kappa
-> e Alpha corrigem por essa chance e tendem a ser mais conservadoras,
-> especialmente quando uma categoria é muito mais frequente que as
-> outras. Reporte Kappa ou Alpha como medida principal no artigo, e
-> Percent Agreement apenas como complemento descritivo. Cada linha traz
-> o rótulo da referência própria da métrica: Landis & Koch (1977) para
-> kappa, Krippendorff (2018) para o alfa e Neuendorf (2017) para o
-> percentual.
+> **Como ler esta tabela**
 >
-> Note o IC de [1, 1]: ele **não** significa certeza. Com concordância
-> perfeita em 5 documentos, toda reamostra *bootstrap* também é
-> perfeita, e o método não tem como expressar a incerteza que uma
-> amostra tão pequena carrega. Intervalos degenerados assim são um
-> limite conhecido do *bootstrap* em amostras pequenas (Efron &
-> Tibshirani, 1993); a resposta é aumentar a amostra, não confiar no
-> intervalo.
+> 1. **Onde olhar.** Uma linha por métrica. Olhe `Estimativa` (de 0 a
+>    1), o intervalo `IC` e a `Interpretacao`, que usa a referência
+>    própria de cada métrica: Landis & Koch (1977) para kappa,
+>    Krippendorff (2018) para o alfa, Neuendorf (2017) para o
+>    percentual. A matriz de confusão embaixo mostra onde humano e
+>    modelo discordaram (fora da diagonal).
+>
+> 2. **O que este exemplo mostra.** Todas as métricas valem 1,000 e a
+>    matriz de confusão só tem números na diagonal: nos 5 documentos
+>    revisados, humano e modelo deram exatamente a mesma categoria.
+>
+> 3. **Em palavras simples.** Concordância perfeita nesta amostra, o
+>    esperado para textos construídos com posições inequívocas.
+>
+> 4. **Cuidado.** O IC de [1,000; 1,000] **não** significa certeza. Com
+>    concordância perfeita, toda reamostra *bootstrap* também é
+>    perfeita, e o método não consegue expressar a incerteza de uma
+>    amostra de 5 documentos (Efron & Tibshirani, 1993). Reporte kappa
+>    ou alfa como medida principal (o percentual não desconta o acaso) e
+>    use uma amostra bem maior antes de afirmar confiabilidade.
 
 Concordância perfeita é esperada para este corpus, dado que os textos foram
 construídos com posicionamentos inequívocos. Em corpora reais com textos

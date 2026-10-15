@@ -17,14 +17,18 @@ de agregacao. Se \code{NULL} (padrao), a selecao e feita no conjunto total.
 Se não for \code{NULL}, os \code{n} termos mais frequentes sao selecionados
 dentro de cada combinacao de \code{by}.}
 
-\item{sort}{Lógico. Se \code{TRUE} (padrao), ordena a saida em ordem
-decrescente de frequência (\code{n}). Se \code{FALSE}, preserva a ordem
-retornada pela operacao interna de selecao, apenas garantindo que
-os grupos (quando houver) venham juntos.}
+\item{sort}{Lógico. Se \code{TRUE} (padrão), ordena a saída em ordem
+decrescente de frequência (\code{n}). Se \code{FALSE}, ordena os termos
+selecionados alfabeticamente (dentro de cada grupo, quando houver).}
 }
 \value{
-Um \code{\link[tibble:tibble]{tibble::tibble()}} com as mesmas colunas de \code{x}, mas
-restrito aos \code{n} termos mais frequentes (no geral ou por grupo).
+Um \code{\link[tibble:tibble]{tibble::tibble()}} com as colunas \code{token} e \code{n} (mais as
+colunas de \code{by}, se houver), com exatamente \code{n} termos (ou menos, se
+o vocabulário for menor) no geral ou por grupo. A frequência de cada
+termo é \strong{somada} sobre os documentos (ou dentro de cada grupo), de
+modo que uma tabela por documento, saída padrão de \code{\link[=ac_count]{ac_count()}},
+dá o total do corpus. Empates na última posição são desfeitos em
+ordem alfabética.
 }
 \description{
 \code{ac_top_terms()} seleciona os \code{n} termos mais frequentes a partir de uma
