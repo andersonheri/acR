@@ -24,7 +24,7 @@ Padrão: \code{5}. Ignorado se \code{unit = "document"}.}
 
 \item{measure}{Medidas de associação a calcular. Um ou mais de:
 \code{"count"} (frequência conjunta), \code{"pmi"} (pointwise mutual information),
-\code{"dice"} (coeficiente Dice). Padrão: \code{c("count", "pmi")}.}
+\code{"dice"} (coeficiente Dice). Padrão: as três.}
 
 \item{min_count}{Frequência mínima de co-ocorrência para incluir o par.
 Padrão: \code{2}.}
@@ -35,8 +35,11 @@ Padrão: \code{2}.}
 Tibble com colunas:
 \itemize{
 \item \code{word1}, \code{word2}: par de termos (ordenado alfabeticamente);
-\item \code{cooc}: frequência de co-ocorrência;
-\item \code{pmi} (se solicitado): pointwise mutual information;
+\item \code{cooc}: frequência de co-ocorrência. Com \code{unit = "window"}, é o
+número de vezes em que os dois termos aparecem a até \code{window}
+tokens um do outro (cada encontro conta \strong{uma} vez); com
+\code{unit = "document"}, é o número de documentos que contêm os dois;
+\item \code{pmi} (se solicitado): pointwise mutual information, em bits;
 \item \code{dice} (se solicitado): coeficiente Dice.
 }
 }
@@ -44,6 +47,22 @@ Tibble com colunas:
 \code{ac_cooccurrence()} calcula pares de termos que co-ocorrem dentro de
 janelas deslizantes ou dentro do mesmo documento, retornando frequências
 e medidas de associação (PMI, Dice).
+}
+\details{
+\strong{PMI} (Church & Hanks, 1990) compara a probabilidade conjunta com a
+esperada sob independência: \eqn{\log_2 [P(x,y) / (P(x)P(y))]}. Zero
+indica que o par aparece junto tanto quanto o acaso preveria; valores
+positivos, mais que o acaso. PMI superestima pares raros (Evert, 2005),
+por isso use \code{min_count} para descartá-los.
+
+\strong{Dice} (Smadja, McKeown & Hatzivassiloglou, 1996) é
+\eqn{2 f(x,y) / (f(x) + f(y))}, entre 0 e 1.
+
+As probabilidades usam a mesma unidade da contagem conjunta: com
+\code{unit = "window"}, frequências de token e o total de tokens do corpus
+(aproximação usual de Church & Hanks); com \code{unit = "document"},
+frequência documental (em quantos documentos o termo aparece) e o
+número de documentos. Pares de um termo com ele mesmo são ignorados.
 }
 \examples{
 # Corpus tematico: coocorrência revela associações conceituais
@@ -75,6 +94,18 @@ cooc_pmi <- ac_cooccurrence(tokens, window = 3L, measure = "pmi",
                             min_count = 1L)
 head(cooc_pmi)
 
+}
+\references{
+Church, K. W.; Hanks, P. (1990). Word association norms, mutual
+information, and lexicography. \emph{Computational Linguistics}, 16(1),
+22-29.
+
+Evert, S. (2005). \emph{The Statistics of Word Cooccurrences: Word Pairs and
+Collocations}. Tese (Doutorado), Universität Stuttgart.
+
+Smadja, F.; McKeown, K. R.; Hatzivassiloglou, V. (1996). Translating
+collocations for bilingual lexicons: A statistical approach.
+\emph{Computational Linguistics}, 22(1), 1-38.
 }
 \seealso{
 \code{\link[=ac_tokenize]{ac_tokenize()}}, \code{\link[=ac_plot_cooccurrence]{ac_plot_cooccurrence()}}

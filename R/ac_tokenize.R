@@ -25,10 +25,14 @@
 #'   resultarem em texto vazio após a limpeza não geram linhas na
 #'   saida. Se `TRUE`, cada documento vazio gera uma linha com
 #'   `token = NA` quando `n = 1`.
-#' @param drop_punct Lógico. Se `TRUE`, remove da sequência tokens
-#'   que consistem apenas de pontuação (por exemplo `"!"`, `"..."`)
-#'   antes de construir n-gramas. Tokens que misturam letras e
-#'   pontuação (por exemplo `"ola,"`) sao mantidos.
+#' @param drop_punct Lógico. Se `TRUE`, remove a pontuação das **bordas**
+#'   de cada token (`"excelente,"` vira `"excelente"`, `"(péssimo)"` vira
+#'   `"péssimo"`) e descarta tokens que ficam vazios (`"!"`, `"..."`),
+#'   antes de construir n-gramas. Pontuação **interna** é preservada, para
+#'   não quebrar formas como `"e-mail"`, `"guarda-chuva"` ou `"3,5"`.
+#'   Sem isso, `"excelente,"` e `"excelente"` seriam contados como dois
+#'   tipos diferentes, o que distorce frequências, TTR, dicionários e
+#'   Wordscores.
 #' @param ... Ignorado, reservado para argumentos futuros.
 #'
 #' @return Um [`tibble::tibble()`] com colunas:
@@ -145,12 +149,15 @@ ac_tokenize <- function(
     lista_tokens[is_empty] <- list(NA_character_)
   }
   
-  # Remover tokens que sao apenas pontuacao, se solicitado
+  # Remover pontuacao das bordas dos tokens, se solicitado
   if (drop_punct) {
     lista_tokens <- lapply(lista_tokens, function(tk) {
       if (length(tk) == 0L) return(tk)
-      is_punct <- !is.na(tk) & grepl("^[[:punct:]]+$", tk)
-      tk[!is_punct]
+      # Remove pontuacao Unicode (\p{P}) so nas bordas: "bom." -> "bom",
+      # mas "e-mail" e "3,5" ficam intactos. Tokens que viram "" saem.
+      tk <- ifelse(is.na(tk), tk,
+                   stringr::str_remove_all(tk, "^\\p{P}+|\\p{P}+$"))
+      tk[is.na(tk) | nzchar(tk)]
     })
   }
   

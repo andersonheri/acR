@@ -103,9 +103,15 @@
 #'     multilabel, unidos por `" | "` (espaco dos dois lados).
 #'   * `confidence_score`: grau de certeza da categoria vencedora (0-1).
 #'     Presente quando `confidence` e `"total"` ou `"both"`.
-#'   * `confidence_level`: `"alta"`, `"média"`, `"baixa"` -- interpretação
-#'     de `confidence_score` (Landis & Koch, 1977). Acompanha
-#'     `confidence_score`.
+#'   * `confidence_level`: `"alta"` (`>= 0,80`), `"média"` (`>= 0,61`) ou
+#'     `"baixa"` -- faixas **convencionadas pelo pacote** para resumir
+#'     `confidence_score`. Não vêm da literatura de confiabilidade: as
+#'     faixas de Landis & Koch (1977) são para kappa, não para proporção
+#'     de rodadas concordantes. A ideia de usar a concordância entre
+#'     amostras como sinal de incerteza vem de Wang et al. (2023) e Xiong
+#'     et al. (2024), que mostram que ela se correlaciona com acerto, mas
+#'     não propõem cortes universais. Com `k_consistency = 3`, os valores
+#'     possíveis são só 1/3, 2/3 e 1. Acompanha `confidence_score`.
 #'   * `<categoria>_confidence`: uma coluna por categoria do codebook
 #'     (ex.: `positivo_confidence`, `negativo_confidence`), com a
 #'     proporção de rodadas de self-consistency que escolheram aquela
@@ -131,7 +137,12 @@
 #'
 #' @references
 #' Wang, X. et al. (2023). Self-Consistency Improves Chain of Thought Reasoning
-#' in Language Models. *EMNLP*.
+#' in Language Models. *International Conference on Learning
+#' Representations (ICLR)*.
+#'
+#' Xiong, M. et al. (2024). Can LLMs Express Their Uncertainty? An
+#' Empirical Evaluation of Confidence Elicitation in LLMs.
+#' *International Conference on Learning Representations (ICLR)*.
 #'
 #' Landis, J. R.; Koch, G. G. (1977). The Measurement of Observer Agreement
 #' for Categorical Data. *Biometrics*, 33(1), 159-174.
@@ -848,8 +859,8 @@ ac_qual_code <- function(corpus,
   }
 
   cli::cli_inform(c(
-    "i" = "Certeza calculada via self-consistency (Wang et al., 2023, EMNLP).",
-    "i" = "Interpreta\u00e7\u00e3o: >= 0.80 = alta | 0.61-0.79 = m\u00e9dia | < 0.61 = baixa (Landis & Koch, 1977)."
+    "i" = "Certeza calculada via self-consistency (Wang et al., 2023, ICLR).",
+    "i" = "N\u00edveis de confian\u00e7a (conven\u00e7\u00e3o do acR, n\u00e3o Landis & Koch): >= 0.80 = alta | 0.61-0.79 = m\u00e9dia | < 0.61 = baixa."
   ))
 
   result

@@ -7,12 +7,37 @@
 #'
 #' @param corpus Objeto `ac_corpus`.
 #' @param by Coluna(s) de agrupamento para agregar o sentimento além do
-#'   documento (ex: `"partido"`, `"data"`). Padrão: `NULL` (por documento).
+#'   documento (ex: `"partido"`, `"data"`): todos os tokens dos documentos
+#'   do grupo entram juntos no cálculo, e a saída tem uma linha por grupo
+#'   (sem `doc_id`). Padrão: `NULL` (uma linha por documento).
 #' @param lexicon Léxico a usar. Atualmente apenas `"oplexicon"` (padrão).
-#' @param method Método de agregação por documento:
-#'   * `"sum"` (padrão): soma das polaridades.
-#'   * `"mean"`: média das polaridades.
-#'   * `"ratio"`: razão entre positivos e negativos.
+#' @param method Método de agregação por documento (ou grupo):
+#'   * `"sum"` (padrão): soma das polaridades (+1/-1). Cresce com o
+#'     tamanho do texto: não compare documentos de tamanhos muito
+#'     diferentes por esse escore.
+#'   * `"mean"`: soma das polaridades dividida pelo **total de tokens**
+#'     (inclusive os que não estão no léxico), ou seja, saldo de
+#'     sentimento por palavra.
+#'   * `"ratio"`: \eqn{(pos - neg)/(pos + neg)}, entre -1 e 1; usa só as
+#'     palavras com polaridade e por isso independe do tamanho do texto
+#'     (é a forma "relativa" de Lowe et al., 2011, sem a suavização
+#'     logarítmica).
+#'
+#' @details
+#' **Como o léxico é aplicado.** O texto é limpo (minúsculas, sem
+#' pontuação), tokenizado em palavras e cada palavra recebe a polaridade
+#' do OpLexicon (-1, 0, +1); palavras fora do léxico valem 0. Alguns
+#' termos aparecem no OpLexicon mais de uma vez (uma por classe
+#' gramatical); nesse caso usa-se o sinal da soma das polaridades do
+#' termo (polaridades conflitantes, como +1 e -1, viram 0), para que cada
+#' token conte uma única vez.
+#'
+#' **Limites do método de dicionário.** A contagem é palavra a palavra:
+#' não trata negação ("não é bom" soma +1), intensificadores ("muito
+#' ruim") nem ironia, e a polaridade de uma palavra depende do domínio
+#' (Taboada et al., 2011; Grimmer & Stewart, 2013). Por isso valide numa
+#' amostra codificada por humano (ver [ac_dictionary_validate()]) antes
+#' de interpretar os escores.
 #' @param ... Ignorado.
 #'
 #' @return Tibble com colunas:
@@ -20,7 +45,8 @@
 #'   * Colunas de metadado (se `by` especificado);
 #'   * `n_pos`: número de tokens positivos;
 #'   * `n_neg`: número de tokens negativos;
-#'   * `n_neu`: número de tokens neutros;
+#'   * `n_neu`: número de tokens sem polaridade (neutros no léxico **ou**
+#'     ausentes dele);
 #'   * `score`: pontuação de sentimento (método escolhido);
 #'   * `sentiment`: classificação (`"positivo"`, `"negativo"`, `"neutro"`).
 #'
@@ -31,6 +57,18 @@
 #' Souza, M.; Vieira, R.; Busetti, D.; Chishman, R.; Alves, I. M. (2011).
 #' Construction of a Portuguese Opinion Lexicon from multiple resources.
 #' *STIL/SBC*.
+#'
+#' Grimmer, J.; Stewart, B. M. (2013). Text as Data: The Promise and
+#' Pitfalls of Automatic Content Analysis Methods for Political Texts.
+#' *Political Analysis*, 21(3), 267-297.
+#'
+#' Lowe, W.; Benoit, K.; Mikhaylov, S.; Laver, M. (2011). Scaling Policy
+#' Preferences from Coded Political Texts. *Legislative Studies
+#' Quarterly*, 36(1), 123-155.
+#'
+#' Taboada, M.; Brooke, J.; Tofiloski, M.; Voll, K.; Stede, M. (2011).
+#' Lexicon-Based Methods for Sentiment Analysis. *Computational
+#' Linguistics*, 37(2), 267-307.
 #'
 #' @examples
 #' # Discursos com valência afetiva variada
@@ -82,6 +120,14 @@ ac_sentiment <- function(corpus,
     ac_clean(lower = TRUE, remove_punct = TRUE) |>
     ac_tokenize()
 
+  # Uma linha por termo: o OpLexicon repete alguns termos (uma entrada por
+  # classe gramatical), e um left_join com duplicatas contaria o mesmo
+  # token duas vezes. Polaridade final = sinal da soma (conflito -> 0).
+  lex <- lex |>
+    dplyr::group_by(termo) |>
+    dplyr::summarise(polaridade = as.integer(sign(sum(polaridade, na.rm = TRUE))),
+                     .groups = "drop")
+
   # Join com léxico
   scored <- tokens_tbl |>
     dplyr::left_join(lex, by = c("token" = "termo")) |>
@@ -99,7 +145,7 @@ ac_sentiment <- function(corpus,
     scored <- scored |>
       dplyr::left_join(meta, by = "doc_id")
 
-    by_cols <- c("doc_id", by)
+    by_cols <- by
   }
 
   result <- scored |>

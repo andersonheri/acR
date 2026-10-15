@@ -9,7 +9,10 @@
 #' @param k Número de tópicos. Padrão: `10`.
 #' @param seed Semente para reprodutibilidade. Padrão: `42`.
 #' @param method Método de estimação: `"VEM"` (padrão) ou `"Gibbs"`.
-#' @param ... Argumentos adicionais passados a [topicmodels::LDA()].
+#' @param ... Use `control = list(...)` para repassar parâmetros de
+#'   controle a [topicmodels::LDA()] (ex.: `control = list(alpha = 0.1,
+#'   iter = 2000)` com `method = "Gibbs"`). A `seed` é incluída
+#'   automaticamente se `control` não tiver uma.
 #'
 #' @return Lista de classe `ac_lda` com:
 #'   * `model`: objeto `LDA` do pacote `topicmodels`;
@@ -93,8 +96,7 @@ ac_lda <- function(corpus,
     dtm,
     k       = k,
     method  = method,
-    control = list(seed = seed),
-    ...
+    control = .ac_lda_control(seed, ...)
   )
 
   # Extrair beta (termos × tópicos)
@@ -147,17 +149,57 @@ print.ac_lda <- function(x, ...) {
 #'
 #' @description
 #' `ac_lda_tune()` ajusta modelos LDA para diferentes valores de k e
-#' calcula métricas de qualidade para auxiliar na seleção do número
-#' ideal de tópicos.
+#' calcula a **perplexidade fora da amostra** por validação cruzada, para
+#' auxiliar na seleção do número de tópicos.
+#'
+#' Por que fora da amostra: a perplexidade calculada nos mesmos documentos
+#' usados para ajustar o modelo cai quase sempre à medida que k cresce,
+#' porque mais tópicos = mais parâmetros para memorizar o corpus. Blei, Ng
+#' & Jordan (2003) e Wallach et al. (2009) avaliam a perplexidade em
+#' documentos **não vistos** no ajuste; Zhao et al. (2015) usam validação
+#' cruzada em 5 partes, como faz esta função por padrão. A versão de
+#' treino continua disponível na coluna `perplexity_train`, só para
+#' comparação.
+#'
+#' Perplexidade é um critério de ajuste preditivo, não de qualidade
+#' substantiva: Chang et al. (2009) mostram que modelos com melhor
+#' perplexidade podem produzir tópicos **menos** interpretáveis para
+#' humanos. Use a curva para delimitar uma faixa de k e decida dentro
+#' dela lendo os tópicos.
 #'
 #' @param corpus Objeto `ac_corpus`.
 #' @param k_range Vetor de valores de k a testar. Padrão: `5:20`.
-#' @param seed Semente. Padrão: `42`.
+#' @param seed Semente (ajuste dos modelos e sorteio das partes da
+#'   validação cruzada). Padrão: `42`.
 #' @param method Método de estimação. Padrão: `"VEM"`.
-#' @param ... Ignorado.
+#' @param folds Número de partes da validação cruzada. Padrão: `5`
+#'   (limitado ao número de documentos). Use `1` para pular a validação
+#'   cruzada e calcular só a perplexidade de treino (não recomendado).
+#' @param ... Use `control = list(...)` para repassar parâmetros de
+#'   controle a [topicmodels::LDA()] (ex.: `control = list(alpha = 0.1,
+#'   iter = 2000)` com `method = "Gibbs"`). A `seed` é incluída
+#'   automaticamente se `control` não tiver uma.
 #'
-#' @return Tibble com colunas `k`, `perplexity` e, se disponível,
-#'   métricas do pacote `ldatuning`.
+#' @return Tibble com colunas `k`, `perplexity` (média da perplexidade
+#'   nas partes de teste da validação cruzada), `perplexity_sd` (desvio
+#'   padrão entre as partes) e `perplexity_train` (perplexidade no corpus
+#'   inteiro usado no ajuste).
+#'
+#' @references
+#' Blei, D. M.; Ng, A. Y.; Jordan, M. I. (2003). Latent Dirichlet
+#' Allocation. *Journal of Machine Learning Research*, 3, 993-1022.
+#'
+#' Chang, J.; Gerrish, S.; Wang, C.; Boyd-Graber, J.; Blei, D. M. (2009).
+#' Reading tea leaves: How humans interpret topic models. *Advances in
+#' Neural Information Processing Systems*, 22, 288-296.
+#'
+#' Wallach, H. M.; Murray, I.; Salakhutdinov, R.; Mimno, D. (2009).
+#' Evaluation methods for topic models. *Proceedings of the 26th
+#' International Conference on Machine Learning*, 1105-1112.
+#'
+#' Zhao, W. et al. (2015). A heuristic approach to determine an
+#' appropriate number of topics in topic modeling. *BMC Bioinformatics*,
+#' 16(Suppl 13), S8.
 #'
 #' @examples
 #' \donttest{
@@ -179,7 +221,7 @@ print.ac_lda <- function(x, ...) {
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
 #'
-#' # 2. Testar k de 2 a 5 e comparar perplexidade (menor = melhor ajuste)
+#' # 2. Testar k de 2 a 5: perplexidade fora da amostra (validacao cruzada)
 #' tune <- ac_lda_tune(corpus, k_range = 2:5)
 #' tune
 #' }
@@ -191,6 +233,7 @@ ac_lda_tune <- function(corpus,
                          k_range = 5:20,
                          seed    = 42L,
                          method  = c("VEM", "Gibbs"),
+                         folds   = 5L,
                          ...) {
 
   if (!is_ac_corpus(corpus)) {
@@ -205,18 +248,54 @@ ac_lda_tune <- function(corpus,
   dtm_tbl <- corpus |> ac_clean() |> ac_count(n = 1L)
   dtm     <- .ac_to_dtm(dtm_tbl)
 
-  cli::cli_inform("Testando k = {min(k_range)} a {max(k_range)}...")
+  n_docs <- nrow(dtm)
+  folds  <- max(1L, min(as.integer(folds), n_docs))
+  # Particao fixa dos documentos (mesma para todos os k), sorteada com a
+  # semente do usuario sem alterar o RNG global.
+  fold_id <- withr::with_seed(seed, sample(rep_len(seq_len(folds), n_docs)))
+
+  cli::cli_inform(c(
+    "Testando k = {min(k_range)} a {max(k_range)}...",
+    "i" = if (folds > 1L) "Perplexidade fora da amostra: valida\u00e7\u00e3o cruzada em {folds} partes." else
+      "folds = 1: s\u00f3 perplexidade de treino (tende a cair sempre com k)."
+  ))
+
+  ajustar <- function(m, k) {
+    topicmodels::LDA(m, k = k, method = method,
+                     control = .ac_lda_control(seed, ...))
+  }
 
   results <- purrr::map(
     k_range,
     function(k) {
-      model <- topicmodels::LDA(
-        dtm, k = k, method = method,
-        control = list(seed = seed)
-      )
+      # Para Gibbs, o topicmodels so calcula perplexidade com newdata;
+      # passar o proprio dtm da a perplexidade de treino nos dois metodos.
+      perp_train <- topicmodels::perplexity(ajustar(dtm, k), newdata = dtm)
+      perp_test <- if (folds > 1L) {
+        vapply(seq_len(folds), function(f) {
+          treino <- dtm[fold_id != f, ]
+          teste  <- dtm[fold_id == f, ]
+          # Palavras que nunca aparecem no treino recebem probabilidade
+          # ~0 no modelo e explodem a perplexidade (valores de 1e30+), o
+          # que mede so o vocabulario novo, nao a qualidade dos topicos.
+          # Avaliar o teste so sobre o vocabulario do treino e a pratica
+          # usual na avaliacao fora da amostra.
+          # (DocumentTermMatrix e triplet esparso: $i linhas, $j colunas)
+          vocab_treino <- seq_len(ncol(treino)) %in% unique(treino$j)
+          treino <- treino[, vocab_treino]
+          teste  <- teste[, vocab_treino]
+          teste  <- teste[seq_len(nrow(teste)) %in% unique(teste$i), ]
+          modelo <- ajustar(treino, k)
+          topicmodels::perplexity(modelo, newdata = teste)
+        }, numeric(1))
+      } else {
+        perp_train
+      }
       tibble::tibble(
-        k           = k,
-        perplexity  = topicmodels::perplexity(model)
+        k                = k,
+        perplexity       = mean(perp_test),
+        perplexity_sd    = if (folds > 1L) stats::sd(perp_test) else NA_real_,
+        perplexity_train = perp_train
       )
     },
     .progress = if (interactive()) "Ajustando LDA" else FALSE
@@ -292,6 +371,9 @@ ac_plot_lda_topics <- function(lda_result,
   ) +
     ggplot2::geom_col(show.legend = FALSE, alpha = 0.85) +
     ggplot2::coord_flip() +
+    # tidytext_reorder() cria niveis "termo___Topico k" para ordenar
+    # dentro de cada painel; aqui o sufixo e removido dos rotulos.
+    ggplot2::scale_x_discrete(labels = function(x) sub("___.*$", "", x)) +
     ggplot2::facet_wrap(~ topic,
                         scales = "free_y",
                         ncol   = ncol %||% ceiling(sqrt(lda_result$k))) +
@@ -373,7 +455,7 @@ ac_plot_lda_tune <- function(tune_result, title = NULL, ...) {
     ggplot2::scale_x_continuous(breaks = tune_result$k) +
     ggplot2::labs(
       title    = title %||% "Sele\u00e7\u00e3o do n\u00famero de t\u00f3picos (k)",
-      subtitle = "Menor perplexidade indica melhor ajuste",
+      subtitle = "Perplexidade fora da amostra (menor = melhor previs\u00e3o de documentos novos)",
       x        = "N\u00famero de t\u00f3picos (k)",
       y        = "Perplexidade",
       caption  = "acR \u2022 ac_plot_lda_tune()"
@@ -391,6 +473,17 @@ ac_plot_lda_tune <- function(tune_result, title = NULL, ...) {
 # ============================================================
 # Auxiliares internas
 # ============================================================
+
+# Junta a semente do acR com um `control` passado pelo usuario via `...`
+# (ex.: control = list(alpha = 0.1, iter = 2000) para Gibbs). Antes, ac_lda()
+# passava control = list(seed) e repassava `...`, entao qualquer control do
+# usuario gerava "argumento formal casado por multiplos argumentos".
+.ac_lda_control <- function(seed, ...) {
+  dots <- list(...)
+  ctl  <- dots$control %||% list()
+  if (is.null(ctl$seed)) ctl$seed <- seed
+  ctl
+}
 
 #' @keywords internal
 #' @noRd

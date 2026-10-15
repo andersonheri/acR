@@ -19,9 +19,10 @@
 #' @param corpus Objeto de classe [`ac_corpus()`].
 #' @param n Tamanho do n-grama a ser tokenizado. Encaminhado para
 #'   [`ac_tokenize()`]. Veja `?ac_tokenize` para detalhes.
-#' @param drop_punct Lógico. Se `TRUE`, remove tokens compostos apenas
-#'   por pontuação antes de calcular as frequências (via
-#'   `drop_punct = TRUE` em [`ac_tokenize()`]).
+#' @param drop_punct Lógico. Se `TRUE`, remove a pontuação das bordas
+#'   dos tokens e descarta tokens compostos só de pontuação antes de
+#'   calcular as frequências (via `drop_punct = TRUE` em
+#'   [`ac_tokenize()`]).
 #' @param by Vetor de nomes de colunas de metadados em `corpus` a serem
 #'   usados como grupos de agregacao. Se `NULL` (padrao), as contagens
 #'   sao feitas por documento (`doc_id`). Se não for `NULL`, as colunas

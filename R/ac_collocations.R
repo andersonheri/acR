@@ -19,14 +19,19 @@
 #'
 #' @param corpus Objeto `ac_corpus`.
 #' @param n Tamanho do n-grama: `2` (padrão, bigramas) ou `3`
-#'   (trigramas).
+#'   (trigramas). Para trigramas, a tabela 2x2 compara a primeira palavra
+#'   com o **bigrama** formado pelas duas seguintes (ex.: "atendimento" ×
+#'   "ao cliente"), e o PMI usa a mesma decomposição:
+#'   \eqn{\log_2[f(w_1 w_2 w_3) N / (f(w_1) f(w_2 w_3))]}.
 #' @param measure Medida de associação:
 #'   * `"pmi"` (padrão): *Pointwise Mutual Information* (Church & Hanks,
 #'     1990): quanto mais alto, mais a coocorrência surpreende em
 #'     relação ao esperado pelo acaso. Tende a favorecer pares raros.
-#'   * `"ll"`: log-likelihood ratio (Dunning, 1993): mais robusta que
-#'     PMI para colocações de baixa frequência; é a medida padrão do
-#'     `quanteda.textstats::textstat_collocations()`.
+#'   * `"ll"`: log-likelihood ratio, G² (Dunning, 1993): mais confiável
+#'     que o qui-quadrado e que o PMI para eventos raros, porque não supõe
+#'     normalidade das contagens (Dunning, 1993; Evert, 2005). Atenção:
+#'     não é a medida do `quanteda.textstats::textstat_collocations()`,
+#'     que usa o lambda de Blaheta & Johnson (2001) e seu escore z.
 #'   * `"chi2"`: qui-quadrado de associação, mesma lógica de
 #'     [ac_keyness()] aplicada a pares de palavras adjacentes em vez de
 #'     grupos de documentos.
@@ -48,6 +53,12 @@
 #'
 #' Dunning, T. (1993). Accurate methods for the statistics of surprise
 #' and coincidence. *Computational Linguistics*, 19(1), 61-74.
+#'
+#' Evert, S. (2005). *The Statistics of Word Cooccurrences: Word Pairs and
+#' Collocations*. Tese (Doutorado), Universität Stuttgart.
+#'
+#' Blaheta, D.; Johnson, M. (2001). Unsupervised learning of multi-word
+#' verbs. *Proceedings of the ACL Workshop on Collocations*, 54-60.
 #'
 #' @examples
 #' # Reviews de um restaurante com expressoes compostas recorrentes
@@ -106,9 +117,23 @@ ac_collocations <- function(corpus,
                           association = numeric(0)))
   }
 
+  # Tabela 2x2 "primeira palavra" x "resto do n-grama". Para bigramas o
+  # resto e a segunda palavra; para trigramas, o bigrama w2 w3. (A versao
+  # anterior usava w1 x w3 para trigramas, ignorando a palavra do meio.)
   partes <- strsplit(freq_ngrama$token, " ", fixed = TRUE)
-  freq_w1 <- vapply(partes, function(p) as.numeric(freq_unigrama[p[1]] %||% 0), numeric(1))
-  freq_w2 <- vapply(partes, function(p) as.numeric(freq_unigrama[p[length(p)]] %||% 0), numeric(1))
+  freq_resto_tbl <- if (n == 2L) {
+    freq_unigrama
+  } else {
+    table(ac_tokenize(corpus, n = 2L, drop_punct = drop_punct)$token)
+  }
+  conta <- function(tab, chave) {
+    v <- tab[chave]
+    if (is.na(v)) 0 else as.numeric(v)
+  }
+  freq_w1 <- vapply(partes, function(p) conta(freq_unigrama, p[1]), numeric(1))
+  freq_w2 <- vapply(partes, function(p) {
+    conta(freq_resto_tbl, paste(p[-1], collapse = " "))
+  }, numeric(1))
 
   a <- freq_ngrama$count
   b <- pmax(freq_w1 - a, 0)

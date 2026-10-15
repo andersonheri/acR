@@ -39,12 +39,22 @@
 #' A fórmula (Martins et al., 1996) é:
 #' \deqn{ILF = 248{,}835 - 1{,}015 \times \frac{palavras}{frases} - 84{,}6 \times \frac{sílabas}{palavras}}
 #'
-#' Faixas de interpretação (adaptadas da literatura educacional
-#' brasileira que usa o ILF):
-#' * `>= 75`: muito fácil (ensino fundamental inicial);
-#' * `50-74,9`: fácil a médio (ensino fundamental/médio);
-#' * `25-49,9`: difícil (ensino superior);
-#' * `< 25`: muito difícil (especializado/técnico).
+#' Faixas de interpretação de Martins et al. (1996), que calibraram a
+#' fórmula em livros didáticos brasileiros:
+#' * `>= 75`: muito fácil (1º ao 5º ano do ensino fundamental);
+#' * `50-74,9`: fácil (6º ao 9º ano);
+#' * `25-49,9`: difícil (ensino médio e superior);
+#' * `< 25`: muito difícil (textos acadêmicos/especializados).
+#'
+#' **Contagens aproximadas.** As sílabas são estimadas por grupos de
+#' vogais contíguas, heurística usual em legibilidade automática: acerta
+#' ditongos ("cai-xa"), mas conta hiatos como uma sílaba só ("sa-ú-de"
+#' vira 2), o que tende a subestimar sílabas e superestimar o índice. As
+#' frases são separadas em `.`, `!` e `?`, então abreviações ("Sr.",
+#' "art.") e números decimais ("3.5") inflam o número de frases. Ao
+#' comparar grupos de textos do mesmo gênero, o viés é parecido nos dois
+#' lados; para afirmar o nível absoluto de um texto, confira uma amostra
+#' à mão.
 #'
 #' @references
 #' Flesch, R. (1948). A New Readability Yardstick. *Journal of Applied

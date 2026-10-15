@@ -140,7 +140,9 @@ test_that("ac_sentiment() agrupamento por coluna 'by' funciona", {
 
   result <- ac_sentiment(corp, by = "grupo")
   expect_true("grupo" %in% names(result))
-  expect_equal(nrow(result), 4L)  # ainda por doc_id + grupo
+  # by agrega todos os tokens do grupo: uma linha por grupo, sem doc_id
+  expect_equal(nrow(result), 2L)
+  expect_false("doc_id" %in% names(result))
 })
 
 test_that("ac_sentiment() n_pos e n_neg sao inteiros nao negativos", {
@@ -245,4 +247,15 @@ test_that(".ac_load_lexicon() retorna erro para lexicon nao suportado", {
     acR:::.ac_load_lexicon("lexicon_inexistente"),
     regexp = "suportado"
   )
+})
+
+test_that("termos duplicados no lexico contam uma unica vez", {
+  df <- data.frame(id = "d1", texto = "bom bom", stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = texto, docid = id)
+  lex_dup <- tibble::tibble(termo = c("bom", "bom"), pos = c("adj", "n"),
+                            polaridade = c(1L, 1L))
+  local_mocked_bindings(.ac_load_lexicon = function(...) lex_dup, .package = "acR")
+  r <- ac_sentiment(corp)
+  expect_equal(r$n_pos, 2L)
+  expect_equal(r$score, 2)
 })

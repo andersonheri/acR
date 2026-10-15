@@ -12,9 +12,9 @@
 #' humanas para calibrar entre codificadores antes de acender a LLM, ou
 #' quando quer comparar LLMs entre si sobre a mesma amostra.
 #'
-#' A função aceita dois formatos de entrada: (a) dois data.frames com colunas
-#' `id` e `categoria`, representando anotador 1 e anotador 2; ou (b) um único
-#' data.frame em formato largo com uma coluna por anotador.
+#' A entrada são dois data.frames (anotador 1 e anotador 2), cada um com
+#' uma coluna de identificador e uma de categoria, alinhados pelo
+#' identificador.
 #'
 #' @param gold `data.frame`. Anotacoes de referência (anotador humano ou
 #'   gold standard). Deve conter colunas `id_discurso` (ou `id`) e `categoria`.
@@ -27,11 +27,17 @@
 #'   Padrao: `"id_discurso"`.
 #' @param cat_col `character`. Nome da coluna de categoria nos data.frames.
 #'   Padrao: `"categoria"`.
-#' @param weight `character`. Tipo de ponderacao para Cohen's Kappa:
-#'   `"unweighted"` (padrao), `"linear"`, `"squared"`. Ignorado para
-#'   categorias nominais sem ordem natural.
+#' @param weight `character`. Tipo de ponderação para Cohen's Kappa:
+#'   `"unweighted"` (padrão), `"linear"` ou `"squared"` (Cohen, 1968).
+#'   Os pesos só fazem sentido para categorias **ordinais**: a ordem usada
+#'   é a dos níveis do fator em `gold[[cat_col]]` (se for fator) ou a
+#'   ordem alfabética (caso contrário). Para categorias nominais, use
+#'   `"unweighted"`.
 #' @param conf_level `numeric`. Nivel de confianca para intervalos (0-1).
 #'   Padrao: `0.95`.
+#' @param bootstrap `integer`. Número de réplicas *bootstrap* (reamostragem
+#'   de documentos) para os intervalos de confiança de Kappa, Fleiss e
+#'   Alpha. Padrão: `1000`. Use `0` para não calcular IC.
 #' @param verbose `logical`. Se `TRUE` (padrao), imprime resumo formatado.
 #'
 #' @return Um objeto de classe `ac_irr` (lista) com os elementos:
@@ -56,15 +62,34 @@
 #' | 0.61 - 0.80 | Substancial         |
 #' | 0.81 - 1.00 | Quase perfeita      |
 #'
+#' Os próprios autores chamam essas faixas de arbitrárias (Landis & Koch,
+#' 1977, p. 165): são rótulos de referência, não testes.
+#'
 #' ## Fleiss' Kappa
-#' Extensao do Kappa de Cohen para mais de dois anotadores. Requer que
-#' `predicted` contenha uma coluna por anotador adicional, ou que sejam
-#' passados como lista via `...`.
+#' Generalização do kappa para vários anotadores (Fleiss, 1971). Com dois
+#' anotadores, como aqui, ela supõe uma distribuição marginal comum aos
+#' dois e por isso equivale ao *pi* de Scott, não ao kappa de Cohen; os
+#' valores ficam próximos, mas não idênticos.
 #'
 #' ## Krippendorff's Alpha
-#' Métrica mais geral: funciona com qualquer número de anotadores, lida com
-#' dados faltantes e suporta escalas nominais, ordinais e de intervalo
-#' (KRIPPENDORFF, 2018).
+#' Métrica mais geral: funciona com qualquer número de anotadores e lida
+#' com dados faltantes (Krippendorff, 2018). Esta função calcula a versão
+#' **nominal**. A interpretação segue Krippendorff (2018, sec. 12.4), não
+#' Landis & Koch: alfa `>= 0,800` confiável; `0,667-0,800` só para
+#' conclusões provisórias; `< 0,667` insuficiente.
+#'
+#' ## Percentual de concordância
+#' Não corrige por acaso. Rótulos segundo Neuendorf (2017): `>= 0,90`
+#' alta; `>= 0,80` aceitável na maioria dos casos; `>= 0,70` só em
+#' estudos exploratórios; abaixo disso, insuficiente.
+#'
+#' ## Intervalos de confiança
+#' Calculados por *bootstrap* percentil, reamostrando documentos com
+#' reposição (Efron & Tibshirani, 1993). Uma versão anterior usava
+#' `kappa / z` como erro-padrão, mas o `z` do `irr` é calculado **sob a
+#' hipótese nula** (kappa = 0); esse erro-padrão não serve para IC em
+#' torno do kappa estimado (Fleiss, Cohen & Everitt, 1969) e gerava
+#' limites fora de \[-1, 1\].
 #'
 #' @examples
 #' \donttest{
@@ -95,6 +120,23 @@
 #' LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 #' categorical data. **Biometrics**, v. 33, n. 1, p. 159-174, 1977.
 #'
+#' COHEN, J. Weighted kappa: nominal scale agreement with provision for
+#' scaled disagreement or partial credit. **Psychological Bulletin**,
+#' v. 70, n. 4, p. 213-220, 1968.
+#'
+#' EFRON, B.; TIBSHIRANI, R. J. **An Introduction to the Bootstrap**.
+#' New York: Chapman & Hall, 1993.
+#'
+#' FLEISS, J. L. Measuring nominal scale agreement among many raters.
+#' **Psychological Bulletin**, v. 76, n. 5, p. 378-382, 1971.
+#'
+#' FLEISS, J. L.; COHEN, J.; EVERITT, B. S. Large sample standard errors
+#' of kappa and weighted kappa. **Psychological Bulletin**, v. 72, n. 5,
+#' p. 323-327, 1969.
+#'
+#' NEUENDORF, K. A. **The Content Analysis Guidebook**. 2. ed. Thousand
+#' Oaks: SAGE, 2017.
+#'
 #' @seealso [ac_qual_code()], [ac_qual_sample()]
 #'
 #' @importFrom stats qnorm
@@ -107,7 +149,8 @@ ac_qual_irr <- function(
     cat_col    = "categoria",
     weight     = "unweighted",
     conf_level = 0.95,
-    verbose    = TRUE
+    verbose    = TRUE,
+    bootstrap  = 1000L
 ) {
   # --- 0. Validar dependencias -------------------------------------------------
   .check_pkg("irr", "ac_qual_irr")
@@ -144,22 +187,57 @@ ac_qual_irr <- function(
     )
   }
 
-  if (nrow(merged) < nrow(gold)) {
+  for (arg in c("gold", "predicted")) {
+    ids <- get(arg)[[id_col]]
+    if (anyDuplicated(ids)) {
+      cli::cli_abort(
+        "{.arg {arg}} tem {.arg id_col} duplicado ({.val {unique(ids[duplicated(ids)])}}): \\
+         cada documento deve aparecer uma vez por anotador."
+      )
+    }
+  }
+
+  n_sem_par <- nrow(gold) + nrow(predicted) - 2L * nrow(merged)
+  if (n_sem_par > 0L) {
     cli::cli_warn(
-      "{nrow(gold) - nrow(merged)} documento(s) de {.arg gold} sem par em \\
-       {.arg predicted}  excluidos do calculo."
+      "{n_sem_par} documento(s) sem par entre {.arg gold} e \\
+       {.arg predicted} foram exclu\u00eddos do c\u00e1lculo."
     )
   }
 
-  ratings_gold <- merged[[paste0(cat_col, "_gold")]]
-  ratings_pred <- merged[[paste0(cat_col, "_pred")]]
-  categories   <- sort(unique(c(ratings_gold, ratings_pred)))
+  ratings_gold <- as.character(merged[[paste0(cat_col, "_gold")]])
+  ratings_pred <- as.character(merged[[paste0(cat_col, "_pred")]])
+  # Ordem das categorias: a dos niveis do fator, se houver (necessaria
+  # para kappa ponderado em escala ordinal); senao, alfabetica.
+  categories <- if (is.factor(gold[[cat_col]])) {
+    union(levels(gold[[cat_col]]), sort(unique(stats::na.omit(c(ratings_gold, ratings_pred)))))
+  } else {
+    sort(unique(stats::na.omit(c(ratings_gold, ratings_pred))))
+  }
+  if (weight != "unweighted" && !is.factor(gold[[cat_col]])) {
+    cli::cli_warn(c(
+      "Kappa ponderado ({.val {weight}}) usando a ordem alfab\u00e9tica das categorias: {.val {categories}}.",
+      "i" = "Se a escala \u00e9 ordinal, passe {.code gold[[cat_col]]} como fator com os n\u00edveis na ordem certa."
+    ))
+  }
 
   # Converter para inteiro (exigido por irr)
-  cat_factor  <- factor(c(ratings_gold, ratings_pred), levels = categories)
   gold_int    <- as.integer(factor(ratings_gold, levels = categories))
   pred_int    <- as.integer(factor(ratings_pred, levels = categories))
   ratings_mat <- cbind(gold_int, pred_int)
+
+  # IC bootstrap percentil: reamostra documentos (linhas) com reposicao.
+  boot_ci <- function(stat_fn) {
+    if (is.null(bootstrap) || bootstrap < 1L) return(c(NA_real_, NA_real_))
+    .ac_bootstrap_metric(gold_int, pred_int, as.integer(bootstrap), conf_level,
+                         function(a, b) {
+                           # Reamostras degeneradas (ex.: uma so categoria)
+                           # fazem o irr calcular o z interno com 0/0 e
+                           # avisar "NaNs produced"; o z nao e usado aqui.
+                           tryCatch(suppressWarnings(stat_fn(cbind(a, b))),
+                                    error = function(e) NA_real_)
+                         })
+  }
 
   # --- 3. Calcular metricas ----------------------------------------------------
   results <- list()
@@ -171,46 +249,48 @@ ac_qual_irr <- function(
       estimate       = pa$value / 100,
       ci_lower       = NA_real_,
       ci_upper       = NA_real_,
-      interpretation = .irr_interpret_pa(pa$value / 100),
+      interpretation = .ac_interpret_agreement(pa$value / 100, "percent"),
       stringsAsFactors = FALSE
     )
   }
 
   if ("cohen_kappa" %in% method) {
-    kw <- if (weight == "unweighted") "unweighted" else weight
+    # irr::kappa2 chama os pesos lineares de "equal"
+    kw <- switch(weight, unweighted = "unweighted", linear = "equal", squared = "squared")
     ck <- irr::kappa2(ratings_mat, weight = kw)
-    ci <- .irr_kappa_ci(ck$value, ck$statistic, nrow(merged), conf_level)
+    ci <- boot_ci(function(m) irr::kappa2(m, weight = kw)$value)
     results$cohen_kappa <- data.frame(
       metric         = paste0("Cohen's Kappa (", weight, ")"),
       estimate       = ck$value,
       ci_lower       = ci[1],
       ci_upper       = ci[2],
-      interpretation = .irr_interpret_kappa(ck$value),
+      interpretation = .ac_landis_koch(ck$value, citar = TRUE),
       stringsAsFactors = FALSE
     )
   }
 
   if ("fleiss_kappa" %in% method) {
     fk <- irr::kappam.fleiss(ratings_mat)
-    ci <- .irr_kappa_ci(fk$value, fk$statistic, nrow(merged), conf_level)
+    ci <- boot_ci(function(m) irr::kappam.fleiss(m)$value)
     results$fleiss_kappa <- data.frame(
       metric         = "Fleiss' Kappa",
       estimate       = fk$value,
       ci_lower       = ci[1],
       ci_upper       = ci[2],
-      interpretation = .irr_interpret_kappa(fk$value),
+      interpretation = .ac_landis_koch(fk$value, citar = TRUE),
       stringsAsFactors = FALSE
     )
   }
 
   if ("krippendorff" %in% method) {
     ka <- irr::kripp.alpha(t(ratings_mat), method = "nominal")
+    ci <- boot_ci(function(m) irr::kripp.alpha(t(m), method = "nominal")$value)
     results$krippendorff <- data.frame(
       metric         = "Krippendorff's Alpha (nominal)",
       estimate       = ka$value,
-      ci_lower       = NA_real_,
-      ci_upper       = NA_real_,
-      interpretation = .irr_interpret_kappa(ka$value),
+      ci_lower       = ci[1],
+      ci_upper       = ci[2],
+      interpretation = .ac_interpret_agreement(ka$value, "alpha"),
       stringsAsFactors = FALSE
     )
   }
@@ -268,11 +348,12 @@ print.ac_irr <- function(x, ...) {
   df$estimate <- sprintf("%.3f", df$estimate)
   df$ci_lower <- ifelse(is.na(df$ci_lower), "", sprintf("%.3f", as.numeric(df$ci_lower)))
   df$ci_upper <- ifelse(is.na(df$ci_upper), "", sprintf("%.3f", as.numeric(df$ci_upper)))
-  df$ic_95    <- paste0("[", df$ci_lower, ", ", df$ci_upper, "]")
+  df$ic_95    <- ifelse(df$ci_lower == "" & df$ci_upper == "", "--",
+                        paste0("[", df$ci_lower, ", ", df$ci_upper, "]"))
 
   cat(format("Metrica",        width = 35),
       format("Estimativa", width = 12),
-      format("IC 95%",     width = 18),
+      format("IC",         width = 18),
       "Interpretacao\n", sep = "")
   cat(strrep("-", 85), "\n")
 
@@ -307,37 +388,4 @@ print.ac_irr <- function(x, ...) {
       )
     }
   }
-}
-
-#' Intervalo de confianca aproximado para Kappa via z-score
-#' @noRd
-.irr_kappa_ci <- function(kappa, z_stat, n, conf_level) {
-  if (is.na(z_stat) || is.na(kappa) || n < 2) return(c(NA_real_, NA_real_))
-  se    <- abs(kappa / z_stat)
-  alpha <- 1 - conf_level
-  z     <- qnorm(1 - alpha / 2)
-  c(kappa - z * se, kappa + z * se)
-}
-
-#' Interpretação do Kappa (Landis & Koch, 1977)
-#' @noRd
-.irr_interpret_kappa <- function(k) {
-  if (is.na(k))    return("N/A")
-  if (k < 0.00)    return("Pobre")
-  if (k < 0.21)    return("Leve")
-  if (k < 0.41)    return("Razoavel")
-  if (k < 0.61)    return("Moderada")
-  if (k < 0.81)    return("Substancial")
-  return("Quase perfeita")
-}
-
-#' Interpretação do percentual de concordância
-#' @noRd
-.irr_interpret_pa <- function(p) {
-  if (is.na(p))  return("N/A")
-  if (p < 0.60)  return("Insuficiente")
-  if (p < 0.70)  return("Aceitavel")
-  if (p < 0.80)  return("Bom")
-  if (p < 0.90)  return("Muito bom")
-  return("Excelente")
 }

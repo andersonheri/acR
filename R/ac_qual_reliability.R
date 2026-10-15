@@ -18,14 +18,43 @@
 #'   por acaso: infla para categorias binárias com distribuição desigual.
 #' * **Alpha de Krippendorff** (`krippendorff`): padrão-ouro em análise de
 #'   conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
-#'   número de categorias. Valores > 0,80 = quase perfeita; > 0,67 = aceitável
-#'   para publicação; < 0,60 = codebook precisa ser refinado.
-#' * **AC1 de Gwet** (`gwet_ac1`): alternativa a Krippendorff mais estável
-#'   quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
-#'   kappa despenca com alta concordância se uma categoria domina).
-#' * **F1 macro** (`f1_macro`): média não ponderada dos F1 por categoria.
-#'   Útil quando você quer garantir que a LLM está indo bem também nas
-#'   categorias raras, não só nas frequentes.
+#'   número de categorias. Krippendorff (2018, sec. 12.4) recomenda
+#'   alfa >= 0,800 para conclusões sem ressalvas e 0,667 <= alfa < 0,800
+#'   apenas para conclusões provisórias; abaixo de 0,667 os dados não
+#'   devem sustentar conclusões.
+#' * **AC1 de Gwet** (`gwet_ac1`): alternativa mais estável quando as
+#'   categorias são muito desbalanceadas (o "paradoxo do kappa" de
+#'   Feinstein & Cicchetti, 1990: kappa despenca mesmo com alta
+#'   concordância observada se uma categoria domina). Gwet (2014) propõe
+#'   o AC1 justamente para esse caso.
+#' * **F1 macro** (`f1_macro`): média não ponderada dos F1 por categoria
+#'   (Sokolova & Lapalme, 2009). Útil quando você quer garantir que a LLM
+#'   está indo bem também nas categorias raras, não só nas frequentes.
+#'   **Não** é corrigido por acaso, então não deve ser lido com as faixas
+#'   de Landis & Koch (1977), que foram propostas para o kappa.
+#'
+#' ## Como a coluna `interpretation` é preenchida
+#'
+#' Cada métrica usa a referência própria dela, para não misturar escalas:
+#'
+#' * **Alpha de Krippendorff**: `>= 0,800` confiável; `0,667-0,800` só
+#'   conclusões provisórias; `< 0,667` insuficiente (Krippendorff, 2018).
+#' * **AC1 de Gwet**: faixas de Landis & Koch (1977): `< 0` pobre;
+#'   `0-0,20` leve; `0,21-0,40` razoável; `0,41-0,60` moderada;
+#'   `0,61-0,80` substancial; `0,81-1` quase perfeita. Gwet (2014, cap. 6)
+#'   usa essas faixas como referência de *benchmarking*.
+#' * **Percent agreement**: `>= 0,90` alta; `0,80-0,90` aceitável na
+#'   maioria dos casos; `0,70-0,80` só em estudos exploratórios; `< 0,70`
+#'   insuficiente (Neuendorf, 2017; Lombard, Snyder-Duch & Bracken, 2002).
+#' * **F1 macro**: não há faixa canônica na literatura; o valor é
+#'   reportado sem rótulo qualitativo.
+#'
+#' Essas faixas são convenções, não testes estatísticos: o próprio Landis
+#' & Koch (1977, p. 165) as chamam de arbitrárias. Por isso o IC
+#' *bootstrap* importa: um alfa de 0,82 com IC de 0,61 a 0,95 **não**
+#' permite afirmar que a confiabilidade passa de 0,800 (Krippendorff,
+#' 2018, sec. 12.5, decide justamente pela probabilidade de o alfa ficar
+#' abaixo do mínimo exigido).
 #'
 #' Intervalos de confiança de 95% vêm de *bootstrap* não paramétrico
 #' (padrão: 1000 réplicas). Reporte pelo menos Krippendorff e F1 macro
@@ -73,6 +102,21 @@
 #'
 #' Landis, J. R.; Koch, G. G. (1977). The Measurement of Observer Agreement
 #' for Categorical Data. *Biometrics*, 33(1), 159-174.
+#'
+#' Feinstein, A. R.; Cicchetti, D. V. (1990). High agreement but low
+#' kappa: I. The problems of two paradoxes. *Journal of Clinical
+#' Epidemiology*, 43(6), 543-549.
+#'
+#' Lombard, M.; Snyder-Duch, J.; Bracken, C. C. (2002). Content analysis
+#' in mass communication: Assessment and reporting of intercoder
+#' reliability. *Human Communication Research*, 28(4), 587-604.
+#'
+#' Neuendorf, K. A. (2017). *The Content Analysis Guidebook* (2nd ed.).
+#' SAGE.
+#'
+#' Sokolova, M.; Lapalme, G. (2009). A systematic analysis of performance
+#' measures for classification tasks. *Information Processing &
+#' Management*, 45(4), 427-437.
 #'
 #' @examples
 #' # Simular saidas: LLM (coded) e revisao humana (humano_df)
@@ -162,20 +206,10 @@ ac_qual_reliability <- function(llm,
     if (!requireNamespace("irr", quietly = TRUE)) {
       cli::cli_warn("{.pkg irr} n\u00e3o instalado. Pulando Krippendorff \u03b1.")
     } else {
-      mat   <- rbind(llm_vec, human_vec)
-      alpha <- tryCatch(
-        irr::kripp.alpha(mat, method = "nominal")$value,
-        error = function(e) NA_real_
-      )
+      alpha <- .ac_kripp_nominal(llm_vec, human_vec)
       alpha_ci <- if (!is.na(alpha)) {
         .ac_bootstrap_metric(llm_vec, human_vec, bootstrap, ci_level,
-          function(l, h) {
-            tryCatch(
-              irr::kripp.alpha(rbind(l, h), method = "nominal")$value,
-              error = function(e) NA_real_
-            )
-          }
-        )
+                             .ac_kripp_nominal)
       } else c(NA_real_, NA_real_)
 
       results_list[["krippendorff"]] <- tibble::tibble(
@@ -183,7 +217,7 @@ ac_qual_reliability <- function(llm,
         estimate       = alpha,
         ci_lower       = alpha_ci[1],
         ci_upper       = alpha_ci[2],
-        interpretation = .ac_interpret_agreement(alpha, "kappa")
+        interpretation = .ac_interpret_agreement(alpha, "alpha")
       )
     }
   }
@@ -226,7 +260,7 @@ ac_qual_reliability <- function(llm,
   result <- dplyr::bind_rows(results_list)
 
   cli::cli_inform(c(
-    "i" = "Interpreta\u00e7\u00e3o baseada em Landis & Koch (1977) e Gwet (2014).",
+    "i" = "Interpreta\u00e7\u00e3o: alfa por Krippendorff (2018); AC1 por Landis & Koch (1977) e Gwet (2014); percentual por Neuendorf (2017); F1 sem r\u00f3tulo.",
     "i" = "IC {ci_level*100}% via bootstrap (n = {bootstrap})."
   ))
 
@@ -244,17 +278,38 @@ ac_qual_reliability <- function(llm,
 #'
 #' @description
 #' `ac_qual_sample()` seleciona uma amostra de documentos classificados pela
-#' LLM para validação por um codificador humano, usando diferentes estratégias
-#' para maximizar a eficiência da validação.
+#' LLM para validação por um codificador humano.
+#'
+#' **Duas finalidades diferentes, duas estratégias diferentes.**
+#'
+#' 1. *Estimar a confiabilidade* que vai para o artigo
+#'    ([ac_qual_reliability()]): a amostra precisa ser **representativa**
+#'    do corpus. Krippendorff (2018, cap. 12) exige que os dados de
+#'    confiabilidade sejam amostrados da mesma população que os dados
+#'    analisados; uma amostra enviesada para casos difíceis subestima a
+#'    concordância real, e uma enviesada para casos fáceis a superestima.
+#'    Use `"random"` (padrão) ou `"proportional"`.
+#' 2. *Diagnosticar erros* e refinar o codebook: aí vale concentrar o
+#'    esforço humano onde a LLM mais erra, como em amostragem por incerteza
+#'    de *active learning* (Settles, 2012). Use `"uncertainty"` ou
+#'    `"disagreement"`, mas **não** reporte a concordância calculada nessa
+#'    amostra como confiabilidade do corpus.
+#'
+#' Sobre o tamanho: Neuendorf (2017) sugere uma subamostra de
+#' confiabilidade de 10% a 20% do corpus, raramente menos de 50 unidades;
+#' Krippendorff (2018, sec. 12.3) oferece um cálculo formal a partir do
+#' alfa mínimo aceitável e da frequência da categoria mais rara.
 #'
 #' @param coded Tibble com classificação LLM, saída de [ac_qual_code()].
 #' @param n Número de documentos a amostrar. Padrão: `50`.
 #' @param strategy Estratégia de amostragem:
+#'   * `"random"` (padrão): amostra aleatória simples. Representativa:
+#'     use para estimar a confiabilidade que vai para o artigo;
 #'   * `"uncertainty"`: prioriza documentos com menor `confidence_score`
-#'     (maior incerteza da LLM);
-#'   * `"stratified"`: garante representação proporcional de todas as
-#'     categorias;
-#'   * `"random"`: amostra aleatória simples;
+#'     (maior incerteza da LLM). Serve para diagnóstico de erros, **não**
+#'     para estimar confiabilidade (amostra enviesada para casos difíceis);
+#'   * `"stratified"`: divide `n` igualmente entre as categorias atribuídas
+#'     pela LLM (sobre-representa categorias raras; não é representativa);
 #'   * `"disagreement"`: prioriza documentos onde rodadas de self-consistency
 #'     divergiram (requer `confidence_score < 1`);
 #'   * `"proportional"`: amostragem estratificada com alocação
@@ -279,6 +334,15 @@ ac_qual_reliability <- function(llm,
 #' @param seed Semente para reprodutibilidade. Padrão: `42`.
 #' @param ... Ignorado.
 #'
+#' @references
+#' Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
+#' Methodology* (4th ed.). SAGE.
+#'
+#' Neuendorf, K. A. (2017). *The Content Analysis Guidebook* (2nd ed.).
+#' SAGE.
+#'
+#' Settles, B. (2012). *Active Learning*. Morgan & Claypool.
+#'
 #' @return Tibble com os documentos selecionados, incluindo uma coluna
 #'   `sample_reason` indicando por que cada documento foi selecionado.
 #'   Com `strategy = "proportional"`, ganha também `peso_amostral`
@@ -294,7 +358,10 @@ ac_qual_reliability <- function(llm,
 #'   confidence_score = runif(20, 0.5, 1.0)
 #' )
 #'
-#' # Priorizar casos mais incertos para revisao humana
+#' # Amostra representativa (padrao): para estimar a confiabilidade
+#' ac_qual_sample(coded, n = 5)
+#'
+#' # Priorizar casos mais incertos: diagnostico de erros, nao confiabilidade
 #' ac_qual_sample(coded, n = 5, strategy = "uncertainty")
 #'
 #' # Garantir cobertura proporcional das duas categorias
@@ -304,8 +371,8 @@ ac_qual_reliability <- function(llm,
 #' @export
 ac_qual_sample <- function(coded,
                             n        = 50L,
-                            strategy = c("uncertainty", "stratified",
-                                         "random", "disagreement",
+                            strategy = c("random", "uncertainty",
+                                         "stratified", "disagreement",
                                          "proportional"),
                             strata           = NULL,
                             min_per_stratum  = 1L,
@@ -679,25 +746,73 @@ ac_qual_import_human <- function(path,
 
 #' @keywords internal
 #' @noRd
-.ac_interpret_agreement <- function(value, type = "kappa") {
+# Rotulo qualitativo de uma metrica de concordancia. Cada tipo usa a
+# referencia propria dele -- ler alfa ou F1 com as faixas de Landis &
+# Koch (propostas para o kappa) mistura escalas diferentes.
+#   * "alpha":   Krippendorff (2018, sec. 12.4): >= .800 / >= .667
+#   * "kappa":   Landis & Koch (1977, p. 165); usado tambem para o AC1
+#                (Gwet, 2014, cap. 6)
+#   * "percent": Neuendorf (2017); Lombard et al. (2002)
+#   * "f1":      sem faixa canonica na literatura -> sem rotulo
+.ac_interpret_agreement <- function(value, type = c("kappa", "alpha", "percent", "f1")) {
+  type <- match.arg(type)
   if (is.na(value)) return("n\u00e3o calculado")
-  if (type == "percent") {
-    dplyr::case_when(
-      value >= 0.90 ~ "excelente (>= 90%)",
-      value >= 0.80 ~ "boa (>= 80%)",
-      value >= 0.70 ~ "aceit\u00e1vel (>= 70%)",
-      TRUE          ~ "insuficiente (< 70%)"
-    )
+  switch(type,
+    percent = dplyr::case_when(
+      value >= 0.90 ~ "alta (>= 90%; Neuendorf, 2017)",
+      value >= 0.80 ~ "aceit\u00e1vel na maioria dos casos (>= 80%; Neuendorf, 2017)",
+      value >= 0.70 ~ "s\u00f3 para estudos explorat\u00f3rios (>= 70%; Neuendorf, 2017)",
+      TRUE          ~ "insuficiente (< 70%; Neuendorf, 2017)"
+    ),
+    alpha = dplyr::case_when(
+      value >= 0.800 ~ "confi\u00e1vel (>= 0,800; Krippendorff, 2018)",
+      value >= 0.667 ~ "s\u00f3 conclus\u00f5es provis\u00f3rias (>= 0,667; Krippendorff, 2018)",
+      TRUE           ~ "insuficiente (< 0,667; Krippendorff, 2018)"
+    ),
+    kappa = .ac_landis_koch(value, citar = TRUE),
+    f1    = "sem faixa can\u00f4nica (n\u00e3o corrigido por acaso)"
+  )
+}
+
+# Faixas de Landis & Koch (1977, p. 165) com os limites exatos do
+# artigo: < 0 pobre; 0-0,20 leve; 0,21-0,40 razoavel; 0,41-0,60
+# moderada; 0,61-0,80 substancial; 0,81-1 quase perfeita. Fonte unica
+# usada por ac_qual_reliability() e ac_qual_irr().
+.ac_landis_koch <- function(k, citar = FALSE) {
+  if (is.na(k)) return(NA_character_)
+  rotulo <- if (k < 0) {
+    "pobre"
+  } else if (k <= 0.20) {
+    "leve"
+  } else if (k <= 0.40) {
+    "razo\u00e1vel"
+  } else if (k <= 0.60) {
+    "moderada"
+  } else if (k <= 0.80) {
+    "substancial"
   } else {
-    # Landis & Koch (1977) + Gwet (2014)
-    dplyr::case_when(
-      value >= 0.80 ~ "quase perfeita (Landis & Koch, 1977)",
-      value >= 0.61 ~ "substancial (Landis & Koch, 1977)",
-      value >= 0.41 ~ "moderada (Landis & Koch, 1977)",
-      value >= 0.21 ~ "razo\u00e1vel (Landis & Koch, 1977)",
-      TRUE          ~ "fraca (Landis & Koch, 1977)"
-    )
+    "quase perfeita"
   }
+  if (citar) paste0(rotulo, " (Landis & Koch, 1977)") else rotulo
+}
+
+# Alfa de Krippendorff nominal para dois codificadores. irr::kripp.alpha()
+# espera matriz numerica: converter as categorias (texto) para codigos
+# inteiros com niveis comuns aos dois vetores, em vez de deixar o irr
+# coagir texto para numero (gera "NAs introduzidos por coercao" a cada
+# replica bootstrap).
+.ac_kripp_nominal <- function(r1, r2) {
+  if (!requireNamespace("irr", quietly = TRUE)) return(NA_real_)
+  niveis <- sort(unique(stats::na.omit(c(as.character(r1), as.character(r2)))))
+  if (length(niveis) < 2L) return(NA_real_)
+  mat <- rbind(
+    as.integer(factor(as.character(r1), levels = niveis)),
+    as.integer(factor(as.character(r2), levels = niveis))
+  )
+  tryCatch(
+    irr::kripp.alpha(mat, method = "nominal")$value,
+    error = function(e) NA_real_
+  )
 }
 
 # Metricas de concordancia para um UNICO par de vetores binarios 0/1

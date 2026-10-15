@@ -28,10 +28,14 @@ resultarem em texto vazio após a limpeza não geram linhas na
 saida. Se \code{TRUE}, cada documento vazio gera uma linha com
 \code{token = NA} quando \code{n = 1}.}
 
-\item{drop_punct}{Lógico. Se \code{TRUE}, remove da sequência tokens
-que consistem apenas de pontuação (por exemplo \code{"!"}, \code{"..."})
-antes de construir n-gramas. Tokens que misturam letras e
-pontuação (por exemplo \code{"ola,"}) sao mantidos.}
+\item{drop_punct}{Lógico. Se \code{TRUE}, remove a pontuação das \strong{bordas}
+de cada token (\code{"excelente,"} vira \code{"excelente"}, \code{"(péssimo)"} vira
+\code{"péssimo"}) e descarta tokens que ficam vazios (\code{"!"}, \code{"..."}),
+antes de construir n-gramas. Pontuação \strong{interna} é preservada, para
+não quebrar formas como \code{"e-mail"}, \code{"guarda-chuva"} ou \code{"3,5"}.
+Sem isso, \code{"excelente,"} e \code{"excelente"} seriam contados como dois
+tipos diferentes, o que distorce frequências, TTR, dicionários e
+Wordscores.}
 
 \item{...}{Ignorado, reservado para argumentos futuros.}
 }

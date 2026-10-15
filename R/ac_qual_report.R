@@ -202,7 +202,7 @@ ac_qual_report <- function(coded,
       llm_reasoning    = "Raciocinio estruturado",
       llm_reasoning_len = "Extensao do raciocinio",
       llm_note         = paste(
-        "Self-consistency (Wang et al., 2022) reduz variabilidade estocastica reamostrando",
+        "Self-consistency (Wang et al., 2023) reduz variabilidade estocastica reamostrando",
         "cada documento k vezes e tomando a moda das classificacoes. `confidence_score` reporta",
         "a proporcao de rodadas que concordaram (1.00 = todas concordaram)."
       ),
@@ -215,9 +215,10 @@ ac_qual_report <- function(coded,
       rel_section      = "6. Confiabilidade inter-codificador",
       rel_none         = "Nao foi executada validacao humana nesta rodada.",
       rel_note         = paste(
-        "Interpretacao de kappa/alpha segundo Landis & Koch (1977) e Gwet (2014).",
-        "Para publicacao, valores acima de 0.67 (Krippendorff) ou 0.61 (Landis-Koch)",
-        "sao geralmente considerados aceitaveis."
+        "Alfa de Krippendorff interpretado segundo Krippendorff (2018): >= 0.800 confiavel;",
+        "0.667-0.800 apenas para conclusoes provisorias; < 0.667 insuficiente.",
+        "AC1 de Gwet lido com as faixas de Landis & Koch (1977), como em Gwet (2014);",
+        "essas faixas sao convencoes descritivas, nao criterios de publicacao."
       ),
       refs_section     = "7. Referencias metodologicas",
       how_to_cite      = "8. Como citar esta analise",
@@ -261,7 +262,7 @@ ac_qual_report <- function(coded,
       llm_reasoning    = "Structured reasoning",
       llm_reasoning_len = "Reasoning length",
       llm_note         = paste(
-        "Self-consistency (Wang et al., 2022) reduces stochastic variability by resampling",
+        "Self-consistency (Wang et al., 2023) reduces stochastic variability by resampling",
         "each document k times and taking the modal classification. `confidence_score` reports",
         "the proportion of rounds that agreed (1.00 = full agreement)."
       ),
@@ -274,9 +275,10 @@ ac_qual_report <- function(coded,
       rel_section      = "6. Inter-coder reliability",
       rel_none         = "No human validation was performed for this round.",
       rel_note         = paste(
-        "Kappa/alpha interpretation follows Landis & Koch (1977) and Gwet (2014).",
-        "For publication, values above 0.67 (Krippendorff) or 0.61 (Landis-Koch) are generally",
-        "considered acceptable."
+        "Krippendorff's alpha is interpreted following Krippendorff (2018): >= 0.800 reliable;",
+        "0.667-0.800 only for tentative conclusions; < 0.667 insufficient.",
+        "Gwet's AC1 is read with the Landis & Koch (1977) bands, as in Gwet (2014);",
+        "these bands are descriptive conventions, not publication criteria."
       ),
       refs_section     = "7. Methodological references",
       how_to_cite      = "8. How to cite this analysis",

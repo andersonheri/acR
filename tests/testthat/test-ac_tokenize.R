@@ -219,3 +219,10 @@ test_that("n deve ser inteiro maior ou igual a 1", {
 })
 
 
+
+test_that("drop_punct = TRUE remove pontuacao das bordas e preserva a interna", {
+  df <- data.frame(id = "a", t = "Excelente, (muito) bom! e-mail 3,5 ...", stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  tk <- ac_tokenize(corp, drop_punct = TRUE)$token
+  expect_equal(tk, c("Excelente", "muito", "bom", "e-mail", "3,5"))
+})

@@ -57,3 +57,15 @@ test_that("ac_collocations() devolve tibble vazio quando nenhum n-grama atinge m
   expect_equal(nrow(out), 0L)
   expect_true(all(c("collocation", "count", "association") %in% names(out)))
 })
+
+test_that("trigramas usam a tabela primeira palavra x bigrama restante", {
+  df <- data.frame(id = c("a", "b", "c"),
+                   t = c("atendimento ao cliente bom", "atendimento ao cliente ruim",
+                         "cliente feliz ao final"),
+                   stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  r <- ac_collocations(corp, n = 3, measure = "pmi", min_count = 2)
+  # f(trigrama)=2, f(atendimento)=2, f("ao cliente")=2, N=12 unigramas
+  expect_equal(r$association[r$collocation == "atendimento ao cliente"],
+               log2(2 * 12 / (2 * 2)))
+})

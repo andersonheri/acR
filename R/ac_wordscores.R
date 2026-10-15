@@ -32,17 +32,32 @@
 #'   de referência. Documentos de `corpus` ausentes de `scores` (ou com
 #'   `score = NA`) são tratados como documentos virgens, a serem
 #'   estimados.
-#' @param rescale Tipo de reescalonamento aplicado aos escores brutos
-#'   dos documentos virgens, para corrigir a compressão em torno da
-#'   média que o método tende a produzir (Laver, Benoit & Garry, 2003;
-#'   Martin & Vanberg, 2007):
+#' @param rescale Tipo de reescalonamento aplicado aos escores brutos,
+#'   para corrigir a compressão em torno da média que o método produz
+#'   (palavras comuns a todos os textos puxam todo escore para o centro
+#'   da escala):
 #'   - `"none"` (padrão): sem reescalonamento, escore bruto.
-#'   - `"lbg"`: reescalona pela razão de desvios-padrão entre os
-#'     escores de referência conhecidos e os escores brutos estimados
-#'     para os próprios documentos de referência.
-#'   - `"mv"`: reescalona linearmente para o intervalo
-#'     `[min, max]` dos escores de referência conhecidos (Martin &
-#'     Vanberg, 2007).
+#'   - `"lbg"`: transformação de Laver, Benoit & Garry (2003, p. 316),
+#'     \eqn{S^*_v = (S_v - \bar{S}_v)(DP_r / DP_v) + \bar{S}_v}, em que
+#'     \eqn{\bar{S}_v} e \eqn{DP_v} são a média e o desvio-padrão dos
+#'     escores brutos dos **documentos virgens** e \eqn{DP_r} o
+#'     desvio-padrão dos escores **conhecidos** das referências. Dá aos
+#'     virgens a mesma dispersão das referências, mantendo a média
+#'     deles. Exige pelo menos 2 virgens e depende de quais virgens
+#'     entram: com poucos, fica instável (com exatamente 2, eles caem
+#'     sempre a cerca de 0,71 desvio-padrão da média, seja qual for o
+#'     texto).
+#'   - `"mv"`: transformação de Martin & Vanberg (2008),
+#'     \eqn{S^*_v = (S_v - P_1)/(P_2 - P_1) \cdot (A_2 - A_1) + A_1}, em
+#'     que \eqn{A_1} e \eqn{A_2} são os escores conhecidos das referências
+#'     extremas (menor e maior) e \eqn{P_1}, \eqn{P_2} os escores brutos
+#'     que o método atribui a essas mesmas referências. Não depende do
+#'     conjunto de virgens: é a opção mais robusta quando há poucos
+#'     documentos a estimar.
+#'
+#'   A mesma transformação é aplicada também às referências (como se
+#'   fossem virgens), o que serve de checagem: uma referência bem
+#'   recuperada fica perto do seu escore conhecido.
 #' @param drop_punct Lógico, encaminhado para [ac_count()]. Padrão:
 #'   `TRUE`.
 #'
@@ -56,7 +71,7 @@
 #' from Political Texts Using Words as Data. *American Political
 #' Science Review*, 97(2), 311-331.
 #'
-#' Martin, L. W.; Vanberg, G. (2007). A Robust Transformation Procedure
+#' Martin, L. W.; Vanberg, G. (2008). A Robust Transformation Procedure
 #' for Interpreting Political Text. *Political Analysis*, 16(1), 93-100.
 #'
 #' @examples
@@ -164,24 +179,45 @@ ac_wordscores <- function(corpus,
   )
 
   if (rescale != "none") {
-    sr_hat    <- out$score_raw[out$is_reference]
-    sr_known  <- scores$score[match(out$doc_id[out$is_reference], scores$doc_id)]
+    sr_hat   <- out$score_raw[out$is_reference]
+    sr_known <- scores$score[match(out$doc_id[out$is_reference], scores$doc_id)]
     out$score <- switch(
       rescale,
       lbg = {
-        sd_hat <- stats::sd(sr_hat)
-        if (!is.finite(sd_hat) || sd_hat == 0) {
-          cli::cli_abort("Desvio-padr\u00e3o dos escores brutos de refer\u00eancia \u00e9 zero; n\u00e3o \u00e9 poss\u00edvel reescalonar com {.val lbg}.")
+        # Laver, Benoit & Garry (2003, p. 316): media e DP dos VIRGENS,
+        # DP dos escores CONHECIDOS das referencias. (A versao anterior
+        # usava media/DP das referencias reestimadas, o que nao e LBG.)
+        sv <- out$score_raw[!out$is_reference & !is.na(out$score_raw)]
+        if (length(sv) < 2L) {
+          cli::cli_abort(c(
+            "{.val lbg} precisa de pelo menos 2 documentos virgens com escore.",
+            "i" = "Use {.code rescale = \"mv\"}, que n\u00e3o depende dos virgens."
+          ))
         }
-        (out$score_raw - mean(sr_hat)) * (stats::sd(sr_known) / sd_hat) + mean(sr_known)
+        sd_v <- stats::sd(sv)
+        if (!is.finite(sd_v) || sd_v == 0) {
+          cli::cli_abort("Desvio-padr\u00e3o dos escores brutos dos virgens \u00e9 zero; n\u00e3o \u00e9 poss\u00edvel reescalonar com {.val lbg}.")
+        }
+        if (length(sv) < 5L) {
+          cli::cli_warn(c(
+            "{.val lbg} com s\u00f3 {length(sv)} documentos virgens: a transforma\u00e7\u00e3o depende do conjunto de virgens e fica inst\u00e1vel.",
+            "i" = "Considere {.code rescale = \"mv\"} (Martin & Vanberg, 2008)."
+          ))
+        }
+        (out$score_raw - mean(sv)) * (stats::sd(sr_known) / sd_v) + mean(sv)
       },
       mv = {
-        rng_hat <- range(sr_hat)
-        if (diff(rng_hat) == 0) {
-          cli::cli_abort("Amplitude dos escores brutos de refer\u00eancia \u00e9 zero; n\u00e3o \u00e9 poss\u00edvel reescalonar com {.val mv}.")
+        # Martin & Vanberg (2008): ancora nas referencias extremas (menor e
+        # maior escore conhecido). Com empate no extremo, usa a media dos
+        # escores brutos das referencias empatadas.
+        a1 <- min(sr_known)
+        a2 <- max(sr_known)
+        p1 <- mean(sr_hat[sr_known == a1])
+        p2 <- mean(sr_hat[sr_known == a2])
+        if (a1 == a2 || p1 == p2) {
+          cli::cli_abort("As refer\u00eancias extremas t\u00eam o mesmo escore (conhecido ou bruto); n\u00e3o \u00e9 poss\u00edvel reescalonar com {.val mv}.")
         }
-        rng_known <- range(sr_known)
-        (out$score_raw - rng_hat[1]) / diff(rng_hat) * diff(rng_known) + rng_known[1]
+        (out$score_raw - p1) / (p2 - p1) * (a2 - a1) + a1
       }
     )
   } else {

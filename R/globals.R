@@ -1,4 +1,5 @@
 utils::globalVariables(c(
+  "termo",
   # ac_count / ac_tokenize
   "doc_id", "token", "n", "token_id",
   # ac_tf_idf
