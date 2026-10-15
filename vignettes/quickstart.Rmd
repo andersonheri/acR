@@ -1,5 +1,5 @@
 ---
-title: "Quickstart — acR em 5 minutos"
+title: "Quickstart: acR em 5 minutos"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Quickstart — acR em 5 minutos}

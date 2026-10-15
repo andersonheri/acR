@@ -22,7 +22,7 @@
 #'   [ac_qual_code()]). Mesmas colunas exigidas.
 #' @param method `character`. Métrica(s) a calcular. Opcoes: `"all"` (padrao),
 #'   `"cohen_kappa"`, `"fleiss_kappa"`, `"krippendorff"`, `"percent_agreement"`.
-#'   Aceita vetor de multiplas opcoes.
+#'   Aceita vetor de múltiplas opcoes.
 #' @param id_col `character`. Nome da coluna de identificador nos data.frames.
 #'   Padrao: `"id_discurso"`.
 #' @param cat_col `character`. Nome da coluna de categoria nos data.frames.
@@ -51,7 +51,7 @@
 #' |-------------|---------------------|
 #' | < 0.00      | Pobre               |
 #' | 0.00 - 0.20 | Leve                |
-#' | 0.21 - 0.40 | Razoavel            |
+#' | 0.21 - 0.40 | Razoável            |
 #' | 0.41 - 0.60 | Moderada            |
 #' | 0.61 - 0.80 | Substancial         |
 #' | 0.81 - 1.00 | Quase perfeita      |

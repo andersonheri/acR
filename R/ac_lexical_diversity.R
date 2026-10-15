@@ -57,7 +57,7 @@
 #'     "ela correu muito rápido e muito rápido e muito rápido ainda",
 #'     paste(
 #'       "a atleta acelerou vertiginosamente, superando marcas anteriores",
-#'       "com uma performance notavel e consistente ao longo do percurso"
+#'       "com uma performance notável e consistente ao longo do percurso"
 #'     )
 #'   ),
 #'   narrador = c("simples", "rebuscado", "simples", "rebuscado"),

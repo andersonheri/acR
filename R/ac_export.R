@@ -1,4 +1,4 @@
-#' Exporta resultados de analise de conteúdo em multiplos formatos
+#' Exporta resultados de análise de conteúdo em múltiplos formatos
 #'
 #' @description
 #' Exporta data.frames de resultados (corpus codificado, tabelas de frequência,

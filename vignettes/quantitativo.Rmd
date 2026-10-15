@@ -1,11 +1,11 @@
 ---
-title: "Analise quantitativa de texto"
+title: "Análise quantitativa de texto"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Analise quantitativa de texto}
+  %\VignetteIndexEntry{Análise quantitativa de texto}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -185,7 +185,7 @@ ac_plot_top_terms(top) +
   ggplot2::labs(
     title    = "Termos mais frequentes no corpus",
     subtitle = "Discursos legislativos - 12 documentos fabricados",
-    caption  = "acR - vignette Analise Quantitativa"
+    caption  = "acR - vignette Análise Quantitativa"
   )
 ```
 

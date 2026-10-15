@@ -1,5 +1,5 @@
 ---
-title: "Replicabilidade ponta-a-ponta — do codebook ao relatório de método"
+title: "Replicabilidade ponta-a-ponta: do codebook ao relatório de método"
 output:
   rmarkdown::html_vignette:
     toc: true
@@ -63,7 +63,7 @@ df <- data.frame(
     "O texto substitutivo altera o artigo 145 da Constituicao Federal.",
     "O relatório incorporou 47 emendas apresentadas em plenário.",
     "A comissao aprovou o parecer com 15 votos a favor e 8 contra.",
-    "O projeto seguira para votacao na próxima sessao ordinária."
+    "O projeto seguira para votacao na próxima sessão ordinária."
   ),
   partido = c("PT","PSD","PL","MDB","PSOL","PT","PDT","PSOL",
               "MDB","PSDB","PL","MDB"),

@@ -223,7 +223,7 @@ ac_qual_codebook <- function(name,
 #' cb <- ac_qual_codebook_add(cb,
 #'   neutro = list(
 #'     definition   = "Tom neutro, sem posicionamento claro.",
-#'     examples_pos = c("O projeto foi apresentado na sessao de hoje.")
+#'     examples_pos = c("O projeto foi apresentado na sessão de hoje.")
 #'   )
 #' )
 #' names(cb$categories)  # "positivo" "negativo" "neutro"
@@ -451,8 +451,8 @@ ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
 #' Carregar codebook de arquivo YAML
 #'
 #' Le um arquivo YAML gerado por [ac_qual_save_codebook()] e reconstroi
-#' o objeto `ac_codebook` na sessao atual. Uso tipico: retomar uma analise
-#' iniciada em outra sessao ou por outro pesquisador.
+#' o objeto `ac_codebook` na sessão atual. Uso típico: retomar uma análise
+#' iniciada em outra sessão ou por outro pesquisador.
 #'
 #' @param path Caminho do arquivo `.yaml`.
 #' @param ... Ignorado.
@@ -472,7 +472,7 @@ ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
 #' arquivo <- tempfile(fileext = ".yaml")
 #' ac_qual_save_codebook(cb, path = arquivo)
 #'
-#' # Recarregar em outra sessao
+#' # Recarregar em outra sessão
 #' cb_novo <- ac_qual_load_codebook(arquivo)
 #' names(cb_novo$categories)  # "favor" "contra"
 #'

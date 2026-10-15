@@ -39,7 +39,7 @@
 #'   texto = c(
 #'     "A reforma tributária e um passo excelente para o pais",
 #'     "Esta proposta e um desastre, um retrocesso terrivel",
-#'     "O relator apresentou o parecer na sessao ordinária",
+#'     "O relator apresentou o parecer na sessão ordinária",
 #'     "Comemoramos essa vitória histórica com muita alegria",
 #'     "Rejeitamos com veemência essa medida injusta e ilegal",
 #'     "A comissao encerra os trabalhos as 18h"

@@ -8,7 +8,7 @@
 #' função e inspirada em [`quanteda.textstats::textstat_keyness()`] e
 #' utiliza tabelas 2x2 por termo.
 #'
-#' A entrada tipica e uma tabela de frequências gerada por
+#' A entrada típica e uma tabela de frequências gerada por
 #' [`ac_count()`], agregada por uma coluna de grupo:
 #' - `ac_count(corp, by = "grupo")` seguido de
 #' - `ac_keyness(freq, group = "grupo", target = "A")`.

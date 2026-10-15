@@ -10,7 +10,7 @@
 #' que o codebook já foi construido com [ac_qual_codebook()] e (idealmente)
 #' testado numa amostra piloto. A saida e sempre validada com
 #' [ac_qual_reliability()] contra uma amostra codificada por humano --
-#' nenhuma analise categorial publicavel dispensa essa etapa.
+#' nenhuma análise categorial publicável dispensa essa etapa.
 #'
 #' Tres parametros determinam qualidade e custo:
 #'
@@ -63,7 +63,7 @@
 #'   `categoria`, `categoria_label` e `raciocinio` no resultado final).
 #'   Padrao `0` (deterministica). Separado de `temperature` (usado so nas
 #'   rodadas extras de self-consistency) porque os dois cumprem papeis
-#'   diferentes: a rodada principal deve ser reprodutivel, as extras devem
+#'   diferentes: a rodada principal deve ser reprodutível, as extras devem
 #'   variar para medir concordância.
 #' @param reasoning_extras Lógico. Se `TRUE`, pede raciocinio também nas
 #'   rodadas extras de self-consistency (mais caro, não usado no resultado

@@ -18,7 +18,7 @@
 #'   específica de provedor via `chat$token_count()`). Receber o argumento
 #'   já na assinatura evita quebrar código que o passar.
 #' @param chars_per_token Caracteres por token, usado para a estimativa.
-#'   Padrao `3.2` (razoavel para português via BPE; varia por tokenizador
+#'   Padrao `3.2` (razoável para português via BPE; varia por tokenizador
 #'   e idioma). Calibre com [ac_calibrate_tokens()] se precisar de
 #'   precisao maior para um modelo específico.
 #'

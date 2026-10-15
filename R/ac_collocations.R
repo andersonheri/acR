@@ -58,7 +58,7 @@
 #'     "o atendimento ao cliente deixou a desejar dessa vez",
 #'     "comida boa mas atendimento ao cliente lento",
 #'     "não recomendo, atendimento ao cliente horrivel",
-#'     "ambiente agradavel e atendimento ao cliente rápido",
+#'     "ambiente agradável e atendimento ao cliente rápido",
 #'     "preco justo, atendimento ao cliente cordial sempre"
 #'   ),
 #'   stringsAsFactors = FALSE

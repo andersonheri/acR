@@ -1,11 +1,11 @@
 ---
-title: "Analise de sentimento"
+title: "Análise de sentimento"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Analise de sentimento}
+  %\VignetteIndexEntry{Análise de sentimento}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

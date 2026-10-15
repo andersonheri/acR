@@ -409,7 +409,7 @@ utilitários — veja **[Funções disponíveis (completo)](https://andersonheri
 |---|---|---|
 | Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR) | `ac_import()` | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
 | Criar corpus a partir de `data.frame` ou vetor | `ac_corpus()` | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
-| Coletar discursos da Câmara/Senado | `ac_fetch_camara()` · `ac_fetch_senado()` | [Estudo de caso](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) |
+| Coletar discursos da Câmara/Senado | `ac_fetch_camara()` · `ac_fetch_senado()` | [Estudo de caso](https://andersonheri.github.io/acR/articles/análise-proposicoes.html) |
 | Limpar texto (stopwords, URLs, acentos, NAs) | `ac_clean()` + `ac_clean_stopwords()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Contar tokens | `ac_count()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Top termos + gráfico | `ac_top_terms()` → `ac_plot_top_terms()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
@@ -469,7 +469,7 @@ referência de todas as funções e changelog.
 ### Pipeline qualitativo (LLMs)
 
 - [Codificação com LLMs — guia completo](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) — codebook, self-consistency, revisão humana e concordância.
-- [Estudo de caso: proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) — aplicação real com dados da Câmara.
+- [Estudo de caso: proposições legislativas](https://andersonheri.github.io/acR/articles/análise-proposicoes.html) — aplicação real com dados da Câmara.
 
 ### Pipeline quantitativo
 
