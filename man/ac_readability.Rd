@@ -19,7 +19,9 @@ Tibble com colunas:
 \item \code{doc_id} (ou as colunas de \code{by}, se informado);
 \item \code{n_palavras}, \code{n_frases}, \code{n_silabas}: contagens usadas na fórmula;
 \item \code{flesch}: Índice de Legibilidade de Flesch adaptado ao português
-(0-100; valores mais altos = texto mais fácil de ler);
+(tipicamente 0-100, mas sem teto nem piso matemático: textos muito
+densos podem produzir valores negativos; valores mais altos =
+texto mais fácil de ler);
 \item \code{nivel}: interpretação categórica do índice (ver \verb{@details}).
 }
 }
