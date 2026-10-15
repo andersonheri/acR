@@ -9,7 +9,7 @@
 [![Codecov](https://codecov.io/gh/andersonheri/acR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/andersonheri/acR)
 <!-- badges: end -->
 
-> **Análise de Conteúdo em R** — pipeline integrado qualitativo (LLMs) e
+> **Análise de Conteúdo em R**: pipeline integrado qualitativo (LLMs) e
 > quantitativo, com foco em corpora brasileiros e dados parlamentares.
 
 <p align="center">
@@ -18,13 +18,13 @@
 
 ## Em uma linha
 
-Do texto bruto ao resultado publicável — codebook, LLM, *keyness*, LDA, sentimento
+Do texto bruto ao resultado publicável: codebook, LLM, *keyness*, LDA, sentimento
 e concordância inter-codificador, num único fluxo reprodutível.
 
 ## Novidades
 
 Última leva traz 12 técnicas novas de diagnóstico, escalonamento e
-dicionários para o módulo quantitativo — veja a seção
+dicionários para o módulo quantitativo. Veja a seção
 ["Novidades: diagnóstico de corpus, escalas e
 dicionários"](https://andersonheri.github.io/acR/articles/quantitativo.html) da
 vignette quantitativa para exemplos completos:
@@ -33,19 +33,19 @@ vignette quantitativa para exemplos completos:
   adaptado ao português), diversidade lexical (`ac_lexical_diversity()`:
   TTR, Herdan's C, MTLD) e Lei de Zipf (`ac_plot_zipf()`).
 * **Leitura de contexto**: concordância/KWIC (`ac_kwic()`) e colocações
-  com medidas de associação — PMI, log-likelihood, qui-quadrado
+  com medidas de associação (PMI, log-likelihood, qui-quadrado)
   (`ac_collocations()`).
 * **Série temporal**: agregação diacrônica de qualquer métrica por dia,
   semana, mês ou ano (`ac_temporal()`).
 * **Escalas e mapas**: escalonamento ideológico via Wordscores
-  (`ac_wordscores()`) e análise de correspondência — biplot de
+  (`ac_wordscores()`) e análise de correspondência, biplot de
   documentos/grupos × termos (`ac_ca()`).
 * **Dicionários customizados**: dicionário multi-categoria genérico
   (`ac_dictionary()`), léxicos de emoção (`ac_emotion()`), construção e
   importação de dicionários via YAML/CSV (`ac_build_dictionary()`,
   `ac_dictionary_save()`/`ac_dictionary_load()`,
   `ac_dictionary_import()`) e validação contra codificação humana
-  (`ac_dictionary_validate()`) — o mesmo rigor de `ac_qual_reliability()`,
+  (`ac_dictionary_validate()`): o mesmo rigor de `ac_qual_reliability()`,
   agora para o método de dicionário.
 
 ## Para quem é
@@ -127,8 +127,8 @@ e do Senado Federal (via `senatebR`).
 
 ## Fundamentação metodológica
 
-O pipeline segue Sampaio e Lycarião (2021) — referência atual para análise de
-conteúdo categorial no Brasil — e Krippendorff (2018). Bardin (2011) é reconhecida
+O pipeline segue Sampaio e Lycarião (2021), referência atual para análise de
+conteúdo categorial no Brasil, e Krippendorff (2018). Bardin (2011) é reconhecida
 como pioneira, mas o pacote privilegia abordagens metodologicamente atualizadas.
 A camada de LLM é inspirada no `quallmer` (Maerz e Benoit, 2025) e comunica com
 múltiplos provedores via `ellmer` (Wickham et al., 2025).
@@ -157,7 +157,7 @@ install.packages("ellmer")
 
 ## Pipeline qualitativo: do texto à classificação
 
-### Passo 1 — Coletar discursos parlamentares
+### Passo 1: Coletar discursos parlamentares
 
 O `acR` tem funções nativas para coletar dados das APIs abertas da Câmara
 dos Deputados e do Senado Federal. A coleta da Câmara é feita por período,
@@ -172,7 +172,7 @@ library(acR)
 library(ellmer)
 library(dplyr)
 
-# Coletar discursos plenários da Câmara — março de 2024
+# Coletar discursos plenários da Câmara em março de 2024
 corpus_raw <- ac_fetch_camara(
   data_inicio   = "2024-03-11",
   data_fim      = "2024-03-15",
@@ -181,7 +181,7 @@ corpus_raw <- ac_fetch_camara(
 )
 ```
 
-### Passo 2 — Estruturar e limpar o corpus
+### Passo 2: Estruturar e limpar o corpus
 
 O objeto `ac_corpus` é a unidade central do pacote, carregando o texto,
 os metadados e o idioma do corpus, aceito por todas as funções de análise.
@@ -232,10 +232,10 @@ corpus_limpo <- ac_clean(
 
 O argumento `verbose = TRUE` exibe um resumo com tokens antes e depois,
 quantos foram removidos por etapa e quantos documentos ficaram vazios após
-a limpeza — útil para calibrar os parâmetros antes de rodar o pipeline
+a limpeza: útil para calibrar os parâmetros antes de rodar o pipeline
 completo.
 
-### Passo 3 — Definir o codebook
+### Passo 3: Definir o codebook
 
 ```r
 codebook <- ac_qual_codebook(
@@ -262,7 +262,7 @@ codebook <- ac_qual_codebook(
 )
 ```
 
-### Passo 4 — Classificar com LLM
+### Passo 4: Classificar com LLM
 
 ```r
 chat_obj <- chat_groq(
@@ -281,7 +281,7 @@ resultado <- ac_qual_code(
 )
 ```
 
-### Passo 5 — Validar com codificadores humanos
+### Passo 5: Validar com codificadores humanos
 
 ```r
 amostra <- ac_qual_sample(resultado, n = 15, strategy = "uncertainty")
@@ -403,13 +403,13 @@ ac_plot_ca(ca)
 
 Um guia rápido do objetivo ao código. Cada linha aponta a função principal
 e a vignette com o exemplo completo. As demais funções são variações ou
-utilitários — veja **[Funções disponíveis (completo)](https://andersonheri.github.io/acR/reference/)**.
+utilitários. Veja **[Funções disponíveis (completo)](https://andersonheri.github.io/acR/reference/)**.
 
 | Objetivo | Função | Vignette |
 |---|---|---|
 | Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR) | `ac_import()` | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
 | Criar corpus a partir de `data.frame` ou vetor | `ac_corpus()` | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
-| Coletar discursos da Câmara/Senado | `ac_fetch_camara()` · `ac_fetch_senado()` | [Estudo de caso](https://andersonheri.github.io/acR/articles/análise-proposicoes.html) |
+| Coletar discursos da Câmara/Senado | `ac_fetch_camara()` · `ac_fetch_senado()` | [Estudo de caso](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) |
 | Limpar texto (stopwords, URLs, acentos, NAs) | `ac_clean()` + `ac_clean_stopwords()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Contar tokens | `ac_count()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Top termos + gráfico | `ac_top_terms()` → `ac_plot_top_terms()` | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
@@ -450,38 +450,38 @@ utilitários — veja **[Funções disponíveis (completo)](https://andersonheri
 Suite de **561 blocos `test_that`**, cobrindo boa parte do código
 (medido com `covr::package_coverage()`). Testes de
 integração com APIs externas (Câmara, Senado, LLM) usam `skip_on_cran()`
-e verificação prévia de disponibilidade — não bloqueiam CI offline nem
+e verificação prévia de disponibilidade: não bloqueiam CI offline nem
 o `R CMD check` da CRAN.
 
 ---
 
 ## Documentação
 
-Site completo: **<https://andersonheri.github.io/acR/>** — vignettes navegáveis,
+Site completo: **<https://andersonheri.github.io/acR/>**, com vignettes navegáveis,
 referência de todas as funções e changelog.
 
 ### Comece por aqui
 
-- [Quickstart (5 min)](https://andersonheri.github.io/acR/articles/quickstart.html) — do zero ao primeiro gráfico.
-- [Visão geral do pacote](https://andersonheri.github.io/acR/articles/introducao-acR.html) — pipeline em uma hora.
-- [Replicabilidade ponta-a-ponta](https://andersonheri.github.io/acR/articles/replicabilidade.html) — do dado bruto ao relatório reprodutível.
+- [Quickstart (5 min)](https://andersonheri.github.io/acR/articles/quickstart.html): do zero ao primeiro gráfico.
+- [Visão geral do pacote](https://andersonheri.github.io/acR/articles/introducao-acR.html): pipeline em uma hora.
+- [Replicabilidade ponta-a-ponta](https://andersonheri.github.io/acR/articles/replicabilidade.html): do dado bruto ao relatório reprodutível.
 
 ### Pipeline qualitativo (LLMs)
 
-- [Codificação com LLMs — guia completo](https://andersonheri.github.io/acR/articles/qualitativo-llm.html) — codebook, self-consistency, revisão humana e concordância.
-- [Estudo de caso: proposições legislativas](https://andersonheri.github.io/acR/articles/análise-proposicoes.html) — aplicação real com dados da Câmara.
+- [Codificação com LLMs: guia completo](https://andersonheri.github.io/acR/articles/qualitativo-llm.html): codebook, self-consistency, revisão humana e concordância.
+- [Estudo de caso: proposições legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html): aplicação real com dados da Câmara.
 
 ### Pipeline quantitativo
 
-- [Frequências, keyness e coocorrência](https://andersonheri.github.io/acR/articles/quantitativo.html) — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.
-- [Agrupamento não supervisionado de documentos](https://andersonheri.github.io/acR/articles/cluster.html) — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.
-- [Análise de sentimento (OpLexicon)](https://andersonheri.github.io/acR/articles/sentimento.html) — polaridade e sentimento agregado por documento.
-- [Modelagem de tópicos (LDA)](https://andersonheri.github.io/acR/articles/lda.html) — escolha de `k`, interpretação de tópicos e visualização.
+- [Frequências, keyness e coocorrência](https://andersonheri.github.io/acR/articles/quantitativo.html): inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.
+- [Agrupamento não supervisionado de documentos](https://andersonheri.github.io/acR/articles/cluster.html): hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.
+- [Análise de sentimento (OpLexicon)](https://andersonheri.github.io/acR/articles/sentimento.html): polaridade e sentimento agregado por documento.
+- [Modelagem de tópicos (LDA)](https://andersonheri.github.io/acR/articles/lda.html): escolha de `k`, interpretação de tópicos e visualização.
 
 ### Referência de funções
 
-- [Índice completo por área](https://andersonheri.github.io/acR/reference/) — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
-- [Notícias / changelog](https://andersonheri.github.io/acR/news/) — histórico de versões (atual: **0.6.0**).
+- [Índice completo por área](https://andersonheri.github.io/acR/reference/): Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.
+- [Notícias / changelog](https://andersonheri.github.io/acR/news/): histórico de versões (atual: **0.6.0**).
 
 ---
 
@@ -494,7 +494,7 @@ citation("acR")
 ```
 Henrique, A. (2026). acR: Análise de Conteúdo em R.
 R package version 0.6.0. ORCID: 0000-0002-1842-2725.
-Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
+Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.
 https://andersonheri.github.io/acR/
 ```
 
@@ -505,7 +505,7 @@ https://andersonheri.github.io/acR/
 O autor utilizou o modelo de linguagem Claude (Sonnet 5 e Opus 4.8
 da Anthropic), operado por meio do ambiente **Claude Code / Cowork**,
 como ferramenta de apoio à depuração e à estruturação do código do
-pacote `acR` — incluindo a identificação e correção de bugs, a
+pacote `acR`, incluindo a identificação e correção de bugs, a
 refatoração de funções, a escrita de testes automatizados e a redação
 da documentação (vignettes e roxygen). O autor assume integral
 responsabilidade pela correção técnica e científica do material
@@ -556,5 +556,5 @@ Wickham, H. et al. (2025). *ellmer: Chat with Large Language Models*. Posit.
 
 ## Licença
 
-MIT © Anderson Henrique ([ORCID: 0000-0002-1842-2725](https://orcid.org/0000-0002-1842-2725)) —
+MIT © Anderson Henrique ([ORCID: 0000-0002-1842-2725](https://orcid.org/0000-0002-1842-2725)).
 Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.
