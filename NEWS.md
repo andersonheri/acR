@@ -117,6 +117,16 @@ produzidos pelas funcoes afetadas mudam em relacao a 0.5.0.
   inventadas; grafico de barras do Wordscores com alerta de eixo sem
   zero significativo (Cleveland, 1985).
 
+## Recursos da internet
+
+* `ac_sentiment()` baixa o OpLexicon do GitHub na primeira execucao. Os
+  exemplos de `ac_sentiment()` e `ac_plot_sentiment()` passam a usar
+  `@examplesIf interactive()`, e as vignettes `sentimento`,
+  `introducao-acR` e `quickstart` testam o acesso ao lexico antes:
+  sem internet, pulam so os trechos que dependem dele e mostram um
+  aviso, em vez de falhar. A documentacao de `ac_sentiment()` explica
+  o download e o cache em `tools::R_user_dir("acR", "data")`.
+
 ## Correcao de comportamento
 
 * `ac_qual_codebook_translate()`: exigia o pacote `ellmer` instalado

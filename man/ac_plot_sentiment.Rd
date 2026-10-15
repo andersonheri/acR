@@ -35,6 +35,9 @@ Objeto \code{ggplot}.
 documento, linha temporal, ou distribuição de scores.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Requer internet na primeira execucao: ac_sentiment() baixa o OpLexicon
+# do GitHub e o guarda em cache (tools::R_user_dir("acR", "data")).
 # Corpus com quatro documentos de valências distintas
 df <- data.frame(
   id = c("a", "b", "c", "d"),
@@ -50,7 +53,7 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 # Calcular scores e visualizar em barras (positivo/neutro/negativo por doc)
 sent <- ac_sentiment(corpus)
 ac_plot_sentiment(sent)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=ac_sentiment]{ac_sentiment()}}

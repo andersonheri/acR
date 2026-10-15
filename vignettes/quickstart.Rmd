@@ -23,6 +23,25 @@ usando apenas as funções que rodam **offline e sem chave de API**. Copie e col
 library(acR)
 ```
 
+```{r lexico, include=FALSE}
+# ac_sentiment() baixa o OpLexicon (GitHub) na primeira execução e guarda
+# em cache. Sem acesso a ele, os trechos que dependem do léxico não rodam,
+# em vez de interromper a vignette com erro.
+tem_lexico <- tryCatch({
+  suppressMessages(ac_sentiment(ac_corpus(data.frame(text = "bom"))))
+  TRUE
+}, error = function(e) FALSE)
+```
+
+```{r aviso-lexico, echo=FALSE, results="asis", eval=!tem_lexico}
+cat(
+  "> **Aviso:** o léxico OpLexicon não pôde ser baixado ao gerar esta",
+  "> página (sem acesso à internet), então os trechos que dependem dele",
+  "> não foram executados. Rode a vignette com internet para ver as saídas.",
+  sep = "\n"
+)
+```
+
 ## 1 · Um corpus mínimo
 
 ```{r corpus}
@@ -64,7 +83,7 @@ head(key, 5)
 
 ## 4 · Sentimento por documento (OpLexicon PT-BR)
 
-```{r sentimento}
+```{r sentimento, eval=tem_lexico}
 ac_sentiment(corpus)
 ```
 

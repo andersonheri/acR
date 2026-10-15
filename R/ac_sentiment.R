@@ -24,6 +24,13 @@
 #'     logarítmica).
 #'
 #' @details
+#' **Download e cache.** O OpLexicon não vem dentro do pacote: na
+#' primeira execução ele é baixado do repositório público do léxico no
+#' GitHub e salvo em `tools::R_user_dir("acR", "data")`; as execuções
+#' seguintes usam esse arquivo e funcionam sem internet. Se o download
+#' falhar (sem conexão, por exemplo), a função para com uma mensagem
+#' explicando o motivo.
+#'
 #' **Como o léxico é aplicado.** O texto é limpo (minúsculas, sem
 #' pontuação), tokenizado em palavras e cada palavra recebe a polaridade
 #' do OpLexicon (-1, 0, +1); palavras fora do léxico valem 0. Alguns
@@ -70,7 +77,9 @@
 #' Lexicon-Based Methods for Sentiment Analysis. *Computational
 #' Linguistics*, 37(2), 267-307.
 #'
-#' @examples
+#' @examplesIf interactive()
+#' # Requer internet na primeira execucao: ac_sentiment() baixa o OpLexicon
+#' # do GitHub e o guarda em cache (tools::R_user_dir("acR", "data")).
 #' # Discursos com valência afetiva variada
 #' df <- data.frame(
 #'   id = paste0("d", 1:6),
@@ -242,7 +251,9 @@ ac_sentiment <- function(corpus,
 #'
 #' @return Objeto `ggplot`.
 #'
-#' @examples
+#' @examplesIf interactive()
+#' # Requer internet na primeira execucao: ac_sentiment() baixa o OpLexicon
+#' # do GitHub e o guarda em cache (tools::R_user_dir("acR", "data")).
 #' # Corpus com quatro documentos de valências distintas
 #' df <- data.frame(
 #'   id = c("a", "b", "c", "d"),
