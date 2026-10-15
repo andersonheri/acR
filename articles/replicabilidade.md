@@ -120,7 +120,7 @@ cb
 #> • Categorias (3): "favor", "contra", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 16:04
+#> • Criado em: 15/10/2026 17:07
 #> 
 #> Instrução geral:
 #> Classifique a posicao do parlamentar sobre a reforma tributária com base no
@@ -143,9 +143,9 @@ análise em outra sessão:
 
 arquivo_cb <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo_cb)
-#> ✅ Codebook salvo em /tmp/RtmpqJjg9m/file21e0437374ba.yaml
+#> ✅ Codebook salvo em /tmp/RtmpeagQZA/file2273b693187.yaml
 cat("Codebook salvo em:", arquivo_cb, "\n")
-#> Codebook salvo em: /tmp/RtmpqJjg9m/file21e0437374ba.yaml
+#> Codebook salvo em: /tmp/RtmpeagQZA/file2273b693187.yaml
 ```
 
 ## 3. Classificação com live view
@@ -251,26 +251,31 @@ resultado |>
 
 ## 4. Amostra para revisão humana
 
-`ac_qual_sample(strategy = "uncertainty")` prioriza documentos com menor
-`confidence_score`: foca o esforço humano onde o LLM mais errou.
+Para **estimar a confiabilidade** que vai para o artigo, a amostra
+precisa ser representativa do corpus (Krippendorff, 2018, cap. 12): use
+`strategy = "random"` (padrão) ou `"proportional"`. A estratégia
+`"uncertainty"`, que prioriza documentos com menor `confidence_score`, é
+útil para outra coisa: **diagnosticar erros** e refinar o codebook. A
+concordância calculada nela não representa o corpus, porque a amostra
+foi escolhida justamente entre os casos difíceis.
 
 ``` r
 
 amostra <- ac_qual_sample(
   resultado,
   n        = 4,
-  strategy = "uncertainty"
+  strategy = "random"
 )
-#> ℹ Amostra de 4 documentos selecionada (estratégia: "uncertainty").
+#> ℹ Amostra de 4 documentos selecionada (estratégia: "random").
 #> ℹ Use `ac_qual_export_for_review()` para exportar para Excel.
 amostra |> dplyr::select(doc_id, categoria, confidence_score, sample_reason)
 #> # A tibble: 4 × 4
-#>   doc_id categoria confidence_score sample_reason                
-#>   <chr>  <chr>                <dbl> <chr>                        
-#> 1 d03    favor                 0.67 uncertainty (confidence=0.67)
-#> 2 d08    contra                0.67 uncertainty (confidence=0.67)
-#> 3 d11    neutro                0.67 uncertainty (confidence=0.67)
-#> 4 d01    favor                 1    uncertainty (confidence=1)
+#>   doc_id categoria confidence_score sample_reason
+#>   <chr>  <chr>                <dbl> <chr>        
+#> 1 d01    favor                    1 random       
+#> 2 d05    contra                   1 random       
+#> 3 d12    neutro                   1 random       
+#> 4 d09    neutro                   1 random
 ```
 
 Em uma rodada real, você exportaria essa amostra para Excel, um
@@ -304,226 +309,35 @@ irr <- ac_qual_reliability(
   bootstrap = 100L
 )
 #> Calculando confiabilidade em 12 documentos comuns...
-#> Warning in irr::kripp.alpha(mat, method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by
-#> coercion
-#> ℹ Interpretação baseada em Landis & Koch (1977) e Gwet (2014).
+#> ℹ Interpretação: alfa por Krippendorff (2018); AC1 por Landis & Koch (1977) e
+#>   Gwet (2014); percentual por Neuendorf (2017); F1 sem rótulo.
 #> ℹ IC 95% via bootstrap (n = 100).
 irr
 #> # A tibble: 4 × 5
 #>   metric             estimate ci_lower ci_upper interpretation                  
 #>   <chr>                 <dbl>    <dbl>    <dbl> <chr>                           
-#> 1 percent_agreement     0.917    0.75         1 excelente (>= 90%)              
-#> 2 krippendorff_alpha    0.880    0.584        1 quase perfeita (Landis & Koch, …
+#> 1 percent_agreement     0.917    0.75         1 alta (>= 90%; Neuendorf, 2017)  
+#> 2 krippendorff_alpha    0.880    0.584        1 confiável (>= 0,800; Krippendor…
 #> 3 gwet_ac1              0.875    0.629        1 quase perfeita (Landis & Koch, …
-#> 4 f1_macro              0.915    0.625        1 quase perfeita (Landis & Koch, …
+#> 4 f1_macro              0.915    0.625        1 sem faixa canônica (não corrigi…
 ```
 
-> **Como interpretar:** com 1 discordância em 12 documentos, espera-se
-> *percent agreement* alto (~92%) mas Kappa e Alpha mais conservadores,
-> já que corrigem pela concordância esperada ao acaso dado o desbalanço
-> entre categorias. O intervalo de confiança via *bootstrap* importa
-> mais em amostras pequenas como esta: reporte-o junto da estimativa
-> pontual, não apenas o valor central.
+> **Como interpretar:** com 1 discordância em 12 documentos, o *percent
+> agreement* é ≈ 0,92, e as métricas que corrigem pelo acaso ficam um
+> pouco abaixo (alfa de Krippendorff ≈ 0,88; AC1 de Gwet ≈ 0,87), porque
+> parte da concordância observada seria esperada só pela distribuição
+> das categorias. Cada linha usa a referência própria da métrica (coluna
+> `interpretation`): o alfa é lido pelas faixas de Krippendorff (2018),
+> o AC1 pelas de Landis & Koch (1977), e o F1 não recebe rótulo. A lição
+> principal está nos intervalos: o alfa pontual passa de 0,800
+> (“confiável”), mas o IC *bootstrap* vai de ≈ 0,58 a 1, ou seja, inclui
+> valores abaixo do mínimo de 0,667. Krippendorff (2018, sec. 12.5)
+> decide pela probabilidade de o alfa ficar abaixo do mínimo exigido,
+> não pelo valor pontual; com 12 documentos, não dá para afirmar que a
+> codificação é confiável. O rótulo vem do valor pontual: leia-o sempre
+> junto com o IC e o tamanho da amostra. (Usamos só 100 réplicas
+> *bootstrap* para a vignette rodar rápido; em uso real, deixe o padrão
+> de 1000.)
 
 ## 6. Relatório de método: replicabilidade automática
 
@@ -551,7 +365,7 @@ ac_qual_report(
 )
 #> Warning: Unknown or uninitialised column: `metrics`.
 #> ✔ Relatorio salvo em
-#> /tmp/RtmpqJjg9m/relatório-21e0ea49490.md
+#> /tmp/RtmpeagQZA/relatório-22737802ebaa.md
 ```
 
 Primeiras 40 linhas do relatório gerado:
@@ -561,7 +375,7 @@ Primeiras 40 linhas do relatório gerado:
 cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> # Classificação de posicionamento na reforma tributária
 #> 
-#> - **Gerado em:** 2026-10-15 16:04:20 UTC
+#> - **Gerado em:** 2026-10-15 17:07:43 UTC
 #> - **Versao do acR:** 0.6.0
 #> - **Autor(es):** Silva, A.; Souza, B.
 #> - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).
@@ -577,7 +391,7 @@ cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> | Idioma        | `pt` |
 #> | Modo        | `manual` |
 #> | Multilabel  | `FALSE` |
-#> | Criado em     | 2026-10-15 16:04:19 |
+#> | Criado em     | 2026-10-15 17:07:41 |
 #> 
 #> **Instrucoes ao codificador:**
 #> 
@@ -630,7 +444,7 @@ library(acR); library(ellmer)
 corpus    <- ac_corpus(meu_data_frame)
 cb        <- ac_qual_codebook(name = "...", instructions = "...", categories = list(...))
 resultado <- ac_qual_code(corpus, cb, chat = chat_anthropic("..."), live = "terminal")
-amostra   <- ac_qual_sample(resultado, n = 30, strategy = "uncertainty")
+amostra   <- ac_qual_sample(resultado, n = 30)   # aleatória: representativa
 # ... revisao humana ...
 irr       <- ac_qual_reliability(llm = resultado, human = revisado)
 ac_qual_report(resultado, cb, reliability = irr, path = "metodo.md")
@@ -645,5 +459,8 @@ automático: do texto bruto ao apêndice metodológico do artigo.
   workers for text-annotation tasks. *PNAS*, 120(30).
 - Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
   Methodology* (4th ed.). SAGE.
-- Wang, X. et al. (2022). Self-consistency improves chain-of-thought
-  reasoning in language models. *arXiv:2203.11171*.
+- Landis, J. R.; Koch, G. G. (1977). The measurement of observer
+  agreement for categorical data. *Biometrics*, 33(1), 159-174.
+- Wang, X. et al. (2023). Self-consistency improves chain of thought
+  reasoning in language models. *International Conference on Learning
+  Representations (ICLR)*.

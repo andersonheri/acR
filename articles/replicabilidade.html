@@ -222,7 +222,7 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"favor"</span>, <span style="color: #0000BB;">"contra"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 16:04</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 17:07</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique a posicao do parlamentar sobre a reforma tributária com base no</span></span>
@@ -241,9 +241,9 @@ análise em outra sessão:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arquivo_cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo_cb</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpqJjg9m/file21e0437374ba.yaml</span></span></span>
+<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpeagQZA/file2273b693187.yaml</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Codebook salvo em:"</span>, <span class="va">arquivo_cb</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpqJjg9m/file21e0437374ba.yaml</span></span></code></pre></div>
+<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpeagQZA/file2273b693187.yaml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classificação-com-live-view">3. Classificação com live view<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-live-view"></a>
@@ -335,25 +335,30 @@ humana):</p>
 <div class="section level2">
 <h2 id="amostra-para-revisão-humana">4. Amostra para revisão humana<a class="anchor" aria-label="anchor" href="#amostra-para-revis%C3%A3o-humana"></a>
 </h2>
-<p><code>ac_qual_sample(strategy = "uncertainty")</code> prioriza
-documentos com menor <code>confidence_score</code>: foca o esforço
-humano onde o LLM mais errou.</p>
+<p>Para <strong>estimar a confiabilidade</strong> que vai para o artigo,
+a amostra precisa ser representativa do corpus (Krippendorff, 2018, cap.
+12): use <code>strategy = "random"</code> (padrão) ou
+<code>"proportional"</code>. A estratégia <code>"uncertainty"</code>,
+que prioriza documentos com menor <code>confidence_score</code>, é útil
+para outra coisa: <strong>diagnosticar erros</strong> e refinar o
+codebook. A concordância calculada nela não representa o corpus, porque
+a amostra foi escolhida justamente entre os casos difíceis.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span></span>
 <span>  <span class="va">resultado</span>,</span>
 <span>  n        <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="st">"uncertainty"</span></span>
+<span>  strategy <span class="op">=</span> <span class="st">"random"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Amostra de 4 documentos selecionada (estratégia: <span style="color: #0000BB;">"uncertainty"</span>).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Amostra de 4 documentos selecionada (estratégia: <span style="color: #0000BB;">"random"</span>).</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `ac_qual_export_for_review()` para exportar para Excel.</span></span>
 <span><span class="va">amostra</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">doc_id</span>, <span class="va">categoria</span>, <span class="va">confidence_score</span>, <span class="va">sample_reason</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 4</span></span></span>
-<span><span class="co">#&gt;   doc_id categoria confidence_score sample_reason                </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d03    favor                 0.67 uncertainty (confidence=0.67)</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d08    contra                0.67 uncertainty (confidence=0.67)</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d11    neutro                0.67 uncertainty (confidence=0.67)</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d01    favor                 1    uncertainty (confidence=1)</span></span></code></pre></div>
+<span><span class="co">#&gt;   doc_id categoria confidence_score sample_reason</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d01    favor                    1 random       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d05    contra                   1 random       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d12    neutro                   1 random       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d09    neutro                   1 random</span></span></code></pre></div>
 <p>Em uma rodada real, você exportaria essa amostra para Excel, um
 codificador humano preencheria a coluna <code>categoria_humano</code>, e
 o resultado seria reimportado:</p>
@@ -381,225 +386,34 @@ método:</p>
 <span>  bootstrap <span class="op">=</span> <span class="fl">100L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Calculando confiabilidade em 12 documentos comuns...</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(mat, method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; Warning in irr::kripp.alpha(rbind(l, h), method = "nominal"): NAs introduced by</span></span>
-<span><span class="co">#&gt; coercion</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Interpretação baseada em Landis &amp; Koch (1977) e Gwet (2014).</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Interpretação: alfa por Krippendorff (2018); AC1 por Landis &amp; Koch (1977) e</span></span>
+<span><span class="co">#&gt;   Gwet (2014); percentual por Neuendorf (2017); F1 sem rótulo.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> IC 95% via bootstrap (n = 100).</span></span>
 <span><span class="va">irr</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 5</span></span></span>
 <span><span class="co">#&gt;   metric             estimate ci_lower ci_upper interpretation                  </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> percent_agreement     0.917    0.75         1 excelente (&gt;= 90%)              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> krippendorff_alpha    0.880    0.584        1 quase perfeita (Landis &amp; Koch, …</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> percent_agreement     0.917    0.75         1 alta (&gt;= 90%; Neuendorf, 2017)  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> krippendorff_alpha    0.880    0.584        1 confiável (&gt;= 0,800; Krippendor…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gwet_ac1              0.875    0.629        1 quase perfeita (Landis &amp; Koch, …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> f1_macro              0.915    0.625        1 quase perfeita (Landis &amp; Koch, …</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> f1_macro              0.915    0.625        1 sem faixa canônica (não corrigi…</span></span></code></pre></div>
 <blockquote>
 <p><strong>Como interpretar:</strong> com 1 discordância em 12
-documentos, espera-se <em>percent agreement</em> alto (~92%) mas Kappa e
-Alpha mais conservadores, já que corrigem pela concordância esperada ao
-acaso dado o desbalanço entre categorias. O intervalo de confiança via
-<em>bootstrap</em> importa mais em amostras pequenas como esta:
-reporte-o junto da estimativa pontual, não apenas o valor central.</p>
+documentos, o <em>percent agreement</em> é ≈ 0,92, e as métricas que
+corrigem pelo acaso ficam um pouco abaixo (alfa de Krippendorff ≈ 0,88;
+AC1 de Gwet ≈ 0,87), porque parte da concordância observada seria
+esperada só pela distribuição das categorias. Cada linha usa a
+referência própria da métrica (coluna <code>interpretation</code>): o
+alfa é lido pelas faixas de Krippendorff (2018), o AC1 pelas de Landis
+&amp; Koch (1977), e o F1 não recebe rótulo. A lição principal está nos
+intervalos: o alfa pontual passa de 0,800 (“confiável”), mas o IC
+<em>bootstrap</em> vai de ≈ 0,58 a 1, ou seja, inclui valores abaixo do
+mínimo de 0,667. Krippendorff (2018, sec. 12.5) decide pela
+probabilidade de o alfa ficar abaixo do mínimo exigido, não pelo valor
+pontual; com 12 documentos, não dá para afirmar que a codificação é
+confiável. O rótulo vem do valor pontual: leia-o sempre junto com o IC e
+o tamanho da amostra. (Usamos só 100 réplicas <em>bootstrap</em> para a
+vignette rodar rápido; em uso real, deixe o padrão de 1000.)</p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -626,13 +440,13 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Unknown or uninitialised column: `metrics`.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Relatorio salvo em</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpqJjg9m/relatório-21e0ea49490.md</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpeagQZA/relatório-22737802ebaa.md</span></span></span></code></pre></div>
 <p>Primeiras 40 linhas do relatório gerado:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">arquivo_md</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Classificação de posicionamento na reforma tributária</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 16:04:20 UTC</span></span>
+<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 17:07:43 UTC</span></span>
 <span><span class="co">#&gt; - **Versao do acR:** 0.6.0</span></span>
 <span><span class="co">#&gt; - **Autor(es):** Silva, A.; Souza, B.</span></span>
 <span><span class="co">#&gt; - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).</span></span>
@@ -648,7 +462,7 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="co">#&gt; | Idioma        | `pt` |</span></span>
 <span><span class="co">#&gt; | Modo        | `manual` |</span></span>
 <span><span class="co">#&gt; | Multilabel  | `FALSE` |</span></span>
-<span><span class="co">#&gt; | Criado em     | 2026-10-15 16:04:19 |</span></span>
+<span><span class="co">#&gt; | Criado em     | 2026-10-15 17:07:41 |</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; **Instrucoes ao codificador:**</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -694,7 +508,7 @@ publicação web):</p>
 <span><span class="va">corpus</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">meu_data_frame</span><span class="op">)</span></span>
 <span><span class="va">cb</span>        <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"..."</span>, instructions <span class="op">=</span> <span class="st">"..."</span>, categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">resultado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_code.html">ac_qual_code</a></span><span class="op">(</span><span class="va">corpus</span>, <span class="va">cb</span>, chat <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_anthropic.html" class="external-link">chat_anthropic</a></span><span class="op">(</span><span class="st">"..."</span><span class="op">)</span>, live <span class="op">=</span> <span class="st">"terminal"</span><span class="op">)</span></span>
-<span><span class="va">amostra</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">30</span>, strategy <span class="op">=</span> <span class="st">"uncertainty"</span><span class="op">)</span></span>
+<span><span class="va">amostra</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>   <span class="co"># aleatória: representativa</span></span>
 <span><span class="co"># ... revisao humana ...</span></span>
 <span><span class="va">irr</span>       <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span>llm <span class="op">=</span> <span class="va">resultado</span>, human <span class="op">=</span> <span class="va">revisado</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_report.html">ac_qual_report</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">cb</span>, reliability <span class="op">=</span> <span class="va">irr</span>, path <span class="op">=</span> <span class="st">"metodo.md"</span><span class="op">)</span></span></code></pre></div>
@@ -709,8 +523,12 @@ automático: do texto bruto ao apêndice metodológico do artigo.</p>
 crowd workers for text-annotation tasks. <em>PNAS</em>, 120(30).</li>
 <li>Krippendorff, K. (2018). <em>Content Analysis: An Introduction to
 Its Methodology</em> (4th ed.). SAGE.</li>
-<li>Wang, X. et al. (2022). Self-consistency improves chain-of-thought
-reasoning in language models. <em>arXiv:2203.11171</em>.</li>
+<li>Landis, J. R.; Koch, G. G. (1977). The measurement of observer
+agreement for categorical data. <em>Biometrics</em>, 33(1),
+159-174.</li>
+<li>Wang, X. et al. (2023). Self-consistency improves chain of thought
+reasoning in language models. <em>International Conference on Learning
+Representations (ICLR)</em>.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

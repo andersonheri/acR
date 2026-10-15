@@ -319,23 +319,27 @@ documentos ambíguos que merecem revisão humana prioritária.
 > categoria escolhida está “correta”. 1.000 significa que todas as
 > rodadas bateram na mesma categoria; 0.667 com `k_consistency = 3L`
 > significa que 2 das 3 rodadas concordaram e 1 discordou. Documentos
-> com confiança baixa são justamente os que a amostragem por
-> `strategy = "uncertainty"` (seção 5) prioriza para revisão humana.
+> com confiança baixa são bons candidatos a uma rodada de
+> **diagnóstico** do codebook (`strategy = "uncertainty"`), separada da
+> amostra aleatória que a seção 5 usa para estimar a confiabilidade.
 
 ------------------------------------------------------------------------
 
 ## 5. Validação humana
 
-A amostragem por `strategy = "uncertainty"` prioriza documentos com
-menor confiança, otimizando o esforço do codificador humano.
+A amostra de validação é aleatória (`strategy = "random"`, o padrão):
+para que a concordância medida nela represente o corpus inteiro, ela
+precisa ser representativa (Krippendorff, 2018, cap. 12). Priorizar os
+casos de menor confiança (`strategy = "uncertainty"`) serve para
+diagnosticar erros do codebook, não para estimar confiabilidade.
 
 ``` r
 
-# Exportar amostra priorizando casos incertos
+# Amostra aleatória para estimar a confiabilidade
 amostra <- ac_qual_sample(
   resultado,
   n        = 5,
-  strategy = "uncertainty"
+  strategy = "random"
 )
 
 ac_qual_export_for_review(
@@ -362,27 +366,46 @@ concordancia <- ac_qual_irr(
 print(concordancia)
 ```
 
-    ## -- Confiabilidade inter-anotador (acR) --
-    ## * Documentos comparados: 5
+    ## ── Confiabilidade inter-anotador (acR) ──
+    ## • Documentos comparados: 5
+    ## • Categorias: contrario, favoravel, neutro_tecnico
     ##
-    ## Métrica                        Estimativa  Interpretação
-    ## ──────────────────────────────────────────────────────────
-    ## Percent Agreement              1.000       Perfeita
-    ## Cohen's Kappa (unweighted)     1.000       Perfeita
-    ## Fleiss' Kappa                  1.000       Perfeita
-    ## Krippendorff's Alpha (nominal) 1.000       Perfeita
+    ## Metrica                         Estimativa  IC              Interpretacao
+    ## ---------------------------------------------------------------------------
+    ## Percent Agreement               1.000       --              alta (>= 90%; Neuendorf, 2017)
+    ## Cohen's Kappa (unweighted)      1.000       [1.000, 1.000]  quase perfeita (Landis & Koch, 1977)
+    ## Fleiss' Kappa                   1.000       [1.000, 1.000]  quase perfeita (Landis & Koch, 1977)
+    ## Krippendorff's Alpha (nominal)  1.000       [1.000, 1.000]  confiável (>= 0,800; Krippendorff, 2018)
 
 > **Como interpretar:** Percent Agreement ignora a chance de acerto
 > aleatório e por isso é sempre a métrica mais otimista da tabela; Kappa
 > e Alpha corrigem por essa chance e tendem a ser mais conservadoras,
 > especialmente quando uma categoria é muito mais frequente que as
 > outras. Reporte Kappa ou Alpha como medida principal no artigo, e
-> Percent Agreement apenas como complemento descritivo.
+> Percent Agreement apenas como complemento descritivo. Cada linha traz
+> o rótulo da referência própria da métrica: Landis & Koch (1977) para
+> kappa, Krippendorff (2018) para o alfa e Neuendorf (2017) para o
+> percentual.
+>
+> Note o IC de \[1, 1\]: ele **não** significa certeza. Com concordância
+> perfeita em 5 documentos, toda reamostra *bootstrap* também é
+> perfeita, e o método não tem como expressar a incerteza que uma
+> amostra tão pequena carrega. Intervalos degenerados assim são um
+> limite conhecido do *bootstrap* em amostras pequenas (Efron &
+> Tibshirani, 1993); a resposta é aumentar a amostra, não confiar no
+> intervalo.
 
 Concordância perfeita é esperada para este corpus, dado que os textos
 foram construídos com posicionamentos inequívocos. Em corpora reais com
-textos ambíguos, valores de kappa entre 0.61 e 0.80 são considerados
-adequados para publicação (Landis & Koch, 1977).
+textos ambíguos, o critério mais usado em análise de conteúdo é o de
+Krippendorff (2018, sec. 12.4): alfa a partir de 0,800 para conclusões
+sem ressalvas e entre 0,667 e 0,800 só para conclusões provisórias. As
+faixas de Landis & Koch (1977) (“substancial” para kappa entre 0,61 e
+0,80) são rótulos descritivos que os próprios autores chamam de
+arbitrários, não um critério de publicação. Com 5 documentos, como aqui,
+o intervalo de confiança é largo demais para qualquer conclusão:
+Neuendorf (2017) sugere ao menos 50 unidades na subamostra de
+confiabilidade.
 
 ------------------------------------------------------------------------
 
@@ -434,6 +457,9 @@ ac_export(resultado, formato = "latex", arquivo = "proposicoes_codificadas.tex")
 
 BARDIN, L. **Análise de conteúdo**. Edições 70, 2011.
 
+EFRON, B.; TIBSHIRANI, R. J. **An Introduction to the Bootstrap**. New
+York: Chapman & Hall, 1993.
+
 GILARDI, F.; ALIZADEH, M.; KUBLI, M. ChatGPT outperforms crowd workers
 for text-annotation tasks. **PNAS**, v. 120, n. 30, 2023.
 
@@ -442,6 +468,9 @@ Methodology**. 4. ed. SAGE, 2018.
 
 LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 categorical data. **Biometrics**, v. 33, n. 1, p. 159-174, 1977.
+
+NEUENDORF, K. A. **The Content Analysis Guidebook**. 2. ed. Thousand
+Oaks: SAGE, 2017.
 
 SAMPAIO, R. C.; LYCARIAO, D. **Análise de conteúdo categorial: manual de
 aplicação**. Brasília: ENAP, 2021.

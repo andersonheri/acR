@@ -272,7 +272,7 @@ texto.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 1 2 3 </span></span>
 <span><span class="co">#&gt; 8 4 4</span></span></code></pre></div>
-<p>Os padrões cobrem 80% dos casos:</p>
+<p>Os padrões são:</p>
 <ul>
 <li>
 <strong>hclust + Ward.D2</strong>: hierárquico, produz dendrograma
@@ -281,8 +281,11 @@ interpretável.</li>
 <strong>TF-IDF</strong>: palavras raras e discriminantes contam
 mais.</li>
 <li>
-<strong>Distância cosseno</strong>: o clássico em texto (invariante
-a tamanho de documento).</li>
+<strong>Distância cosseno</strong>: o clássico em texto (Salton
+&amp; McGill, 1983), invariante ao tamanho do documento. Internamente
+ela é calculada como distância de corda, √(2(1 − cos θ)): mesma
+ordenação dos pares que 1 − cos θ, mas euclidiana, que é o que o
+critério de Ward exige (Murtagh &amp; Legendre, 2014).</li>
 <li>
 <strong><code>k</code> automático por silhueta</strong>: testa
 <code>k ∈ {2, …, 8}</code> e escolhe o melhor (requer pacote
@@ -304,15 +307,18 @@ sólidos; cortes baixos indicam agrupamentos frouxos.</p>
 <blockquote>
 <p><strong>Como interpretar:</strong> leia de baixo para cima.
 Documentos que se unem em alturas baixas (perto de 0) são muito
-parecidos; a fusão final no topo (altura ≈ 1.9 neste exemplo) é a mais
+parecidos; a fusão final no topo (altura ≈ 2,27 neste exemplo) é a mais
 “forçada” do dendrograma, a última junção que o algoritmo faz antes de
-virar uma árvore só. Note que os 8 documentos de <code>democracia</code>
-(d01-d06) se unem bem abaixo dessa altura, formando um bloco sólido,
-enquanto os 8 documentos de <code>mercado</code> só se juntam num único
-ramo em torno da altura ≈ 1.3: mais baixo que o corte entre os dois
-temas, mas ainda assim uma fusão tardia. Isso já é o primeiro sinal
-visual de que o algoritmo vai dividir “mercado” em dois subgrupos antes
-de qualquer tabela de validação confirmar (seção 5).</p>
+virar uma árvore só. Os 8 documentos de <code>democracia</code>
+(d01-d08) se reúnem num único ramo na altura ≈ 1,52, enquanto os 8 de
+<code>mercado</code> (d09-d16) só se juntam em ≈ 1,74: os dois blocos se
+formam bem abaixo da fusão final, mas o de <code>mercado</code> é o mais
+heterogêneo internamente. Esse é o primeiro sinal visual de que, se
+pedirmos 3 grupos, o algoritmo vai dividir “mercado” em dois subgrupos
+(seção 5). A altura no método de Ward não é a distância entre dois
+documentos, e sim o aumento da soma de quadrados dentro dos grupos
+causado pela fusão (Murtagh &amp; Legendre, 2014): compare alturas entre
+si, não as leia como distâncias.</p>
 </blockquote>
 </div>
 <div class="section level3">
@@ -355,8 +361,8 @@ diagonal, a matriz deveria ficar clara (alta dissimilaridade entre
 grupos diferentes) — um retângulo fora da diagonal com tom intermediário
 sinaliza dois clusters que não são tão distintos entre si quanto o
 número de clusters sugere. Neste exemplo, o bloco de
-<code>democracia</code> (d01-d06) tem bordas nítidas; o bloco de
-<code>mercado</code> (d09-d15) também aparece separado do resto, mas
+<code>democracia</code> (d01-d08) tem bordas nítidas; o bloco de
+<code>mercado</code> (d09-d16) também aparece separado do resto, mas
 internamente um pouco menos uniforme, condizente com ele conter dois
 subtemas (clusters 2 e 3) em vez de um só.</p>
 </blockquote>
@@ -456,14 +462,22 @@ indicam que a divisão seguinte é quase tão boa quanto.</p>
 <blockquote>
 <p><strong>Como interpretar:</strong> o círculo vazado marca o
 <code>k</code> escolhido automaticamente (maior silhueta média). Neste
-exemplo, <code>k = 2</code> fica em ≈ 0,225 e <code>k = 3</code>
-(escolhido) em ≈ 0,232 — uma diferença pequena, típica de um “platô”:
-ambos os valores de <code>k</code> descrevem o corpus razoavelmente bem,
-e a escolha entre eles é uma questão de quanto detalhe você quer, não de
-um <code>k</code> certo e outro errado. Quando a diferença entre o pico
-e o segundo colocado é grande, confie mais no <code>k</code> automático;
-quando for pequena como aqui, vale a pena olhar os termos distintivos
-(seção 4.4) de cada <code>k</code> candidato antes de decidir.</p>
+exemplo, <code>k = 3</code> (escolhido) fica em ≈ 0,128 e
+<code>k = 2</code> em ≈ 0,124, mas <code>k = 8</code> (≈ 0,125) e
+<code>k = 5</code> (≈ 0,123) estão praticamente empatados: a curva é
+quase plana, e o “máximo” é decidido por diferenças na terceira casa
+decimal. Duas lições. Primeiro, quando a curva é plana, o <code>k</code>
+automático é frágil; olhe os termos distintivos (seção 4.4) de cada
+<code>k</code> candidato antes de decidir. Segundo, o nível absoluto
+importa: Kaufman &amp; Rousseeuw (1990, p. 88) leem silhueta média acima
+de 0,70 como estrutura forte, 0,51-0,70 razoável, 0,26-0,50 fraca e
+<strong>até 0,25 como ausência de estrutura substancial</strong>. Aqui
+todos os valores estão nessa última faixa, mesmo com os dois temas
+recuperados sem erro (seção 6). A razão é o tamanho dos textos: com 6
+palavras por documento, quase todo par de documentos compartilha pouco
+vocabulário, então a distância até o próprio grupo e até o grupo vizinho
+ficam parecidas. Silhueta baixa em textos curtos pede cautela, não
+necessariamente descarte, mas reporte o valor junto com os grupos.</p>
 </blockquote>
 </div>
 <div class="section level3">
@@ -473,10 +487,13 @@ quando for pequena como aqui, vale a pena olhar os termos distintivos
 lado a lado como hard clustering e LDA veem o mesmo corpus. À esquerda,
 cada linha do heatmap é um documento e cada coluna, o cluster ao qual
 ele pertence (binário: 0 ou 1). À direita, cada linha é o mesmo
-documento e cada coluna é a proporção γ do tópico LDA: <strong>um
-gradiente contínuo</strong>.</p>
+documento e cada coluna é a proporção γ do tópico LDA, que
+<strong>pode</strong> variar continuamente entre 0 e 1.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lda_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">corpus</span>, k <span class="op">=</span> <span class="fl">2</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Gibbs com alpha baixo: adequado a textos curtos de tema único</span></span>
+<span><span class="co"># (ver vignette("lda"), seção 3)</span></span>
+<span><span class="va">lda_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">corpus</span>, k <span class="op">=</span> <span class="fl">2</span>, seed <span class="op">=</span> <span class="fl">42</span>, method <span class="op">=</span> <span class="st">"Gibbs"</span>,</span>
+<span>                  control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, iter <span class="op">=</span> <span class="fl">2000</span>, burnin <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hard</span> <span class="op">&lt;-</span> <span class="va">clust</span><span class="op">$</span><span class="va">assignments</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>valor <span class="op">=</span> <span class="fl">1</span>, tipo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Cluster "</span>, <span class="va">cluster</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -508,18 +525,24 @@ gradiente contínuo</strong>.</p>
 <blockquote>
 <p><strong>Como interpretar:</strong> no painel “Hard clustering”, cada
 linha pinta <strong>uma única célula</strong> (o documento é <em>do</em>
-grupo A ou <em>do</em> grupo B, nunca os dois); no painel “LDA (soft)”,
-a cor se distribui em gradiente entre as colunas de tópico — a maioria
-dos documentos concentra quase toda a massa (<code>gamma</code>) num
-único tópico, mas alguns ficam visivelmente repartidos entre dois. É a
-mesma tipologia latente, expressa em duas métricas diferentes: hard
-clustering força uma decisão binária onde LDA preserva a incerteza. Note
-também que este gráfico compara o <code>clust</code> de
-<strong>3</strong> clusters (o <code>k</code> automático da seção 3) com
-um LDA de <code>k = 2</code> <strong>tópicos</strong>: os números de
-grupo não precisam bater para a comparação fazer sentido — o que importa
-é a forma da matriz (uma célula acesa vs. um gradiente), não o número de
-colunas em cada painel.</p>
+grupo A ou <em>do</em> grupo B, nunca os dois). No painel “LDA (soft)”,
+a cor poderia se distribuir entre as colunas, mas neste corpus quase não
+se distribui: o LDA separa os dois temas sem erro e dá ≈ 0,98 de γ ao
+tópico principal de <strong>todos</strong> os 16 documentos. Isso é o
+resultado correto, não uma falha da comparação: cada documento foi
+escrito sobre um único tema, então não há mistura a revelar. O γ mede
+<strong>pertencimento misto</strong> (que fração do documento é sobre
+cada tópico), não incerteza sobre qual é o “verdadeiro” grupo do
+documento (Airoldi et al., 2014); ele só se afasta do 0/1 do hard
+clustering quando os textos de fato misturam temas, como os discursos
+longos e os casos ambíguos da <code><a href="../articles/lda.html">vignette("lda")</a></code>, seção 8.
+Dois detalhes: (1) com o ajuste padrão (<code>method = "VEM"</code>),
+este mesmo corpus dá γ ≈ 0,50/0,50 para todo documento, um modelo que
+não aprendeu nada, daí o uso de Gibbs com α baixo; (2) o gráfico compara
+o <code>clust</code> de <strong>3</strong> clusters (o <code>k</code>
+automático da seção 3) com um LDA de <code>k = 2</code>
+<strong>tópicos</strong>: os números de colunas não precisam bater, o
+que importa é a forma da matriz.</p>
 </blockquote>
 </div>
 </div>
@@ -637,6 +660,9 @@ exemplares de cada tipologia latente.</p>
 <ul>
 <li>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet
 Allocation. <em>JMLR</em>, 3, 993–1022 (o paper original do LDA).</li>
+<li>Airoldi, E. M.; Blei, D.; Erosheva, E. A.; Fienberg, S. E. (Eds.)
+(2014). <em>Handbook of Mixed Membership Models and Their
+Applications</em>. Chapman &amp; Hall/CRC.</li>
 <li>Bezdek, J. C. (1981). <em>Pattern Recognition with Fuzzy Objective
 Function Algorithms</em>. Plenum (fuzzy c-means).</li>
 <li>Kaufman, L. &amp; Rousseeuw, P. J. (1990). <em>Finding Groups in
@@ -644,6 +670,8 @@ Data</em>. Wiley (PAM e silhueta).</li>
 <li>Manning, C., Raghavan, P. &amp; Schütze, H. (2008). <em>Introduction
 to Information Retrieval</em>. Cambridge University Press. Cap.
 16–17.</li>
+<li>Salton, G. &amp; McGill, M. J. (1983). <em>Introduction to Modern
+Information Retrieval</em>. McGraw-Hill.</li>
 <li>Murtagh, F. &amp; Legendre, P. (2014). Ward’s hierarchical
 agglomerative clustering method: Which algorithms implement Ward’s
 criterion? <em>Journal of Classification</em>, 31(3), 274–295.</li>

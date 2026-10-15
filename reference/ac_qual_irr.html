@@ -8,9 +8,9 @@ humano com bootstrap; esta é o motor genérico para qualquer par ou
 painel de anotadores. Use-a diretamente quando você tem duas rodadas
 humanas para calibrar entre codificadores antes de acender a LLM, ou
 quando quer comparar LLMs entre si sobre a mesma amostra.
-A função aceita dois formatos de entrada: (a) dois data.frames com colunas
-id e categoria, representando anotador 1 e anotador 2; ou (b) um único
-data.frame em formato largo com uma coluna por anotador."><meta property="og:description" content="Compara as classificações de dois ou mais anotadores (humanos ou LLMs) e
+A entrada são dois data.frames (anotador 1 e anotador 2), cada um com
+uma coluna de identificador e uma de categoria, alinhados pelo
+identificador."><meta property="og:description" content="Compara as classificações de dois ou mais anotadores (humanos ou LLMs) e
 retorna métricas padronizadas de concordância. Suporta Cohen's Kappa
 (dois anotadores), Fleiss' Kappa (multi-anotador), Krippendorff's Alpha e
 percentual de concordância simples.
@@ -19,9 +19,9 @@ humano com bootstrap; esta é o motor genérico para qualquer par ou
 painel de anotadores. Use-a diretamente quando você tem duas rodadas
 humanas para calibrar entre codificadores antes de acender a LLM, ou
 quando quer comparar LLMs entre si sobre a mesma amostra.
-A função aceita dois formatos de entrada: (a) dois data.frames com colunas
-id e categoria, representando anotador 1 e anotador 2; ou (b) um único
-data.frame em formato largo com uma coluna por anotador."><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
+A entrada são dois data.frames (anotador 1 e anotador 2), cada um com
+uma coluna de identificador e uma de categoria, alinhados pelo
+identificador."><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -86,9 +86,9 @@ humano com bootstrap; esta é o motor genérico para <strong>qualquer par ou
 painel</strong> de anotadores. Use-a diretamente quando você tem duas rodadas
 humanas para calibrar entre codificadores antes de acender a LLM, ou
 quando quer comparar LLMs entre si sobre a mesma amostra.</p>
-<p>A função aceita dois formatos de entrada: (a) dois data.frames com colunas
-<code>id</code> e <code>categoria</code>, representando anotador 1 e anotador 2; ou (b) um único
-data.frame em formato largo com uma coluna por anotador.</p>
+<p>A entrada são dois data.frames (anotador 1 e anotador 2), cada um com
+uma coluna de identificador e uma de categoria, alinhados pelo
+identificador.</p>
     </div>
 
     <div class="section level2">
@@ -101,7 +101,8 @@ data.frame em formato largo com uma coluna por anotador.</p>
 <span>  cat_col <span class="op">=</span> <span class="st">"categoria"</span>,</span>
 <span>  weight <span class="op">=</span> <span class="st">"unweighted"</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  bootstrap <span class="op">=</span> <span class="fl">1000L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -136,9 +137,12 @@ Padrao: <code>"categoria"</code>.</p></dd>
 
 
 <dt id="arg-weight">weight<a class="anchor" aria-label="anchor" href="#arg-weight"></a></dt>
-<dd><p><code>character</code>. Tipo de ponderacao para Cohen's Kappa:
-<code>"unweighted"</code> (padrao), <code>"linear"</code>, <code>"squared"</code>. Ignorado para
-categorias nominais sem ordem natural.</p></dd>
+<dd><p><code>character</code>. Tipo de ponderação para Cohen's Kappa:
+<code>"unweighted"</code> (padrão), <code>"linear"</code> ou <code>"squared"</code> (Cohen, 1968).
+Os pesos só fazem sentido para categorias <strong>ordinais</strong>: a ordem usada
+é a dos níveis do fator em <code>gold[[cat_col]]</code> (se for fator) ou a
+ordem alfabética (caso contrário). Para categorias nominais, use
+<code>"unweighted"</code>.</p></dd>
 
 
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
@@ -148,6 +152,12 @@ Padrao: <code>0.95</code>.</p></dd>
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p><code>logical</code>. Se <code>TRUE</code> (padrao), imprime resumo formatado.</p></dd>
+
+
+<dt id="arg-bootstrap">bootstrap<a class="anchor" aria-label="anchor" href="#arg-bootstrap"></a></dt>
+<dd><p><code>integer</code>. Número de réplicas <em>bootstrap</em> (reamostragem
+de documentos) para os intervalos de confiança de Kappa, Fleiss e
+Alpha. Padrão: <code>1000</code>. Use <code>0</code> para não calcular IC.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -178,24 +188,50 @@ Padrao: <code>0.95</code>.</p></dd>
 
 <div class="section">
 <h3 id="interpreta-o-do-kappa-landis-amp-koch-">Interpretação do Kappa (Landis &amp; Koch, 1977)<a class="anchor" aria-label="anchor" href="#interpreta-o-do-kappa-landis-amp-koch-"></a></h3>
-<table class="table table"><tr><td>Kappa</td><td>Concordância</td></tr><tr><td>&lt; 0.00</td><td>Pobre</td></tr><tr><td>0.00 - 0.20</td><td>Leve</td></tr><tr><td>0.21 - 0.40</td><td>Razoável</td></tr><tr><td>0.41 - 0.60</td><td>Moderada</td></tr><tr><td>0.61 - 0.80</td><td>Substancial</td></tr><tr><td>0.81 - 1.00</td><td>Quase perfeita</td></tr></table></div>
+<table class="table table"><tr><td>Kappa</td><td>Concordância</td></tr><tr><td>&lt; 0.00</td><td>Pobre</td></tr><tr><td>0.00 - 0.20</td><td>Leve</td></tr><tr><td>0.21 - 0.40</td><td>Razoável</td></tr><tr><td>0.41 - 0.60</td><td>Moderada</td></tr><tr><td>0.61 - 0.80</td><td>Substancial</td></tr><tr><td>0.81 - 1.00</td><td>Quase perfeita</td></tr></table><p>Os próprios autores chamam essas faixas de arbitrárias (Landis &amp; Koch,
+1977, p. 165): são rótulos de referência, não testes.</p>
+</div>
 
 <div class="section">
 <h3 id="fleiss-kappa">Fleiss' Kappa<a class="anchor" aria-label="anchor" href="#fleiss-kappa"></a></h3>
 
 
-<p>Extensao do Kappa de Cohen para mais de dois anotadores. Requer que
-<code>predicted</code> contenha uma coluna por anotador adicional, ou que sejam
-passados como lista via <code>...</code>.</p>
+<p>Generalização do kappa para vários anotadores (Fleiss, 1971). Com dois
+anotadores, como aqui, ela supõe uma distribuição marginal comum aos
+dois e por isso equivale ao <em>pi</em> de Scott, não ao kappa de Cohen; os
+valores ficam próximos, mas não idênticos.</p>
 </div>
 
 <div class="section">
 <h3 id="krippendorff-s-alpha">Krippendorff's Alpha<a class="anchor" aria-label="anchor" href="#krippendorff-s-alpha"></a></h3>
 
 
-<p>Métrica mais geral: funciona com qualquer número de anotadores, lida com
-dados faltantes e suporta escalas nominais, ordinais e de intervalo
-(KRIPPENDORFF, 2018).</p>
+<p>Métrica mais geral: funciona com qualquer número de anotadores e lida
+com dados faltantes (Krippendorff, 2018). Esta função calcula a versão
+<strong>nominal</strong>. A interpretação segue Krippendorff (2018, sec. 12.4), não
+Landis &amp; Koch: alfa <code>&gt;= 0,800</code> confiável; <code>0,667-0,800</code> só para
+conclusões provisórias; <code>&lt; 0,667</code> insuficiente.</p>
+</div>
+
+<div class="section">
+<h3 id="percentual-de-concord-ncia">Percentual de concordância<a class="anchor" aria-label="anchor" href="#percentual-de-concord-ncia"></a></h3>
+
+
+<p>Não corrige por acaso. Rótulos segundo Neuendorf (2017): <code>&gt;= 0,90</code>
+alta; <code>&gt;= 0,80</code> aceitável na maioria dos casos; <code>&gt;= 0,70</code> só em
+estudos exploratórios; abaixo disso, insuficiente.</p>
+</div>
+
+<div class="section">
+<h3 id="intervalos-de-confian-a">Intervalos de confiança<a class="anchor" aria-label="anchor" href="#intervalos-de-confian-a"></a></h3>
+
+
+<p>Calculados por <em>bootstrap</em> percentil, reamostrando documentos com
+reposição (Efron &amp; Tibshirani, 1993). Uma versão anterior usava
+<code>kappa / z</code> como erro-padrão, mas o <code>z</code> do <code>irr</code> é calculado <strong>sob a
+hipótese nula</strong> (kappa = 0); esse erro-padrão não serve para IC em
+torno do kappa estimado (Fleiss, Cohen &amp; Everitt, 1969) e gerava
+limites fora de [-1, 1].</p>
 </div>
 
     </div>
@@ -205,6 +241,18 @@ dados faltantes e suporta escalas nominais, ordinais e de intervalo
 4. ed. Thousand Oaks: SAGE, 2018.</p>
 <p>LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174, 1977.</p>
+<p>COHEN, J. Weighted kappa: nominal scale agreement with provision for
+scaled disagreement or partial credit. <strong>Psychological Bulletin</strong>,
+v. 70, n. 4, p. 213-220, 1968.</p>
+<p>EFRON, B.; TIBSHIRANI, R. J. <strong>An Introduction to the Bootstrap</strong>.
+New York: Chapman &amp; Hall, 1993.</p>
+<p>FLEISS, J. L. Measuring nominal scale agreement among many raters.
+<strong>Psychological Bulletin</strong>, v. 76, n. 5, p. 378-382, 1971.</p>
+<p>FLEISS, J. L.; COHEN, J.; EVERITT, B. S. Large sample standard errors
+of kappa and weighted kappa. <strong>Psychological Bulletin</strong>, v. 72, n. 5,
+p. 323-327, 1969.</p>
+<p>NEUENDORF, K. A. <strong>The Content Analysis Guidebook</strong>. 2. ed. Thousand
+Oaks: SAGE, 2017.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -234,12 +282,12 @@ categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174, 1977.</p
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Documentos comparados: 5</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias: conservador, progressista, tecnocratico</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC 95%            Interpretacao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC                Interpretacao</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Agreement                  0.800       [, ]              Muito bom</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Agreement                  0.800       --                aceitável na maioria dos casos (&gt;= 80%; Neuendorf, 2017)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.000, 1.000]    substancial (Landis &amp; Koch, 1977)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fleiss' Kappa                      0.655       [-0.250, 1.000]   substancial (Landis &amp; Koch, 1977)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's Alpha (nominal)     0.690       [-0.125, 1.000]   só conclusões provisórias (&gt;= 0,667; Krippendorff, 2018)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Matriz de confusao:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Predicted</span>
@@ -254,12 +302,12 @@ categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174, 1977.</p
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Documentos comparados: 5</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias: conservador, progressista, tecnocratico</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC 95%            Interpretacao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC                Interpretacao</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Agreement                  0.800       [, ]              Muito bom</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Percent Agreement                  0.800       --                aceitável na maioria dos casos (&gt;= 80%; Neuendorf, 2017)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.000, 1.000]    substancial (Landis &amp; Koch, 1977)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fleiss' Kappa                      0.655       [-0.250, 1.000]   substancial (Landis &amp; Koch, 1977)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's Alpha (nominal)     0.690       [-0.125, 1.000]   só conclusões provisórias (&gt;= 0,667; Krippendorff, 2018)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Matriz de confusao:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Predicted</span>
@@ -276,9 +324,9 @@ categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174, 1977.</p
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Documentos comparados: 5</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Categorias: conservador, progressista, tecnocratico</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC 95%            Interpretacao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Metrica                            Estimativa  IC                Interpretacao</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------------------------------------------------- </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cohen's Kappa (unweighted)         0.667       [0.000, 1.000]    substancial (Landis &amp; Koch, 1977)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Matriz de confusao:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Predicted</span>

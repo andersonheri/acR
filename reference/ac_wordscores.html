@@ -148,17 +148,30 @@ estimados.</p></dd>
 
 
 <dt id="arg-rescale">rescale<a class="anchor" aria-label="anchor" href="#arg-rescale"></a></dt>
-<dd><p>Tipo de reescalonamento aplicado aos escores brutos
-dos documentos virgens, para corrigir a compressão em torno da
-média que o método tende a produzir (Laver, Benoit &amp; Garry, 2003;
-Martin &amp; Vanberg, 2007):</p><ul><li><p><code>"none"</code> (padrão): sem reescalonamento, escore bruto.</p></li>
-<li><p><code>"lbg"</code>: reescalona pela razão de desvios-padrão entre os
-escores de referência conhecidos e os escores brutos estimados
-para os próprios documentos de referência.</p></li>
-<li><p><code>"mv"</code>: reescalona linearmente para o intervalo
-<code>[min, max]</code> dos escores de referência conhecidos (Martin &amp;
-Vanberg, 2007).</p></li>
-</ul></dd>
+<dd><p>Tipo de reescalonamento aplicado aos escores brutos,
+para corrigir a compressão em torno da média que o método produz
+(palavras comuns a todos os textos puxam todo escore para o centro
+da escala):</p><ul><li><p><code>"none"</code> (padrão): sem reescalonamento, escore bruto.</p></li>
+<li><p><code>"lbg"</code>: transformação de Laver, Benoit &amp; Garry (2003, p. 316),
+\(S^*_v = (S_v - \bar{S}_v)(DP_r / DP_v) + \bar{S}_v\), em que
+\(\bar{S}_v\) e \(DP_v\) são a média e o desvio-padrão dos
+escores brutos dos <strong>documentos virgens</strong> e \(DP_r\) o
+desvio-padrão dos escores <strong>conhecidos</strong> das referências. Dá aos
+virgens a mesma dispersão das referências, mantendo a média
+deles. Exige pelo menos 2 virgens e depende de quais virgens
+entram: com poucos, fica instável (com exatamente 2, eles caem
+sempre a cerca de 0,71 desvio-padrão da média, seja qual for o
+texto).</p></li>
+<li><p><code>"mv"</code>: transformação de Martin &amp; Vanberg (2008),
+\(S^*_v = (S_v - P_1)/(P_2 - P_1) \cdot (A_2 - A_1) + A_1\), em
+que \(A_1\) e \(A_2\) são os escores conhecidos das referências
+extremas (menor e maior) e \(P_1\), \(P_2\) os escores brutos
+que o método atribui a essas mesmas referências. Não depende do
+conjunto de virgens: é a opção mais robusta quando há poucos
+documentos a estimar.</p></li>
+</ul><p>A mesma transformação é aplicada também às referências (como se
+fossem virgens), o que serve de checagem: uma referência bem
+recuperada fica perto do seu escore conhecido.</p></dd>
 
 
 <dt id="arg-drop-punct">drop_punct<a class="anchor" aria-label="anchor" href="#arg-drop-punct"></a></dt>
@@ -178,7 +191,7 @@ usados como referência).</p>
     <p>Laver, M.; Benoit, K.; Garry, J. (2003). Extracting Policy Positions
 from Political Texts Using Words as Data. <em>American Political
 Science Review</em>, 97(2), 311-331.</p>
-<p>Martin, L. W.; Vanberg, G. (2007). A Robust Transformation Procedure
+<p>Martin, L. W.; Vanberg, G. (2008). A Robust Transformation Procedure
 for Interpreting Political Text. <em>Political Analysis</em>, 16(1), 93-100.</p>
     </div>
     <div class="section level2">

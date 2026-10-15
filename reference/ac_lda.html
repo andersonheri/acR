@@ -90,7 +90,9 @@ termos por tópico e prevalência por documento.</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Argumentos adicionais passados a <code><a href="https://rdrr.io/pkg/topicmodels/man/lda.html" class="external-link">topicmodels::LDA()</a></code>.</p></dd>
+<dd><p>Use <code>control = list(...)</code> para repassar parâmetros de
+controle a <code><a href="https://rdrr.io/pkg/topicmodels/man/lda.html" class="external-link">topicmodels::LDA()</a></code> (ex.: <code>control = list(alpha = 0.1, iter = 2000)</code> com <code>method = "Gibbs"</code>). A <code>seed</code> é incluída
+automaticamente se <code>control</code> não tiver uma.</p></dd>
 
 </dl></div>
     <div class="section level2">

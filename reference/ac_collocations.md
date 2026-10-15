@@ -37,7 +37,11 @@ ac_collocations(
 
 - n:
 
-  Tamanho do n-grama: `2` (padrão, bigramas) ou `3` (trigramas).
+  Tamanho do n-grama: `2` (padrão, bigramas) ou `3` (trigramas). Para
+  trigramas, a tabela 2x2 compara a primeira palavra com o **bigrama**
+  formado pelas duas seguintes (ex.: "atendimento" × "ao cliente"), e o
+  PMI usa a mesma decomposição: \\\log_2\[f(w_1 w_2 w_3) N / (f(w_1)
+  f(w_2 w_3))\]\\.
 
 - measure:
 
@@ -47,9 +51,11 @@ ac_collocations(
     1990): quanto mais alto, mais a coocorrência surpreende em relação
     ao esperado pelo acaso. Tende a favorecer pares raros.
 
-  - `"ll"`: log-likelihood ratio (Dunning, 1993): mais robusta que PMI
-    para colocações de baixa frequência; é a medida padrão do
-    `quanteda.textstats::textstat_collocations()`.
+  - `"ll"`: log-likelihood ratio, G² (Dunning, 1993): mais confiável que
+    o qui-quadrado e que o PMI para eventos raros, porque não supõe
+    normalidade das contagens (Dunning, 1993; Evert, 2005). Atenção: não
+    é a medida do `quanteda.textstats::textstat_collocations()`, que usa
+    o lambda de Blaheta & Johnson (2001) e seu escore z.
 
   - `"chi2"`: qui-quadrado de associação, mesma lógica de
     [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
@@ -84,6 +90,12 @@ information, and lexicography. *Computational Linguistics*, 16(1),
 
 Dunning, T. (1993). Accurate methods for the statistics of surprise and
 coincidence. *Computational Linguistics*, 19(1), 61-74.
+
+Evert, S. (2005). *The Statistics of Word Cooccurrences: Word Pairs and
+Collocations*. Tese (Doutorado), Universität Stuttgart.
+
+Blaheta, D.; Johnson, M. (2001). Unsupervised learning of multi-word
+verbs. *Proceedings of the ACL Workshop on Collocations*, 54-60.
 
 ## See also
 

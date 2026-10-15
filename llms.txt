@@ -280,7 +280,7 @@ resultado <- ac_qual_code(
 
 ``` r
 
-amostra <- ac_qual_sample(resultado, n = 15, strategy = "uncertainty")
+amostra <- ac_qual_sample(resultado, n = 15)   # aleatória (padrão): representativa
 ac_qual_export_for_review(sample = amostra, path = "revisao.xlsx", corpus = corpus_limpo)
 
 humano <- ac_qual_import_human("revisao.xlsx")
@@ -576,7 +576,7 @@ Souza, M., & Vieira, R. (2012). Sentiment analysis on Twitter data for
 Portuguese language. *PROPOR*.
 
 Wang, X. et al. (2023). Self-consistency improves chain of thought
-reasoning in language models. *EMNLP*.
+reasoning in language models. *ICLR*.
 
 Wickham, H. et al. (2025). *ellmer: Chat with Large Language Models*.
 Posit. <https://ellmer.tidyverse.org>

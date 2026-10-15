@@ -182,44 +182,54 @@ documentos cobrindo quatro temas: reforma tributária, IA e proteção de
 dados, habitação, e educação. Cada tema tem 8 documentos com vocabulário
 parcialmente sobreposto (para o modelo ter algo interessante para
 desemaranhar).</p>
+<p>Cada documento é um parágrafo de três frases (cerca de 20 palavras
+depois da limpeza), não uma frase solta. Isso importa: o LDA aprende os
+tópicos a partir de palavras que <strong>co-ocorrem no mesmo
+documento</strong>, e textos muito curtos dão poucas co-ocorrências.
+Hong &amp; Davison (2010) e Yan et al. (2013) documentam que o LDA
+padrão perde qualidade em textos curtos como tweets; numa versão
+anterior desta vignette, com frases de ~7 palavras, os tópicos
+recuperavam os temas pouco melhor que o acaso. Se seu corpus é de textos
+curtos, agregue-os (por autor, por sessão, por dia) ou use modelos
+próprios para isso.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Tema 1: reforma tributária (8 documentos)</span></span>
-<span>  <span class="st">"A reforma tributária simplifica o sistema de impostos e reduz a carga fiscal para empresas."</span>,</span>
-<span>  <span class="st">"O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arrecadacao federal."</span>,</span>
-<span>  <span class="st">"Deputados debatem aliquotas e excecoes tributárias para setores economicos."</span>,</span>
-<span>  <span class="st">"A reforma tributária unifica impostos indiretos e simplifica obrigacoes das empresas."</span>,</span>
-<span>  <span class="st">"Empresários criticam a alta carga tributária brasileira sobre o consumo popular."</span>,</span>
-<span>  <span class="st">"O relator propoe aliquotas diferenciadas para produtos essenciais no novo IVA."</span>,</span>
-<span>  <span class="st">"A reforma tributária promete reduzir litigios fiscais e aumentar a arrecadacao."</span>,</span>
-<span>  <span class="st">"Congresso avalia impacto da reforma tributária sobre pequenas empresas e servicos."</span>,</span>
+<span>  <span class="st">"A reforma tributária simplifica o sistema de impostos e reduz a carga fiscal para empresas. O governo federal estima ganho de arrecadacao com menos sonegacao. Tributaristas pedem cautela na transicao entre os dois sistemas de impostos."</span>,</span>
+<span>  <span class="st">"O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arrecadacao federal. Estados e municipios temem perder receita com o fim do ICMS. A transicao do imposto sobre consumo levara anos de ajuste fiscal."</span>,</span>
+<span>  <span class="st">"Deputados debatem aliquotas e excecoes tributárias para setores economicos. Cada setor pede tratamento diferenciado no novo imposto. O relator da reforma tributária resiste a ampliar as excecoes fiscais."</span>,</span>
+<span>  <span class="st">"A reforma tributária unifica impostos indiretos e simplifica obrigacoes das empresas. Contadores esperam menos custo para apurar tributos. A cobranca do imposto no destino muda a disputa fiscal entre estados."</span>,</span>
+<span>  <span class="st">"Empresários criticam a alta carga tributária brasileira sobre o consumo popular. O peso dos impostos indiretos recai sobre os mais pobres. A proposta de cashback devolve parte do tributo as familias de baixa renda."</span>,</span>
+<span>  <span class="st">"O relator propoe aliquotas diferenciadas para produtos essenciais no novo IVA. A cesta básica tera aliquota zero de imposto. Economistas calculam o efeito das excecoes sobre a aliquota padrao do tributo."</span>,</span>
+<span>  <span class="st">"A reforma tributária promete reduzir litigios fiscais e aumentar a arrecadacao. O contencioso tributário bilionario trava empresas e governo. Regras simples de imposto diminuem disputas judiciais sobre tributos."</span>,</span>
+<span>  <span class="st">"Congresso avalia impacto da reforma tributária sobre pequenas empresas e servicos. O Simples Nacional sera mantido com ajustes de aliquota. O setor de servicos teme aumento da carga de impostos sobre a folha."</span>,</span>
 <span>  <span class="co"># Tema 2: IA e proteção de dados (8 documentos)</span></span>
-<span>  <span class="st">"O marco legal da inteligência artificial regulamenta o uso de algoritmos e dados."</span>,</span>
-<span>  <span class="st">"Privacidade e seguranca de dados pessoais sao prioridades da nova lei de IA."</span>,</span>
-<span>  <span class="st">"Algoritmos de inteligência artificial precisam de transparência e auditoria pública."</span>,</span>
-<span>  <span class="st">"A LGPD estabelece regras para tratamento de dados pessoais por empresas e governo."</span>,</span>
-<span>  <span class="st">"Modelos de IA generativa levantam questoes eticas sobre direitos autorais e dados."</span>,</span>
-<span>  <span class="st">"A ANPD fiscaliza o cumprimento das regras de protecao de dados no Brasil."</span>,</span>
-<span>  <span class="st">"Especialistas defendem regulamentacao de algoritmos preditivos usados por bancos."</span>,</span>
-<span>  <span class="st">"Inteligência artificial na saude requer protocolos de seguranca e privacidade."</span>,</span>
+<span>  <span class="st">"O marco legal da inteligência artificial regulamenta o uso de algoritmos e dados. O projeto classifica sistemas de IA por nivel de risco. Algoritmos de alto risco exigirao avaliação de impacto antes do uso."</span>,</span>
+<span>  <span class="st">"Privacidade e seguranca de dados pessoais sao prioridades da nova lei de IA. Vazamentos de dados expõem milhoes de usuarios. A lei preve multas para empresas que tratarem dados pessoais sem consentimento."</span>,</span>
+<span>  <span class="st">"Algoritmos de inteligência artificial precisam de transparência e auditoria pública. Decisoes automatizadas devem ser explicaveis ao cidadao. Auditores independentes poderao inspecionar o codigo e os dados de treinamento."</span>,</span>
+<span>  <span class="st">"A LGPD estabelece regras para tratamento de dados pessoais por empresas e governo. O titular pode pedir acesso e exclusao dos seus dados. Empresas precisam nomear um encarregado de protecao de dados pessoais."</span>,</span>
+<span>  <span class="st">"Modelos de IA generativa levantam questoes eticas sobre direitos autorais e dados. Artistas reclamam do uso de obras no treinamento de algoritmos. O projeto de lei de IA preve remuneracao por dados protegidos."</span>,</span>
+<span>  <span class="st">"A ANPD fiscaliza o cumprimento das regras de protecao de dados no Brasil. A autoridade aplicou as primeiras sancoes por vazamento de dados pessoais. Plataformas digitais devem relatar incidentes de seguranca em prazo curto."</span>,</span>
+<span>  <span class="st">"Especialistas defendem regulamentacao de algoritmos preditivos usados por bancos. Sistemas de credito com inteligência artificial podem discriminar clientes. A transparência dos algoritmos permite contestar decisoes automatizadas."</span>,</span>
+<span>  <span class="st">"Inteligência artificial na saude requer protocolos de seguranca e privacidade. Algoritmos de diagnostico usam dados pessoais sensiveis de pacientes. Hospitais precisam de consentimento para treinar modelos de IA com esses dados."</span>,</span>
 <span>  <span class="co"># Tema 3: habitação e cidade (8 documentos)</span></span>
-<span>  <span class="st">"O programa habitacional amplia recursos federais para moradia popular urbana."</span>,</span>
-<span>  <span class="st">"O deficit habitacional afeta milhoes de familias de baixa renda nas cidades."</span>,</span>
-<span>  <span class="st">"Urbanizacao de favelas e regularizacao fundiária avancam em municipios brasileiros."</span>,</span>
-<span>  <span class="st">"Moradia digna e direito social garantido pela Constituicao federal de 1988."</span>,</span>
-<span>  <span class="st">"Assentamentos precários crescem nas periferias metropolitanas do pais."</span>,</span>
-<span>  <span class="st">"O programa Minha Casa Minha Vida entrega novas unidades habitacionais populares."</span>,</span>
-<span>  <span class="st">"Especialistas em urbanismo debatem alugueis abusivos nas grandes cidades."</span>,</span>
-<span>  <span class="st">"Politicas de habitacao popular incluem regularizacao fundiária e infraestrutura urbana."</span>,</span>
+<span>  <span class="st">"O programa habitacional amplia recursos federais para moradia popular urbana. O governo pretende contratar milhares de novas unidades habitacionais. Prefeituras disputam terrenos urbanos bem localizados para as obras."</span>,</span>
+<span>  <span class="st">"O deficit habitacional afeta milhoes de familias de baixa renda nas cidades. O aluguel caro consome boa parte da renda das familias. Coabitacao e moradia precária concentram o deficit nas periferias urbanas."</span>,</span>
+<span>  <span class="st">"Urbanizacao de favelas e regularizacao fundiária avancam em municipios brasileiros. Moradores recebem titulos de propriedade e obras de saneamento. A urbanizacao das favelas leva infraestrutura e transporte aos bairros."</span>,</span>
+<span>  <span class="st">"Moradia digna e direito social garantido pela Constituicao federal de 1988. Movimentos de moradia ocupam imoveis vazios no centro das cidades. A funcao social da propriedade urbana orienta a politica habitacional."</span>,</span>
+<span>  <span class="st">"Assentamentos precários crescem nas periferias metropolitanas do pais. Familias constroem moradias em areas de risco sem infraestrutura urbana. Deslizamentos e enchentes atingem bairros sem planejamento habitacional."</span>,</span>
+<span>  <span class="st">"O programa Minha Casa Minha Vida entrega novas unidades habitacionais populares. Conjuntos habitacionais distantes do centro dificultam o acesso ao emprego. O programa retoma a faixa de moradia para familias de baixa renda."</span>,</span>
+<span>  <span class="st">"Especialistas em urbanismo debatem alugueis abusivos nas grandes cidades. O aluguel social atende familias despejadas de suas moradias. Imoveis ociosos no centro urbano poderiam virar habitacao popular."</span>,</span>
+<span>  <span class="st">"Politicas de habitacao popular incluem regularizacao fundiária e infraestrutura urbana. Saneamento, transporte e moradia precisam de planejamento conjunto nas cidades. Municipios recebem recursos para urbanizacao de bairros periféricos."</span>,</span>
 <span>  <span class="co"># Tema 4: educação (8 documentos)</span></span>
-<span>  <span class="st">"A educacao básica recebe novos recursos do Fundeb ampliado pelo Congresso."</span>,</span>
-<span>  <span class="st">"Alfabetizacao na idade certa e meta central do novo Plano Nacional de Educacao."</span>,</span>
-<span>  <span class="st">"Professores debatem remuneracao e condicoes de trabalho nas escolas públicas."</span>,</span>
-<span>  <span class="st">"O ensino médio integrado ao técnico expande vagas em institutos federais."</span>,</span>
-<span>  <span class="st">"A avaliação Prova Brasil mede aprendizagem em português e matemática."</span>,</span>
-<span>  <span class="st">"Politicas de permanência estudantil ampliam bolsas para universitários pobres."</span>,</span>
-<span>  <span class="st">"O piso salarial nacional dos professores e reajustado pelo governo federal."</span>,</span>
-<span>  <span class="st">"A formacao continuada de professores e desafio permanente da educacao básica."</span></span>
+<span>  <span class="st">"A educacao básica recebe novos recursos do Fundeb ampliado pelo Congresso. Redes municipais de ensino ampliam vagas em creches e escolas. A complementacao federal prioriza municipios com menor investimento por aluno."</span>,</span>
+<span>  <span class="st">"Alfabetizacao na idade certa e meta central do novo Plano Nacional de Educacao. Avaliacoes mostram atraso na leitura dos alunos apos a pandemia. Escolas recebem material didático e formacao de professores alfabetizadores."</span>,</span>
+<span>  <span class="st">"Professores debatem remuneracao e condicoes de trabalho nas escolas públicas. Salas lotadas e falta de estrutura prejudicam o ensino. Sindicatos de professores cobram plano de carreira nas redes de educacao."</span>,</span>
+<span>  <span class="st">"O ensino médio integrado ao técnico expande vagas em institutos federais. Alunos combinam formacao geral e curso profissionalizante na escola. A reforma do ensino médio redefine o curriculo e a carga horaria."</span>,</span>
+<span>  <span class="st">"A avaliação Prova Brasil mede aprendizagem em português e matemática. Os resultados do Saeb orientam metas das escolas e redes de ensino. Professores usam os indicadores de aprendizagem para planejar as aulas."</span>,</span>
+<span>  <span class="st">"Politicas de permanência estudantil ampliam bolsas para universitários pobres. Alunos de baixa renda abandonam o ensino superior por falta de apoio. Universidades públicas ampliam moradia estudantil e restaurantes para estudantes."</span>,</span>
+<span>  <span class="st">"O piso salarial nacional dos professores e reajustado pelo governo federal. Municipios alegam falta de recursos para pagar o piso do magisterio. A valorizacao dos professores e meta do Plano Nacional de Educacao."</span>,</span>
+<span>  <span class="st">"A formacao continuada de professores e desafio permanente da educacao básica. Cursos de capacitacao ajudam docentes a usar tecnologia em sala de aula. Escolas com professores bem formados apresentam melhor aprendizagem dos alunos."</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
@@ -273,11 +283,11 @@ temas.</p>
 <span><span class="co">#&gt;   doc_id text                                                              tema </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  reforma tributária simplifica sistema impostos reduz carga fisca… trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  iva dual substitui pis cofins icms modelo arrecadacao federal     trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  iva dual substitui pis cofins icms modelo arrecadacao federal es… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  deputados debatem aliquotas excecoes tributárias setores economi… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  reforma tributária unifica impostos indiretos simplifica obrigac… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  empresários criticam alta carga tributária brasileira consumo po… trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  relator propoe aliquotas diferenciadas produtos essenciais iva    trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  relator propoe aliquotas diferenciadas produtos essenciais iva c… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 26 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -293,73 +303,110 @@ temas.</p>
 <strong>K muito alto</strong> → tópicos fragmentam um mesmo tema
 (sobreajuste, ruído).</li>
 </ul>
-<p>A métrica clássica é <strong>perplexidade</strong> (menor = melhor
-ajuste), mas ela tende a favorecer K altos. A regra prática (Zhao et
-al., 2015): procure o “<strong>cotovelo</strong>” da curva: o ponto onde
-perplexidade para de cair rápido e começa a estabilizar.</p>
+<p>A métrica clássica é a <strong>perplexidade</strong>: o quão
+“surpreso” o modelo fica com os documentos (menor = prevê melhor as
+palavras). O detalhe que decide tudo é <strong>em quais
+documentos</strong> ela é medida. Calculada nos mesmos documentos usados
+no ajuste, ela cai quase sempre que K aumenta, porque mais tópicos =
+mais parâmetros para memorizar o corpus. Por isso Blei, Ng &amp; Jordan
+(2003) e Wallach et al. (2009) a medem em documentos <strong>não
+vistos</strong>, e Zhao et al. (2015) usam validação cruzada em 5
+partes, que é o que <code><a href="../reference/ac_lda_tune.html">ac_lda_tune()</a></code> faz: ajusta em 4/5 dos
+documentos, mede no 1/5 restante, e repete 5 vezes. A coluna
+<code>perplexity_train</code> mostra a versão de treino, só para
+comparação.</p>
+<div class="section level3">
+<h3 id="antes-de-rodar-o-prior-α-importa-em-textos-curtos">Antes de rodar: o <em>prior</em> α importa em textos curtos<a class="anchor" aria-label="anchor" href="#antes-de-rodar-o-prior-%CE%B1-importa-em-textos-curtos"></a>
+</h3>
+<p>O LDA tem um hiperparâmetro α que controla <strong>quantos tópicos
+cada documento costuma misturar</strong>: α alto empurra todo documento
+para uma mistura de vários tópicos; α baixo permite que cada documento
+se concentre em poucos. O padrão do Gibbs no <code>topicmodels</code> é
+α = 50/K (Griffiths &amp; Steyvers, 2004), pensado para documentos
+longos; com K = 4 isso dá α = 12,5, uma mistura forçada que não combina
+com parágrafos de três frases sobre um único tema. Wallach, Mimno &amp;
+McCallum (2009) mostram que a escolha do <em>prior</em> muda
+substancialmente a qualidade dos tópicos. Usamos aqui Gibbs com α = 0,1,
+passado via <code>control</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">controle</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.1</span>, iter <span class="op">=</span> <span class="fl">2000</span>, burnin <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda_tune.html">ac_lda_tune</a></span><span class="op">(</span></span>
 <span>  <span class="va">corpus_limpo</span>,</span>
 <span>  k_range <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">8</span>,</span>
-<span>  seed    <span class="op">=</span> <span class="fl">42L</span></span>
+<span>  seed    <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>  method  <span class="op">=</span> <span class="st">"Gibbs"</span>,</span>
+<span>  control <span class="op">=</span> <span class="va">controle</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Testando k = 2 a 8...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Perplexidade fora da amostra: validação cruzada em 5 partes.</span></span>
 <span><span class="va">tune</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 7 × 2</span></span></span>
-<span><span class="co">#&gt;       k perplexity</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     2      167. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     3       74.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     4       63.2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     5       56.4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     6       49.9</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     7       43.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span>     8       40.4</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 7 × 4</span></span></span>
+<span><span class="co">#&gt;       k perplexity perplexity_sd perplexity_train</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     2       207.          22.3             198.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     3       182.          16.2             153.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     4       131.          15.3             127.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     5       136.          10.1             128.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>     6       140.          14.1             119.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>     7       139.          16.1             112.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span>     8       143.          21.3             109.</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_tune.html">ac_plot_lda_tune</a></span><span class="op">(</span><span class="va">tune</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Perplexidade por número de tópicos (K)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Menor = melhor ajuste. Procure o cotovelo, não o mínimo global."</span>,</span>
+<span>    title    <span class="op">=</span> <span class="st">"Perplexidade fora da amostra por número de tópicos (K)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Validação cruzada em 5 partes; menor = melhor previsão de documentos novos"</span>,</span>
 <span>    caption  <span class="op">=</span> <span class="st">"acR - ac_lda_tune()"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/plot-tune-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<p>Como este corpus foi construído com <strong>4 temas nítidos</strong>,
-esperamos que o “cotovelo” apareça em K = 4. Em corpora reais raramente
-é tão limpo: o cotovelo dá uma faixa (ex. K entre 5 e 8), e a escolha
-final é uma combinação da métrica com
-<strong>interpretabilidade</strong> dos tópicos que saem.</p>
 <blockquote>
-<p><strong>Como interpretar:</strong> a curva quase sempre cai rápido
-nos primeiros valores de K e depois desacelera. O “cotovelo” é onde a
-queda passa de acentuada para suave, não necessariamente o ponto de
-menor perplexidade absoluta (esse costuma ficar no K mais alto testado,
-superajustando o modelo). Se a curva for monotonicamente decrescente sem
-um cotovelo claro, prefira o K mais baixo que ainda produzir tópicos
-interpretáveis na etapa 5.</p>
+<p><strong>Como interpretar:</strong> compare as duas colunas da tabela.
+A perplexidade <strong>de treino</strong>
+(<code>perplexity_train</code>) cai sem parar, de ≈ 198 em K = 2 para ≈
+109 em K = 8: é o sobreajuste descrito acima, e escolher K por ela
+levaria sempre ao maior K testado. A perplexidade <strong>fora da
+amostra</strong> (<code>perplexity</code>, a do gráfico) cai até K = 4
+(≈ 131) e depois para de melhorar (≈ 136 a 143 de K = 5 a K = 8):
+tópicos extras já não ajudam a prever documentos novos. Repare no
+desvio-padrão entre as partes (<code>perplexity_sd</code>, de 10 a 22):
+K = 5, 6 e 7 ficam dentro dessa margem de K = 4, então a curva
+<strong>delimita uma faixa</strong>, não um valor exato. Isso é
+esperado: Chang et al. (2009) mostram que perplexidade e
+interpretabilidade humana nem sempre concordam. A decisão final combina
+a curva, a <strong>leitura dos tópicos</strong> de alguns K candidatos
+(são coerentes e distintos?) e o conhecimento substantivo do corpus
+(DiMaggio, Nag &amp; Blei, 2013). Aqui os três apontam para K = 4. Faça
+o teste: com o método padrão (<code>"VEM"</code>) a curva fora da
+amostra <strong>sobe</strong> com K neste corpus, sinal de que o ajuste,
+e não só o K, precisa de atenção.</p>
 </blockquote>
+</div>
 </div>
 <div class="section level2">
 <h2 id="treinar-o-modelo-lda">4. Treinar o modelo LDA<a class="anchor" aria-label="anchor" href="#treinar-o-modelo-lda"></a>
 </h2>
-<p>Com K definido, ajustamos o modelo. <code>seed</code> é obrigatório
-para reprodutibilidade: LDA é estocástico (Variational EM ou Gibbs
-sampling), rodadas diferentes com sementes diferentes retornam
+<p>Com K definido, ajustamos o modelo com os mesmos <code>method</code>
+e <code>control</code> usados na escolha de K. <code>seed</code> é
+obrigatório para reprodutibilidade: LDA é estocástico (Variational EM ou
+Gibbs sampling), e rodadas com sementes diferentes retornam
 <strong>tópicos com IDs diferentes</strong> e pequenas variações nas
 distribuições.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">modelo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda.html">ac_lda</a></span><span class="op">(</span></span>
 <span>  <span class="va">corpus_limpo</span>,</span>
-<span>  k    <span class="op">=</span> <span class="fl">4L</span>,</span>
-<span>  seed <span class="op">=</span> <span class="fl">42L</span></span>
+<span>  k       <span class="op">=</span> <span class="fl">4L</span>,</span>
+<span>  seed    <span class="op">=</span> <span class="fl">42L</span>,</span>
+<span>  method  <span class="op">=</span> <span class="st">"Gibbs"</span>,</span>
+<span>  control <span class="op">=</span> <span class="va">controle</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Ajustando LDA com k = 4 tópicos...</span></span>
 <span><span class="va">modelo</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Modelo LDA </span><span style="color: #0000BB; font-weight: bold;">acR</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Tópicos (k): <span style="color: #0000BB;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Método: <span style="color: #0000BB;">"VEM"</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Método: <span style="color: #0000BB;">"Gibbs"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Semente: <span style="color: #0000BB;">42</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">185</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Termos únicos: <span style="color: #0000BB;">425</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Documentos: <span style="color: #0000BB;">32</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -368,24 +415,24 @@ distribuições.</p>
 <p>Cada linha é uma combinação (tópico, termo), com <code>beta</code> =
 probabilidade do termo dado o tópico. Filtramos os top termos para
 inspecionar o que cada tópico “significa”.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">modelo</span><span class="op">$</span><span class="va">terms</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">beta</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
-<span><span class="co">#&gt;    topic term         beta</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 carga      0.035<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1 empresas   0.052<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1 fiscal     0.017<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1 impostos   0.035<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1 reduz      0.017<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     1 reforma    0.070<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     1 simplifica 0.035<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     1 sistema    0.017<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1 tributária 0.087<span style="text-decoration: underline;">7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     1 dados      0.017<span style="text-decoration: underline;">5</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    topic term           beta</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1 dados      0.000<span style="text-decoration: underline;">466</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     1 impostos   0.000<span style="text-decoration: underline;">466</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     1 lei        0.000<span style="text-decoration: underline;">466</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     1 pessoais   0.000<span style="text-decoration: underline;">466</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1 empresas   0.000<span style="text-decoration: underline;">466</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     1 ia         0.000<span style="text-decoration: underline;">466</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     1 algoritmos 0.000<span style="text-decoration: underline;">466</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     1 deficit    0.009<span style="text-decoration: underline;">79</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1 familias   0.028<span style="text-decoration: underline;">4</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     1 renda      0.023<span style="text-decoration: underline;">8</span></span></span></code></pre></div>
 <p>Visualização: os 10 termos com maior β por tópico:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span>, top_n <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Top 10 termos por tópico (LDA, K=4)"</span>,</span>
@@ -409,7 +456,7 @@ chamamos de “Reforma Tributária”.</p>
 dentro de cada tópico, útil em apresentações onde o eixo numérico do
 gráfico de barras pesa menos que o impacto visual imediato das palavras
 maiores:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topico_escolhido</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
 <span></span>
 <span><span class="va">beta</span> <span class="op">|&gt;</span></span>
@@ -431,26 +478,26 @@ maiores:</p>
 <p>Para cada documento, quais tópicos dominam? Um documento pode ser 90%
 tópico 1 (tema puro) ou distribuído entre vários tópicos (tema
 misto).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gamma</span> <span class="op">&lt;-</span> <span class="va">modelo</span><span class="op">$</span><span class="va">documents</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gamma</span>, <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 3</span></span></span>
 <span><span class="co">#&gt;    doc_id topic   gamma</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> doc_1      1 0.994  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> doc_1      2 0.001<span style="text-decoration: underline;">86</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> doc_1      3 0.001<span style="text-decoration: underline;">86</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_1      4 0.001<span style="text-decoration: underline;">86</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_10     1 0.002<span style="text-decoration: underline;">10</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_10     2 0.002<span style="text-decoration: underline;">10</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_10     3 0.002<span style="text-decoration: underline;">10</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_10     4 0.994  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_11     1 0.002<span style="text-decoration: underline;">39</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_11     2 0.002<span style="text-decoration: underline;">39</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_11     3 0.993  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_11     4 0.002<span style="text-decoration: underline;">39</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> doc_10     1 0.004<span style="text-decoration: underline;">67</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> doc_10     2 0.004<span style="text-decoration: underline;">67</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> doc_10     3 0.939  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_10     4 0.051<span style="text-decoration: underline;">4</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_12     1 0.004<span style="text-decoration: underline;">67</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_12     2 0.004<span style="text-decoration: underline;">67</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_12     3 0.799  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_12     4 0.192  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_1      1 0.004<span style="text-decoration: underline;">10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_1      2 0.004<span style="text-decoration: underline;">10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_1      3 0.004<span style="text-decoration: underline;">10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_1      4 0.988</span></span></code></pre></div>
 <p>Sumário: qual o tópico dominante de cada documento?</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dominante</span> <span class="op">&lt;-</span> <span class="va">gamma</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">gamma</span>, n <span class="op">=</span> <span class="fl">1L</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -461,22 +508,22 @@ misto).</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 3</span></span></span>
 <span><span class="co">#&gt;    doc_id topico_dominante  prob</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> doc_1                 1 0.994</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> doc_10                4 0.994</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> doc_11                3 0.993</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_12                2 0.994</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_13                4 0.994</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_14                1 0.992</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_15                1 0.993</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_16                3 0.993</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_17                2 0.994</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_18                4 0.994</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_19                4 0.993</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_2                 3 0.994</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> doc_1                 4 0.988</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> doc_10                3 0.939</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> doc_11                3 0.838</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_12                3 0.799</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_13                3 0.987</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_14                3 0.939</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_15                3 0.985</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_16                3 0.986</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_17                1 0.540</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_18                1 0.987</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_19                1 0.985</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_2                 4 0.987</span></span></code></pre></div>
 <p>Comparando com o <strong>tema real</strong> de cada documento (o
 <code>meta$tema</code> que guardamos no corpus), conseguimos avaliar
 <strong>quão bem o LDA recuperou a estrutura conhecida</strong>:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recuperar o metadado 'tema' e cruzar com o tópico dominante</span></span>
 <span><span class="va">tema_real</span> <span class="op">&lt;-</span> <span class="va">corpus</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"doc_id"</span>, <span class="st">"tema"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">comparacao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">dominante</span>, <span class="va">tema_real</span>, by <span class="op">=</span> <span class="st">"doc_id"</span><span class="op">)</span></span>
@@ -485,10 +532,10 @@ misto).</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">comparacao</span><span class="op">$</span><span class="va">topico_dominante</span>, <span class="va">comparacao</span><span class="op">$</span><span class="va">tema</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    </span></span>
 <span><span class="co">#&gt;     educacao habitacao tecnologia tributário</span></span>
-<span><span class="co">#&gt;   1        0         1          2          4</span></span>
-<span><span class="co">#&gt;   2        3         3          1          1</span></span>
-<span><span class="co">#&gt;   3        3         1          3          2</span></span>
-<span><span class="co">#&gt;   4        2         3          2          1</span></span></code></pre></div>
+<span><span class="co">#&gt;   1        0         8          0          1</span></span>
+<span><span class="co">#&gt;   2        8         0          0          0</span></span>
+<span><span class="co">#&gt;   3        0         0          8          0</span></span>
+<span><span class="co">#&gt;   4        0         0          0          7</span></span></code></pre></div>
 <blockquote>
 <p><strong>Como interpretar:</strong> procure a estrutura diagonal. Se
 cada linha (tópico dominante) tiver a maior contagem concentrada numa
@@ -497,7 +544,14 @@ os números de tópico não coincidam com a ordem dos temas (LDA não “sabe”
 que o tópico 3 é “educação”, apenas que ele é diferente dos demais).
 Contagens espalhadas por várias colunas numa mesma linha indicam que
 aquele tópico está misturando temas que deveriam ser distintos:
-considere aumentar K ou revisar a limpeza do corpus.</p>
+considere aumentar K ou revisar a limpeza do corpus. Neste exemplo, 31
+dos 32 documentos caem no tópico do seu tema. A exceção é
+<code>doc_5</code>, um texto tributário sobre <em>cashback</em> para
+“famílias de baixa renda”: ele divide o peso quase ao meio entre o
+tópico tributário e o de habitação (γ ≈ 0,52 contra 0,47), porque
+compartilha vocabulário com os textos de moradia. Não é um erro
+aleatório; é um documento genuinamente ambíguo, e a seção 8 mostra como
+reconhecê-lo pela γ.</p>
 </blockquote>
 <p>Se a diagonal for dominante (cada tópico se alinha bem com um tema
 real), o modelo capturou a estrutura. Em corpora reais sem “rótulo
@@ -512,7 +566,7 @@ al., 2013): apresente os top-N termos por tópico, proponha um
 <strong>rótulo substantivo</strong> e valide com pelo menos um segundo
 pesquisador. O <code>acR</code> facilita gerar essa tabela para incluir
 no artigo:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_terms_por_topico</span> <span class="op">&lt;-</span> <span class="va">beta</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">topic</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">beta</span>, n <span class="op">=</span> <span class="fl">7L</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -523,12 +577,12 @@ no artigo:</p>
 <span></span>
 <span><span class="va">top_terms_por_topico</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
-<span><span class="co">#&gt;   topic top_termos                                                              </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 tributária, reforma, empresas, carga, impostos, simplifica, fiscal      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2 popular, programa, urbana, politicas, empresas, dados, pessoais         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3 artificial, inteligência, debatem, algoritmos, federal, nacional, profe…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4 dados, ia, congresso, lei, pessoais, prioridades, privacidade</span></span></code></pre></div>
+<span><span class="co">#&gt;   topic top_termos                                                           </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 moradia, familias, renda, habitacional, popular, urbana, baixa       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2 professores, ensino, educacao, escolas, alunos, aprendizagem, ampliam</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3 dados, algoritmos, pessoais, ia, artificial, inteligência, precisam  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4 tributária, impostos, reforma, imposto, empresas, carga, excecoes</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualizando-as-misturas-γ-como-heatmap">8. Visualizando as misturas: γ como heatmap<a class="anchor" aria-label="anchor" href="#visualizando-as-misturas-%CE%B3-como-heatmap"></a>
@@ -538,7 +592,7 @@ etiqueta: é uma proporção. Documentos que “quase pertencem a um tema”
 aparecem como um gradiente, não como uma célula preenchida. Este heatmap
 mostra os documentos como linhas, os tópicos como colunas, e a cor como
 <code>gamma</code> (0 = nada; 1 = totalidade da massa).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gamma_ord</span> <span class="op">&lt;-</span> <span class="va">gamma</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -575,19 +629,29 @@ prática usual é reportar o tópico de maior γ (ver <code>dominante</code>
 acima) e, quando γ do segundo tópico estiver próximo do primeiro,
 sinalizar o documento como ambíguo na análise.</p>
 </blockquote>
-<p>Compare mentalmente com o heatmap “hard clustering” da
+<p>Neste corpus, a maioria dos documentos é quase “pura”: a γ do tópico
+principal tem mediana ≈ 0,98. Só 5 dos 32 documentos dão mais de 0,20 a
+um segundo tópico, e em dois deles (<code>doc_5</code> e
+<code>doc_17</code>) os dois tópicos principais estão quase empatados (≈
+0,52 × 0,47 e ≈ 0,54 × 0,45): são esses que mereceriam a etiqueta de
+“ambíguos”. Isso é coerente com o α baixo escolhido na seção 3, que
+favorece documentos concentrados em poucos tópicos, e com textos
+escritos, cada um, sobre um único tema. Em discursos longos reais,
+espere mais linhas com massa espalhada.</p>
+<p>Compare com o heatmap “hard clustering” da
 <code><a href="../articles/cluster.html">vignette("cluster")</a></code> §4.6: lá, cada linha tem
 <strong>uma</strong> célula acesa (pertence ao grupo A
-<strong>ou</strong> ao B). Aqui, muitas linhas têm massa espalhada entre
-dois ou três tópicos. É a mesma tipologia latente, descrita em duas
-resoluções diferentes: hard é uma projeção do soft.</p>
+<strong>ou</strong> ao B), mesmo para documentos como
+<code>doc_5</code>, cuja ambiguidade a γ revela e a etiqueta única
+esconde. Tomar o tópico de maior γ de cada documento é justamente
+transformar a descrição contínua numa partição.</p>
 </div>
 <div class="section level2">
 <h2 id="exportar">9. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
 </h2>
 <p>Salvamos as duas matrizes principais para reuso: em outros scripts,
 no Excel, ou para colar em tabelas de artigo:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">beta</span>,  arquivo <span class="op">=</span> <span class="st">"lda_beta.csv"</span>,  formato <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">gamma</span>, arquivo <span class="op">=</span> <span class="st">"lda_gamma.csv"</span>, formato <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
 <span></span>
@@ -608,6 +672,25 @@ Allocation. <em>Journal of Machine Learning Research</em>, 3,
 between topic modeling and the sociological perspective on culture:
 Application to newspaper coverage of U.S. government arts funding.
 <em>Poetics</em>, 41(6), 570-606.</li>
+<li>Hong, L.; Davison, B. D. (2010). Empirical study of topic modeling
+in Twitter. <em>Proceedings of the First Workshop on Social Media
+Analytics</em>, 80-88.</li>
+<li>Yan, X.; Guo, J.; Lan, Y.; Cheng, X. (2013). A biterm topic model
+for short texts. <em>Proceedings of the 22nd International Conference on
+World Wide Web</em>, 1445-1456.</li>
+<li>Griffiths, T. L.; Steyvers, M. (2004). Finding scientific topics.
+<em>Proceedings of the National Academy of Sciences</em>, 101(suppl. 1),
+5228-5235.</li>
+<li>Wallach, H. M.; Mimno, D.; McCallum, A. (2009). Rethinking LDA: Why
+priors matter. <em>Advances in Neural Information Processing
+Systems</em>, 22, 1973-1981.</li>
+<li>Chang, J.; Gerrish, S.; Wang, C.; Boyd-Graber, J.; Blei, D. M.
+(2009). Reading tea leaves: How humans interpret topic models.
+<em>Advances in Neural Information Processing Systems</em>, 22,
+288-296.</li>
+<li>Wallach, H. M.; Murray, I.; Salakhutdinov, R.; Mimno, D. (2009).
+Evaluation methods for topic models. <em>Proceedings of the 26th
+International Conference on Machine Learning</em>, 1105-1112.</li>
 <li>Zhao, W. et al. (2015). A heuristic approach to determine an
 appropriate number of topics in topic modeling. <em>BMC
 Bioinformatics</em>, 16(S13).</li>

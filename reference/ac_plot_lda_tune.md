@@ -58,6 +58,7 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 # (ponto de inflexao/"cotovelo" sugere um bom k)
 tune <- ac_lda_tune(corpus, k_range = 2:4)
 #> Testando k = 2 a 4...
+#> ℹ Perplexidade fora da amostra: validação cruzada em 5 partes.
 ac_plot_lda_tune(tune)
 
 # }

@@ -113,9 +113,10 @@ variáveis de agrupamento e <code>token</code> (agregando vários documentos).</
 
 
 <dt id="arg-drop-punct">drop_punct<a class="anchor" aria-label="anchor" href="#arg-drop-punct"></a></dt>
-<dd><p>Lógico. Se <code>TRUE</code>, remove tokens compostos apenas
-por pontuação antes de calcular as frequências (via
-<code>drop_punct = TRUE</code> em <code><a href="ac_tokenize.html">ac_tokenize()</a></code>).</p></dd>
+<dd><p>Lógico. Se <code>TRUE</code>, remove a pontuação das bordas
+dos tokens e descarta tokens compostos só de pontuação antes de
+calcular as frequências (via <code>drop_punct = TRUE</code> em
+<code><a href="ac_tokenize.html">ac_tokenize()</a></code>).</p></dd>
 
 
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
@@ -209,21 +210,21 @@ decrescente de frequência (<code>n</code>).</p></dd>
 <span class="r-in"><span><span class="co"># Frequência de bigramas por partido, removendo apenas pontuação</span></span></span>
 <span class="r-in"><span><span class="fu">ac_count</span><span class="op">(</span><span class="va">corp</span>, n <span class="op">=</span> <span class="fl">2</span>, drop_punct <span class="op">=</span> <span class="cn">TRUE</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 13 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    partido token                n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> PT      PT falou             2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> PT      do PT                2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> PT      falou na             2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> PT      na CCJ.              2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> PL      O deputado           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> PL      PL falou             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> PL      deputado do          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> PL      do PL                1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> PL      falou novamente.     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> PT      O deputado           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> PT      O senador            1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> PT      deputado do          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> PT      senador do           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    partido token               n</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> PT      PT falou            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> PT      do PT               2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> PT      falou na            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> PT      na CCJ              2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> PL      O deputado          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> PL      PL falou            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> PL      deputado do         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> PL      do PL               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> PL      falou novamente     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> PT      O deputado          1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> PT      O senador           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> PT      deputado do         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> PT      senador do          1</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

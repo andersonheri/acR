@@ -118,6 +118,7 @@ ideal para o modelo LDA.</p>
 <span class="r-in"><span><span class="co"># (ponto de inflexao/"cotovelo" sugere um bom k)</span></span></span>
 <span class="r-in"><span><span class="va">tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_lda_tune.html">ac_lda_tune</a></span><span class="op">(</span><span class="va">corpus</span>, k_range <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Testando k = 2 a 4...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Perplexidade fora da amostra: validação cruzada em 5 partes.</span>
 <span class="r-in"><span><span class="fu">ac_plot_lda_tune</span><span class="op">(</span><span class="va">tune</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ac_plot_lda_tune-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>

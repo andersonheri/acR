@@ -49,8 +49,9 @@ ac_count(corpus, n = 1L, drop_punct = FALSE, by = NULL, sort = TRUE, ...)
 
 - drop_punct:
 
-  Lógico. Se `TRUE`, remove tokens compostos apenas por pontuação antes
-  de calcular as frequências (via `drop_punct = TRUE` em
+  Lógico. Se `TRUE`, remove a pontuação das bordas dos tokens e descarta
+  tokens compostos só de pontuação antes de calcular as frequências (via
+  `drop_punct = TRUE` em
   [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)).
 
 - by:
@@ -151,19 +152,19 @@ ac_count(corp, by = "partido")
 # Frequência de bigramas por partido, removendo apenas pontuação
 ac_count(corp, n = 2, drop_punct = TRUE, by = "partido")
 #> # A tibble: 13 × 3
-#>    partido token                n
-#>    <chr>   <chr>            <int>
-#>  1 PT      PT falou             2
-#>  2 PT      do PT                2
-#>  3 PT      falou na             2
-#>  4 PT      na CCJ.              2
-#>  5 PL      O deputado           1
-#>  6 PL      PL falou             1
-#>  7 PL      deputado do          1
-#>  8 PL      do PL                1
-#>  9 PL      falou novamente.     1
-#> 10 PT      O deputado           1
-#> 11 PT      O senador            1
-#> 12 PT      deputado do          1
-#> 13 PT      senador do           1
+#>    partido token               n
+#>    <chr>   <chr>           <int>
+#>  1 PT      PT falou            2
+#>  2 PT      do PT               2
+#>  3 PT      falou na            2
+#>  4 PT      na CCJ              2
+#>  5 PL      O deputado          1
+#>  6 PL      PL falou            1
+#>  7 PL      deputado do         1
+#>  8 PL      do PL               1
+#>  9 PL      falou novamente     1
+#> 10 PT      O deputado          1
+#> 11 PT      O senador           1
+#> 12 PT      deputado do         1
+#> 13 PT      senador do          1
 ```

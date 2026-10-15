@@ -103,6 +103,6 @@ ac_emotion(corpus, lexicon = lexico)
 #>   doc_id total_tokens alegria_n medo_n raiva_n alegria_prop medo_prop raiva_prop
 #>   <chr>         <int>     <int>  <int>   <int>        <dbl>     <dbl>      <dbl>
 #> 1 d1                8         2      0       0         0.25     0          0    
-#> 2 d2                7         0      1       0         0        0.143      0    
-#> 3 d3                6         0      0       1         0        0          0.167
+#> 2 d2                7         0      2       0         0        0.286      0    
+#> 3 d3                6         0      0       2         0        0          0.333
 ```

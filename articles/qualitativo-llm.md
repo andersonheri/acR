@@ -184,7 +184,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 16:03
+#> • Criado em: 15/10/2026 17:06
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
@@ -439,15 +439,16 @@ metadados originais do corpus.
 > do modelo, não *acerto*. Um documento com `confidence_score = 1.0`
 > pode ainda assim estar classificado errado, se o codebook for ambíguo
 > o suficiente para o modelo “errar com confiança” de forma sistemática.
-> Use `confidence_score` para priorizar a amostra de revisão humana
-> (`ac_qual_sample(strategy = "uncertainty")`), não como substituto
-> dela. O valor é sempre a fração de rodadas de self-consistency que
-> concordaram, então os valores possíveis dependem de `k_consistency`:
-> com `k_consistency = 3` (usado neste exemplo), só existem os valores
-> 0, 0,33, 0,67 e 1,0. Documentos com menos da metade das rodadas
-> concordando — abaixo de 0,67 com `k_consistency = 3`, ou o equivalente
-> proporcional com outro `k_consistency` — quase sempre merecem segunda
-> leitura.
+> Use `confidence_score` para achar os casos a revisar quando o objetivo
+> é **diagnosticar erros** (`ac_qual_sample(strategy = "uncertainty")`),
+> nunca como substituto da validação humana, que deve ser feita numa
+> amostra aleatória. O valor é sempre a fração de rodadas de
+> self-consistency que concordaram, então os valores possíveis dependem
+> de `k_consistency`: com `k_consistency = 3` (usado neste exemplo), só
+> existem os valores 0, 0,33, 0,67 e 1,0. Documentos com menos da metade
+> das rodadas concordando — abaixo de 0,67 com `k_consistency = 3`, ou o
+> equivalente proporcional com outro `k_consistency` — quase sempre
+> merecem segunda leitura.
 
 ### Live view: tirando o LLM do caixa-preta
 
@@ -519,14 +520,20 @@ O fluxo mínimo:
     calcula percent agreement, *alpha* de Krippendorff, AC1 de Gwet e F1
     macro, com IC 95% via *bootstrap*.
 
-> **Quanto amostrar?** Regra prática (Krippendorff 2018): pelo menos 10%
-> do corpus, no mínimo 30 documentos, priorizando os casos com
-> `confidence_score < 0.8` (é onde o modelo mais tende a errar).
+> **Quanto amostrar, e como?** Neuendorf (2017) sugere uma subamostra de
+> confiabilidade entre 10% e 20% do corpus, raramente menor que 50
+> unidades; Krippendorff (2018, sec. 12.3) dá um cálculo formal a partir
+> do alfa mínimo aceitável e da frequência da categoria mais rara. A
+> amostra deve ser **aleatória** (ou estratificada proporcional): se
+> você escolher só os casos com `confidence_score` baixo, a concordância
+> medida descreve os casos difíceis, não o corpus, e subestima a
+> confiabilidade real. Os casos incertos são ótimos para uma segunda
+> rodada de **diagnóstico** do codebook, separada da estimativa.
 
 ``` r
 
-# Amostrar 30 documentos priorizando os incertos
-amostra <- ac_qual_sample(resultado, n = 30, strategy = "uncertainty")
+# Amostra aleatória de 50 documentos (representativa do corpus)
+amostra <- ac_qual_sample(resultado, n = 50, strategy = "random")
 ac_qual_export_for_review(amostra, path = "revisao.xlsx", corpus = corpus)
 
 # Após preenchimento manual, calcular IRR
@@ -535,19 +542,21 @@ irr      <- ac_qual_reliability(llm = resultado, human = revisado)
 print(irr)
 ```
 
-Interpretação (Landis & Koch, 1977 / Gwet, 2014):
+Cada métrica tem a sua referência de leitura; não as misture:
 
-| Alpha/Kappa | Interpretação      |
-|:-----------:|:-------------------|
-|   \< 0.20   | Baixa concordância |
-| 0.21 – 0.40 | Razoável           |
-| 0.41 – 0.60 | Moderada           |
-| 0.61 – 0.80 | Substancial        |
-|   \> 0.80   | Quase perfeita     |
+| Métrica | Faixas | Fonte |
+|:---|:---|:---|
+| Alfa de Krippendorff | ≥ 0,800 confiável; 0,667–0,800 só conclusões provisórias; \< 0,667 insuficiente | Krippendorff (2018, sec. 12.4) |
+| AC1 de Gwet (e kappa) | \< 0 pobre; 0–0,20 leve; 0,21–0,40 razoável; 0,41–0,60 moderada; 0,61–0,80 substancial; 0,81–1 quase perfeita | Landis & Koch (1977), usado como referência por Gwet (2014) |
+| Percent agreement | ≥ 0,90 alta; ≥ 0,80 aceitável na maioria dos casos; ≥ 0,70 só estudos exploratórios | Neuendorf (2017) |
+| F1 macro | sem faixa canônica (não corrige por acaso) | — |
 
-Para análises publicáveis, valores acima de **0.67** (Krippendorff) ou
-**0.61** (Landis-Koch) são geralmente aceitos, com discussão dos casos
-divergentes na seção de método.
+Para publicação, o critério de referência em análise de conteúdo é o de
+Krippendorff: alfa ≥ 0,800, aceitando 0,667 apenas para conclusões
+provisórias e com discussão dos casos divergentes. As faixas de Landis &
+Koch são descritivas (os próprios autores as chamam de arbitrárias) e
+não definem o que é publicável. Olhe também o IC: um alfa de 0,82 com IC
+de 0,61 a 0,95 não permite afirmar que a confiabilidade passa de 0,800.
 
 > **E se eu usar dicionário em vez de LLM?** A mesma exigência de
 > validação vale para classificação por dicionário
@@ -723,6 +732,9 @@ Methodology* (4th ed.). SAGE.
 
 Landis, J. R., & Koch, G. G. (1977). The measurement of observer
 agreement for categorical data. *Biometrics*, 33(1), 159-174.
+
+Neuendorf, K. A. (2017). *The Content Analysis Guidebook* (2nd ed.).
+SAGE.
 
 Maerz, S., & Benoit, K. (2025). *quallmer: Qualitative Analysis with
 Large Language Models in R*. GitHub.

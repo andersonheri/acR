@@ -6,9 +6,10 @@ para descobrir tipologias latentes, montar amostras estratificadas de
 revisao humana ou produzir dendrogramas para relatórios metodologicos.
 
 Não substitui
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md):
-LDA e clustering *soft* (cada documento vira uma mistura de tópicos),
-enquanto esta função devolve **uma etiqueta por documento**.
+[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md): o
+LDA é um modelo de pertencimento misto (cada documento vira uma mistura
+de tópicos), enquanto esta função devolve **uma etiqueta por
+documento**.
 
 ## Usage
 
@@ -49,8 +50,16 @@ ac_cluster_documents(
 
 - distance:
 
-  Métrica de dissimilaridade. `"cosine"` (padrao) e o classico em
-  textos; `"euclidean"` funciona melhor com vetores normalizados.
+  Métrica de dissimilaridade. `"cosine"` (padrão) é o clássico em textos
+  (Salton & McGill, 1983): compara a *composição* do vocabulário, não o
+  tamanho do documento. Internamente ela é calculada como distância de
+  corda, \\\sqrt{2(1 - \cos\theta)}\\, que é a distância euclidiana
+  entre os vetores normalizados para norma 1 (Legendre & Legendre,
+  2012). A ordem dos pares é a mesma de \\1 - \cos\theta\\, mas a
+  distância de corda é euclidiana, o que o critério de Ward (`hclust`) e
+  o k-means exigem (Murtagh & Legendre, 2014). Com `"cosine"`, o k-means
+  também roda sobre os vetores normalizados. `"euclidean"` usa os
+  vetores brutos, sensíveis ao tamanho do documento.
 
 - min_docs:
 
@@ -84,6 +93,22 @@ Objeto de classe `ac_cluster` com:
 - `dtm`:
 
   Matriz documento-termo usada (para plotagem).
+
+## References
+
+Legendre, P.; Legendre, L. (2012). *Numerical Ecology* (3rd ed.).
+Elsevier.
+
+Murtagh, F.; Legendre, P. (2014). Ward's hierarchical agglomerative
+clustering method: Which algorithms implement Ward's criterion? *Journal
+of Classification*, 31(3), 274-295.
+
+Rousseeuw, P. J. (1987). Silhouettes: a graphical aid to the
+interpretation and validation of cluster analysis. *Journal of
+Computational and Applied Mathematics*, 20, 53-65.
+
+Salton, G.; McGill, M. J. (1983). *Introduction to Modern Information
+Retrieval*. McGraw-Hill.
 
 ## See also
 

@@ -30,8 +30,11 @@ ac_lda(corpus, k = 10L, seed = 42L, method = c("VEM", "Gibbs"), ...)
 
 - ...:
 
-  Argumentos adicionais passados a
-  [`topicmodels::LDA()`](https://rdrr.io/pkg/topicmodels/man/lda.html).
+  Use `control = list(...)` para repassar parâmetros de controle a
+  [`topicmodels::LDA()`](https://rdrr.io/pkg/topicmodels/man/lda.html)
+  (ex.: `control = list(alpha = 0.1, iter = 2000)` com
+  `method = "Gibbs"`). A `seed` é incluída automaticamente se `control`
+  não tiver uma.
 
 ## Value
 

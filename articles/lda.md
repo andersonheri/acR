@@ -53,45 +53,55 @@ quatro temas: reforma tributária, IA e proteção de dados, habitação, e
 educação. Cada tema tem 8 documentos com vocabulário parcialmente
 sobreposto (para o modelo ter algo interessante para desemaranhar).
 
+Cada documento é um parágrafo de três frases (cerca de 20 palavras
+depois da limpeza), não uma frase solta. Isso importa: o LDA aprende os
+tópicos a partir de palavras que **co-ocorrem no mesmo documento**, e
+textos muito curtos dão poucas co-ocorrências. Hong & Davison (2010) e
+Yan et al. (2013) documentam que o LDA padrão perde qualidade em textos
+curtos como tweets; numa versão anterior desta vignette, com frases de
+~7 palavras, os tópicos recuperavam os temas pouco melhor que o acaso.
+Se seu corpus é de textos curtos, agregue-os (por autor, por sessão, por
+dia) ou use modelos próprios para isso.
+
 ``` r
 
 textos <- c(
   # Tema 1: reforma tributária (8 documentos)
-  "A reforma tributária simplifica o sistema de impostos e reduz a carga fiscal para empresas.",
-  "O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arrecadacao federal.",
-  "Deputados debatem aliquotas e excecoes tributárias para setores economicos.",
-  "A reforma tributária unifica impostos indiretos e simplifica obrigacoes das empresas.",
-  "Empresários criticam a alta carga tributária brasileira sobre o consumo popular.",
-  "O relator propoe aliquotas diferenciadas para produtos essenciais no novo IVA.",
-  "A reforma tributária promete reduzir litigios fiscais e aumentar a arrecadacao.",
-  "Congresso avalia impacto da reforma tributária sobre pequenas empresas e servicos.",
+  "A reforma tributária simplifica o sistema de impostos e reduz a carga fiscal para empresas. O governo federal estima ganho de arrecadacao com menos sonegacao. Tributaristas pedem cautela na transicao entre os dois sistemas de impostos.",
+  "O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arrecadacao federal. Estados e municipios temem perder receita com o fim do ICMS. A transicao do imposto sobre consumo levara anos de ajuste fiscal.",
+  "Deputados debatem aliquotas e excecoes tributárias para setores economicos. Cada setor pede tratamento diferenciado no novo imposto. O relator da reforma tributária resiste a ampliar as excecoes fiscais.",
+  "A reforma tributária unifica impostos indiretos e simplifica obrigacoes das empresas. Contadores esperam menos custo para apurar tributos. A cobranca do imposto no destino muda a disputa fiscal entre estados.",
+  "Empresários criticam a alta carga tributária brasileira sobre o consumo popular. O peso dos impostos indiretos recai sobre os mais pobres. A proposta de cashback devolve parte do tributo as familias de baixa renda.",
+  "O relator propoe aliquotas diferenciadas para produtos essenciais no novo IVA. A cesta básica tera aliquota zero de imposto. Economistas calculam o efeito das excecoes sobre a aliquota padrao do tributo.",
+  "A reforma tributária promete reduzir litigios fiscais e aumentar a arrecadacao. O contencioso tributário bilionario trava empresas e governo. Regras simples de imposto diminuem disputas judiciais sobre tributos.",
+  "Congresso avalia impacto da reforma tributária sobre pequenas empresas e servicos. O Simples Nacional sera mantido com ajustes de aliquota. O setor de servicos teme aumento da carga de impostos sobre a folha.",
   # Tema 2: IA e proteção de dados (8 documentos)
-  "O marco legal da inteligência artificial regulamenta o uso de algoritmos e dados.",
-  "Privacidade e seguranca de dados pessoais sao prioridades da nova lei de IA.",
-  "Algoritmos de inteligência artificial precisam de transparência e auditoria pública.",
-  "A LGPD estabelece regras para tratamento de dados pessoais por empresas e governo.",
-  "Modelos de IA generativa levantam questoes eticas sobre direitos autorais e dados.",
-  "A ANPD fiscaliza o cumprimento das regras de protecao de dados no Brasil.",
-  "Especialistas defendem regulamentacao de algoritmos preditivos usados por bancos.",
-  "Inteligência artificial na saude requer protocolos de seguranca e privacidade.",
+  "O marco legal da inteligência artificial regulamenta o uso de algoritmos e dados. O projeto classifica sistemas de IA por nivel de risco. Algoritmos de alto risco exigirao avaliação de impacto antes do uso.",
+  "Privacidade e seguranca de dados pessoais sao prioridades da nova lei de IA. Vazamentos de dados expõem milhoes de usuarios. A lei preve multas para empresas que tratarem dados pessoais sem consentimento.",
+  "Algoritmos de inteligência artificial precisam de transparência e auditoria pública. Decisoes automatizadas devem ser explicaveis ao cidadao. Auditores independentes poderao inspecionar o codigo e os dados de treinamento.",
+  "A LGPD estabelece regras para tratamento de dados pessoais por empresas e governo. O titular pode pedir acesso e exclusao dos seus dados. Empresas precisam nomear um encarregado de protecao de dados pessoais.",
+  "Modelos de IA generativa levantam questoes eticas sobre direitos autorais e dados. Artistas reclamam do uso de obras no treinamento de algoritmos. O projeto de lei de IA preve remuneracao por dados protegidos.",
+  "A ANPD fiscaliza o cumprimento das regras de protecao de dados no Brasil. A autoridade aplicou as primeiras sancoes por vazamento de dados pessoais. Plataformas digitais devem relatar incidentes de seguranca em prazo curto.",
+  "Especialistas defendem regulamentacao de algoritmos preditivos usados por bancos. Sistemas de credito com inteligência artificial podem discriminar clientes. A transparência dos algoritmos permite contestar decisoes automatizadas.",
+  "Inteligência artificial na saude requer protocolos de seguranca e privacidade. Algoritmos de diagnostico usam dados pessoais sensiveis de pacientes. Hospitais precisam de consentimento para treinar modelos de IA com esses dados.",
   # Tema 3: habitação e cidade (8 documentos)
-  "O programa habitacional amplia recursos federais para moradia popular urbana.",
-  "O deficit habitacional afeta milhoes de familias de baixa renda nas cidades.",
-  "Urbanizacao de favelas e regularizacao fundiária avancam em municipios brasileiros.",
-  "Moradia digna e direito social garantido pela Constituicao federal de 1988.",
-  "Assentamentos precários crescem nas periferias metropolitanas do pais.",
-  "O programa Minha Casa Minha Vida entrega novas unidades habitacionais populares.",
-  "Especialistas em urbanismo debatem alugueis abusivos nas grandes cidades.",
-  "Politicas de habitacao popular incluem regularizacao fundiária e infraestrutura urbana.",
+  "O programa habitacional amplia recursos federais para moradia popular urbana. O governo pretende contratar milhares de novas unidades habitacionais. Prefeituras disputam terrenos urbanos bem localizados para as obras.",
+  "O deficit habitacional afeta milhoes de familias de baixa renda nas cidades. O aluguel caro consome boa parte da renda das familias. Coabitacao e moradia precária concentram o deficit nas periferias urbanas.",
+  "Urbanizacao de favelas e regularizacao fundiária avancam em municipios brasileiros. Moradores recebem titulos de propriedade e obras de saneamento. A urbanizacao das favelas leva infraestrutura e transporte aos bairros.",
+  "Moradia digna e direito social garantido pela Constituicao federal de 1988. Movimentos de moradia ocupam imoveis vazios no centro das cidades. A funcao social da propriedade urbana orienta a politica habitacional.",
+  "Assentamentos precários crescem nas periferias metropolitanas do pais. Familias constroem moradias em areas de risco sem infraestrutura urbana. Deslizamentos e enchentes atingem bairros sem planejamento habitacional.",
+  "O programa Minha Casa Minha Vida entrega novas unidades habitacionais populares. Conjuntos habitacionais distantes do centro dificultam o acesso ao emprego. O programa retoma a faixa de moradia para familias de baixa renda.",
+  "Especialistas em urbanismo debatem alugueis abusivos nas grandes cidades. O aluguel social atende familias despejadas de suas moradias. Imoveis ociosos no centro urbano poderiam virar habitacao popular.",
+  "Politicas de habitacao popular incluem regularizacao fundiária e infraestrutura urbana. Saneamento, transporte e moradia precisam de planejamento conjunto nas cidades. Municipios recebem recursos para urbanizacao de bairros periféricos.",
   # Tema 4: educação (8 documentos)
-  "A educacao básica recebe novos recursos do Fundeb ampliado pelo Congresso.",
-  "Alfabetizacao na idade certa e meta central do novo Plano Nacional de Educacao.",
-  "Professores debatem remuneracao e condicoes de trabalho nas escolas públicas.",
-  "O ensino médio integrado ao técnico expande vagas em institutos federais.",
-  "A avaliação Prova Brasil mede aprendizagem em português e matemática.",
-  "Politicas de permanência estudantil ampliam bolsas para universitários pobres.",
-  "O piso salarial nacional dos professores e reajustado pelo governo federal.",
-  "A formacao continuada de professores e desafio permanente da educacao básica."
+  "A educacao básica recebe novos recursos do Fundeb ampliado pelo Congresso. Redes municipais de ensino ampliam vagas em creches e escolas. A complementacao federal prioriza municipios com menor investimento por aluno.",
+  "Alfabetizacao na idade certa e meta central do novo Plano Nacional de Educacao. Avaliacoes mostram atraso na leitura dos alunos apos a pandemia. Escolas recebem material didático e formacao de professores alfabetizadores.",
+  "Professores debatem remuneracao e condicoes de trabalho nas escolas públicas. Salas lotadas e falta de estrutura prejudicam o ensino. Sindicatos de professores cobram plano de carreira nas redes de educacao.",
+  "O ensino médio integrado ao técnico expande vagas em institutos federais. Alunos combinam formacao geral e curso profissionalizante na escola. A reforma do ensino médio redefine o curriculo e a carga horaria.",
+  "A avaliação Prova Brasil mede aprendizagem em português e matemática. Os resultados do Saeb orientam metas das escolas e redes de ensino. Professores usam os indicadores de aprendizagem para planejar as aulas.",
+  "Politicas de permanência estudantil ampliam bolsas para universitários pobres. Alunos de baixa renda abandonam o ensino superior por falta de apoio. Universidades públicas ampliam moradia estudantil e restaurantes para estudantes.",
+  "O piso salarial nacional dos professores e reajustado pelo governo federal. Municipios alegam falta de recursos para pagar o piso do magisterio. A valorizacao dos professores e meta do Plano Nacional de Educacao.",
+  "A formacao continuada de professores e desafio permanente da educacao básica. Cursos de capacitacao ajudam docentes a usar tecnologia em sala de aula. Escolas com professores bem formados apresentam melhor aprendizagem dos alunos."
 )
 
 corpus <- ac_corpus(
@@ -146,11 +156,11 @@ corpus_limpo
 #>   doc_id text                                                              tema 
 #>   <chr>  <chr>                                                             <chr>
 #> 1 doc_1  reforma tributária simplifica sistema impostos reduz carga fisca… trib…
-#> 2 doc_2  iva dual substitui pis cofins icms modelo arrecadacao federal     trib…
+#> 2 doc_2  iva dual substitui pis cofins icms modelo arrecadacao federal es… trib…
 #> 3 doc_3  deputados debatem aliquotas excecoes tributárias setores economi… trib…
 #> 4 doc_4  reforma tributária unifica impostos indiretos simplifica obrigac… trib…
 #> 5 doc_5  empresários criticam alta carga tributária brasileira consumo po… trib…
-#> 6 doc_6  relator propoe aliquotas diferenciadas produtos essenciais iva    trib…
+#> 6 doc_6  relator propoe aliquotas diferenciadas produtos essenciais iva c… trib…
 #> # ℹ 26 more rows
 ```
 
@@ -163,79 +173,115 @@ escolha ideal é um balanço:
 - **K muito alto** → tópicos fragmentam um mesmo tema (sobreajuste,
   ruído).
 
-A métrica clássica é **perplexidade** (menor = melhor ajuste), mas ela
-tende a favorecer K altos. A regra prática (Zhao et al., 2015): procure
-o “**cotovelo**” da curva: o ponto onde perplexidade para de cair rápido
-e começa a estabilizar.
+A métrica clássica é a **perplexidade**: o quão “surpreso” o modelo fica
+com os documentos (menor = prevê melhor as palavras). O detalhe que
+decide tudo é **em quais documentos** ela é medida. Calculada nos mesmos
+documentos usados no ajuste, ela cai quase sempre que K aumenta, porque
+mais tópicos = mais parâmetros para memorizar o corpus. Por isso Blei,
+Ng & Jordan (2003) e Wallach et al. (2009) a medem em documentos **não
+vistos**, e Zhao et al. (2015) usam validação cruzada em 5 partes, que é
+o que
+[`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
+faz: ajusta em 4/5 dos documentos, mede no 1/5 restante, e repete 5
+vezes. A coluna `perplexity_train` mostra a versão de treino, só para
+comparação.
+
+### Antes de rodar: o *prior* α importa em textos curtos
+
+O LDA tem um hiperparâmetro α que controla **quantos tópicos cada
+documento costuma misturar**: α alto empurra todo documento para uma
+mistura de vários tópicos; α baixo permite que cada documento se
+concentre em poucos. O padrão do Gibbs no `topicmodels` é α = 50/K
+(Griffiths & Steyvers, 2004), pensado para documentos longos; com K = 4
+isso dá α = 12,5, uma mistura forçada que não combina com parágrafos de
+três frases sobre um único tema. Wallach, Mimno & McCallum (2009)
+mostram que a escolha do *prior* muda substancialmente a qualidade dos
+tópicos. Usamos aqui Gibbs com α = 0,1, passado via `control`:
+
+``` r
+
+controle <- list(alpha = 0.1, iter = 2000, burnin = 500)
+```
 
 ``` r
 
 tune <- ac_lda_tune(
   corpus_limpo,
   k_range = 2:8,
-  seed    = 42L
+  seed    = 42L,
+  method  = "Gibbs",
+  control = controle
 )
 #> Testando k = 2 a 8...
+#> ℹ Perplexidade fora da amostra: validação cruzada em 5 partes.
 tune
-#> # A tibble: 7 × 2
-#>       k perplexity
-#>   <int>      <dbl>
-#> 1     2      167. 
-#> 2     3       74.9
-#> 3     4       63.2
-#> 4     5       56.4
-#> 5     6       49.9
-#> 6     7       43.0
-#> 7     8       40.4
+#> # A tibble: 7 × 4
+#>       k perplexity perplexity_sd perplexity_train
+#>   <int>      <dbl>         <dbl>            <dbl>
+#> 1     2       207.          22.3             198.
+#> 2     3       182.          16.2             153.
+#> 3     4       131.          15.3             127.
+#> 4     5       136.          10.1             128.
+#> 5     6       140.          14.1             119.
+#> 6     7       139.          16.1             112.
+#> 7     8       143.          21.3             109.
 ```
 
 ``` r
 
 ac_plot_lda_tune(tune) +
   ggplot2::labs(
-    title    = "Perplexidade por número de tópicos (K)",
-    subtitle = "Menor = melhor ajuste. Procure o cotovelo, não o mínimo global.",
+    title    = "Perplexidade fora da amostra por número de tópicos (K)",
+    subtitle = "Validação cruzada em 5 partes; menor = melhor previsão de documentos novos",
     caption  = "acR - ac_lda_tune()"
   )
 ```
 
 ![](lda_files/figure-html/plot-tune-1.png)
 
-Como este corpus foi construído com **4 temas nítidos**, esperamos que o
-“cotovelo” apareça em K = 4. Em corpora reais raramente é tão limpo: o
-cotovelo dá uma faixa (ex. K entre 5 e 8), e a escolha final é uma
-combinação da métrica com **interpretabilidade** dos tópicos que saem.
-
-> **Como interpretar:** a curva quase sempre cai rápido nos primeiros
-> valores de K e depois desacelera. O “cotovelo” é onde a queda passa de
-> acentuada para suave, não necessariamente o ponto de menor
-> perplexidade absoluta (esse costuma ficar no K mais alto testado,
-> superajustando o modelo). Se a curva for monotonicamente decrescente
-> sem um cotovelo claro, prefira o K mais baixo que ainda produzir
-> tópicos interpretáveis na etapa 5.
+> **Como interpretar:** compare as duas colunas da tabela. A
+> perplexidade **de treino** (`perplexity_train`) cai sem parar, de ≈
+> 198 em K = 2 para ≈ 109 em K = 8: é o sobreajuste descrito acima, e
+> escolher K por ela levaria sempre ao maior K testado. A perplexidade
+> **fora da amostra** (`perplexity`, a do gráfico) cai até K = 4 (≈ 131)
+> e depois para de melhorar (≈ 136 a 143 de K = 5 a K = 8): tópicos
+> extras já não ajudam a prever documentos novos. Repare no
+> desvio-padrão entre as partes (`perplexity_sd`, de 10 a 22): K = 5, 6
+> e 7 ficam dentro dessa margem de K = 4, então a curva **delimita uma
+> faixa**, não um valor exato. Isso é esperado: Chang et al. (2009)
+> mostram que perplexidade e interpretabilidade humana nem sempre
+> concordam. A decisão final combina a curva, a **leitura dos tópicos**
+> de alguns K candidatos (são coerentes e distintos?) e o conhecimento
+> substantivo do corpus (DiMaggio, Nag & Blei, 2013). Aqui os três
+> apontam para K = 4. Faça o teste: com o método padrão (`"VEM"`) a
+> curva fora da amostra **sobe** com K neste corpus, sinal de que o
+> ajuste, e não só o K, precisa de atenção.
 
 ## 4. Treinar o modelo LDA
 
-Com K definido, ajustamos o modelo. `seed` é obrigatório para
-reprodutibilidade: LDA é estocástico (Variational EM ou Gibbs sampling),
-rodadas diferentes com sementes diferentes retornam **tópicos com IDs
-diferentes** e pequenas variações nas distribuições.
+Com K definido, ajustamos o modelo com os mesmos `method` e `control`
+usados na escolha de K. `seed` é obrigatório para reprodutibilidade: LDA
+é estocástico (Variational EM ou Gibbs sampling), e rodadas com sementes
+diferentes retornam **tópicos com IDs diferentes** e pequenas variações
+nas distribuições.
 
 ``` r
 
 modelo <- ac_lda(
   corpus_limpo,
-  k    = 4L,
-  seed = 42L
+  k       = 4L,
+  seed    = 42L,
+  method  = "Gibbs",
+  control = controle
 )
 #> Ajustando LDA com k = 4 tópicos...
 modelo
 #> 
 #> ── Modelo LDA acR ──────────────────────────────────────────────────────────────
 #> • Tópicos (k): 4
-#> • Método: "VEM"
+#> • Método: "Gibbs"
 #> • Semente: 42
-#> • Termos únicos: 185
+#> • Termos únicos: 425
 #> • Documentos: 32
 ```
 
@@ -250,18 +296,18 @@ cada tópico “significa”.
 beta <- modelo$terms
 head(beta, 10)
 #> # A tibble: 10 × 3
-#>    topic term         beta
-#>    <int> <chr>       <dbl>
-#>  1     1 carga      0.0351
-#>  2     1 empresas   0.0526
-#>  3     1 fiscal     0.0175
-#>  4     1 impostos   0.0351
-#>  5     1 reduz      0.0175
-#>  6     1 reforma    0.0702
-#>  7     1 simplifica 0.0351
-#>  8     1 sistema    0.0175
-#>  9     1 tributária 0.0877
-#> 10     1 dados      0.0175
+#>    topic term           beta
+#>    <int> <chr>         <dbl>
+#>  1     1 dados      0.000466
+#>  2     1 impostos   0.000466
+#>  3     1 lei        0.000466
+#>  4     1 pessoais   0.000466
+#>  5     1 empresas   0.000466
+#>  6     1 ia         0.000466
+#>  7     1 algoritmos 0.000466
+#>  8     1 deficit    0.00979 
+#>  9     1 familias   0.0284  
+#> 10     1 renda      0.0238
 ```
 
 Visualização: os 10 termos com maior β por tópico:
@@ -323,18 +369,18 @@ head(gamma, 12)
 #> # A tibble: 12 × 3
 #>    doc_id topic   gamma
 #>    <chr>  <int>   <dbl>
-#>  1 doc_1      1 0.994  
-#>  2 doc_1      2 0.00186
-#>  3 doc_1      3 0.00186
-#>  4 doc_1      4 0.00186
-#>  5 doc_10     1 0.00210
-#>  6 doc_10     2 0.00210
-#>  7 doc_10     3 0.00210
-#>  8 doc_10     4 0.994  
-#>  9 doc_11     1 0.00239
-#> 10 doc_11     2 0.00239
-#> 11 doc_11     3 0.993  
-#> 12 doc_11     4 0.00239
+#>  1 doc_10     1 0.00467
+#>  2 doc_10     2 0.00467
+#>  3 doc_10     3 0.939  
+#>  4 doc_10     4 0.0514 
+#>  5 doc_12     1 0.00467
+#>  6 doc_12     2 0.00467
+#>  7 doc_12     3 0.799  
+#>  8 doc_12     4 0.192  
+#>  9 doc_1      1 0.00410
+#> 10 doc_1      2 0.00410
+#> 11 doc_1      3 0.00410
+#> 12 doc_1      4 0.988
 ```
 
 Sumário: qual o tópico dominante de cada documento?
@@ -351,18 +397,18 @@ head(dominante, 12)
 #> # A tibble: 12 × 3
 #>    doc_id topico_dominante  prob
 #>    <chr>             <int> <dbl>
-#>  1 doc_1                 1 0.994
-#>  2 doc_10                4 0.994
-#>  3 doc_11                3 0.993
-#>  4 doc_12                2 0.994
-#>  5 doc_13                4 0.994
-#>  6 doc_14                1 0.992
-#>  7 doc_15                1 0.993
-#>  8 doc_16                3 0.993
-#>  9 doc_17                2 0.994
-#> 10 doc_18                4 0.994
-#> 11 doc_19                4 0.993
-#> 12 doc_2                 3 0.994
+#>  1 doc_1                 4 0.988
+#>  2 doc_10                3 0.939
+#>  3 doc_11                3 0.838
+#>  4 doc_12                3 0.799
+#>  5 doc_13                3 0.987
+#>  6 doc_14                3 0.939
+#>  7 doc_15                3 0.985
+#>  8 doc_16                3 0.986
+#>  9 doc_17                1 0.540
+#> 10 doc_18                1 0.987
+#> 11 doc_19                1 0.985
+#> 12 doc_2                 4 0.987
 ```
 
 Comparando com o **tema real** de cada documento (o `meta$tema` que
@@ -379,10 +425,10 @@ comparacao <- merge(dominante, tema_real, by = "doc_id")
 table(comparacao$topico_dominante, comparacao$tema)
 #>    
 #>     educacao habitacao tecnologia tributário
-#>   1        0         1          2          4
-#>   2        3         3          1          1
-#>   3        3         1          3          2
-#>   4        2         3          2          1
+#>   1        0         8          0          1
+#>   2        8         0          0          0
+#>   3        0         0          8          0
+#>   4        0         0          0          7
 ```
 
 > **Como interpretar:** procure a estrutura diagonal. Se cada linha
@@ -392,7 +438,13 @@ table(comparacao$topico_dominante, comparacao$tema)
 > que o tópico 3 é “educação”, apenas que ele é diferente dos demais).
 > Contagens espalhadas por várias colunas numa mesma linha indicam que
 > aquele tópico está misturando temas que deveriam ser distintos:
-> considere aumentar K ou revisar a limpeza do corpus.
+> considere aumentar K ou revisar a limpeza do corpus. Neste exemplo, 31
+> dos 32 documentos caem no tópico do seu tema. A exceção é `doc_5`, um
+> texto tributário sobre *cashback* para “famílias de baixa renda”: ele
+> divide o peso quase ao meio entre o tópico tributário e o de habitação
+> (γ ≈ 0,52 contra 0,47), porque compartilha vocabulário com os textos
+> de moradia. Não é um erro aleatório; é um documento genuinamente
+> ambíguo, e a seção 8 mostra como reconhecê-lo pela γ.
 
 Se a diagonal for dominante (cada tópico se alinha bem com um tema
 real), o modelo capturou a estrutura. Em corpora reais sem “rótulo
@@ -418,12 +470,12 @@ top_terms_por_topico <- beta |>
 
 top_terms_por_topico
 #> # A tibble: 4 × 2
-#>   topic top_termos                                                              
-#>   <int> <chr>                                                                   
-#> 1     1 tributária, reforma, empresas, carga, impostos, simplifica, fiscal      
-#> 2     2 popular, programa, urbana, politicas, empresas, dados, pessoais         
-#> 3     3 artificial, inteligência, debatem, algoritmos, federal, nacional, profe…
-#> 4     4 dados, ia, congresso, lei, pessoais, prioridades, privacidade
+#>   topic top_termos                                                           
+#>   <int> <chr>                                                                
+#> 1     1 moradia, familias, renda, habitacional, popular, urbana, baixa       
+#> 2     2 professores, ensino, educacao, escolas, alunos, aprendizagem, ampliam
+#> 3     3 dados, algoritmos, pessoais, ia, artificial, inteligência, precisam  
+#> 4     4 tributária, impostos, reforma, imposto, empresas, carga, excecoes
 ```
 
 ## 8. Visualizando as misturas: γ como heatmap
@@ -474,12 +526,21 @@ ggplot2::ggplot(
 > γ do segundo tópico estiver próximo do primeiro, sinalizar o documento
 > como ambíguo na análise.
 
-Compare mentalmente com o heatmap “hard clustering” da
+Neste corpus, a maioria dos documentos é quase “pura”: a γ do tópico
+principal tem mediana ≈ 0,98. Só 5 dos 32 documentos dão mais de 0,20 a
+um segundo tópico, e em dois deles (`doc_5` e `doc_17`) os dois tópicos
+principais estão quase empatados (≈ 0,52 × 0,47 e ≈ 0,54 × 0,45): são
+esses que mereceriam a etiqueta de “ambíguos”. Isso é coerente com o α
+baixo escolhido na seção 3, que favorece documentos concentrados em
+poucos tópicos, e com textos escritos, cada um, sobre um único tema. Em
+discursos longos reais, espere mais linhas com massa espalhada.
+
+Compare com o heatmap “hard clustering” da
 [`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)
 §4.6: lá, cada linha tem **uma** célula acesa (pertence ao grupo A
-**ou** ao B). Aqui, muitas linhas têm massa espalhada entre dois ou três
-tópicos. É a mesma tipologia latente, descrita em duas resoluções
-diferentes: hard é uma projeção do soft.
+**ou** ao B), mesmo para documentos como `doc_5`, cuja ambiguidade a γ
+revela e a etiqueta única esconde. Tomar o tópico de maior γ de cada
+documento é justamente transformar a descrição contínua numa partição.
 
 ## 9. Exportar
 
@@ -506,6 +567,24 @@ saveRDS(modelo, "lda_modelo.rds")
   topic modeling and the sociological perspective on culture:
   Application to newspaper coverage of U.S. government arts funding.
   *Poetics*, 41(6), 570-606.
+- Hong, L.; Davison, B. D. (2010). Empirical study of topic modeling in
+  Twitter. *Proceedings of the First Workshop on Social Media
+  Analytics*, 80-88.
+- Yan, X.; Guo, J.; Lan, Y.; Cheng, X. (2013). A biterm topic model for
+  short texts. *Proceedings of the 22nd International Conference on
+  World Wide Web*, 1445-1456.
+- Griffiths, T. L.; Steyvers, M. (2004). Finding scientific topics.
+  *Proceedings of the National Academy of Sciences*, 101(suppl. 1),
+  5228-5235.
+- Wallach, H. M.; Mimno, D.; McCallum, A. (2009). Rethinking LDA: Why
+  priors matter. *Advances in Neural Information Processing Systems*,
+  22, 1973-1981.
+- Chang, J.; Gerrish, S.; Wang, C.; Boyd-Graber, J.; Blei, D. M. (2009).
+  Reading tea leaves: How humans interpret topic models. *Advances in
+  Neural Information Processing Systems*, 22, 288-296.
+- Wallach, H. M.; Murray, I.; Salakhutdinov, R.; Mimno, D. (2009).
+  Evaluation methods for topic models. *Proceedings of the 26th
+  International Conference on Machine Learning*, 1105-1112.
 - Zhao, W. et al. (2015). A heuristic approach to determine an
   appropriate number of topics in topic modeling. *BMC Bioinformatics*,
   16(S13).

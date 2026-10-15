@@ -13,20 +13,51 @@ que LLM e humano concordam. Fácil de reportar, mas ignora concordância
 por acaso: infla para categorias binárias com distribuição desigual.
 Alpha de Krippendorff (krippendorff): padrão-ouro em análise de
 conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
-número de categorias. Valores &amp;gt; 0,80 = quase perfeita; &amp;gt; 0,67 = aceitável
-para publicação; &amp;lt; 0,60 = codebook precisa ser refinado.
-AC1 de Gwet (gwet_ac1): alternativa a Krippendorff mais estável
-quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
-kappa despenca com alta concordância se uma categoria domina).
-F1 macro (f1_macro): média não ponderada dos F1 por categoria.
-Útil quando você quer garantir que a LLM está indo bem também nas
-categorias raras, não só nas frequentes.
+número de categorias. Krippendorff (2018, sec. 12.4) recomenda
+alfa &amp;gt;= 0,800 para conclusões sem ressalvas e 0,667 &amp;lt;= alfa &amp;lt; 0,800
+apenas para conclusões provisórias; abaixo de 0,667 os dados não
+devem sustentar conclusões.
+AC1 de Gwet (gwet_ac1): alternativa mais estável quando as
+categorias são muito desbalanceadas (o "paradoxo do kappa" de
+Feinstein &amp;amp; Cicchetti, 1990: kappa despenca mesmo com alta
+concordância observada se uma categoria domina). Gwet (2014) propõe
+o AC1 justamente para esse caso.
+F1 macro (f1_macro): média não ponderada dos F1 por categoria
+(Sokolova &amp;amp; Lapalme, 2009). Útil quando você quer garantir que a LLM
+está indo bem também nas categorias raras, não só nas frequentes.
+Não é corrigido por acaso, então não deve ser lido com as faixas
+de Landis &amp;amp; Koch (1977), que foram propostas para o kappa.
 
 
+Como a coluna interpretation é preenchida
+
+
+Cada métrica usa a referência própria dela, para não misturar escalas:
+Alpha de Krippendorff: &amp;gt;= 0,800 confiável; 0,667-0,800 só
+conclusões provisórias; &amp;lt; 0,667 insuficiente (Krippendorff, 2018).
+AC1 de Gwet: faixas de Landis &amp;amp; Koch (1977): &amp;lt; 0 pobre;
+0-0,20 leve; 0,21-0,40 razoável; 0,41-0,60 moderada;
+0,61-0,80 substancial; 0,81-1 quase perfeita. Gwet (2014, cap. 6)
+usa essas faixas como referência de benchmarking.
+Percent agreement: &amp;gt;= 0,90 alta; 0,80-0,90 aceitável na
+maioria dos casos; 0,70-0,80 só em estudos exploratórios; &amp;lt; 0,70
+insuficiente (Neuendorf, 2017; Lombard, Snyder-Duch &amp;amp; Bracken, 2002).
+F1 macro: não há faixa canônica na literatura; o valor é
+reportado sem rótulo qualitativo.
+
+
+Essas faixas são convenções, não testes estatísticos: o próprio Landis
+&amp;amp; Koch (1977, p. 165) as chamam de arbitrárias. Por isso o IC
+bootstrap importa: um alfa de 0,82 com IC de 0,61 a 0,95 não
+permite afirmar que a confiabilidade passa de 0,800 (Krippendorff,
+2018, sec. 12.5, decide justamente pela probabilidade de o alfa ficar
+abaixo do mínimo exigido).
 Intervalos de confiança de 95% vêm de bootstrap não paramétrico
 (padrão: 1000 réplicas). Reporte pelo menos Krippendorff e F1 macro
 no artigo, com os ICs; discuta divergências humano × LLM em amostra
-de casos representativos.'><meta property="og:description" content='ac_qual_reliability() calcula métricas de concordância entre a
+de casos representativos.
+
+'><meta property="og:description" content='ac_qual_reliability() calcula métricas de concordância entre a
 classificação feita pela LLM e uma classificação humana de referência,
 com intervalos de confiança via bootstrap.
 É a última porta antes de publicar um estudo de análise de conteúdo
@@ -40,20 +71,51 @@ que LLM e humano concordam. Fácil de reportar, mas ignora concordância
 por acaso: infla para categorias binárias com distribuição desigual.
 Alpha de Krippendorff (krippendorff): padrão-ouro em análise de
 conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
-número de categorias. Valores &amp;gt; 0,80 = quase perfeita; &amp;gt; 0,67 = aceitável
-para publicação; &amp;lt; 0,60 = codebook precisa ser refinado.
-AC1 de Gwet (gwet_ac1): alternativa a Krippendorff mais estável
-quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
-kappa despenca com alta concordância se uma categoria domina).
-F1 macro (f1_macro): média não ponderada dos F1 por categoria.
-Útil quando você quer garantir que a LLM está indo bem também nas
-categorias raras, não só nas frequentes.
+número de categorias. Krippendorff (2018, sec. 12.4) recomenda
+alfa &amp;gt;= 0,800 para conclusões sem ressalvas e 0,667 &amp;lt;= alfa &amp;lt; 0,800
+apenas para conclusões provisórias; abaixo de 0,667 os dados não
+devem sustentar conclusões.
+AC1 de Gwet (gwet_ac1): alternativa mais estável quando as
+categorias são muito desbalanceadas (o "paradoxo do kappa" de
+Feinstein &amp;amp; Cicchetti, 1990: kappa despenca mesmo com alta
+concordância observada se uma categoria domina). Gwet (2014) propõe
+o AC1 justamente para esse caso.
+F1 macro (f1_macro): média não ponderada dos F1 por categoria
+(Sokolova &amp;amp; Lapalme, 2009). Útil quando você quer garantir que a LLM
+está indo bem também nas categorias raras, não só nas frequentes.
+Não é corrigido por acaso, então não deve ser lido com as faixas
+de Landis &amp;amp; Koch (1977), que foram propostas para o kappa.
 
 
+Como a coluna interpretation é preenchida
+
+
+Cada métrica usa a referência própria dela, para não misturar escalas:
+Alpha de Krippendorff: &amp;gt;= 0,800 confiável; 0,667-0,800 só
+conclusões provisórias; &amp;lt; 0,667 insuficiente (Krippendorff, 2018).
+AC1 de Gwet: faixas de Landis &amp;amp; Koch (1977): &amp;lt; 0 pobre;
+0-0,20 leve; 0,21-0,40 razoável; 0,41-0,60 moderada;
+0,61-0,80 substancial; 0,81-1 quase perfeita. Gwet (2014, cap. 6)
+usa essas faixas como referência de benchmarking.
+Percent agreement: &amp;gt;= 0,90 alta; 0,80-0,90 aceitável na
+maioria dos casos; 0,70-0,80 só em estudos exploratórios; &amp;lt; 0,70
+insuficiente (Neuendorf, 2017; Lombard, Snyder-Duch &amp;amp; Bracken, 2002).
+F1 macro: não há faixa canônica na literatura; o valor é
+reportado sem rótulo qualitativo.
+
+
+Essas faixas são convenções, não testes estatísticos: o próprio Landis
+&amp;amp; Koch (1977, p. 165) as chamam de arbitrárias. Por isso o IC
+bootstrap importa: um alfa de 0,82 com IC de 0,61 a 0,95 não
+permite afirmar que a confiabilidade passa de 0,800 (Krippendorff,
+2018, sec. 12.5, decide justamente pela probabilidade de o alfa ficar
+abaixo do mínimo exigido).
 Intervalos de confiança de 95% vêm de bootstrap não paramétrico
 (padrão: 1000 réplicas). Reporte pelo menos Krippendorff e F1 macro
 no artigo, com os ICs; discuta divergências humano × LLM em amostra
-de casos representativos.'><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
+de casos representativos.
+
+'><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -122,18 +184,47 @@ que LLM e humano concordam. Fácil de reportar, mas ignora concordância
 por acaso: infla para categorias binárias com distribuição desigual.</p></li>
 <li><p><strong>Alpha de Krippendorff</strong> (<code>krippendorff</code>): padrão-ouro em análise de
 conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
-número de categorias. Valores &gt; 0,80 = quase perfeita; &gt; 0,67 = aceitável
-para publicação; &lt; 0,60 = codebook precisa ser refinado.</p></li>
-<li><p><strong>AC1 de Gwet</strong> (<code>gwet_ac1</code>): alternativa a Krippendorff mais estável
-quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
-kappa despenca com alta concordância se uma categoria domina).</p></li>
-<li><p><strong>F1 macro</strong> (<code>f1_macro</code>): média não ponderada dos F1 por categoria.
-Útil quando você quer garantir que a LLM está indo bem também nas
-categorias raras, não só nas frequentes.</p></li>
-</ul><p>Intervalos de confiança de 95% vêm de <em>bootstrap</em> não paramétrico
+número de categorias. Krippendorff (2018, sec. 12.4) recomenda
+alfa &gt;= 0,800 para conclusões sem ressalvas e 0,667 &lt;= alfa &lt; 0,800
+apenas para conclusões provisórias; abaixo de 0,667 os dados não
+devem sustentar conclusões.</p></li>
+<li><p><strong>AC1 de Gwet</strong> (<code>gwet_ac1</code>): alternativa mais estável quando as
+categorias são muito desbalanceadas (o "paradoxo do kappa" de
+Feinstein &amp; Cicchetti, 1990: kappa despenca mesmo com alta
+concordância observada se uma categoria domina). Gwet (2014) propõe
+o AC1 justamente para esse caso.</p></li>
+<li><p><strong>F1 macro</strong> (<code>f1_macro</code>): média não ponderada dos F1 por categoria
+(Sokolova &amp; Lapalme, 2009). Útil quando você quer garantir que a LLM
+está indo bem também nas categorias raras, não só nas frequentes.
+<strong>Não</strong> é corrigido por acaso, então não deve ser lido com as faixas
+de Landis &amp; Koch (1977), que foram propostas para o kappa.</p></li>
+</ul><div class="section">
+<h3 id="como-a-coluna-interpretation-preenchida">Como a coluna <code>interpretation</code> é preenchida<a class="anchor" aria-label="anchor" href="#como-a-coluna-interpretation-preenchida"></a></h3>
+
+
+<p>Cada métrica usa a referência própria dela, para não misturar escalas:</p><ul><li><p><strong>Alpha de Krippendorff</strong>: <code>&gt;= 0,800</code> confiável; <code>0,667-0,800</code> só
+conclusões provisórias; <code>&lt; 0,667</code> insuficiente (Krippendorff, 2018).</p></li>
+<li><p><strong>AC1 de Gwet</strong>: faixas de Landis &amp; Koch (1977): <code>&lt; 0</code> pobre;
+<code>0-0,20</code> leve; <code>0,21-0,40</code> razoável; <code>0,41-0,60</code> moderada;
+<code>0,61-0,80</code> substancial; <code>0,81-1</code> quase perfeita. Gwet (2014, cap. 6)
+usa essas faixas como referência de <em>benchmarking</em>.</p></li>
+<li><p><strong>Percent agreement</strong>: <code>&gt;= 0,90</code> alta; <code>0,80-0,90</code> aceitável na
+maioria dos casos; <code>0,70-0,80</code> só em estudos exploratórios; <code>&lt; 0,70</code>
+insuficiente (Neuendorf, 2017; Lombard, Snyder-Duch &amp; Bracken, 2002).</p></li>
+<li><p><strong>F1 macro</strong>: não há faixa canônica na literatura; o valor é
+reportado sem rótulo qualitativo.</p></li>
+</ul><p>Essas faixas são convenções, não testes estatísticos: o próprio Landis
+&amp; Koch (1977, p. 165) as chamam de arbitrárias. Por isso o IC
+<em>bootstrap</em> importa: um alfa de 0,82 com IC de 0,61 a 0,95 <strong>não</strong>
+permite afirmar que a confiabilidade passa de 0,800 (Krippendorff,
+2018, sec. 12.5, decide justamente pela probabilidade de o alfa ficar
+abaixo do mínimo exigido).</p>
+<p>Intervalos de confiança de 95% vêm de <em>bootstrap</em> não paramétrico
 (padrão: 1000 réplicas). Reporte pelo menos Krippendorff e F1 macro
 no artigo, com os ICs; discuta divergências humano × LLM em amostra
 de casos representativos.</p>
+</div>
+
     </div>
 
     <div class="section level2">
@@ -223,6 +314,17 @@ Methodology</em> (4th ed.). SAGE.</p>
 Advanced Analytics.</p>
 <p>Landis, J. R.; Koch, G. G. (1977). The Measurement of Observer Agreement
 for Categorical Data. <em>Biometrics</em>, 33(1), 159-174.</p>
+<p>Feinstein, A. R.; Cicchetti, D. V. (1990). High agreement but low
+kappa: I. The problems of two paradoxes. <em>Journal of Clinical
+Epidemiology</em>, 43(6), 543-549.</p>
+<p>Lombard, M.; Snyder-Duch, J.; Bracken, C. C. (2002). Content analysis
+in mass communication: Assessment and reporting of intercoder
+reliability. <em>Human Communication Research</em>, 28(4), 587-604.</p>
+<p>Neuendorf, K. A. (2017). <em>The Content Analysis Guidebook</em> (2nd ed.).
+SAGE.</p>
+<p>Sokolova, M.; Lapalme, G. (2009). A systematic analysis of performance
+measures for classification tasks. <em>Information Processing &amp;
+Management</em>, 45(4), 427-437.</p>
     </div>
 
     <div class="section level2">
@@ -246,67 +348,17 @@ for Categorical Data. <em>Biometrics</em>, 33(1), 159-174.</p>
 <span class="r-in"><span>  bootstrap <span class="op">=</span> <span class="fl">50</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Calculando confiabilidade em 5 documentos comuns...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Interpretação baseada em Landis &amp; Koch (1977) e Gwet (2014).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Interpretação: alfa por Krippendorff (2018); AC1 por Landis &amp; Koch (1977) e</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Gwet (2014); percentual por Neuendorf (2017); F1 sem rótulo.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> IC 95% via bootstrap (n = 50).</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rel</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   metric             estimate ci_lower ci_upper interpretation                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> percent_agreement      0.8    0.4           1 boa (&gt;= 80%)                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> krippendorff_alpha     0.64  -<span style="color: #BB0000;">0.286</span>         1 substancial (Landis &amp; Koch, 197…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> gwet_ac1               0.6   -<span style="color: #BB0000;">0.034</span><span style="color: #BB0000; text-decoration: underline;">5</span>        1 moderada (Landis &amp; Koch, 1977)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> f1_macro               0.8    0.306         1 quase perfeita (Landis &amp; Koch, …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> percent_agreement      0.8     0.445        1 aceitável na maioria dos casos …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> krippendorff_alpha     0.64   -<span style="color: #BB0000;">0.125</span>        1 insuficiente (&lt; 0,667; Krippend…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> gwet_ac1               0.6     0.231        1 substancial (Landis &amp; Koch, 197…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> f1_macro               0.8     0.306        1 sem faixa canônica (não corrigi…</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

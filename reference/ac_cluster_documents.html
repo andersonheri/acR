@@ -3,15 +3,15 @@
 "duros" (hard clustering) com base na similaridade de vocabulário. Serve
 para descobrir tipologias latentes, montar amostras estratificadas de
 revisao humana ou produzir dendrogramas para relatórios metodologicos.
-Não substitui ac_lda(): LDA e clustering soft (cada documento vira
-uma mistura de tópicos), enquanto esta função devolve uma etiqueta
-por documento.'><meta property="og:description" content='ac_cluster_documents() particiona os documentos de um corpus em grupos
+Não substitui ac_lda(): o LDA é um modelo de pertencimento misto
+(cada documento vira uma mistura de tópicos), enquanto esta função
+devolve uma etiqueta por documento.'><meta property="og:description" content='ac_cluster_documents() particiona os documentos de um corpus em grupos
 "duros" (hard clustering) com base na similaridade de vocabulário. Serve
 para descobrir tipologias latentes, montar amostras estratificadas de
 revisao humana ou produzir dendrogramas para relatórios metodologicos.
-Não substitui ac_lda(): LDA e clustering soft (cada documento vira
-uma mistura de tópicos), enquanto esta função devolve uma etiqueta
-por documento.'><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
+Não substitui ac_lda(): o LDA é um modelo de pertencimento misto
+(cada documento vira uma mistura de tópicos), enquanto esta função
+devolve uma etiqueta por documento.'><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -71,9 +71,9 @@ por documento.'><meta property="og:image" content="https://andersonheri.github.i
 "duros" (hard clustering) com base na similaridade de vocabulário. Serve
 para descobrir tipologias latentes, montar amostras estratificadas de
 revisao humana ou produzir dendrogramas para relatórios metodologicos.</p>
-<p>Não substitui <code><a href="ac_lda.html">ac_lda()</a></code>: LDA e clustering <em>soft</em> (cada documento vira
-uma mistura de tópicos), enquanto esta função devolve <strong>uma etiqueta
-por documento</strong>.</p>
+<p>Não substitui <code><a href="ac_lda.html">ac_lda()</a></code>: o LDA é um modelo de pertencimento misto
+(cada documento vira uma mistura de tópicos), enquanto esta função
+devolve <strong>uma etiqueta por documento</strong>.</p>
     </div>
 
     <div class="section level2">
@@ -115,9 +115,17 @@ entre 2 e 8; requer <code>cluster</code>. Se <code>cluster</code> não estiver i
 
 
 <dt id="arg-distance">distance<a class="anchor" aria-label="anchor" href="#arg-distance"></a></dt>
-<dd><p>Métrica de dissimilaridade. <code>"cosine"</code> (padrao) e o
-classico em textos; <code>"euclidean"</code> funciona melhor com vetores
-normalizados.</p></dd>
+<dd><p>Métrica de dissimilaridade. <code>"cosine"</code> (padrão) é o
+clássico em textos (Salton &amp; McGill, 1983): compara a <em>composição</em>
+do vocabulário, não o tamanho do documento. Internamente ela é
+calculada como distância de corda, \(\sqrt{2(1 - \cos\theta)}\),
+que é a distância euclidiana entre os vetores normalizados para
+norma 1 (Legendre &amp; Legendre, 2012). A ordem dos pares é a mesma de
+\(1 - \cos\theta\), mas a distância de corda é euclidiana, o que
+o critério de Ward (<code>hclust</code>) e o k-means exigem (Murtagh &amp; Legendre,
+2014). Com <code>"cosine"</code>, o k-means também roda sobre os vetores
+normalizados. <code>"euclidean"</code> usa os vetores brutos, sensíveis ao
+tamanho do documento.</p></dd>
 
 
 <dt id="arg-min-docs">min_docs<a class="anchor" aria-label="anchor" href="#arg-min-docs"></a></dt>
@@ -147,6 +155,19 @@ pequeno. Padrao: <code>15L</code>.</p></dd>
 
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Legendre, P.; Legendre, L. (2012). <em>Numerical Ecology</em> (3rd ed.).
+Elsevier.</p>
+<p>Murtagh, F.; Legendre, P. (2014). Ward's hierarchical agglomerative
+clustering method: Which algorithms implement Ward's criterion?
+<em>Journal of Classification</em>, 31(3), 274-295.</p>
+<p>Rousseeuw, P. J. (1987). Silhouettes: a graphical aid to the
+interpretation and validation of cluster analysis. <em>Journal of
+Computational and Applied Mathematics</em>, 20, 53-65.</p>
+<p>Salton, G.; McGill, M. J. (1983). <em>Introduction to Modern Information
+Retrieval</em>. McGraw-Hill.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="ac_lda.html">ac_lda()</a></code>, <code><a href="ac_plot_cluster.html">ac_plot_cluster()</a></code></p></div>

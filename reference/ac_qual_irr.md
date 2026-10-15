@@ -13,9 +13,9 @@ diretamente quando você tem duas rodadas humanas para calibrar entre
 codificadores antes de acender a LLM, ou quando quer comparar LLMs entre
 si sobre a mesma amostra.
 
-A função aceita dois formatos de entrada: (a) dois data.frames com
-colunas `id` e `categoria`, representando anotador 1 e anotador 2; ou
-(b) um único data.frame em formato largo com uma coluna por anotador.
+A entrada são dois data.frames (anotador 1 e anotador 2), cada um com
+uma coluna de identificador e uma de categoria, alinhados pelo
+identificador.
 
 ## Usage
 
@@ -28,7 +28,8 @@ ac_qual_irr(
   cat_col = "categoria",
   weight = "unweighted",
   conf_level = 0.95,
-  verbose = TRUE
+  verbose = TRUE,
+  bootstrap = 1000L
 )
 ```
 
@@ -63,9 +64,11 @@ ac_qual_irr(
 
 - weight:
 
-  `character`. Tipo de ponderacao para Cohen's Kappa: `"unweighted"`
-  (padrao), `"linear"`, `"squared"`. Ignorado para categorias nominais
-  sem ordem natural.
+  `character`. Tipo de ponderação para Cohen's Kappa: `"unweighted"`
+  (padrão), `"linear"` ou `"squared"` (Cohen, 1968). Os pesos só fazem
+  sentido para categorias **ordinais**: a ordem usada é a dos níveis do
+  fator em `gold[[cat_col]]` (se for fator) ou a ordem alfabética (caso
+  contrário). Para categorias nominais, use `"unweighted"`.
 
 - conf_level:
 
@@ -74,6 +77,12 @@ ac_qual_irr(
 - verbose:
 
   `logical`. Se `TRUE` (padrao), imprime resumo formatado.
+
+- bootstrap:
+
+  `integer`. Número de réplicas *bootstrap* (reamostragem de documentos)
+  para os intervalos de confiança de Kappa, Fleiss e Alpha. Padrão:
+  `1000`. Use `0` para não calcular IC.
 
 ## Value
 
@@ -118,17 +127,38 @@ Um objeto de classe `ac_irr` (lista) com os elementos:
 | 0.61 - 0.80 | Substancial    |
 | 0.81 - 1.00 | Quase perfeita |
 
+Os próprios autores chamam essas faixas de arbitrárias (Landis & Koch,
+1977, p. 165): são rótulos de referência, não testes.
+
 ### Fleiss' Kappa
 
-Extensao do Kappa de Cohen para mais de dois anotadores. Requer que
-`predicted` contenha uma coluna por anotador adicional, ou que sejam
-passados como lista via `...`.
+Generalização do kappa para vários anotadores (Fleiss, 1971). Com dois
+anotadores, como aqui, ela supõe uma distribuição marginal comum aos
+dois e por isso equivale ao *pi* de Scott, não ao kappa de Cohen; os
+valores ficam próximos, mas não idênticos.
 
 ### Krippendorff's Alpha
 
-Métrica mais geral: funciona com qualquer número de anotadores, lida com
-dados faltantes e suporta escalas nominais, ordinais e de intervalo
-(KRIPPENDORFF, 2018).
+Métrica mais geral: funciona com qualquer número de anotadores e lida
+com dados faltantes (Krippendorff, 2018). Esta função calcula a versão
+**nominal**. A interpretação segue Krippendorff (2018, sec. 12.4), não
+Landis & Koch: alfa `>= 0,800` confiável; `0,667-0,800` só para
+conclusões provisórias; `< 0,667` insuficiente.
+
+### Percentual de concordância
+
+Não corrige por acaso. Rótulos segundo Neuendorf (2017): `>= 0,90` alta;
+`>= 0,80` aceitável na maioria dos casos; `>= 0,70` só em estudos
+exploratórios; abaixo disso, insuficiente.
+
+### Intervalos de confiança
+
+Calculados por *bootstrap* percentil, reamostrando documentos com
+reposição (Efron & Tibshirani, 1993). Uma versão anterior usava
+`kappa / z` como erro-padrão, mas o `z` do `irr` é calculado **sob a
+hipótese nula** (kappa = 0); esse erro-padrão não serve para IC em torno
+do kappa estimado (Fleiss, Cohen & Everitt, 1969) e gerava limites fora
+de \[-1, 1\].
 
 ## References
 
@@ -137,6 +167,23 @@ Methodology**. 4. ed. Thousand Oaks: SAGE, 2018.
 
 LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 categorical data. **Biometrics**, v. 33, n. 1, p. 159-174, 1977.
+
+COHEN, J. Weighted kappa: nominal scale agreement with provision for
+scaled disagreement or partial credit. **Psychological Bulletin**, v.
+70, n. 4, p. 213-220, 1968.
+
+EFRON, B.; TIBSHIRANI, R. J. **An Introduction to the Bootstrap**. New
+York: Chapman & Hall, 1993.
+
+FLEISS, J. L. Measuring nominal scale agreement among many raters.
+**Psychological Bulletin**, v. 76, n. 5, p. 378-382, 1971.
+
+FLEISS, J. L.; COHEN, J.; EVERITT, B. S. Large sample standard errors of
+kappa and weighted kappa. **Psychological Bulletin**, v. 72, n. 5, p.
+323-327, 1969.
+
+NEUENDORF, K. A. **The Content Analysis Guidebook**. 2. ed. Thousand
+Oaks: SAGE, 2017.
 
 ## See also
 
@@ -167,12 +214,12 @@ resultado <- ac_qual_irr(gold = humano, predicted = llm)
 #> • Documentos comparados: 5
 #> • Categorias: conservador, progressista, tecnocratico
 #> 
-#> Metrica                            Estimativa  IC 95%            Interpretacao
+#> Metrica                            Estimativa  IC                Interpretacao
 #> ------------------------------------------------------------------------------------- 
-#> Percent Agreement                  0.800       [, ]              Muito bom
-#> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial
-#> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial
-#> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial
+#> Percent Agreement                  0.800       --                aceitável na maioria dos casos (>= 80%; Neuendorf, 2017)
+#> Cohen's Kappa (unweighted)         0.667       [0.000, 1.000]    substancial (Landis & Koch, 1977)
+#> Fleiss' Kappa                      0.655       [-0.250, 1.000]   substancial (Landis & Koch, 1977)
+#> Krippendorff's Alpha (nominal)     0.690       [-0.125, 1.000]   só conclusões provisórias (>= 0,667; Krippendorff, 2018)
 #> 
 #> Matriz de confusao:
 #>               Predicted
@@ -187,12 +234,12 @@ print(resultado)
 #> • Documentos comparados: 5
 #> • Categorias: conservador, progressista, tecnocratico
 #> 
-#> Metrica                            Estimativa  IC 95%            Interpretacao
+#> Metrica                            Estimativa  IC                Interpretacao
 #> ------------------------------------------------------------------------------------- 
-#> Percent Agreement                  0.800       [, ]              Muito bom
-#> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial
-#> Fleiss' Kappa                      0.655       [-0.048, 1.358]   Substancial
-#> Krippendorff's Alpha (nominal)     0.690       [, ]              Substancial
+#> Percent Agreement                  0.800       --                aceitável na maioria dos casos (>= 80%; Neuendorf, 2017)
+#> Cohen's Kappa (unweighted)         0.667       [0.000, 1.000]    substancial (Landis & Koch, 1977)
+#> Fleiss' Kappa                      0.655       [-0.250, 1.000]   substancial (Landis & Koch, 1977)
+#> Krippendorff's Alpha (nominal)     0.690       [-0.125, 1.000]   só conclusões provisórias (>= 0,667; Krippendorff, 2018)
 #> 
 #> Matriz de confusao:
 #>               Predicted
@@ -209,9 +256,9 @@ ac_qual_irr(humano, llm, method = "cohen_kappa")
 #> • Documentos comparados: 5
 #> • Categorias: conservador, progressista, tecnocratico
 #> 
-#> Metrica                            Estimativa  IC 95%            Interpretacao
+#> Metrica                            Estimativa  IC                Interpretacao
 #> ------------------------------------------------------------------------------------- 
-#> Cohen's Kappa (unweighted)         0.667       [0.027, 1.307]    Substancial
+#> Cohen's Kappa (unweighted)         0.667       [0.000, 1.000]    substancial (Landis & Koch, 1977)
 #> 
 #> Matriz de confusao:
 #>               Predicted

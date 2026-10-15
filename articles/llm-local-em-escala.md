@@ -205,7 +205,7 @@ auditar isso depois, inclusive em rodadas de terceiros.
 ## Referências
 
 Wang, X. et al. (2023). Self-Consistency Improves Chain of Thought
-Reasoning in Language Models. *EMNLP*.
+Reasoning in Language Models. *ICLR*.
 
 Gilardi, F.; Alizadeh, M.; Kubli, M. (2023). ChatGPT Outperforms Crowd
 Workers for Text-Annotation Tasks. *PNAS*, 120(30).

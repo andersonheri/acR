@@ -274,9 +274,15 @@ pipe-separada sem espaco (<code>"técnica|politica"</code>).</p></li>
 multilabel, unidos por <code>" | "</code> (espaco dos dois lados).</p></li>
 <li><p><code>confidence_score</code>: grau de certeza da categoria vencedora (0-1).
 Presente quando <code>confidence</code> e <code>"total"</code> ou <code>"both"</code>.</p></li>
-<li><p><code>confidence_level</code>: <code>"alta"</code>, <code>"média"</code>, <code>"baixa"</code> – interpretação
-de <code>confidence_score</code> (Landis &amp; Koch, 1977). Acompanha
-<code>confidence_score</code>.</p></li>
+<li><p><code>confidence_level</code>: <code>"alta"</code> (<code>&gt;= 0,80</code>), <code>"média"</code> (<code>&gt;= 0,61</code>) ou
+<code>"baixa"</code> – faixas <strong>convencionadas pelo pacote</strong> para resumir
+<code>confidence_score</code>. Não vêm da literatura de confiabilidade: as
+faixas de Landis &amp; Koch (1977) são para kappa, não para proporção
+de rodadas concordantes. A ideia de usar a concordância entre
+amostras como sinal de incerteza vem de Wang et al. (2023) e Xiong
+et al. (2024), que mostram que ela se correlaciona com acerto, mas
+não propõem cortes universais. Com <code>k_consistency = 3</code>, os valores
+possíveis são só 1/3, 2/3 e 1. Acompanha <code>confidence_score</code>.</p></li>
 <li><p><code>&lt;categoria&gt;_confidence</code>: uma coluna por categoria do codebook
 (ex.: <code>positivo_confidence</code>, <code>negativo_confidence</code>), com a
 proporção de rodadas de self-consistency que escolheram aquela
@@ -302,7 +308,11 @@ timestamps de inicio/fim.</p>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Wang, X. et al. (2023). Self-Consistency Improves Chain of Thought Reasoning
-in Language Models. <em>EMNLP</em>.</p>
+in Language Models. <em>International Conference on Learning
+Representations (ICLR)</em>.</p>
+<p>Xiong, M. et al. (2024). Can LLMs Express Their Uncertainty? An
+Empirical Evaluation of Confidence Elicitation in LLMs.
+<em>International Conference on Learning Representations (ICLR)</em>.</p>
 <p>Landis, J. R.; Koch, G. G. (1977). The Measurement of Observer Agreement
 for Categorical Data. <em>Biometrics</em>, 33(1), 159-174.</p>
 <p>Gilardi, F.; Alizadeh, M.; Kubli, M. (2023). ChatGPT Outperforms Crowd

@@ -126,7 +126,7 @@ sent
 #> 11 doc_6      1     1     8     0 neutro   
 #> 12 doc_7      0     3     7    -3 negativo 
 #> 13 doc_8      0     0     8     0 neutro   
-#> 14 doc_9      0     3     9    -3 negativo
+#> 14 doc_9      0     2     9    -2 negativo
 ```
 
 Cruzando com a posição declarada: o léxico “acerta”?
@@ -153,10 +153,32 @@ sent |>
 > documentos técnicos legitimamente usam pouco vocabulário emotivo em
 > qualquer direção. O problema real seria uma linha “contra” concentrada
 > em `positivo`, sinal de que o léxico está invertendo a leitura.
-
-Léxico funciona bem para **posições explícitas** (favor/contra) com
-vocabulário emotivo. Falha em textos técnicos-neutros, que tipicamente
-misturam palavras positivas e negativas em proporção baixa.
+>
+> Aqui o léxico acerta a direção na maioria dos casos (4 de 5 “favor”
+> saem positivos, 3 de 5 “contra” saem negativos), e nenhum documento é
+> invertido. Os erros são instrutivos porque mostram as duas falhas
+> clássicas do método de dicionário (Grimmer & Stewart, 2013):
+>
+> - **Cobertura.** `doc_3` (“Vitória histórica para a economia”) e
+>   `doc_8` (“Uma tragédia nacional: estão roubando direitos”) não têm
+>   **nenhuma** palavra com polaridade no OpLexicon e saem neutros,
+>   embora a posição seja óbvia para um leitor. O OpLexicon é formado
+>   sobretudo por adjetivos (Souza et al., 2011); substantivos e verbos
+>   carregados (“vitória”, “tragédia”, “roubando”) ficam de fora.
+> - **Sentido no domínio.** `doc_14` (“segue para votação na próxima
+>   sessão ordinária”) sai negativo porque o léxico lê “ordinária” como
+>   adjetivo pejorativo, e não como “sessão regular” do jargão
+>   legislativo. Em `doc_6`, “trabalhadores” conta +1 (lido como
+>   “trabalhador, esforçado”), o que anula o “vergonhoso” e deixa um
+>   discurso contrário com escore 0. Loughran & McDonald (2011)
+>   mostraram o mesmo problema em finanças (“liability” não é negativo
+>   num balanço) e por isso defendem léxicos ajustados ao domínio.
+>
+> Conclusão prática: antes de usar o OpLexicon num corpus legislativo,
+> liste os termos do léxico mais frequentes no seu corpus e retire ou
+> corrija os que têm outro sentido ali; e valide numa amostra humana
+> (ver
+> [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md)).
 
 ## 3. Comparar métodos de agregação
 
@@ -215,10 +237,14 @@ ac_plot_sentiment(sent, type = "bar") +
 > determinada pelo sinal do `score`, não por um limiar fixo: um `score`
 > muito perto de zero recebe a mesma cor categórica (positivo/negativo)
 > de um `score` extremo, mesmo que o primeiro seja um caso ambíguo.
-> Padrão esperado aqui: os 5 documentos favoráveis em verde/positivo no
-> topo, os 4 neutros/técnicos com barra de largura zero (score = 0) no
-> meio, e os 5 contrários em laranja/negativo na base — a cor “negativa”
-> do pacote é laranja, não vermelho.
+> Neste exemplo, 4 dos 14 documentos ficam com barra de largura zero
+> (`score = 0`): só um deles é técnico (`doc_11`); os outros são `doc_3`
+> (favorável), `doc_6` e `doc_8` (contrários), pelos motivos de
+> cobertura e sentido no domínio vistos na seção 2. Já dois textos
+> técnicos (`doc_12` e `doc_14`) aparecem como negativos. Os extremos
+> são `doc_4` e `doc_5` (+2, favoráveis) no topo e `doc_7` (−3,
+> contrário) na base. A cor “negativa” do pacote é laranja, não
+> vermelho.
 
 ## 5. Visualização: distribuição (densidade)
 
@@ -230,23 +256,49 @@ picos, favor e contra) ou tem uma cauda longa?
 ac_plot_sentiment(sent, type = "density") +
   ggplot2::labs(
     title    = "Distribuição de scores de sentimento",
-    subtitle = "Bimodalidade sugere polarização; unimodal sugere consenso"
+    subtitle = "Curvas separadas pelo sinal do escore (veja a nota abaixo)"
   )
 ```
 
 ![](sentimento_files/figure-html/plot-density-1.png)
 
-> **Como interpretar:** dois picos bem separados (um negativo, um
-> positivo) indicam um corpus polarizado, onde a maioria dos documentos
-> adota uma posição clara. Um único pico perto de zero indica consenso
-> ou, mais frequentemente, predominância de linguagem técnica/neutra. A
-> estimativa de densidade por kernel (Silverman, 1986) suaviza a
-> distribuição dos `score`s observados, e essa suavização fica instável
-> com poucos pontos: com este exemplo de 14 documentos, picos aparentes
-> podem ser artefato da largura de banda escolhida, não um padrão real
-> do corpus. Prefira o histograma de barras (§4) para amostras pequenas;
-> a densidade fica mais confiável à medida que o número de documentos
-> cresce.
+> **Como interpretar:** cuidado com um artefato de construção deste
+> gráfico. As curvas são separadas pela coluna `sentiment`, que é o
+> próprio sinal do `score`: a curva “positivo” só pode ficar à direita
+> de zero e a “negativo” só à esquerda, e a “neutro” é uma linha em cima
+> do zero (todos os seus escores valem exatamente 0). Ou seja, ver picos
+> separados por cor **não** é evidência de polarização: aconteceria com
+> qualquer conjunto de escores. Polarização, no sentido usado por
+> DiMaggio, Evans & Bryson (1996), é uma propriedade da distribuição
+> **inteira** (dispersão e bimodalidade), e se avalia olhando todos os
+> escores juntos, como no histograma abaixo, ou colorindo por uma
+> variável externa ao escore (por exemplo, a posição declarada). Além
+> disso, a estimativa de densidade por kernel (Silverman, 1986) é
+> instável com poucos pontos: com 14 documentos, os picos dependem da
+> largura de banda escolhida.
+
+``` r
+
+ggplot2::ggplot(sent, ggplot2::aes(x = score)) +
+  ggplot2::geom_histogram(binwidth = 1, fill = "grey60", color = "white") +
+  ggplot2::geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  ggplot2::labs(
+    title    = "Distribuição de todos os escores",
+    subtitle = "Uma única distribuição: é aqui que se avalia polarização",
+    x = "Score", y = "Documentos"
+  ) +
+  ggplot2::theme_minimal()
+```
+
+![](sentimento_files/figure-html/plot-hist-1.png)
+
+> **Como interpretar:** com todos os escores juntos, a distribuição
+> deste exemplo tem a maior barra no zero (4 documentos), seguida de −1
+> e +1 (3 cada), com caudas curtas até −3 e +2: pelo histograma, o
+> corpus parece **menos** polarizado do que as posições declaradas
+> sugerem. A seção 2 explica por quê: parte dos documentos opinativos
+> caiu em zero por falta de cobertura do léxico. O histograma descreve
+> os escores, não as posições reais dos autores.
 
 ## 6. Visualização: série ordenada
 
@@ -312,8 +364,8 @@ por_partido
 #> 4 MDB          3      0.33     1.53          1          1        1
 #> 5 PDT          1      0       NA             0          0        1
 #> 6 PCdoB        1     -1       NA             0          1        0
-#> 7 PT           2     -1        2.83          1          1        0
-#> 8 PSOL         2     -1.5      2.12          0          1        1
+#> 7 PSOL         2     -1        1.41          0          1        1
+#> 8 PT           2     -1        2.83          1          1        0
 ```
 
 Visualização (ranqueando partidos pelo score médio):
@@ -348,8 +400,8 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ![](sentimento_files/figure-html/plot-partidos-1.png)
 
-> **Como interpretar:** com poucos documentos por partido (aqui, 1-5),
-> `score_med` é sensível a outliers: um único pronunciamento muito
+> **Como interpretar:** com poucos documentos por partido (aqui, de 1 a
+> 3), `score_med` é sensível a outliers: um único pronunciamento muito
 > extremo desloca a média do partido inteiro. Sempre reporte `score_dp`
 > ao lado de `score_med` e `n_docs`; uma média alta com desvio-padrão
 > também alto, ou com `n_docs` baixo, é um resultado frágil que merece
@@ -404,6 +456,19 @@ casos_limitrofes <- sent |> dplyr::filter(abs(score) <= 1)
 - Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter with
   Portuguese Language. *4th Workshop on Computational Approaches to
   Subjectivity, Sentiment and Social Média Analysis*, PUCRS.
+- DiMaggio, P.; Evans, J.; Bryson, B. (1996). Have Americans’ Social
+  Attitudes Become More Polarized? *American Journal of Sociology*,
+  102(3), 690-755.
+- Grimmer, J.; Stewart, B. M. (2013). Text as Data: The Promise and
+  Pitfalls of Automatic Content Analysis Methods for Political Texts.
+  *Political Analysis*, 21(3), 267-297.
+- Loughran, T.; McDonald, B. (2011). When Is a Liability Not a
+  Liability? Textual Analysis, Dictionaries, and 10-Ks. *The Journal of
+  Finance*, 66(1), 35-65.
+- Souza, M.; Vieira, R.; Busetti, D.; Chishman, R.; Alves, I. M. (2011).
+  Construction of a Portuguese Opinion Lexicon from multiple resources.
+  *8th Brazilian Symposium in Information and Human Language Technology
+  (STIL)*.
 - Pang, B.; Lee, L. (2008). Opinion Mining and Sentiment Analysis.
   *Foundations and Trends in Information Retrieval*, 2(1-2), 1-135.
 - Silge, J.; Robinson, D. (2017). *Text Mining with R*. O’Reilly.

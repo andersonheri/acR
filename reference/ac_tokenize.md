@@ -56,10 +56,13 @@ ac_tokenize(
 
 - drop_punct:
 
-  Lógico. Se `TRUE`, remove da sequência tokens que consistem apenas de
-  pontuação (por exemplo `"!"`, `"..."`) antes de construir n-gramas.
-  Tokens que misturam letras e pontuação (por exemplo `"ola,"`) sao
-  mantidos.
+  Lógico. Se `TRUE`, remove a pontuação das **bordas** de cada token
+  (`"excelente,"` vira `"excelente"`, `"(péssimo)"` vira `"péssimo"`) e
+  descarta tokens que ficam vazios (`"!"`, `"..."`), antes de construir
+  n-gramas. Pontuação **interna** é preservada, para não quebrar formas
+  como `"e-mail"`, `"guarda-chuva"` ou `"3,5"`. Sem isso, `"excelente,"`
+  e `"excelente"` seriam contados como dois tipos diferentes, o que
+  distorce frequências, TTR, dicionários e Wordscores.
 
 - ...:
 
@@ -124,7 +127,7 @@ tokens2
 #> # A tibble: 2 × 3
 #>   doc_id token_id token
 #>   <chr>     <int> <chr>
-#> 1 d1            1 Ola, 
+#> 1 d1            1 Ola  
 #> 2 d1            2 mundo
 
 # Bigramas

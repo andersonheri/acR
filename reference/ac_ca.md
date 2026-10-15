@@ -2,15 +2,22 @@
 
 `ac_ca()` reduz uma tabela de contingência documento/grupo x termo a
 poucas dimensões, posicionando unidades e termos no mesmo espaço
-geométrico de modo que unidades e termos próximos no gráfico tendem a
-co-ocorrer mais do que o esperado pelo acaso (Greenacre, 2007). É uma
-alternativa simples e determinística à Alocação de Dirichlet Latente
-(LDA, já disponível em
+geométrico (Greenacre, 2007). Unidades próximas entre si têm perfis de
+vocabulário parecidos; termos próximos entre si são usados de forma
+parecida pelos grupos. É uma alternativa simples e determinística à
+Alocação de Dirichlet Latente (LDA, já disponível em
 [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md))
 para visualizar associações entre vocabulário e grupos em duas
-dimensões: sem assumir um número de tópicos latentes, e com uma
-interpretação geométrica direta (distâncias no biplot ~ dissimilaridade
-de perfis de frequência).
+dimensões: sem assumir um número de tópicos latentes.
+
+**Como ler o mapa.** As coordenadas de unidades e termos são principais
+(mapa "simétrico"). Nesse mapa, distâncias **entre unidades** (e entre
+termos) aproximam distâncias qui-quadrado entre perfis, mas a distância
+entre uma unidade e um termo **não** tem interpretação direta
+(Greenacre, 2007, cap. 8-9). Leia a relação unidade-termo pela
+**direção**: um termo longe da origem e na mesma direção de um grupo é
+sobrerrepresentado nele; termos perto da origem têm perfil parecido com
+a média (pouco distintivos).
 
 É útil, por exemplo, para visualizar como o vocabulário difere entre
 categorias de atendimento ao cliente, entre seções de um conjunto de

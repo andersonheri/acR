@@ -37,7 +37,7 @@ ac_cooccurrence(
 
   Medidas de associação a calcular. Um ou mais de: `"count"` (frequência
   conjunta), `"pmi"` (pointwise mutual information), `"dice"`
-  (coeficiente Dice). Padrão: `c("count", "pmi")`.
+  (coeficiente Dice). Padrão: as três.
 
 - min_count:
 
@@ -53,11 +53,44 @@ Tibble com colunas:
 
 - `word1`, `word2`: par de termos (ordenado alfabeticamente);
 
-- `cooc`: frequência de co-ocorrência;
+- `cooc`: frequência de co-ocorrência. Com `unit = "window"`, é o número
+  de vezes em que os dois termos aparecem a até `window` tokens um do
+  outro (cada encontro conta **uma** vez); com `unit = "document"`, é o
+  número de documentos que contêm os dois;
 
-- `pmi` (se solicitado): pointwise mutual information;
+- `pmi` (se solicitado): pointwise mutual information, em bits;
 
 - `dice` (se solicitado): coeficiente Dice.
+
+## Details
+
+**PMI** (Church & Hanks, 1990) compara a probabilidade conjunta com a
+esperada sob independência: \\\log_2 \[P(x,y) / (P(x)P(y))\]\\. Zero
+indica que o par aparece junto tanto quanto o acaso preveria; valores
+positivos, mais que o acaso. PMI superestima pares raros (Evert, 2005),
+por isso use `min_count` para descartá-los.
+
+**Dice** (Smadja, McKeown & Hatzivassiloglou, 1996) é \\2 f(x,y) /
+(f(x) + f(y))\\, entre 0 e 1.
+
+As probabilidades usam a mesma unidade da contagem conjunta: com
+`unit = "window"`, frequências de token e o total de tokens do corpus
+(aproximação usual de Church & Hanks); com `unit = "document"`,
+frequência documental (em quantos documentos o termo aparece) e o número
+de documentos. Pares de um termo com ele mesmo são ignorados.
+
+## References
+
+Church, K. W.; Hanks, P. (1990). Word association norms, mutual
+information, and lexicography. *Computational Linguistics*, 16(1),
+22-29.
+
+Evert, S. (2005). *The Statistics of Word Cooccurrences: Word Pairs and
+Collocations*. Tese (Doutorado), Universität Stuttgart.
+
+Smadja, F.; McKeown, K. R.; Hatzivassiloglou, V. (1996). Translating
+collocations for bilingual lexicons: A statistical approach.
+*Computational Linguistics*, 22(1), 1-38.
 
 ## See also
 
@@ -93,12 +126,12 @@ head(cooc)
 #> # A tibble: 6 × 5
 #>   word1      word2         cooc   pmi  dice
 #>   <chr>      <chr>        <int> <dbl> <dbl>
-#> 1 cidadania  direitos         4  4.58     1
-#> 2 cidadania  liberdade        4  4.58     1
-#> 3 cidadania  participacao     4  4.58     1
-#> 4 cidadania  popular          4  4.58     1
-#> 5 cidadania  voto             4  4.58     1
-#> 6 democracia participacao     4  5.17     1
+#> 1 cidadania  direitos         2  3.58   0.8
+#> 2 cidadania  liberdade        2  3.58   0.8
+#> 3 cidadania  participacao     2  3.58   0.8
+#> 4 cidadania  popular          2  3.58   0.8
+#> 5 cidadania  voto             2  3.58   0.8
+#> 6 democracia participacao     2  4.17   1  
 
 # Coocorrência com PMI (associação normalizada por acaso)
 cooc_pmi <- ac_cooccurrence(tokens, window = 3L, measure = "pmi",
@@ -107,10 +140,10 @@ head(cooc_pmi)
 #> # A tibble: 6 × 4
 #>   word1      word2         cooc   pmi
 #>   <chr>      <chr>        <int> <dbl>
-#> 1 cidadania  direitos         4  4.58
-#> 2 cidadania  liberdade        4  4.58
-#> 3 cidadania  participacao     4  4.58
-#> 4 cidadania  popular          4  4.58
-#> 5 cidadania  voto             4  4.58
-#> 6 democracia participacao     4  5.17
+#> 1 cidadania  direitos         2  3.58
+#> 2 cidadania  liberdade        2  3.58
+#> 3 cidadania  participacao     2  3.58
+#> 4 cidadania  popular          2  3.58
+#> 5 cidadania  voto             2  3.58
+#> 6 democracia participacao     2  4.17
 ```

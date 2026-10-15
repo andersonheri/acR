@@ -50,19 +50,32 @@ ac_wordscores(
 
 - rescale:
 
-  Tipo de reescalonamento aplicado aos escores brutos dos documentos
-  virgens, para corrigir a compressão em torno da média que o método
-  tende a produzir (Laver, Benoit & Garry, 2003; Martin & Vanberg,
-  2007):
+  Tipo de reescalonamento aplicado aos escores brutos, para corrigir a
+  compressão em torno da média que o método produz (palavras comuns a
+  todos os textos puxam todo escore para o centro da escala):
 
   - `"none"` (padrão): sem reescalonamento, escore bruto.
 
-  - `"lbg"`: reescalona pela razão de desvios-padrão entre os escores de
-    referência conhecidos e os escores brutos estimados para os próprios
-    documentos de referência.
+  - `"lbg"`: transformação de Laver, Benoit & Garry (2003, p. 316),
+    \\S^\*\_v = (S_v - \bar{S}\_v)(DP_r / DP_v) + \bar{S}\_v\\, em que
+    \\\bar{S}\_v\\ e \\DP_v\\ são a média e o desvio-padrão dos escores
+    brutos dos **documentos virgens** e \\DP_r\\ o desvio-padrão dos
+    escores **conhecidos** das referências. Dá aos virgens a mesma
+    dispersão das referências, mantendo a média deles. Exige pelo menos
+    2 virgens e depende de quais virgens entram: com poucos, fica
+    instável (com exatamente 2, eles caem sempre a cerca de 0,71
+    desvio-padrão da média, seja qual for o texto).
 
-  - `"mv"`: reescalona linearmente para o intervalo `[min, max]` dos
-    escores de referência conhecidos (Martin & Vanberg, 2007).
+  - `"mv"`: transformação de Martin & Vanberg (2008), \\S^\*\_v = (S_v -
+    P_1)/(P_2 - P_1) \cdot (A_2 - A_1) + A_1\\, em que \\A_1\\ e \\A_2\\
+    são os escores conhecidos das referências extremas (menor e maior) e
+    \\P_1\\, \\P_2\\ os escores brutos que o método atribui a essas
+    mesmas referências. Não depende do conjunto de virgens: é a opção
+    mais robusta quando há poucos documentos a estimar.
+
+  A mesma transformação é aplicada também às referências (como se fossem
+  virgens), o que serve de checagem: uma referência bem recuperada fica
+  perto do seu escore conhecido.
 
 - drop_punct:
 
@@ -83,7 +96,7 @@ Laver, M.; Benoit, K.; Garry, J. (2003). Extracting Policy Positions
 from Political Texts Using Words as Data. *American Political Science
 Review*, 97(2), 311-331.
 
-Martin, L. W.; Vanberg, G. (2007). A Robust Transformation Procedure for
+Martin, L. W.; Vanberg, G. (2008). A Robust Transformation Procedure for
 Interpreting Political Text. *Political Analysis*, 16(1), 93-100.
 
 ## See also

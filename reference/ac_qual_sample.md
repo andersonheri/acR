@@ -1,8 +1,29 @@
 # Amostrar documentos para validação humana
 
 `ac_qual_sample()` seleciona uma amostra de documentos classificados
-pela LLM para validação por um codificador humano, usando diferentes
-estratégias para maximizar a eficiência da validação.
+pela LLM para validação por um codificador humano.
+
+**Duas finalidades diferentes, duas estratégias diferentes.**
+
+1.  *Estimar a confiabilidade* que vai para o artigo
+    ([`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)):
+    a amostra precisa ser **representativa** do corpus. Krippendorff
+    (2018, cap. 12) exige que os dados de confiabilidade sejam
+    amostrados da mesma população que os dados analisados; uma amostra
+    enviesada para casos difíceis subestima a concordância real, e uma
+    enviesada para casos fáceis a superestima. Use `"random"` (padrão)
+    ou `"proportional"`.
+
+2.  *Diagnosticar erros* e refinar o codebook: aí vale concentrar o
+    esforço humano onde a LLM mais erra, como em amostragem por
+    incerteza de *active learning* (Settles, 2012). Use `"uncertainty"`
+    ou `"disagreement"`, mas **não** reporte a concordância calculada
+    nessa amostra como confiabilidade do corpus.
+
+Sobre o tamanho: Neuendorf (2017) sugere uma subamostra de
+confiabilidade de 10% a 20% do corpus, raramente menos de 50 unidades;
+Krippendorff (2018, sec. 12.3) oferece um cálculo formal a partir do
+alfa mínimo aceitável e da frequência da categoria mais rara.
 
 ## Usage
 
@@ -10,7 +31,7 @@ estratégias para maximizar a eficiência da validação.
 ac_qual_sample(
   coded,
   n = 50L,
-  strategy = c("uncertainty", "stratified", "random", "disagreement", "proportional"),
+  strategy = c("random", "uncertainty", "stratified", "disagreement", "proportional"),
   strata = NULL,
   min_per_stratum = 1L,
   min_stratum_size = 10L,
@@ -35,13 +56,15 @@ ac_qual_sample(
 
   Estratégia de amostragem:
 
+  - `"random"` (padrão): amostra aleatória simples. Representativa: use
+    para estimar a confiabilidade que vai para o artigo;
+
   - `"uncertainty"`: prioriza documentos com menor `confidence_score`
-    (maior incerteza da LLM);
+    (maior incerteza da LLM). Serve para diagnóstico de erros, **não**
+    para estimar confiabilidade (amostra enviesada para casos difíceis);
 
-  - `"stratified"`: garante representação proporcional de todas as
-    categorias;
-
-  - `"random"`: amostra aleatória simples;
+  - `"stratified"`: divide `n` igualmente entre as categorias atribuídas
+    pela LLM (sobre-representa categorias raras; não é representativa);
 
   - `"disagreement"`: prioriza documentos onde rodadas de
     self-consistency divergiram (requer `confidence_score < 1`);
@@ -92,6 +115,16 @@ Tibble com os documentos selecionados, incluindo uma coluna
 (`n_populacao_estrato / n_amostra_estrato`) para uso em estimativas
 ponderadas.
 
+## References
+
+Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
+Methodology* (4th ed.). SAGE.
+
+Neuendorf, K. A. (2017). *The Content Analysis Guidebook* (2nd ed.).
+SAGE.
+
+Settles, B. (2012). *Active Learning*. Morgan & Claypool.
+
 ## Examples
 
 ``` r
@@ -103,7 +136,20 @@ coded <- tibble::tibble(
   confidence_score = runif(20, 0.5, 1.0)
 )
 
-# Priorizar casos mais incertos para revisao humana
+# Amostra representativa (padrao): para estimar a confiabilidade
+ac_qual_sample(coded, n = 5)
+#> ℹ Amostra de 5 documentos selecionada (estratégia: "random").
+#> ℹ Use `ac_qual_export_for_review()` para exportar para Excel.
+#> # A tibble: 5 × 4
+#>   doc_id categoria confidence_score sample_reason
+#>   <chr>  <chr>                <dbl> <chr>        
+#> 1 doc_17 contra               0.897 random       
+#> 2 doc_5  contra               0.634 random       
+#> 3 doc_1  favor                0.967 random       
+#> 4 doc_10 contra               0.670 random       
+#> 5 doc_4  favor                0.563 random       
+
+# Priorizar casos mais incertos: diagnostico de erros, nao confiabilidade
 ac_qual_sample(coded, n = 5, strategy = "uncertainty")
 #> ℹ Amostra de 5 documentos selecionada (estratégia: "uncertainty").
 #> ℹ Use `ac_qual_export_for_review()` para exportar para Excel.

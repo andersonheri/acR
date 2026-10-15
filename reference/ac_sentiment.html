@@ -85,7 +85,9 @@ pontuações por documento e, opcionalmente, por grupo ou janela temporal.</p>
 
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
 <dd><p>Coluna(s) de agrupamento para agregar o sentimento além do
-documento (ex: <code>"partido"</code>, <code>"data"</code>). Padrão: <code>NULL</code> (por documento).</p></dd>
+documento (ex: <code>"partido"</code>, <code>"data"</code>): todos os tokens dos documentos
+do grupo entram juntos no cálculo, e a saída tem uma linha por grupo
+(sem <code>doc_id</code>). Padrão: <code>NULL</code> (uma linha por documento).</p></dd>
 
 
 <dt id="arg-lexicon">lexicon<a class="anchor" aria-label="anchor" href="#arg-lexicon"></a></dt>
@@ -93,9 +95,16 @@ documento (ex: <code>"partido"</code>, <code>"data"</code>). Padrão: <code>NULL
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>Método de agregação por documento:</p><ul><li><p><code>"sum"</code> (padrão): soma das polaridades.</p></li>
-<li><p><code>"mean"</code>: média das polaridades.</p></li>
-<li><p><code>"ratio"</code>: razão entre positivos e negativos.</p></li>
+<dd><p>Método de agregação por documento (ou grupo):</p><ul><li><p><code>"sum"</code> (padrão): soma das polaridades (+1/-1). Cresce com o
+tamanho do texto: não compare documentos de tamanhos muito
+diferentes por esse escore.</p></li>
+<li><p><code>"mean"</code>: soma das polaridades dividida pelo <strong>total de tokens</strong>
+(inclusive os que não estão no léxico), ou seja, saldo de
+sentimento por palavra.</p></li>
+<li><p><code>"ratio"</code>: \((pos - neg)/(pos + neg)\), entre -1 e 1; usa só as
+palavras com polaridade e por isso independe do tamanho do texto
+(é a forma "relativa" de Lowe et al., 2011, sem a suavização
+logarítmica).</p></li>
 </ul></dd>
 
 
@@ -109,10 +118,27 @@ documento (ex: <code>"partido"</code>, <code>"data"</code>). Padrão: <code>NULL
 <li><p>Colunas de metadado (se <code>by</code> especificado);</p></li>
 <li><p><code>n_pos</code>: número de tokens positivos;</p></li>
 <li><p><code>n_neg</code>: número de tokens negativos;</p></li>
-<li><p><code>n_neu</code>: número de tokens neutros;</p></li>
+<li><p><code>n_neu</code>: número de tokens sem polaridade (neutros no léxico <strong>ou</strong>
+ausentes dele);</p></li>
 <li><p><code>score</code>: pontuação de sentimento (método escolhido);</p></li>
 <li><p><code>sentiment</code>: classificação (<code>"positivo"</code>, <code>"negativo"</code>, <code>"neutro"</code>).</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><strong>Como o léxico é aplicado.</strong> O texto é limpo (minúsculas, sem
+pontuação), tokenizado em palavras e cada palavra recebe a polaridade
+do OpLexicon (-1, 0, +1); palavras fora do léxico valem 0. Alguns
+termos aparecem no OpLexicon mais de uma vez (uma por classe
+gramatical); nesse caso usa-se o sinal da soma das polaridades do
+termo (polaridades conflitantes, como +1 e -1, viram 0), para que cada
+token conte uma única vez.</p>
+<p><strong>Limites do método de dicionário.</strong> A contagem é palavra a palavra:
+não trata negação ("não é bom" soma +1), intensificadores ("muito
+ruim") nem ironia, e a polaridade de uma palavra depende do domínio
+(Taboada et al., 2011; Grimmer &amp; Stewart, 2013). Por isso valide numa
+amostra codificada por humano (ver <code><a href="ac_dictionary_validate.html">ac_dictionary_validate()</a></code>) antes
+de interpretar os escores.</p>
+    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter Data for
@@ -120,6 +146,15 @@ Portuguese Language. <em>PROPOR</em>.</p>
 <p>Souza, M.; Vieira, R.; Busetti, D.; Chishman, R.; Alves, I. M. (2011).
 Construction of a Portuguese Opinion Lexicon from multiple resources.
 <em>STIL/SBC</em>.</p>
+<p>Grimmer, J.; Stewart, B. M. (2013). Text as Data: The Promise and
+Pitfalls of Automatic Content Analysis Methods for Political Texts.
+<em>Political Analysis</em>, 21(3), 267-297.</p>
+<p>Lowe, W.; Benoit, K.; Mikhaylov, S.; Laver, M. (2011). Scaling Policy
+Preferences from Coded Political Texts. <em>Legislative Studies
+Quarterly</em>, 36(1), 123-155.</p>
+<p>Taboada, M.; Brooke, J.; Tofiloski, M.; Voll, K.; Stede, M. (2011).
+Lexicon-Based Methods for Sentiment Analysis. <em>Computational
+Linguistics</em>, 37(2), 267-307.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -158,15 +193,11 @@ Construction of a Portuguese Opinion Lexicon from multiple resources.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Agregado por grupo (aqui, por partido)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_sentiment</span><span class="op">(</span><span class="va">corpus</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   doc_id partido n_pos n_neg n_neu score sentiment</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> d1     A           2     1     7     1 positivo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> d2     B           0     1     7    -<span style="color: #BB0000;">1</span> negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> d3     A           0     1     7    -<span style="color: #BB0000;">1</span> negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d4     B           0     0     7     0 neutro   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> d5     A           0     2     6    -<span style="color: #BB0000;">2</span> negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> d6     B           0     0     7     0 neutro   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   partido n_pos n_neg n_neu score sentiment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> A           2     4    20    -<span style="color: #BB0000;">2</span> negativo </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> B           0     1    21    -<span style="color: #BB0000;">1</span> negativo </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Metodo alternativo: razao positivos/negativos</span></span></span>
 <span class="r-in"><span><span class="fu">ac_sentiment</span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"ratio"</span><span class="op">)</span></span></span>

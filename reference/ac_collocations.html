@@ -118,16 +118,21 @@ de uma análise de frequência ou nuvem de palavras.</p>
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>Tamanho do n-grama: <code>2</code> (padrão, bigramas) ou <code>3</code>
-(trigramas).</p></dd>
+(trigramas). Para trigramas, a tabela 2x2 compara a primeira palavra
+com o <strong>bigrama</strong> formado pelas duas seguintes (ex.: "atendimento" ×
+"ao cliente"), e o PMI usa a mesma decomposição:
+\(\log_2[f(w_1 w_2 w_3) N / (f(w_1) f(w_2 w_3))]\).</p></dd>
 
 
 <dt id="arg-measure">measure<a class="anchor" aria-label="anchor" href="#arg-measure"></a></dt>
 <dd><p>Medida de associação:</p><ul><li><p><code>"pmi"</code> (padrão): <em>Pointwise Mutual Information</em> (Church &amp; Hanks,
 1990): quanto mais alto, mais a coocorrência surpreende em
 relação ao esperado pelo acaso. Tende a favorecer pares raros.</p></li>
-<li><p><code>"ll"</code>: log-likelihood ratio (Dunning, 1993): mais robusta que
-PMI para colocações de baixa frequência; é a medida padrão do
-<code>quanteda.textstats::textstat_collocations()</code>.</p></li>
+<li><p><code>"ll"</code>: log-likelihood ratio, G² (Dunning, 1993): mais confiável
+que o qui-quadrado e que o PMI para eventos raros, porque não supõe
+normalidade das contagens (Dunning, 1993; Evert, 2005). Atenção:
+não é a medida do <code>quanteda.textstats::textstat_collocations()</code>,
+que usa o lambda de Blaheta &amp; Johnson (2001) e seu escore z.</p></li>
 <li><p><code>"chi2"</code>: qui-quadrado de associação, mesma lógica de
 <code><a href="ac_keyness.html">ac_keyness()</a></code> aplicada a pares de palavras adjacentes em vez de
 grupos de documentos.</p></li>
@@ -158,6 +163,10 @@ information, and lexicography. <em>Computational Linguistics</em>, 16(1),
 22-29.</p>
 <p>Dunning, T. (1993). Accurate methods for the statistics of surprise
 and coincidence. <em>Computational Linguistics</em>, 19(1), 61-74.</p>
+<p>Evert, S. (2005). <em>The Statistics of Word Cooccurrences: Word Pairs and
+Collocations</em>. Tese (Doutorado), Universität Stuttgart.</p>
+<p>Blaheta, D.; Johnson, M. (2001). Unsupervised learning of multi-word
+verbs. <em>Proceedings of the ACL Workshop on Collocations</em>, 54-60.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

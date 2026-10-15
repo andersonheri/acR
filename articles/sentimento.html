@@ -243,7 +243,7 @@ método padrão <code>sum</code>) e o rótulo categórico
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_6      1     1     8     0 neutro   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_7      0     3     7    -<span style="color: #BB0000;">3</span> negativo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> doc_8      0     0     8     0 neutro   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> doc_9      0     3     9    -<span style="color: #BB0000;">3</span> negativo</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> doc_9      0     2     9    -<span style="color: #BB0000;">2</span> negativo</span></span></code></pre></div>
 <p>Cruzando com a posição declarada: o léxico “acerta”?</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sent</span> <span class="op">|&gt;</span></span>
@@ -267,11 +267,34 @@ esperada, não é erro: documentos técnicos legitimamente usam pouco
 vocabulário emotivo em qualquer direção. O problema real seria uma linha
 “contra” concentrada em <code>positivo</code>, sinal de que o léxico
 está invertendo a leitura.</p>
+<p>Aqui o léxico acerta a direção na maioria dos casos (4 de 5 “favor”
+saem positivos, 3 de 5 “contra” saem negativos), e nenhum documento é
+invertido. Os erros são instrutivos porque mostram as duas falhas
+clássicas do método de dicionário (Grimmer &amp; Stewart, 2013):</p>
+<ul>
+<li>
+<strong>Cobertura.</strong> <code>doc_3</code> (“Vitória histórica
+para a economia”) e <code>doc_8</code> (“Uma tragédia nacional: estão
+roubando direitos”) não têm <strong>nenhuma</strong> palavra com
+polaridade no OpLexicon e saem neutros, embora a posição seja óbvia para
+um leitor. O OpLexicon é formado sobretudo por adjetivos (Souza et al.,
+2011); substantivos e verbos carregados (“vitória”, “tragédia”,
+“roubando”) ficam de fora.</li>
+<li>
+<strong>Sentido no domínio.</strong> <code>doc_14</code> (“segue
+para votação na próxima sessão ordinária”) sai negativo porque o léxico
+lê “ordinária” como adjetivo pejorativo, e não como “sessão regular” do
+jargão legislativo. Em <code>doc_6</code>, “trabalhadores” conta +1
+(lido como “trabalhador, esforçado”), o que anula o “vergonhoso” e deixa
+um discurso contrário com escore 0. Loughran &amp; McDonald (2011)
+mostraram o mesmo problema em finanças (“liability” não é negativo num
+balanço) e por isso defendem léxicos ajustados ao domínio.</li>
+</ul>
+<p>Conclusão prática: antes de usar o OpLexicon num corpus legislativo,
+liste os termos do léxico mais frequentes no seu corpus e retire ou
+corrija os que têm outro sentido ali; e valide numa amostra humana (ver
+<code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>).</p>
 </blockquote>
-<p>Léxico funciona bem para <strong>posições explícitas</strong>
-(favor/contra) com vocabulário emotivo. Falha em textos
-técnicos-neutros, que tipicamente misturam palavras positivas e
-negativas em proporção baixa.</p>
 </div>
 <div class="section level2">
 <h2 id="comparar-métodos-de-agregação">3. Comparar métodos de agregação<a class="anchor" aria-label="anchor" href="#comparar-m%C3%A9todos-de-agrega%C3%A7%C3%A3o"></a>
@@ -332,10 +355,15 @@ então o gráfico já agrupa visualmente positivos no topo e negativos na
 base. A cor também é determinada pelo sinal do <code>score</code>, não
 por um limiar fixo: um <code>score</code> muito perto de zero recebe a
 mesma cor categórica (positivo/negativo) de um <code>score</code>
-extremo, mesmo que o primeiro seja um caso ambíguo. Padrão esperado
-aqui: os 5 documentos favoráveis em verde/positivo no topo, os 4
-neutros/técnicos com barra de largura zero (score = 0) no meio, e os 5
-contrários em laranja/negativo na base — a cor “negativa” do pacote é
+extremo, mesmo que o primeiro seja um caso ambíguo. Neste exemplo, 4 dos
+14 documentos ficam com barra de largura zero (<code>score = 0</code>):
+só um deles é técnico (<code>doc_11</code>); os outros são
+<code>doc_3</code> (favorável), <code>doc_6</code> e <code>doc_8</code>
+(contrários), pelos motivos de cobertura e sentido no domínio vistos na
+seção 2. Já dois textos técnicos (<code>doc_12</code> e
+<code>doc_14</code>) aparecem como negativos. Os extremos são
+<code>doc_4</code> e <code>doc_5</code> (+2, favoráveis) no topo e
+<code>doc_7</code> (−3, contrário) na base. A cor “negativa” do pacote é
 laranja, não vermelho.</p>
 </blockquote>
 </div>
@@ -348,21 +376,45 @@ bimodal (dois picos, favor e contra) ou tem uma cauda longa?</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span>, type <span class="op">=</span> <span class="st">"density"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Distribuição de scores de sentimento"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Bimodalidade sugere polarização; unimodal sugere consenso"</span></span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Curvas separadas pelo sinal do escore (veja a nota abaixo)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-density-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> dois picos bem separados (um
-negativo, um positivo) indicam um corpus polarizado, onde a maioria dos
-documentos adota uma posição clara. Um único pico perto de zero indica
-consenso ou, mais frequentemente, predominância de linguagem
-técnica/neutra. A estimativa de densidade por kernel (Silverman, 1986)
-suaviza a distribuição dos <code>score</code>s observados, e essa
-suavização fica instável com poucos pontos: com este exemplo de 14
-documentos, picos aparentes podem ser artefato da largura de banda
-escolhida, não um padrão real do corpus. Prefira o histograma de barras
-(§4) para amostras pequenas; a densidade fica mais confiável à medida
-que o número de documentos cresce.</p>
+<p><strong>Como interpretar:</strong> cuidado com um artefato de
+construção deste gráfico. As curvas são separadas pela coluna
+<code>sentiment</code>, que é o próprio sinal do <code>score</code>: a
+curva “positivo” só pode ficar à direita de zero e a “negativo” só à
+esquerda, e a “neutro” é uma linha em cima do zero (todos os seus
+escores valem exatamente 0). Ou seja, ver picos separados por cor
+<strong>não</strong> é evidência de polarização: aconteceria com
+qualquer conjunto de escores. Polarização, no sentido usado por
+DiMaggio, Evans &amp; Bryson (1996), é uma propriedade da distribuição
+<strong>inteira</strong> (dispersão e bimodalidade), e se avalia olhando
+todos os escores juntos, como no histograma abaixo, ou colorindo por uma
+variável externa ao escore (por exemplo, a posição declarada). Além
+disso, a estimativa de densidade por kernel (Silverman, 1986) é instável
+com poucos pontos: com 14 documentos, os picos dependem da largura de
+banda escolhida.</p>
+</blockquote>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sent</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">1</span>, fill <span class="op">=</span> <span class="st">"grey60"</span>, color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Distribuição de todos os escores"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Uma única distribuição: é aqui que se avalia polarização"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Score"</span>, y <span class="op">=</span> <span class="st">"Documentos"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sentimento_files/figure-html/plot-hist-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> com todos os escores juntos, a
+distribuição deste exemplo tem a maior barra no zero (4 documentos),
+seguida de −1 e +1 (3 cada), com caudas curtas até −3 e +2: pelo
+histograma, o corpus parece <strong>menos</strong> polarizado do que as
+posições declaradas sugerem. A seção 2 explica por quê: parte dos
+documentos opinativos caiu em zero por falta de cobertura do léxico. O
+histograma descreve os escores, não as posições reais dos autores.</p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -379,7 +431,7 @@ por padrão, não a ordem de criação nem cronológica. Com rótulos como
 de <code>doc_2</code>. Para evitar isso, transforme <code>doc_id</code>
 num <code>factor</code> com os <em>levels</em> na ordem desejada antes
 de plotar:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sent_ordenado</span> <span class="op">&lt;-</span> <span class="va">sent</span></span>
 <span><span class="va">sent_ordenado</span><span class="op">$</span><span class="va">doc_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sent_ordenado</span><span class="op">$</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">14</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -403,7 +455,7 @@ ponto, que costuma refletir apenas ruído em amostras pequenas.</p>
 </h2>
 <p>A análise mais útil raramente é doc-a-doc: é comparar
 <strong>grupos</strong>. Vamos agregar por partido:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">por_partido</span> <span class="op">&lt;-</span> <span class="va">sent</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">df</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                   by <span class="op">=</span> <span class="st">"doc_id"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -429,10 +481,10 @@ ponto, que costuma refletir apenas ruído em amostras pequenas.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> MDB          3      0.33     1.53          1          1        1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> PDT          1      0       <span style="color: #BB0000;">NA</span>             0          0        1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> PCdoB        1     -<span style="color: #BB0000;">1</span>       <span style="color: #BB0000;">NA</span>             0          1        0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> PT           2     -<span style="color: #BB0000;">1</span>        2.83          1          1        0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> PSOL         2     -<span style="color: #BB0000;">1.5</span>      2.12          0          1        1</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> PSOL         2     -<span style="color: #BB0000;">1</span>        1.41          0          1        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> PT           2     -<span style="color: #BB0000;">1</span>        2.83          1          1        0</span></span></code></pre></div>
 <p>Visualização (ranqueando partidos pelo score médio):</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggplot2"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>    <span class="va">por_partido</span>,</span>
@@ -460,7 +512,7 @@ ponto, que costuma refletir apenas ruído em amostras pequenas.</p>
 <p><img src="sentimento_files/figure-html/plot-partidos-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
 <p><strong>Como interpretar:</strong> com poucos documentos por partido
-(aqui, 1-5), <code>score_med</code> é sensível a outliers: um único
+(aqui, de 1 a 3), <code>score_med</code> é sensível a outliers: um único
 pronunciamento muito extremo desloca a média do partido inteiro. Sempre
 reporte <code>score_dp</code> ao lado de <code>score_med</code> e
 <code>n_docs</code>; uma média alta com desvio-padrão também alto, ou
@@ -474,7 +526,7 @@ no texto, não uma afirmação categórica sobre a posição do partido.</p>
 <p><code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code> mostra <strong>onde</strong> termos-alvo
 aparecem dentro de cada documento. Útil para ver se palavras negativas
 se concentram no começo, meio ou fim, sinal de estrutura retórica.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_xray.html">ac_plot_xray</a></span><span class="op">(</span><span class="va">corpus</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reforma"</span>, <span class="st">"trabalhadores"</span>, <span class="st">"aprovar"</span>, <span class="st">"vergonha"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Onde os termos-chave aparecem no corpus"</span>,</span>
@@ -496,7 +548,7 @@ difusa, sem função estrutural clara no discurso.</p>
 <div class="section level2">
 <h2 id="exportar-para-artigorelatório">9. Exportar para artigo/relatório<a class="anchor" aria-label="anchor" href="#exportar-para-artigorelat%C3%B3rio"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Tabela por partido pronta para colar no LaTeX</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">por_partido</span>, arquivo <span class="op">=</span> <span class="st">"sentimento_por_partido.tex"</span>, formato <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span></span>
 <span></span>
@@ -514,6 +566,19 @@ difusa, sem função estrutural clara no discurso.</p>
 <li>Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter with
 Portuguese Language. <em>4th Workshop on Computational Approaches to
 Subjectivity, Sentiment and Social Média Analysis</em>, PUCRS.</li>
+<li>DiMaggio, P.; Evans, J.; Bryson, B. (1996). Have Americans’ Social
+Attitudes Become More Polarized? <em>American Journal of Sociology</em>,
+102(3), 690-755.</li>
+<li>Grimmer, J.; Stewart, B. M. (2013). Text as Data: The Promise and
+Pitfalls of Automatic Content Analysis Methods for Political Texts.
+<em>Political Analysis</em>, 21(3), 267-297.</li>
+<li>Loughran, T.; McDonald, B. (2011). When Is a Liability Not a
+Liability? Textual Analysis, Dictionaries, and 10-Ks. <em>The Journal of
+Finance</em>, 66(1), 35-65.</li>
+<li>Souza, M.; Vieira, R.; Busetti, D.; Chishman, R.; Alves, I. M.
+(2011). Construction of a Portuguese Opinion Lexicon from multiple
+resources. <em>8th Brazilian Symposium in Information and Human Language
+Technology (STIL)</em>.</li>
 <li>Pang, B.; Lee, L. (2008). Opinion Mining and Sentiment Analysis.
 <em>Foundations and Trends in Information Retrieval</em>, 2(1-2),
 1-135.</li>

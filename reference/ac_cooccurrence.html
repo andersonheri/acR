@@ -97,7 +97,7 @@ Padrão: <code>5</code>. Ignorado se <code>unit = "document"</code>.</p></dd>
 <dt id="arg-measure">measure<a class="anchor" aria-label="anchor" href="#arg-measure"></a></dt>
 <dd><p>Medidas de associação a calcular. Um ou mais de:
 <code>"count"</code> (frequência conjunta), <code>"pmi"</code> (pointwise mutual information),
-<code>"dice"</code> (coeficiente Dice). Padrão: <code>c("count", "pmi")</code>.</p></dd>
+<code>"dice"</code> (coeficiente Dice). Padrão: as três.</p></dd>
 
 
 <dt id="arg-min-count">min_count<a class="anchor" aria-label="anchor" href="#arg-min-count"></a></dt>
@@ -112,10 +112,39 @@ Padrão: <code>2</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Tibble com colunas:</p><ul><li><p><code>word1</code>, <code>word2</code>: par de termos (ordenado alfabeticamente);</p></li>
-<li><p><code>cooc</code>: frequência de co-ocorrência;</p></li>
-<li><p><code>pmi</code> (se solicitado): pointwise mutual information;</p></li>
+<li><p><code>cooc</code>: frequência de co-ocorrência. Com <code>unit = "window"</code>, é o
+número de vezes em que os dois termos aparecem a até <code>window</code>
+tokens um do outro (cada encontro conta <strong>uma</strong> vez); com
+<code>unit = "document"</code>, é o número de documentos que contêm os dois;</p></li>
+<li><p><code>pmi</code> (se solicitado): pointwise mutual information, em bits;</p></li>
 <li><p><code>dice</code> (se solicitado): coeficiente Dice.</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><strong>PMI</strong> (Church &amp; Hanks, 1990) compara a probabilidade conjunta com a
+esperada sob independência: \(\log_2 [P(x,y) / (P(x)P(y))]\). Zero
+indica que o par aparece junto tanto quanto o acaso preveria; valores
+positivos, mais que o acaso. PMI superestima pares raros (Evert, 2005),
+por isso use <code>min_count</code> para descartá-los.</p>
+<p><strong>Dice</strong> (Smadja, McKeown &amp; Hatzivassiloglou, 1996) é
+\(2 f(x,y) / (f(x) + f(y))\), entre 0 e 1.</p>
+<p>As probabilidades usam a mesma unidade da contagem conjunta: com
+<code>unit = "window"</code>, frequências de token e o total de tokens do corpus
+(aproximação usual de Church &amp; Hanks); com <code>unit = "document"</code>,
+frequência documental (em quantos documentos o termo aparece) e o
+número de documentos. Pares de um termo com ele mesmo são ignorados.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Church, K. W.; Hanks, P. (1990). Word association norms, mutual
+information, and lexicography. <em>Computational Linguistics</em>, 16(1),
+22-29.</p>
+<p>Evert, S. (2005). <em>The Statistics of Word Cooccurrences: Word Pairs and
+Collocations</em>. Tese (Doutorado), Universität Stuttgart.</p>
+<p>Smadja, F.; McKeown, K. R.; Hatzivassiloglou, V. (1996). Translating
+collocations for bilingual lexicons: A statistical approach.
+<em>Computational Linguistics</em>, 22(1), 1-38.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="ac_tokenize.html">ac_tokenize()</a></code>, <code><a href="ac_plot_cooccurrence.html">ac_plot_cooccurrence()</a></code></p></div>
@@ -149,12 +178,12 @@ Padrão: <code>2</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   word1      word2         cooc   pmi  dice</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         4  4.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        4  4.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     4  4.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          4  4.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             4  4.58     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     4  5.17     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         2  3.58   0.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        2  3.58   0.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     2  3.58   0.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          2  3.58   0.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             2  3.58   0.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     2  4.17   1  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Coocorrência com PMI (associação normalizada por acaso)</span></span></span>
 <span class="r-in"><span><span class="va">cooc_pmi</span> <span class="op">&lt;-</span> <span class="fu">ac_cooccurrence</span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">3L</span>, measure <span class="op">=</span> <span class="st">"pmi"</span>,</span></span>
@@ -163,12 +192,12 @@ Padrão: <code>2</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   word1      word2         cooc   pmi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         4  4.58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        4  4.58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     4  4.58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          4  4.58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             4  4.58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     4  5.17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         2  3.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        2  3.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     2  3.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          2  3.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             2  3.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     2  4.17</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

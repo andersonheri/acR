@@ -127,10 +127,14 @@ saida. Se <code>TRUE</code>, cada documento vazio gera uma linha com
 
 
 <dt id="arg-drop-punct">drop_punct<a class="anchor" aria-label="anchor" href="#arg-drop-punct"></a></dt>
-<dd><p>Lógico. Se <code>TRUE</code>, remove da sequência tokens
-que consistem apenas de pontuação (por exemplo <code>"!"</code>, <code>"..."</code>)
-antes de construir n-gramas. Tokens que misturam letras e
-pontuação (por exemplo <code>"ola,"</code>) sao mantidos.</p></dd>
+<dd><p>Lógico. Se <code>TRUE</code>, remove a pontuação das <strong>bordas</strong>
+de cada token (<code>"excelente,"</code> vira <code>"excelente"</code>, <code>"(péssimo)"</code> vira
+<code>"péssimo"</code>) e descarta tokens que ficam vazios (<code>"!"</code>, <code>"..."</code>),
+antes de construir n-gramas. Pontuação <strong>interna</strong> é preservada, para
+não quebrar formas como <code>"e-mail"</code>, <code>"guarda-chuva"</code> ou <code>"3,5"</code>.
+Sem isso, <code>"excelente,"</code> e <code>"excelente"</code> seriam contados como dois
+tipos diferentes, o que distorce frequências, TTR, dicionários e
+Wordscores.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -189,7 +193,7 @@ pontuação (por exemplo <code>"ola,"</code>) sao mantidos.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   doc_id token_id token</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> d1            1 Ola, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> d1            1 Ola  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> d1            2 mundo</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Bigramas</span></span></span>

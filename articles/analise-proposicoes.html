@@ -392,24 +392,28 @@ o quanto as <code>k_consistency</code> rodadas independentes concordaram
 entre si, não se a categoria escolhida está “correta”. 1.000 significa
 que todas as rodadas bateram na mesma categoria; 0.667 com
 <code>k_consistency = 3L</code> significa que 2 das 3 rodadas
-concordaram e 1 discordou. Documentos com confiança baixa são justamente
-os que a amostragem por <code>strategy = "uncertainty"</code> (seção 5)
-prioriza para revisão humana.</p>
+concordaram e 1 discordou. Documentos com confiança baixa são bons
+candidatos a uma rodada de <strong>diagnóstico</strong> do codebook
+(<code>strategy = "uncertainty"</code>), separada da amostra aleatória
+que a seção 5 usa para estimar a confiabilidade.</p>
 </blockquote>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="validação-humana">5. Validação humana<a class="anchor" aria-label="anchor" href="#valida%C3%A7%C3%A3o-humana"></a>
 </h2>
-<p>A amostragem por <code>strategy = "uncertainty"</code> prioriza
-documentos com menor confiança, otimizando o esforço do codificador
-humano.</p>
+<p>A amostra de validação é aleatória (<code>strategy = "random"</code>,
+o padrão): para que a concordância medida nela represente o corpus
+inteiro, ela precisa ser representativa (Krippendorff, 2018, cap. 12).
+Priorizar os casos de menor confiança
+(<code>strategy = "uncertainty"</code>) serve para diagnosticar erros do
+codebook, não para estimar confiabilidade.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Exportar amostra priorizando casos incertos</span></span>
+<code class="sourceCode R"><span><span class="co"># Amostra aleatória para estimar a confiabilidade</span></span>
 <span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span></span>
 <span>  <span class="va">resultado</span>,</span>
 <span>  n        <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  strategy <span class="op">=</span> <span class="st">"uncertainty"</span></span>
+<span>  strategy <span class="op">=</span> <span class="st">"random"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span></span>
@@ -434,27 +438,45 @@ humano.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">concordancia</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## -- Confiabilidade inter-anotador (acR) --</span></span>
-<span><span class="co">## * Documentos comparados: 5</span></span>
+<pre><code><span><span class="co">## ── Confiabilidade inter-anotador (acR) ──</span></span>
+<span><span class="co">## • Documentos comparados: 5</span></span>
+<span><span class="co">## • Categorias: contrario, favoravel, neutro_tecnico</span></span>
 <span><span class="co">##</span></span>
-<span><span class="co">## Métrica                        Estimativa  Interpretação</span></span>
-<span><span class="co">## ──────────────────────────────────────────────────────────</span></span>
-<span><span class="co">## Percent Agreement              1.000       Perfeita</span></span>
-<span><span class="co">## Cohen's Kappa (unweighted)     1.000       Perfeita</span></span>
-<span><span class="co">## Fleiss' Kappa                  1.000       Perfeita</span></span>
-<span><span class="co">## Krippendorff's Alpha (nominal) 1.000       Perfeita</span></span></code></pre>
+<span><span class="co">## Metrica                         Estimativa  IC              Interpretacao</span></span>
+<span><span class="co">## ---------------------------------------------------------------------------</span></span>
+<span><span class="co">## Percent Agreement               1.000       --              alta (&gt;= 90%; Neuendorf, 2017)</span></span>
+<span><span class="co">## Cohen's Kappa (unweighted)      1.000       [1.000, 1.000]  quase perfeita (Landis &amp; Koch, 1977)</span></span>
+<span><span class="co">## Fleiss' Kappa                   1.000       [1.000, 1.000]  quase perfeita (Landis &amp; Koch, 1977)</span></span>
+<span><span class="co">## Krippendorff's Alpha (nominal)  1.000       [1.000, 1.000]  confiável (&gt;= 0,800; Krippendorff, 2018)</span></span></code></pre>
 <blockquote>
 <p><strong>Como interpretar:</strong> Percent Agreement ignora a chance
 de acerto aleatório e por isso é sempre a métrica mais otimista da
 tabela; Kappa e Alpha corrigem por essa chance e tendem a ser mais
 conservadoras, especialmente quando uma categoria é muito mais frequente
 que as outras. Reporte Kappa ou Alpha como medida principal no artigo, e
-Percent Agreement apenas como complemento descritivo.</p>
+Percent Agreement apenas como complemento descritivo. Cada linha traz o
+rótulo da referência própria da métrica: Landis &amp; Koch (1977) para
+kappa, Krippendorff (2018) para o alfa e Neuendorf (2017) para o
+percentual.</p>
+<p>Note o IC de [1, 1]: ele <strong>não</strong> significa certeza. Com
+concordância perfeita em 5 documentos, toda reamostra <em>bootstrap</em>
+também é perfeita, e o método não tem como expressar a incerteza que uma
+amostra tão pequena carrega. Intervalos degenerados assim são um limite
+conhecido do <em>bootstrap</em> em amostras pequenas (Efron &amp;
+Tibshirani, 1993); a resposta é aumentar a amostra, não confiar no
+intervalo.</p>
 </blockquote>
 <p>Concordância perfeita é esperada para este corpus, dado que os textos
 foram construídos com posicionamentos inequívocos. Em corpora reais com
-textos ambíguos, valores de kappa entre 0.61 e 0.80 são considerados
-adequados para publicação (Landis &amp; Koch, 1977).</p>
+textos ambíguos, o critério mais usado em análise de conteúdo é o de
+Krippendorff (2018, sec. 12.4): alfa a partir de 0,800 para conclusões
+sem ressalvas e entre 0,667 e 0,800 só para conclusões provisórias. As
+faixas de Landis &amp; Koch (1977) (“substancial” para kappa entre 0,61
+e 0,80) são rótulos descritivos que os próprios autores chamam de
+arbitrários, não um critério de publicação. Com 5 documentos, como aqui,
+o intervalo de confiança é largo demais para qualquer conclusão:
+Neuendorf (2017) sugere ao menos 50 unidades na subamostra de
+confiabilidade.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -500,6 +522,8 @@ com a natureza jurídica desses textos.</p>
 </h2>
 <p>BARDIN, L. <strong>Análise de conteúdo</strong>. Edições 70,
 2011.</p>
+<p>EFRON, B.; TIBSHIRANI, R. J. <strong>An Introduction to the
+Bootstrap</strong>. New York: Chapman &amp; Hall, 1993.</p>
 <p>GILARDI, F.; ALIZADEH, M.; KUBLI, M. ChatGPT outperforms crowd
 workers for text-annotation tasks. <strong>PNAS</strong>, v. 120, n. 30,
 2023.</p>
@@ -508,6 +532,8 @@ Methodology</strong>. 4. ed. SAGE, 2018.</p>
 <p>LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 categorical data. <strong>Biometrics</strong>, v. 33, n. 1, p. 159-174,
 1977.</p>
+<p>NEUENDORF, K. A. <strong>The Content Analysis Guidebook</strong>. 2.
+ed. Thousand Oaks: SAGE, 2017.</p>
 <p>SAMPAIO, R. C.; LYCARIAO, D. <strong>Análise de conteúdo categorial:
 manual de aplicação</strong>. Brasília: ENAP, 2021.</p>
 <p>WICKHAM, H. et al. <strong>ellmer: Chat with Large Language

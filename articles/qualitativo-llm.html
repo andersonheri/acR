@@ -401,7 +401,7 @@ categorias similares.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"positivo"</span>, <span style="color: #0000BB;">"negativo"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 16:03</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 17:06</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique o tom geral do discurso parlamentar.</span></span>
@@ -642,10 +642,12 @@ originais do corpus.</p>
 documento com <code>confidence_score = 1.0</code> pode ainda assim estar
 classificado errado, se o codebook for ambíguo o suficiente para o
 modelo “errar com confiança” de forma sistemática. Use
-<code>confidence_score</code> para priorizar a amostra de revisão humana
-(<code>ac_qual_sample(strategy = "uncertainty")</code>), não como
-substituto dela. O valor é sempre a fração de rodadas de
-self-consistency que concordaram, então os valores possíveis dependem de
+<code>confidence_score</code> para achar os casos a revisar quando o
+objetivo é <strong>diagnosticar erros</strong>
+(<code>ac_qual_sample(strategy = "uncertainty")</code>), nunca como
+substituto da validação humana, que deve ser feita numa amostra
+aleatória. O valor é sempre a fração de rodadas de self-consistency que
+concordaram, então os valores possíveis dependem de
 <code>k_consistency</code>: com <code>k_consistency = 3</code> (usado
 neste exemplo), só existem os valores 0, 0,33, 0,67 e 1,0. Documentos
 com menos da metade das rodadas concordando — abaixo de 0,67 com
@@ -731,52 +733,72 @@ preenchido.</li>
 <em>bootstrap</em>.</li>
 </ol>
 <blockquote>
-<p><strong>Quanto amostrar?</strong> Regra prática (Krippendorff 2018):
-pelo menos 10% do corpus, no mínimo 30 documentos, priorizando os casos
-com <code>confidence_score &lt; 0.8</code> (é onde o modelo mais tende a
-errar).</p>
+<p><strong>Quanto amostrar, e como?</strong> Neuendorf (2017) sugere uma
+subamostra de confiabilidade entre 10% e 20% do corpus, raramente menor
+que 50 unidades; Krippendorff (2018, sec. 12.3) dá um cálculo formal a
+partir do alfa mínimo aceitável e da frequência da categoria mais rara.
+A amostra deve ser <strong>aleatória</strong> (ou estratificada
+proporcional): se você escolher só os casos com
+<code>confidence_score</code> baixo, a concordância medida descreve os
+casos difíceis, não o corpus, e subestima a confiabilidade real. Os
+casos incertos são ótimos para uma segunda rodada de
+<strong>diagnóstico</strong> do codebook, separada da estimativa.</p>
 </blockquote>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Amostrar 30 documentos priorizando os incertos</span></span>
-<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">30</span>, strategy <span class="op">=</span> <span class="st">"uncertainty"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Amostra aleatória de 50 documentos (representativa do corpus)</span></span>
+<span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">50</span>, strategy <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_export_for_review.html">ac_qual_export_for_review</a></span><span class="op">(</span><span class="va">amostra</span>, path <span class="op">=</span> <span class="st">"revisao.xlsx"</span>, corpus <span class="op">=</span> <span class="va">corpus</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Após preenchimento manual, calcular IRR</span></span>
 <span><span class="va">revisado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_import_human.html">ac_qual_import_human</a></span><span class="op">(</span><span class="st">"revisao_preenchida.xlsx"</span><span class="op">)</span></span>
 <span><span class="va">irr</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span>llm <span class="op">=</span> <span class="va">resultado</span>, human <span class="op">=</span> <span class="va">revisado</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">irr</span><span class="op">)</span></span></code></pre></div>
-<p>Interpretação (Landis &amp; Koch, 1977 / Gwet, 2014):</p>
+<p>Cada métrica tem a sua referência de leitura; não as misture:</p>
 <table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
 <thead><tr class="header">
-<th align="center">Alpha/Kappa</th>
-<th align="left">Interpretação</th>
+<th align="left">Métrica</th>
+<th align="left">Faixas</th>
+<th align="left">Fonte</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">&lt; 0.20</td>
-<td align="left">Baixa concordância</td>
+<td align="left">Alfa de Krippendorff</td>
+<td align="left">≥ 0,800 confiável; 0,667–0,800 só conclusões
+provisórias; &lt; 0,667 insuficiente</td>
+<td align="left">Krippendorff (2018, sec. 12.4)</td>
 </tr>
 <tr class="even">
-<td align="center">0.21 – 0.40</td>
-<td align="left">Razoável</td>
+<td align="left">AC1 de Gwet (e kappa)</td>
+<td align="left">&lt; 0 pobre; 0–0,20 leve; 0,21–0,40 razoável;
+0,41–0,60 moderada; 0,61–0,80 substancial; 0,81–1 quase perfeita</td>
+<td align="left">Landis &amp; Koch (1977), usado como referência por
+Gwet (2014)</td>
 </tr>
 <tr class="odd">
-<td align="center">0.41 – 0.60</td>
-<td align="left">Moderada</td>
+<td align="left">Percent agreement</td>
+<td align="left">≥ 0,90 alta; ≥ 0,80 aceitável na maioria dos casos; ≥
+0,70 só estudos exploratórios</td>
+<td align="left">Neuendorf (2017)</td>
 </tr>
 <tr class="even">
-<td align="center">0.61 – 0.80</td>
-<td align="left">Substancial</td>
-</tr>
-<tr class="odd">
-<td align="center">&gt; 0.80</td>
-<td align="left">Quase perfeita</td>
+<td align="left">F1 macro</td>
+<td align="left">sem faixa canônica (não corrige por acaso)</td>
+<td align="left">—</td>
 </tr>
 </tbody>
 </table>
-<p>Para análises publicáveis, valores acima de <strong>0.67</strong>
-(Krippendorff) ou <strong>0.61</strong> (Landis-Koch) são geralmente
-aceitos, com discussão dos casos divergentes na seção de método.</p>
+<p>Para publicação, o critério de referência em análise de conteúdo é o
+de Krippendorff: alfa ≥ 0,800, aceitando 0,667 apenas para conclusões
+provisórias e com discussão dos casos divergentes. As faixas de Landis
+&amp; Koch são descritivas (os próprios autores as chamam de
+arbitrárias) e não definem o que é publicável. Olhe também o IC: um alfa
+de 0,82 com IC de 0,61 a 0,95 não permite afirmar que a confiabilidade
+passa de 0,800.</p>
 <blockquote>
 <p><strong>E se eu usar dicionário em vez de LLM?</strong> A mesma
 exigência de validação vale para classificação por dicionário
@@ -956,6 +978,8 @@ ed.). Advanced Analytics.</p>
 Methodology</em> (4th ed.). SAGE.</p>
 <p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer
 agreement for categorical data. <em>Biometrics</em>, 33(1), 159-174.</p>
+<p>Neuendorf, K. A. (2017). <em>The Content Analysis Guidebook</em> (2nd
+ed.). SAGE.</p>
 <p>Maerz, S., &amp; Benoit, K. (2025). <em>quallmer: Qualitative
 Analysis with Large Language Models in R</em>. GitHub. <a href="https://github.com/quallmer/quallmer" class="external-link uri">https://github.com/quallmer/quallmer</a></p>
 <p>Sampaio, R. C., &amp; Lycarião, D. (2021). <em>Análise de conteúdo

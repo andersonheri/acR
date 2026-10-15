@@ -134,12 +134,15 @@ clust
 #> 8 4 4
 ```
 
-Os padrões cobrem 80% dos casos:
+Os padrões são:
 
 - **hclust + Ward.D2**: hierárquico, produz dendrograma interpretável.
 - **TF-IDF**: palavras raras e discriminantes contam mais.
-- **Distância cosseno**: o clássico em texto (invariante a tamanho de
-  documento).
+- **Distância cosseno**: o clássico em texto (Salton & McGill, 1983),
+  invariante ao tamanho do documento. Internamente ela é calculada como
+  distância de corda, √(2(1 − cos θ)): mesma ordenação dos pares que 1 −
+  cos θ, mas euclidiana, que é o que o critério de Ward exige (Murtagh &
+  Legendre, 2014).
 - **`k` automático por silhueta**: testa `k ∈ {2, …, 8}` e escolhe o
   melhor (requer pacote `cluster`).
 
@@ -160,15 +163,17 @@ ac_plot_cluster(clust, kind = "dendrogram")
 
 > **Como interpretar:** leia de baixo para cima. Documentos que se unem
 > em alturas baixas (perto de 0) são muito parecidos; a fusão final no
-> topo (altura ≈ 1.9 neste exemplo) é a mais “forçada” do dendrograma, a
-> última junção que o algoritmo faz antes de virar uma árvore só. Note
-> que os 8 documentos de `democracia` (d01-d06) se unem bem abaixo dessa
-> altura, formando um bloco sólido, enquanto os 8 documentos de
-> `mercado` só se juntam num único ramo em torno da altura ≈ 1.3: mais
-> baixo que o corte entre os dois temas, mas ainda assim uma fusão
-> tardia. Isso já é o primeiro sinal visual de que o algoritmo vai
-> dividir “mercado” em dois subgrupos antes de qualquer tabela de
-> validação confirmar (seção 5).
+> topo (altura ≈ 2,27 neste exemplo) é a mais “forçada” do dendrograma,
+> a última junção que o algoritmo faz antes de virar uma árvore só. Os 8
+> documentos de `democracia` (d01-d08) se reúnem num único ramo na
+> altura ≈ 1,52, enquanto os 8 de `mercado` (d09-d16) só se juntam em ≈
+> 1,74: os dois blocos se formam bem abaixo da fusão final, mas o de
+> `mercado` é o mais heterogêneo internamente. Esse é o primeiro sinal
+> visual de que, se pedirmos 3 grupos, o algoritmo vai dividir “mercado”
+> em dois subgrupos (seção 5). A altura no método de Ward não é a
+> distância entre dois documentos, e sim o aumento da soma de quadrados
+> dentro dos grupos causado pela fusão (Murtagh & Legendre, 2014):
+> compare alturas entre si, não as leia como distâncias.
 
 ### 4.2 Projeção PCA: a geometria do corpus
 
@@ -214,7 +219,7 @@ ac_plot_cluster(clust, kind = "heatmap")
 > diferentes) — um retângulo fora da diagonal com tom intermediário
 > sinaliza dois clusters que não são tão distintos entre si quanto o
 > número de clusters sugere. Neste exemplo, o bloco de `democracia`
-> (d01-d06) tem bordas nítidas; o bloco de `mercado` (d09-d15) também
+> (d01-d08) tem bordas nítidas; o bloco de `mercado` (d09-d16) também
 > aparece separado do resto, mas internamente um pouco menos uniforme,
 > condizente com ele conter dois subtemas (clusters 2 e 3) em vez de um
 > só.
@@ -313,14 +318,22 @@ if (requireNamespace("cluster", quietly = TRUE)) {
 ![](cluster_files/figure-html/plot-silhouette-1.png)
 
 > **Como interpretar:** o círculo vazado marca o `k` escolhido
-> automaticamente (maior silhueta média). Neste exemplo, `k = 2` fica em
-> ≈ 0,225 e `k = 3` (escolhido) em ≈ 0,232 — uma diferença pequena,
-> típica de um “platô”: ambos os valores de `k` descrevem o corpus
-> razoavelmente bem, e a escolha entre eles é uma questão de quanto
-> detalhe você quer, não de um `k` certo e outro errado. Quando a
-> diferença entre o pico e o segundo colocado é grande, confie mais no
-> `k` automático; quando for pequena como aqui, vale a pena olhar os
-> termos distintivos (seção 4.4) de cada `k` candidato antes de decidir.
+> automaticamente (maior silhueta média). Neste exemplo, `k = 3`
+> (escolhido) fica em ≈ 0,128 e `k = 2` em ≈ 0,124, mas `k = 8` (≈
+> 0,125) e `k = 5` (≈ 0,123) estão praticamente empatados: a curva é
+> quase plana, e o “máximo” é decidido por diferenças na terceira casa
+> decimal. Duas lições. Primeiro, quando a curva é plana, o `k`
+> automático é frágil; olhe os termos distintivos (seção 4.4) de cada
+> `k` candidato antes de decidir. Segundo, o nível absoluto importa:
+> Kaufman & Rousseeuw (1990, p. 88) leem silhueta média acima de 0,70
+> como estrutura forte, 0,51-0,70 razoável, 0,26-0,50 fraca e **até 0,25
+> como ausência de estrutura substancial**. Aqui todos os valores estão
+> nessa última faixa, mesmo com os dois temas recuperados sem erro
+> (seção 6). A razão é o tamanho dos textos: com 6 palavras por
+> documento, quase todo par de documentos compartilha pouco vocabulário,
+> então a distância até o próprio grupo e até o grupo vizinho ficam
+> parecidas. Silhueta baixa em textos curtos pede cautela, não
+> necessariamente descarte, mas reporte o valor junto com os grupos.
 
 ### 4.6 Hard vs. soft: comparando com LDA
 
@@ -328,11 +341,15 @@ Este é o gráfico mais **didático** da vignette: mostra lado a lado como
 hard clustering e LDA veem o mesmo corpus. À esquerda, cada linha do
 heatmap é um documento e cada coluna, o cluster ao qual ele pertence
 (binário: 0 ou 1). À direita, cada linha é o mesmo documento e cada
-coluna é a proporção γ do tópico LDA: **um gradiente contínuo**.
+coluna é a proporção γ do tópico LDA, que **pode** variar continuamente
+entre 0 e 1.
 
 ``` r
 
-lda_fit <- ac_lda(corpus, k = 2, seed = 42)
+# Gibbs com alpha baixo: adequado a textos curtos de tema único
+# (ver vignette("lda"), seção 3)
+lda_fit <- ac_lda(corpus, k = 2, seed = 42, method = "Gibbs",
+                  control = list(alpha = 0.1, iter = 2000, burnin = 500))
 
 hard <- clust$assignments |>
   mutate(valor = 1, tipo = paste0("Cluster ", cluster)) |>
@@ -366,17 +383,23 @@ ggplot(plot_df, aes(tipo, doc_id, fill = valor)) +
 
 > **Como interpretar:** no painel “Hard clustering”, cada linha pinta
 > **uma única célula** (o documento é *do* grupo A ou *do* grupo B,
-> nunca os dois); no painel “LDA (soft)”, a cor se distribui em
-> gradiente entre as colunas de tópico — a maioria dos documentos
-> concentra quase toda a massa (`gamma`) num único tópico, mas alguns
-> ficam visivelmente repartidos entre dois. É a mesma tipologia latente,
-> expressa em duas métricas diferentes: hard clustering força uma
-> decisão binária onde LDA preserva a incerteza. Note também que este
-> gráfico compara o `clust` de **3** clusters (o `k` automático da seção
-> 3) com um LDA de `k = 2` **tópicos**: os números de grupo não precisam
-> bater para a comparação fazer sentido — o que importa é a forma da
-> matriz (uma célula acesa vs. um gradiente), não o número de colunas em
-> cada painel.
+> nunca os dois). No painel “LDA (soft)”, a cor poderia se distribuir
+> entre as colunas, mas neste corpus quase não se distribui: o LDA
+> separa os dois temas sem erro e dá ≈ 0,98 de γ ao tópico principal de
+> **todos** os 16 documentos. Isso é o resultado correto, não uma falha
+> da comparação: cada documento foi escrito sobre um único tema, então
+> não há mistura a revelar. O γ mede **pertencimento misto** (que fração
+> do documento é sobre cada tópico), não incerteza sobre qual é o
+> “verdadeiro” grupo do documento (Airoldi et al., 2014); ele só se
+> afasta do 0/1 do hard clustering quando os textos de fato misturam
+> temas, como os discursos longos e os casos ambíguos da
+> [`vignette("lda")`](https://andersonheri.github.io/acR/articles/lda.md),
+> seção 8. Dois detalhes: (1) com o ajuste padrão (`method = "VEM"`),
+> este mesmo corpus dá γ ≈ 0,50/0,50 para todo documento, um modelo que
+> não aprendeu nada, daí o uso de Gibbs com α baixo; (2) o gráfico
+> compara o `clust` de **3** clusters (o `k` automático da seção 3) com
+> um LDA de `k = 2` **tópicos**: os números de colunas não precisam
+> bater, o que importa é a forma da matriz.
 
 ## 5. Validando contra a verdade
 
@@ -469,12 +492,17 @@ exemplares de cada tipologia latente.
 
 - Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet
   Allocation. *JMLR*, 3, 993–1022 (o paper original do LDA).
+- Airoldi, E. M.; Blei, D.; Erosheva, E. A.; Fienberg, S. E. (Eds.)
+  (2014). *Handbook of Mixed Membership Models and Their Applications*.
+  Chapman & Hall/CRC.
 - Bezdek, J. C. (1981). *Pattern Recognition with Fuzzy Objective
   Function Algorithms*. Plenum (fuzzy c-means).
 - Kaufman, L. & Rousseeuw, P. J. (1990). *Finding Groups in Data*. Wiley
   (PAM e silhueta).
 - Manning, C., Raghavan, P. & Schütze, H. (2008). *Introduction to
   Information Retrieval*. Cambridge University Press. Cap. 16–17.
+- Salton, G. & McGill, M. J. (1983). *Introduction to Modern Information
+  Retrieval*. McGraw-Hill.
 - Murtagh, F. & Legendre, P. (2014). Ward’s hierarchical agglomerative
   clustering method: Which algorithms implement Ward’s criterion?
   *Journal of Classification*, 31(3), 274–295.

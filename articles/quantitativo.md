@@ -81,13 +81,12 @@ Um erro comum em análise de conteúdo computacional é aplicar uma técnica
 isoladamente, sem o diagnóstico que justifica o resultado. A ordem
 abaixo segue a lógica de qualquer método reportável: primeiro você
 mostra que o corpus é adequado para a análise, depois descreve seu
-conteúdo, e só então compara grupos ou constrói escalas. Pular etapas é
-o motivo mais comum de revisores pedirem reanálise.
+conteúdo, e só então compara grupos ou constrói escalas.
 
 | Ordem | Etapa | Por que vem nessa posição |
 |:--:|----|----|
 | 1 | Limpeza e tokenização (§2-3) | Sem isso, qualquer contagem é dominada por artigos e preposições, mascarando o sinal. |
-| 2 | Diagnóstico do corpus (§10-11) | Legibilidade e diversidade lexical descrevem *o material em si*: um corpus muito homogêneo ou pouco diverso limita o que qualquer análise posterior pode revelar. A Lei de Zipf confirma que o corpus se comporta como linguagem natural, não como ruído ou dados malformados. |
+| 2 | Diagnóstico do corpus (§10-11) | Legibilidade e diversidade lexical descrevem *o material em si*: um corpus muito homogêneo ou pouco diverso limita o que qualquer análise posterior pode revelar. Um desvio forte da Lei de Zipf pode sinalizar ruído ou dados malformados (ela vale de forma muito geral para texto natural; Piantadosi, 2014), embora não prove sozinha que os dados estão bons. |
 | 3 | Frequência e distintividade (§5, §7) | Primeiro você descreve o vocabulário geral (frequência), depois o que é próprio de cada documento (TF-IDF). Isso ancora a leitura qualitativa dos resultados seguintes. |
 | 4 | Comparação entre grupos (§8, §13) | *Keyness* e série temporal respondem à pergunta comparativa central da maioria dos estudos: o que muda entre grupos ou ao longo do tempo. Só faz sentido depois que o vocabulário geral já foi descrito. |
 | 5 | Associação e contexto (§9, §12) | Coocorrência, colocações e KWIC aprofundam *por que* um termo é relevante, qualificando os achados das etapas 3-4 com evidência de uso em contexto. |
@@ -396,10 +395,24 @@ ac_plot_keyness(kn, n = 10) +
 
 ![](quantitativo_files/figure-html/keyness-1.png)
 
-Interpretação: chi-quadrado alto indica **sobre-representação
-estatística**. Termos como *deficit* e *orçamento* marcam o eixo fiscal;
-*carga* e *renda* o tributário, resultado consistente com o corpus de
-exemplo.
+> **Como interpretar:** o sinal diz o lado (positivo = mais frequente em
+> `fiscal`, negativo = em `tributário`) e o valor absoluto, o tamanho do
+> qui-quadrado da tabela 2x2 daquele termo. Aqui, *tributária*,
+> *reforma* e *empresas* marcam o lado tributário (3 ou 2 ocorrências
+> lá, nenhuma no fiscal), e *orcamento* e *oposicao* o lado fiscal (2
+> contra 0). Mas cuidado ao chamar isso de “significativo”: só
+> *tributária* passa do valor crítico de 3,84 (p \< 0,05 com 1 g.l.), e
+> por pouco (χ² ≈ 4,55). Três razões para ler esses números como
+> descritivos, não como testes: (1) os dois grupos somam só 51 tokens, e
+> com contagens esperadas abaixo de 5 a aproximação do qui-quadrado é
+> pouco confiável, o que levou Dunning (1993) a propor o log-likelihood
+> (`measure = "ll"`) para eventos raros; (2) testar dezenas de termos ao
+> mesmo tempo faz alguns passarem de 3,84 só por acaso, e um critério
+> com correção para comparações múltiplas (Benjamini & Hochberg, 1995)
+> eliminaria até *tributária*; (3) keyness mede diferença de frequência,
+> não relevância teórica. Em corpora reais, com milhares de tokens por
+> grupo, os mesmos cálculos ganham poder; o ranking dos termos, que é o
+> que o gráfico mostra, já é útil mesmo aqui.
 
 ## 9. Rede de co-ocorrência
 
@@ -523,10 +536,12 @@ conteúdo:
   técnico com a de um texto de divulgação para o público geral.
 - **Diversidade lexical**
   ([`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md)):
-  o vocabulário é rico ou repetitivo? TTR é sensível ao tamanho do
-  texto; Herdan’s C (Herdan,
-  1960. e o MTLD (McCarthy & Jarvis, 2010) corrigem isso: o MTLD é a
-        métrica recomendada para comparar textos de tamanhos diferentes.
+  o vocabulário é rico ou repetitivo? A TTR cai mecanicamente quando o
+  texto cresce, porque palavras começam a se repetir. O C de Herdan
+  (Herdan, 1960) atenua esse efeito, mas não o elimina (Tweedie &
+  Baayen, 1998); o MTLD foi a medida menos sensível ao tamanho do texto
+  entre as avaliadas por McCarthy & Jarvis (2010), que a recomendam para
+  comparar textos de tamanhos diferentes.
 
 ``` r
 
@@ -560,17 +575,16 @@ ac_readability(corpus_aval)
 > combinação linear de duas razões (palavras/frase e sílabas/palavra)
 > sem teto nem piso, e pode produzir valores negativos em textos muito
 > densos, como o manual técnico do exemplo (-18.5). A coluna `nivel`
-> categoriza o escore em quatro faixas (adaptadas da literatura
-> educacional brasileira que usa o índice): `>= 75` muito fácil,
-> `50-74,9` fácil, `25-49,9` difícil, `< 25` muito difícil. Note que
-> mesmo a avaliação curta e coloquial (“Bom. Chegou. Funciona.”) cai em
-> *difícil* (36.3), não em *fácil*: o peso do termo sílabas/palavra na
-> fórmula (84,6×) é alto o bastante para que poucas palavras longas já
-> derrubem o escore, mesmo com frases curtas. Ainda assim, pontua bem
-> mais alto que o manual técnico (-18.5): a métrica mede *forma*, não
-> qualidade do conteúdo, e seu valor está em comparações relativas entre
-> textos, não em ler o número isolado contra uma escala fixa de
-> “bom”/“ruim”.
+> categoriza o escore nas quatro faixas de Martins et al. (1996),
+> calibradas em livros didáticos: `>= 75` muito fácil, `50-74,9` fácil,
+> `25-49,9` difícil, `< 25` muito difícil. Note que mesmo a avaliação
+> curta e coloquial (“Bom. Chegou. Funciona.”) cai em *difícil* (36.3),
+> não em *fácil*: o peso do termo sílabas/palavra na fórmula (84,6×) é
+> alto o bastante para que poucas palavras longas já derrubem o escore,
+> mesmo com frases curtas. Ainda assim, pontua bem mais alto que o
+> manual técnico (-18.5): a métrica mede *forma*, não qualidade do
+> conteúdo, e seu valor está em comparações relativas entre textos, não
+> em ler o número isolado contra uma escala fixa de “bom”/“ruim”.
 
 ``` r
 
@@ -584,20 +598,22 @@ ac_lexical_diversity(corpus_aval)
 #> 4 rev4         30      25 0.833    0.946  50.4
 ```
 
-> **Como interpretar:** o MTLD (McCarthy & Jarvis, 2010) não tem um
-> limite teórico fixo, mas na prática valores abaixo de 40-50 costumam
-> indicar vocabulário repetitivo (poucas palavras diferentes sustentando
-> o texto); valores acima de 80-100 indicam vocabulário variado.
-> **Atenção a textos muito curtos:** o algoritmo mede quantas vezes o
-> TTR acumulado cai abaixo de um limiar (0,72) conforme o texto avança;
-> se o documento termina antes de atingir esse limiar mesmo uma vez
-> (como `rev1` e `rev3` aqui, com vocabulário 100% único), a métrica
+> **Como interpretar:** o MTLD (McCarthy & Jarvis, 2010) é o comprimento
+> médio, em tokens, de um trecho de texto que mantém a TTR acima de
+> 0,72: quanto maior, mais palavras o autor consegue usar antes de
+> começar a se repetir. Não há faixas universais de “baixo” e “alto” (o
+> valor depende de gênero e língua), então compare só textos do mesmo
+> tipo. **Atenção a textos muito curtos:** o algoritmo mede quantas
+> vezes o TTR acumulado cai abaixo de um limiar (0,72) conforme o texto
+> avança; se o documento termina antes de atingir esse limiar mesmo uma
+> vez (como `rev1` e `rev3` aqui, com vocabulário 100% único), a métrica
 > devolve o próprio número de tokens, não uma medida de diversidade de
 > fato. Por isso `rev1` (10 tokens) e `rev3` (4 tokens) têm MTLD igual à
-> sua contagem de palavras: a literatura de diversidade lexical
-> recomenda amostras mais longas (dezenas a centenas de tokens) para o
-> MTLD estabilizar como medida comparável. Compare sempre o MTLD entre
-> textos de tamanho semelhante, nunca em isolado.
+> sua contagem de palavras. McCarthy & Jarvis (2010) validaram o MTLD em
+> textos de cerca de 100 a 2.000 palavras, e Koizumi (2012) mostra que
+> ele fica instável abaixo de ~100 tokens: os 4 exemplos aqui (4 a 30
+> tokens) servem para mostrar o cálculo, não para comparar riqueza
+> lexical.
 
 ``` r
 
@@ -973,20 +989,20 @@ corpus_resenhas <- ac_corpus(resenhas, text = texto, docid = id)
 
 # r1, r2, r3, r4, r5, r6, r7 tem nota conhecida; r8 e r9 sao "virgens"
 notas <- c(r1 = 5, r2 = 5, r3 = 4, r4 = 3, r5 = 2, r6 = 1, r7 = 1)
-wordscores <- ac_wordscores(corpus_resenhas, notas, rescale = "lbg")
+wordscores <- ac_wordscores(corpus_resenhas, notas, rescale = "mv")
 wordscores
 #> # A tibble: 9 × 4
 #>   doc_id score score_raw is_reference
 #>   <chr>  <dbl>     <dbl> <lgl>       
-#> 1 r1     4.55       4.19 TRUE        
-#> 2 r2     5.31       4.77 TRUE        
-#> 3 r3     4.08       3.83 TRUE        
-#> 4 r4     2.93       2.94 TRUE        
-#> 5 r5     2.12       2.33 TRUE        
-#> 6 r6     0.599      1.16 TRUE        
-#> 7 r7     1.40       1.78 TRUE        
-#> 8 r8     4.21       3.92 FALSE       
-#> 9 r9     2.97       2.98 FALSE
+#> 1 r1     4.71       4.23 TRUE        
+#> 2 r2     5.29       4.65 TRUE        
+#> 3 r3     4.18       3.83 TRUE        
+#> 4 r4     3.03       2.98 TRUE        
+#> 5 r5     2.14       2.33 TRUE        
+#> 6 r6     0.552      1.16 TRUE        
+#> 7 r7     1.45       1.82 TRUE        
+#> 8 r8     4.30       3.92 FALSE       
+#> 9 r9     3.53       3.35 FALSE
 ```
 
 ``` r
@@ -998,21 +1014,32 @@ ac_plot_wordscores(wordscores)
 
 > **Como interpretar:** cada ponto é um documento, ordenado pelo `score`
 > estimado; a cor diferencia referência (nota conhecida) de estimado
-> (virgem). A escala é relativa, não absoluta: um escore de 4.2 só tem
-> sentido comparado aos escores de referência (aqui, de 1 a 5), não como
-> nota objetiva. O teste de sanidade do método está nos dois pontos
-> cinzas: `r8` (texto claramente entusiasmado: “simplesmente perfeito”)
-> foi estimado perto de `r1`/`r3`, na faixa alta da escala; `r9` (texto
-> deliberadamente mediano: “nem bom nem ruim”) foi estimado bem perto de
-> `r4`, a referência de nota 3. O método nunca viu uma nota para `r8` ou
-> `r9`: a posição vem inteiramente do vocabulário aprendido com as
-> referências. Quando um documento estimado fica muito perto de uma
-> única referência, ele compartilha bastante vocabulário com ela; no
-> meio da escala, o resultado costuma ser ambiguidade real do texto, não
-> erro do método.
+> (virgem). Usamos `rescale = "mv"` (Martin & Vanberg, 2008). Compare as
+> colunas `score_raw` e `score` da tabela: os escores brutos vão só de ≈
+> 1,16 a ≈ 4,65, mais comprimidos que as notas de 1 a 5, porque palavras
+> comuns a todas as avaliações (“produto”, “qualidade”) puxam todo mundo
+> para o centro. A transformação MV estica a escala ancorando-a nas
+> referências extremas (as de nota 1 e as de nota 5). Primeiro teste de
+> sanidade, nas próprias referências: `r3` (nota 4) sai em ≈ 4,18, `r4`
+> (nota 3) em ≈ 3,03 e `r5` (nota 2) em ≈ 2,14, perto das notas
+> verdadeiras. Segundo teste, nos dois virgens: `r8` (“simplesmente
+> perfeito”) fica em ≈ 4,30, entre as referências de nota 4 e 5, e `r9`
+> (“nem bom nem ruim, mediano”) em ≈ 3,53, entre as de nota 3 e 4. O
+> `r9` não cai exatamente em 3 porque contém “bom”, palavra que no
+> conjunto de referência só aparece em avaliações positivas: o método
+> conta palavras e não entende a negação em “nem bom”. A escala é
+> relativa às referências: um escore de 4,3 não é uma “nota”, é uma
+> posição comparável à delas.
+>
+> Por que não `rescale = "lbg"`? A transformação de Laver, Benoit &
+> Garry (2003) usa a média e o desvio-padrão dos próprios documentos
+> virgens. Com só 2 virgens, como aqui, ela sempre os coloca a ≈ 0,71
+> desvio-padrão para cada lado da média deles, seja qual for o texto;
+> por isso a função avisa. Martin & Vanberg (2008) propuseram a MV
+> justamente para não depender do conjunto de virgens.
 
-Uma visão complementar, útil para apresentar a escala completa num
-relatório, é ordenar os documentos num eixo horizontal:
+Uma alternativa que aparece com frequência em relatórios, mas que exige
+cuidado, é o gráfico de barras:
 
 ``` r
 
@@ -1031,15 +1058,17 @@ ggplot2::ggplot(wordscores, ggplot2::aes(x = score, y = doc_id, fill = is_refere
 
 ![](quantitativo_files/figure-html/wordscores-bar-1.png)
 
-> **Como interpretar:** o conteúdo é o mesmo do gráfico de pontos acima
-> — a diferença é só de leitura. Barras horizontais facilitam comparar
-> **o tamanho relativo** entre documentos vizinhos na escala (a barra de
-> `r8` é visivelmente maior que a de `r3`, por exemplo), o que fica mais
-> difícil de perceber a olho nu num gráfico de pontos. Use a versão de
-> pontos para explorar os dados durante a análise, e esta versão de
-> barras quando for apresentar o ranking completo num relatório ou
-> slide, onde o comprimento da barra comunica a posição mais diretamente
-> que a posição de um ponto isolado.
+> **Como interpretar:** o ranking é o mesmo do gráfico de pontos, mas
+> este gráfico tem uma armadilha: o comprimento de uma barra é lido como
+> uma quantidade medida a partir do zero (Cleveland, 1985), e aqui o
+> zero não significa nada. A escala do Wordscores é posicional e
+> relativa às referências; `r6` só fica com uma barra curtinha (≈ 0,55)
+> porque a escala MV pode passar um pouco das notas de referência, não
+> porque seja “quase nada”. Por isso a razão entre duas barras (ex.:
+> “`r8` tem o dobro de `r5`”) não tem interpretação. Para apresentar a
+> escala, prefira o gráfico de pontos (Cleveland, 1985, recomenda *dot
+> plots* justamente quando o eixo não tem um zero significativo); use
+> barras apenas para quantidades com zero real, como contagens.
 
 ### 15. Dicionários multi-categoria, emoções e validação
 
@@ -1221,9 +1250,11 @@ ac_dictionary_validate(resultado_dict, humano)
 > importa mais depende do uso: numa triagem para revisão humana, recall
 > alto é mais importante (não quer perder casos); num relatório
 > automático sem revisão, precisão alta é mais importante (não quer
-> alarmes falsos). Krippendorff (2018) considera `krippendorff_alfa`
-> acima de 0.80 adequado para publicação sem reservas, e entre 0.67 e
-> 0.80 aceitável com discussão dos casos divergentes no texto.
+> alarmes falsos). Krippendorff (2018, sec. 12.4) exige
+> `krippendorff_alfa` de pelo menos 0,800 para conclusões sem ressalvas
+> e aceita entre 0,667 e 0,800 só para conclusões provisórias. Com 6
+> documentos, como aqui, nenhuma dessas faixas pode ser afirmada: o
+> exemplo ilustra o cálculo, não um tamanho de amostra adequado.
 
 ### 16. Análise de correspondência (CA): um mapa de grupos e termos
 
@@ -1231,10 +1262,10 @@ Quando queremos visualizar em 2D como o vocabulário difere entre grupos,
 sem assumir um número de tópicos latentes (como em
 [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md)), a
 Análise de Correspondência (Greenacre, 2007) posiciona grupos e termos
-no mesmo espaço geométrico. A lógica geométrica é simples: pontos
-próximos tendem a co-ocorrer mais do que o esperado pelo acaso, e a
-distância até a origem indica quão distintivo (vs. genérico) é um termo
-ou grupo.
+no mesmo espaço geométrico. A distância até a origem indica quão
+distintivo (vs. genérico) é um termo ou grupo; grupos próximos entre si
+têm vocabulário parecido, e termos próximos entre si são usados de forma
+parecida.
 
 ``` r
 
@@ -1260,9 +1291,14 @@ ac_plot_ca(ca)
 ![](quantitativo_files/figure-html/ca-1.png)
 
 > **Como interpretar:** os pontos verdes são grupos (aqui, categorias de
-> atendimento); os triângulos roxos são termos. Um termo próximo de um
-> grupo é característico dele; um termo perto da origem (o cruzamento
-> dos eixos) é genérico, usado de forma parecida por todos os grupos. As
+> atendimento); os triângulos roxos são termos. Este é um mapa
+> “simétrico”: compare grupos com grupos e termos com termos pela
+> distância, mas leia a relação **grupo-termo** pela **direção** a
+> partir da origem, não pela distância entre os dois pontos, que nesse
+> tipo de mapa não tem interpretação direta (Greenacre, 2007, cap. 8-9).
+> Um termo longe da origem e na mesma direção de um grupo é
+> característico dele; um termo perto da origem (o cruzamento dos eixos)
+> é genérico, usado de forma parecida por todos os grupos. As
 > porcentagens nos títulos dos eixos (`Dim 1`, `Dim 2`) indicam quanto
 > da variação total cada dimensão explica: se a Dim 1 já explica a maior
 > parte, o mapa 2D captura bem a estrutura; se as duas dimensões
@@ -1293,12 +1329,16 @@ ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
 
 ## Referências
 
+- Benjamini, Y.; Hochberg, Y. (1995). Controlling the False Discovery
+  Rate: A Practical and Powerful Approach to Multiple Testing. *Journal
+  of the Royal Statistical Society: Series B*, 57(1), 289-300.
 - Church, K. W.; Hanks, P. (1990). Word Association Norms, Mutual
   Information, and Lexicography. *Computational Linguistics*, 16(1),
   22-29.
 - Cleveland, W. S. (1979). Robust Locally Weighted Regression and
   Smoothing Scatterplots. *Journal of the American Statistical
   Association*, 74(368), 829-836.
+- Cleveland, W. S. (1985). *The Elements of Graphing Data*. Wadsworth.
 - Dunning, T. (1993). Accurate Methods for the Statistics of Surprise
   and Coincidence. *Computational Linguistics*, 19(1), 61-74.
 - Flesch, R. (1948). A New Readability Yardstick. *Journal of Applied
@@ -1309,12 +1349,15 @@ ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
   Pitfalls of Automatic Content Analysis Methods for Political Texts.
   *Political Analysis*, 21(3), 267-297.
 - Herdan, G. (1960). *Type-Token Mathematics*. Mouton.
+- Koizumi, R. (2012). Relationships between text length and lexical
+  diversity measures: Can we use short texts of less than 100 tokens?
+  *Vocabulary Learning and Instruction*, 1(1), 60-69.
 - Krippendorff, K. (2018). *Content Analysis: An Introduction to Its
   Methodology*. 4. ed. SAGE.
 - Laver, M.; Benoit, K.; Garry, J. (2003). Extracting Policy Positions
   from Political Texts Using Words as Data. *American Political Science
   Review*, 97(2), 311-331.
-- Martin, L. W.; Vanberg, G. (2007). A Robust Transformation Procedure
+- Martin, L. W.; Vanberg, G. (2008). A Robust Transformation Procedure
   for Interpreting Political Text. *Political Analysis*, 16(1), 93-100.
 - Martins, T. B. F. et al. (1996). Readability formulas applied to
   textbooks in Brazilian Portuguese. *Memorandum*, 28.
@@ -1323,6 +1366,9 @@ ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
   assessment. *Behavior Research Methods*, 42(2), 381-392.
 - Mohammad, S. M.; Turney, P. D. (2013). Crowdsourcing a Word-Emotion
   Association Lexicon. *Computational Intelligence*, 29(3), 436-465.
+- Piantadosi, S. T. (2014). Zipf’s word frequency law in natural
+  language: A critical review and future directions. *Psychonomic
+  Bulletin & Review*, 21(5), 1112-1130.
 - Sampaio, R. C.; Lycarião, D. (2021). *Análise de conteúdo categorial:
   manual de aplicação*. ENAP.
 - Silge, J.; Robinson, D. (2017). *Text Mining with R*. O’Reilly.
@@ -1330,6 +1376,9 @@ ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
   University Press.
 - Stone, P. J. et al. (1966). *The General Inquirer: A Computer Approach
   to Content Analysis*. MIT Press.
+- Tweedie, F. J.; Baayen, R. H. (1998). How variable may a constant be?
+  Measures of lexical richness in perspective. *Computers and the
+  Humanities*, 32(5), 323-352.
 - Welbers, K.; Van Atteveldt, W.; Benoit, K. (2017). Text Analysis in R.
   *Communication Methods and Measures*, 11(4), 245-265.
 - Zipf, G. K. (1949). *Human Behavior and the Principle of Least

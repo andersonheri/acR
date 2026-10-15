@@ -18,16 +18,48 @@ pergunta diferente:
 
 - **Alpha de Krippendorff** (`krippendorff`): padrão-ouro em análise de
   conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
-  número de categorias. Valores \> 0,80 = quase perfeita; \> 0,67 =
-  aceitável para publicação; \< 0,60 = codebook precisa ser refinado.
+  número de categorias. Krippendorff (2018, sec. 12.4) recomenda alfa
+  \>= 0,800 para conclusões sem ressalvas e 0,667 \<= alfa \< 0,800
+  apenas para conclusões provisórias; abaixo de 0,667 os dados não devem
+  sustentar conclusões.
 
-- **AC1 de Gwet** (`gwet_ac1`): alternativa a Krippendorff mais estável
-  quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
-  kappa despenca com alta concordância se uma categoria domina).
+- **AC1 de Gwet** (`gwet_ac1`): alternativa mais estável quando as
+  categorias são muito desbalanceadas (o "paradoxo do kappa" de
+  Feinstein & Cicchetti, 1990: kappa despenca mesmo com alta
+  concordância observada se uma categoria domina). Gwet (2014) propõe o
+  AC1 justamente para esse caso.
 
-- **F1 macro** (`f1_macro`): média não ponderada dos F1 por categoria.
-  Útil quando você quer garantir que a LLM está indo bem também nas
-  categorias raras, não só nas frequentes.
+- **F1 macro** (`f1_macro`): média não ponderada dos F1 por categoria
+  (Sokolova & Lapalme, 2009). Útil quando você quer garantir que a LLM
+  está indo bem também nas categorias raras, não só nas frequentes.
+  **Não** é corrigido por acaso, então não deve ser lido com as faixas
+  de Landis & Koch (1977), que foram propostas para o kappa.
+
+### Como a coluna `interpretation` é preenchida
+
+Cada métrica usa a referência própria dela, para não misturar escalas:
+
+- **Alpha de Krippendorff**: `>= 0,800` confiável; `0,667-0,800` só
+  conclusões provisórias; `< 0,667` insuficiente (Krippendorff, 2018).
+
+- **AC1 de Gwet**: faixas de Landis & Koch (1977): `< 0` pobre; `0-0,20`
+  leve; `0,21-0,40` razoável; `0,41-0,60` moderada; `0,61-0,80`
+  substancial; `0,81-1` quase perfeita. Gwet (2014, cap. 6) usa essas
+  faixas como referência de *benchmarking*.
+
+- **Percent agreement**: `>= 0,90` alta; `0,80-0,90` aceitável na
+  maioria dos casos; `0,70-0,80` só em estudos exploratórios; `< 0,70`
+  insuficiente (Neuendorf, 2017; Lombard, Snyder-Duch & Bracken, 2002).
+
+- **F1 macro**: não há faixa canônica na literatura; o valor é reportado
+  sem rótulo qualitativo.
+
+Essas faixas são convenções, não testes estatísticos: o próprio Landis &
+Koch (1977, p. 165) as chamam de arbitrárias. Por isso o IC *bootstrap*
+importa: um alfa de 0,82 com IC de 0,61 a 0,95 **não** permite afirmar
+que a confiabilidade passa de 0,800 (Krippendorff, 2018, sec. 12.5,
+decide justamente pela probabilidade de o alfa ficar abaixo do mínimo
+exigido).
 
 Intervalos de confiança de 95% vêm de *bootstrap* não paramétrico
 (padrão: 1000 réplicas). Reporte pelo menos Krippendorff e F1 macro no
@@ -125,6 +157,21 @@ Advanced Analytics.
 Landis, J. R.; Koch, G. G. (1977). The Measurement of Observer Agreement
 for Categorical Data. *Biometrics*, 33(1), 159-174.
 
+Feinstein, A. R.; Cicchetti, D. V. (1990). High agreement but low kappa:
+I. The problems of two paradoxes. *Journal of Clinical Epidemiology*,
+43(6), 543-549.
+
+Lombard, M.; Snyder-Duch, J.; Bracken, C. C. (2002). Content analysis in
+mass communication: Assessment and reporting of intercoder reliability.
+*Human Communication Research*, 28(4), 587-604.
+
+Neuendorf, K. A. (2017). *The Content Analysis Guidebook* (2nd ed.).
+SAGE.
+
+Sokolova, M.; Lapalme, G. (2009). A systematic analysis of performance
+measures for classification tasks. *Information Processing &
+Management*, 45(4), 427-437.
+
 ## Examples
 
 ``` r
@@ -147,65 +194,15 @@ rel <- ac_qual_reliability(
   bootstrap = 50
 )
 #> Calculando confiabilidade em 5 documentos comuns...
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> Warning: NAs introduced by coercion
-#> ℹ Interpretação baseada em Landis & Koch (1977) e Gwet (2014).
+#> ℹ Interpretação: alfa por Krippendorff (2018); AC1 por Landis & Koch (1977) e
+#>   Gwet (2014); percentual por Neuendorf (2017); F1 sem rótulo.
 #> ℹ IC 95% via bootstrap (n = 50).
 print(rel)
 #> # A tibble: 4 × 5
 #>   metric             estimate ci_lower ci_upper interpretation                  
 #>   <chr>                 <dbl>    <dbl>    <dbl> <chr>                           
-#> 1 percent_agreement      0.8    0.4           1 boa (>= 80%)                    
-#> 2 krippendorff_alpha     0.64  -0.286         1 substancial (Landis & Koch, 197…
-#> 3 gwet_ac1               0.6   -0.0345        1 moderada (Landis & Koch, 1977)  
-#> 4 f1_macro               0.8    0.306         1 quase perfeita (Landis & Koch, …
+#> 1 percent_agreement      0.8     0.445        1 aceitável na maioria dos casos …
+#> 2 krippendorff_alpha     0.64   -0.125        1 insuficiente (< 0,667; Krippend…
+#> 3 gwet_ac1               0.6     0.231        1 substancial (Landis & Koch, 197…
+#> 4 f1_macro               0.8     0.306        1 sem faixa canônica (não corrigi…
 ```
