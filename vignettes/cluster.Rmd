@@ -35,7 +35,7 @@ set.seed(42)
 
 Nem toda pesquisa começa com um livro de códigos pronto. Às vezes você
 tem centenas de discursos, proposições ou entrevistas e precisa
-**descobrir tipologias latentes** — antes de rotular, antes de contar,
+**descobrir tipologias latentes**, antes de rotular, antes de contar,
 antes de qualquer LLM. É aí que entra o *clustering*: um algoritmo lê a
 matriz de vocabulário e devolve **uma etiqueta por documento**, agrupando
 o que se parece por co-ocorrência de termos.
@@ -148,16 +148,16 @@ clust
 
 Os padrões cobrem 80% dos casos:
 
-* **hclust + Ward.D2** — hierárquico, produz dendrograma interpretável.
-* **TF-IDF** — palavras raras e discriminantes contam mais.
-* **Distância cosseno** — o clássico em texto (invariante a tamanho de
+* **hclust + Ward.D2**: hierárquico, produz dendrograma interpretável.
+* **TF-IDF**: palavras raras e discriminantes contam mais.
+* **Distância cosseno**: o clássico em texto (invariante a tamanho de
   documento).
-* **`k` automático por silhueta** — testa `k ∈ {2, …, 8}` e escolhe o
+* **`k` automático por silhueta**: testa `k ∈ {2, …, 8}` e escolhe o
   melhor (requer pacote `cluster`).
 
 ## 4. Seis formas de olhar para o mesmo cluster
 
-### 4.1 Dendrograma — a árvore das fusões
+### 4.1 Dendrograma: a árvore das fusões
 
 Mostra a ordem em que documentos foram unidos e a **altura** de cada
 fusão. Cortes altos separam grupos sólidos; cortes baixos indicam
@@ -167,7 +167,7 @@ agrupamentos frouxos.
 ac_plot_cluster(clust, kind = "dendrogram")
 ```
 
-### 4.2 Projeção PCA — a geometria do corpus
+### 4.2 Projeção PCA: a geometria do corpus
 
 Cada documento vira um ponto no plano das duas componentes principais.
 Documentos com vocabulário parecido ficam próximos; a cor mostra a
@@ -177,7 +177,7 @@ divisão do algoritmo.
 ac_plot_cluster(clust, kind = "scatter")
 ```
 
-### 4.3 Mapa de calor — a assinatura da separação
+### 4.3 Mapa de calor: a assinatura da separação
 
 Ordena os documentos pelo dendrograma e desenha a matriz de
 dissimilaridade inteira. **Blocos escuros na diagonal** são o carimbo
@@ -225,7 +225,7 @@ ggplot(top_por_cluster, aes(tf_idf, token, fill = doc_id)) +
   theme_ac()
 ```
 
-### 4.5 Curva de silhueta — escolhendo `k` visualmente
+### 4.5 Curva de silhueta: escolhendo `k` visualmente
 
 Quando o `k` automático parecer arbitrário, olhe para a curva. A
 silhueta média de cada `k` diz o quão *coeso* é o agrupamento naquele
@@ -260,13 +260,13 @@ if (requireNamespace("cluster", quietly = TRUE)) {
 }
 ```
 
-### 4.6 Hard vs. soft — comparando com LDA
+### 4.6 Hard vs. soft: comparando com LDA
 
 Este é o gráfico mais **didático** da vignette: mostra lado a lado como
 hard clustering e LDA veem o mesmo corpus. À esquerda, cada linha do
 heatmap é um documento e cada coluna, o cluster ao qual ele pertence
 (binário: 0 ou 1). À direita, cada linha é o mesmo documento e cada
-coluna é a proporção γ do tópico LDA — **um gradiente contínuo**.
+coluna é a proporção γ do tópico LDA: **um gradiente contínuo**.
 
 ```{r plot-lda-vs-cluster, fig.height=5.5}
 lda_fit <- ac_lda(corpus, k = 2, seed = 42)
@@ -301,7 +301,7 @@ ggplot(plot_df, aes(tipo, doc_id, fill = valor)) +
 
 Note como o hard clustering sempre pinta uma célula por linha (o
 documento é *do* grupo A ou *do* grupo B), enquanto o LDA distribui
-massa — a maior parte dos documentos é ~90% de um tópico, mas alguns
+massa: a maior parte dos documentos é ~90% de um tópico, mas alguns
 ficam repartidos. **É a mesma tipologia latente, expressa em duas
 métricas diferentes.**
 
@@ -318,7 +318,7 @@ validacao
 ```
 
 Se o algoritmo separou corretamente, cada `tema_real` deve concentrar-se
-num único cluster (permutação de rótulos é esperada — o clustering não
+num único cluster (permutação de rótulos é esperada: o clustering não
 sabe qual grupo é "democracia" ou "mercado", só que são diferentes).
 
 ## 6. Escolhendo o método
@@ -358,11 +358,11 @@ exemplares de cada tipologia latente.
 ## Referências
 
 * Blei, D. M., Ng, A. Y., & Jordan, M. I. (2003). Latent Dirichlet
-  Allocation. *JMLR*, 3, 993–1022. — o paper original do LDA.
+  Allocation. *JMLR*, 3, 993–1022 (o paper original do LDA).
 * Bezdek, J. C. (1981). *Pattern Recognition with Fuzzy Objective
-  Function Algorithms*. Plenum. — fuzzy c-means.
+  Function Algorithms*. Plenum (fuzzy c-means).
 * Kaufman, L. & Rousseeuw, P. J. (1990). *Finding Groups in Data*.
-  Wiley. — PAM e silhueta.
+  Wiley (PAM e silhueta).
 * Manning, C., Raghavan, P. & Schütze, H. (2008). *Introduction to
   Information Retrieval*. Cambridge University Press. Cap. 16–17.
 * Murtagh, F. & Legendre, P. (2014). Ward's hierarchical agglomerative
