@@ -1158,58 +1158,86 @@ entre si, é o gráfico de barras:</p>
 <p>Às vezes queremos posicionar documentos num espectro contínuo
 (favorável↔︎ desfavorável, satisfeito↔︎insatisfeito) sem codificar
 manualmente todos eles. O método Wordscores (Laver, Benoit &amp; Garry,
-2003) resolve isso em duas etapas: primeiro aprende quais palavras são
-típicas de cada extremo a partir de um pequeno conjunto de referência
-com posição conhecida, depois usa esse vocabulário aprendido para
-estimar a posição dos demais documentos (“virgens”). Aqui, avaliações de
-produto com nota conhecida servem de referência para estimar a
-satisfação implícita em avaliações sem nota.</p>
+2003) faz isso em duas etapas, de forma parecida com uma régua calibrada
+por exemplos conhecidos:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Aprender a régua.</strong> Você fornece um pequeno conjunto
+de documentos com posição <em>já conhecida</em> (aqui, a nota de 1 a 5
+que o cliente deu à avaliação). O método observa quais palavras aparecem
+mais em notas altas e quais aparecem mais em notas baixas, construindo
+um “escore” implícito para cada palavra do vocabulário.</li>
+<li>
+<strong>Aplicar a régua.</strong> Para cada documento
+<strong>sem</strong> nota conhecida (os “virgens”), o método olha o
+vocabulário usado e calcula uma média ponderada dos escores de palavra
+aprendidos na etapa 1 — produzindo uma posição estimada no mesmo
+espectro, sem nunca ter visto uma nota para aquele texto.</li>
+</ol>
+<p>O exemplo abaixo usa sete avaliações de produto com nota conhecida
+(de 1 a 5, incluindo duas em cada extremo para dar ao método mais
+vocabulário de referência) e duas avaliações <strong>sem nota</strong>,
+uma claramente entusiasmada e outra deliberadamente mediana, para ver se
+o método recupera essa diferença só pelo texto.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resenhas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"produto excelente, superou expectativas, recomendo muito"</span>,</span>
-<span>    <span class="st">"muito bom, chegou rápido e funciona perfeitamente"</span>,</span>
-<span>    <span class="st">"produto regular, cumpre o básico"</span>,</span>
-<span>    <span class="st">"não funcionou bem, qualidade ruim, não recomendo"</span>,</span>
-<span>    <span class="st">"péssimo, quebrado e com defeito, decepcao total"</span>,</span>
-<span>    <span class="st">"produto ok, nada de especial mas atende"</span></span>
+<span>    <span class="co"># Referencia: nota 5</span></span>
+<span>    <span class="st">"produto excelente, superou todas as expectativas, qualidade impecavel, recomendo muito a todos"</span>,</span>
+<span>    <span class="st">"amei esse produto, chegou rapido, funciona perfeitamente, melhor compra que fiz esse ano"</span>,</span>
+<span>    <span class="co"># Referencia: nota 4</span></span>
+<span>    <span class="st">"muito bom, chegou no prazo e funciona bem, pequenos detalhes a melhorar mas vale a pena"</span>,</span>
+<span>    <span class="co"># Referencia: nota 3</span></span>
+<span>    <span class="st">"produto regular, cumpre o basico, nada de especial mas tambem nao decepciona"</span>,</span>
+<span>    <span class="co"># Referencia: nota 2</span></span>
+<span>    <span class="st">"nao funcionou muito bem, qualidade deixou a desejar, esperava mais pelo preco pago"</span>,</span>
+<span>    <span class="co"># Referencia: nota 1</span></span>
+<span>    <span class="st">"pessimo, quebrado na caixa, com defeito serio, decepcao total com essa compra"</span>,</span>
+<span>    <span class="st">"produto horrivel, nao recomendo a ninguem, dinheiro jogado fora, qualidade pessima"</span>,</span>
+<span>    <span class="co"># "Virgens": sem nota, a estimar so pelo vocabulario</span></span>
+<span>    <span class="st">"simplesmente perfeito, superou expectativas, qualidade impecavel, recomendo de olhos fechados"</span>,</span>
+<span>    <span class="st">"produto ok, atende o basico, nem bom nem ruim, mediano"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">corpus_resenhas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">resenhas</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># r1, r2, r4, r5 com nota conhecida (1-5); r3 e r6 sao "virgens" a estimar</span></span>
-<span><span class="va">notas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r1 <span class="op">=</span> <span class="fl">5</span>, r2 <span class="op">=</span> <span class="fl">4</span>, r4 <span class="op">=</span> <span class="fl">2</span>, r5 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co"># r1, r2, r3, r4, r5, r6, r7 tem nota conhecida; r8 e r9 sao "virgens"</span></span>
+<span><span class="va">notas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>r1 <span class="op">=</span> <span class="fl">5</span>, r2 <span class="op">=</span> <span class="fl">5</span>, r3 <span class="op">=</span> <span class="fl">4</span>, r4 <span class="op">=</span> <span class="fl">3</span>, r5 <span class="op">=</span> <span class="fl">2</span>, r6 <span class="op">=</span> <span class="fl">1</span>, r7 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">wordscores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_wordscores.html">ac_wordscores</a></span><span class="op">(</span><span class="va">corpus_resenhas</span>, <span class="va">notas</span>, rescale <span class="op">=</span> <span class="st">"lbg"</span><span class="op">)</span></span>
 <span><span class="va">wordscores</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 4</span></span></span>
 <span><span class="co">#&gt;   doc_id score score_raw is_reference</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> r1     4.97       4.69 TRUE        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> r2     4.00       3.86 TRUE        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> r3     5.33       5    FALSE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> r4     2.11       2.23 TRUE        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> r5     0.923      1.21 TRUE        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> r6     5.33       5    FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> r1     4.55       4.19 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> r2     5.31       4.77 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> r3     4.08       3.83 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> r4     2.93       2.94 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> r5     2.12       2.33 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> r6     0.599      1.16 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> r7     1.40       1.78 TRUE        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> r8     4.21       3.92 FALSE       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> r9     2.97       2.98 FALSE</span></span></code></pre></div>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_wordscores.html">ac_plot_wordscores</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/wordscores-plot-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> a escala é relativa, não absoluta:
-um escore de 4.2 só tem sentido comparado aos escores de referência
-(aqui, de 1 a 5). Os pontos verdes (referência) ancoram a escala; os
-pontos cinzas (estimados) são a real saída do método. Documentos
-estimados muito próximos de uma única referência tendem a compartilhar
-bastante vocabulário com ela; documentos no meio da escala costumam ser
-ambíguos ou neutros, não necessariamente mal classificados. Note que
-<code>r3</code> e <code>r6</code> empatam em <code>score_raw = 5</code>,
-o teto da escala de referência (1-5): com um conjunto de referência tão
-pequeno (4 documentos), o método tem pouco vocabulário para diferenciar
-documentos que puxam fortemente para o mesmo extremo, e o rescalonamento
-<code>"lbg"</code> (Martin &amp; Vanberg, 2007) pode inclusive
-extrapolar ligeiramente além do teto (<code>score = 5.33</code>).
-Corpora de referência maiores reduzem esse efeito.</p>
+<p><strong>Como interpretar:</strong> cada ponto é um documento,
+ordenado pelo <code>score</code> estimado; a cor diferencia referência
+(nota conhecida) de estimado (virgem). A escala é relativa, não
+absoluta: um escore de 4.2 só tem sentido comparado aos escores de
+referência (aqui, de 1 a 5), não como nota objetiva. O teste de sanidade
+do método está nos dois pontos cinzas: <code>r8</code> (texto claramente
+entusiasmado: “simplesmente perfeito”) foi estimado perto de
+<code>r1</code>/<code>r3</code>, na faixa alta da escala;
+<code>r9</code> (texto deliberadamente mediano: “nem bom nem ruim”) foi
+estimado bem perto de <code>r4</code>, a referência de nota 3. O método
+nunca viu uma nota para <code>r8</code> ou <code>r9</code>: a posição
+vem inteiramente do vocabulário aprendido com as referências. Quando um
+documento estimado fica muito perto de uma única referência, ele
+compartilha bastante vocabulário com ela; no meio da escala, o resultado
+costuma ser ambiguidade real do texto, não erro do método.</p>
 </blockquote>
 <p>Uma visão complementar, útil para apresentar a escala completa num
 relatório, é ordenar os documentos num eixo horizontal:</p>
@@ -1226,6 +1254,18 @@ relatório, é ordenar os documentos num eixo horizontal:</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Escores Wordscores (barras)"</span>, x <span class="op">=</span> <span class="st">"Escore"</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/wordscores-bar-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> o conteúdo é o mesmo do gráfico de
+pontos acima — a diferença é só de leitura. Barras horizontais facilitam
+comparar <strong>o tamanho relativo</strong> entre documentos vizinhos
+na escala (a barra de <code>r8</code> é visivelmente maior que a de
+<code>r3</code>, por exemplo), o que fica mais difícil de perceber a
+olho nu num gráfico de pontos. Use a versão de pontos para explorar os
+dados durante a análise, e esta versão de barras quando for apresentar o
+ranking completo num relatório ou slide, onde o comprimento da barra
+comunica a posição mais diretamente que a posição de um ponto
+isolado.</p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="dicionários-multi-categoria-emoções-e-validação">15. Dicionários multi-categoria, emoções e validação<a class="anchor" aria-label="anchor" href="#dicion%C3%A1rios-multi-categoria-emo%C3%A7%C3%B5es-e-valida%C3%A7%C3%A3o"></a>

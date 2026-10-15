@@ -926,42 +926,67 @@ ggplot2::ggplot(serie, ggplot2::aes(x = period, y = value)) +
 Às vezes queremos posicionar documentos num espectro contínuo
 (favorável↔︎ desfavorável, satisfeito↔︎insatisfeito) sem codificar
 manualmente todos eles. O método Wordscores (Laver, Benoit & Garry,
-2003) resolve isso em duas etapas: primeiro aprende quais palavras são
-típicas de cada extremo a partir de um pequeno conjunto de referência
-com posição conhecida, depois usa esse vocabulário aprendido para
-estimar a posição dos demais documentos (“virgens”). Aqui, avaliações de
-produto com nota conhecida servem de referência para estimar a
-satisfação implícita em avaliações sem nota.
+2003) faz isso em duas etapas, de forma parecida com uma régua calibrada
+por exemplos conhecidos:
+
+1.  **Aprender a régua.** Você fornece um pequeno conjunto de documentos
+    com posição *já conhecida* (aqui, a nota de 1 a 5 que o cliente deu
+    à avaliação). O método observa quais palavras aparecem mais em notas
+    altas e quais aparecem mais em notas baixas, construindo um “escore”
+    implícito para cada palavra do vocabulário.
+2.  **Aplicar a régua.** Para cada documento **sem** nota conhecida (os
+    “virgens”), o método olha o vocabulário usado e calcula uma média
+    ponderada dos escores de palavra aprendidos na etapa 1 — produzindo
+    uma posição estimada no mesmo espectro, sem nunca ter visto uma nota
+    para aquele texto.
+
+O exemplo abaixo usa sete avaliações de produto com nota conhecida (de 1
+a 5, incluindo duas em cada extremo para dar ao método mais vocabulário
+de referência) e duas avaliações **sem nota**, uma claramente
+entusiasmada e outra deliberadamente mediana, para ver se o método
+recupera essa diferença só pelo texto.
 
 ``` r
 
 resenhas <- data.frame(
-  id = paste0("r", 1:6),
+  id = paste0("r", 1:9),
   texto = c(
-    "produto excelente, superou expectativas, recomendo muito",
-    "muito bom, chegou rápido e funciona perfeitamente",
-    "produto regular, cumpre o básico",
-    "não funcionou bem, qualidade ruim, não recomendo",
-    "péssimo, quebrado e com defeito, decepcao total",
-    "produto ok, nada de especial mas atende"
+    # Referencia: nota 5
+    "produto excelente, superou todas as expectativas, qualidade impecavel, recomendo muito a todos",
+    "amei esse produto, chegou rapido, funciona perfeitamente, melhor compra que fiz esse ano",
+    # Referencia: nota 4
+    "muito bom, chegou no prazo e funciona bem, pequenos detalhes a melhorar mas vale a pena",
+    # Referencia: nota 3
+    "produto regular, cumpre o basico, nada de especial mas tambem nao decepciona",
+    # Referencia: nota 2
+    "nao funcionou muito bem, qualidade deixou a desejar, esperava mais pelo preco pago",
+    # Referencia: nota 1
+    "pessimo, quebrado na caixa, com defeito serio, decepcao total com essa compra",
+    "produto horrivel, nao recomendo a ninguem, dinheiro jogado fora, qualidade pessima",
+    # "Virgens": sem nota, a estimar so pelo vocabulario
+    "simplesmente perfeito, superou expectativas, qualidade impecavel, recomendo de olhos fechados",
+    "produto ok, atende o basico, nem bom nem ruim, mediano"
   ),
   stringsAsFactors = FALSE
 )
 corpus_resenhas <- ac_corpus(resenhas, text = texto, docid = id)
 
-# r1, r2, r4, r5 com nota conhecida (1-5); r3 e r6 sao "virgens" a estimar
-notas <- c(r1 = 5, r2 = 4, r4 = 2, r5 = 1)
+# r1, r2, r3, r4, r5, r6, r7 tem nota conhecida; r8 e r9 sao "virgens"
+notas <- c(r1 = 5, r2 = 5, r3 = 4, r4 = 3, r5 = 2, r6 = 1, r7 = 1)
 wordscores <- ac_wordscores(corpus_resenhas, notas, rescale = "lbg")
 wordscores
-#> # A tibble: 6 × 4
+#> # A tibble: 9 × 4
 #>   doc_id score score_raw is_reference
 #>   <chr>  <dbl>     <dbl> <lgl>       
-#> 1 r1     4.97       4.69 TRUE        
-#> 2 r2     4.00       3.86 TRUE        
-#> 3 r3     5.33       5    FALSE       
-#> 4 r4     2.11       2.23 TRUE        
-#> 5 r5     0.923      1.21 TRUE        
-#> 6 r6     5.33       5    FALSE
+#> 1 r1     4.55       4.19 TRUE        
+#> 2 r2     5.31       4.77 TRUE        
+#> 3 r3     4.08       3.83 TRUE        
+#> 4 r4     2.93       2.94 TRUE        
+#> 5 r5     2.12       2.33 TRUE        
+#> 6 r6     0.599      1.16 TRUE        
+#> 7 r7     1.40       1.78 TRUE        
+#> 8 r8     4.21       3.92 FALSE       
+#> 9 r9     2.97       2.98 FALSE
 ```
 
 ``` r
@@ -971,19 +996,20 @@ ac_plot_wordscores(wordscores)
 
 ![](quantitativo_files/figure-html/wordscores-plot-1.png)
 
-> **Como interpretar:** a escala é relativa, não absoluta: um escore de
-> 4.2 só tem sentido comparado aos escores de referência (aqui, de 1 a
-> 5). Os pontos verdes (referência) ancoram a escala; os pontos cinzas
-> (estimados) são a real saída do método. Documentos estimados muito
-> próximos de uma única referência tendem a compartilhar bastante
-> vocabulário com ela; documentos no meio da escala costumam ser
-> ambíguos ou neutros, não necessariamente mal classificados. Note que
-> `r3` e `r6` empatam em `score_raw = 5`, o teto da escala de referência
-> (1-5): com um conjunto de referência tão pequeno (4 documentos), o
-> método tem pouco vocabulário para diferenciar documentos que puxam
-> fortemente para o mesmo extremo, e o rescalonamento `"lbg"` (Martin &
-> Vanberg, 2007) pode inclusive extrapolar ligeiramente além do teto
-> (`score = 5.33`). Corpora de referência maiores reduzem esse efeito.
+> **Como interpretar:** cada ponto é um documento, ordenado pelo `score`
+> estimado; a cor diferencia referência (nota conhecida) de estimado
+> (virgem). A escala é relativa, não absoluta: um escore de 4.2 só tem
+> sentido comparado aos escores de referência (aqui, de 1 a 5), não como
+> nota objetiva. O teste de sanidade do método está nos dois pontos
+> cinzas: `r8` (texto claramente entusiasmado: “simplesmente perfeito”)
+> foi estimado perto de `r1`/`r3`, na faixa alta da escala; `r9` (texto
+> deliberadamente mediano: “nem bom nem ruim”) foi estimado bem perto de
+> `r4`, a referência de nota 3. O método nunca viu uma nota para `r8` ou
+> `r9`: a posição vem inteiramente do vocabulário aprendido com as
+> referências. Quando um documento estimado fica muito perto de uma
+> única referência, ele compartilha bastante vocabulário com ela; no
+> meio da escala, o resultado costuma ser ambiguidade real do texto, não
+> erro do método.
 
 Uma visão complementar, útil para apresentar a escala completa num
 relatório, é ordenar os documentos num eixo horizontal:
@@ -1004,6 +1030,16 @@ ggplot2::ggplot(wordscores, ggplot2::aes(x = score, y = doc_id, fill = is_refere
 ```
 
 ![](quantitativo_files/figure-html/wordscores-bar-1.png)
+
+> **Como interpretar:** o conteúdo é o mesmo do gráfico de pontos acima
+> — a diferença é só de leitura. Barras horizontais facilitam comparar
+> **o tamanho relativo** entre documentos vizinhos na escala (a barra de
+> `r8` é visivelmente maior que a de `r3`, por exemplo), o que fica mais
+> difícil de perceber a olho nu num gráfico de pontos. Use a versão de
+> pontos para explorar os dados durante a análise, e esta versão de
+> barras quando for apresentar o ranking completo num relatório ou
+> slide, onde o comprimento da barra comunica a posição mais diretamente
+> que a posição de um ponto isolado.
 
 ### 15. Dicionários multi-categoria, emoções e validação
 

@@ -184,7 +184,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 15:51
+#> • Criado em: 15/10/2026 15:56
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
