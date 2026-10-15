@@ -821,18 +821,59 @@ Quando o corpus tem datas, perguntas que antes eram estáticas (quanto um
 termo aparece?) passam a ter uma dimensão temporal (quando ele aparece
 mais?). É essencial para cobertura jornalística, séries de atendimento
 ao cliente, ou qualquer corpus com carimbo de data (Welbers, Van
-Atteveldt & Benoit, 2017): a métrica agregada pode ser frequência de um
-termo, sentimento médio, ou qualquer saída numérica de outra função do
-pacote.
+Atteveldt & Benoit, 2017).
+
+[`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md)
+é deliberadamente genérica: a coluna numérica agregada (`value_col`)
+pode ser a saída de qualquer outra função do pacote (score de
+[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md),
+índice de
+[`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md),
+contagem de um termo de
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)…),
+desde que exista uma coluna de data no mesmo `data.frame`. Dois
+parâmetros controlam a agregação:
+
+- `unit`: o tamanho da janela de tempo: `"day"`, `"week"`, `"month"`
+  (padrão) ou `"year"`.
+- `stat`: como agregar os valores dentro de cada janela: `"mean"`
+  (padrão), `"sum"` ou `"n"` (conta documentos, ignorando `value_col`).
+
+No exemplo abaixo, `sentimento` já é o score de
+[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+pré-calculado para 8 notícias fictícias, cada uma com sua data de
+publicação:
 
 ``` r
 
 noticias <- data.frame(
-  data      = as.Date("2024-01-01") + c(0, 10, 20, 35, 50, 65, 80, 95),
+  data       = as.Date("2024-01-01") + c(0, 10, 20, 35, 50, 65, 80, 95),
   sentimento = c(0.2, 0.1, -0.1, -0.4, -0.3, 0.0, 0.3, 0.5)
 )
 serie <- ac_temporal(noticias, date_col = "data", value_col = "sentimento",
                       unit = "month", stat = "mean")
+serie
+#> # A tibble: 4 × 3
+#>   period       value n_docs
+#>   <date>       <dbl>  <int>
+#> 1 2024-01-01  0.0667      3
+#> 2 2024-02-01 -0.35        2
+#> 3 2024-03-01  0.15        2
+#> 4 2024-04-01  0.5         1
+```
+
+> **Como interpretar a tabela:**
+> [`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md)
+> devolve uma linha por período, com `period` (data de início da
+> janela), `value` (a estatística agregada, aqui a média do sentimento)
+> e `n_docs` (quantos documentos caíram naquele período). **Sempre olhe
+> `n_docs` antes do `value`**: um `value` calculado sobre 1 documento
+> (como o período de abril aqui) não é uma “média” de fato, é só aquele
+> documento isolado, e deve ser tratado com a mesma cautela que uma
+> amostra de n=1.
+
+``` r
+
 ac_plot_temporal(serie, ylab = "Sentimento médio")
 #> Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
 #> : span too small.  fewer data values than degrees of freedom.
@@ -846,19 +887,21 @@ ac_plot_temporal(serie, ylab = "Sentimento médio")
 #> : There are other near singularities as well. 3654.8
 ```
 
-![](quantitativo_files/figure-html/temporal-1.png)
+![](quantitativo_files/figure-html/plot-temporal-1.png)
 
-> **Como interpretar:** a linha de tendência (LOESS; Cleveland, 1979)
-> suaviza flutuações de curto prazo para destacar a direção geral: aqui,
-> queda até o meio do período seguida de recuperação. A suavização local
-> precisa de pontos suficientes na vizinhança de cada ajuste para
-> estimar a curva com estabilidade; com poucos pontos (como os 4 meses
-> deste exemplo), o próprio
-> [`loess()`](https://rdrr.io/r/stats/loess.html) já avisa sobre
-> instabilidade numérica (“span too small”, “pseudoinverse used”) — um
-> sinal de que a linha de tendência está extrapolando mais do que
-> suavizando. Nesses casos, prefira olhar os pontos brutos (ou o gráfico
-> de barras logo abaixo) em vez de confiar na curva.
+> **Como interpretar o gráfico:** a linha de tendência (LOESS;
+> Cleveland, 1979) suaviza flutuações de curto prazo para destacar a
+> direção geral: aqui, queda até o meio do período seguida de
+> recuperação. A suavização local precisa de pontos suficientes na
+> vizinhança de cada ajuste para estimar a curva com estabilidade; com
+> poucos pontos (4 meses, com `n_docs` variando de 1 a 3 por mês neste
+> exemplo), o próprio [`loess()`](https://rdrr.io/r/stats/loess.html) já
+> avisa sobre instabilidade numérica (“span too small”, “pseudoinverse
+> used”) — um sinal de que a linha de tendência está extrapolando mais
+> do que suavizando. Nesses casos, prefira olhar os pontos brutos da
+> tabela (ou o gráfico de barras logo abaixo) em vez de confiar na
+> curva; com séries mais longas e `n_docs` mais estável por período, a
+> suavização se torna mais confiável.
 
 Uma visão alternativa, mais direta para comparar poucos períodos entre
 si, é o gráfico de barras:

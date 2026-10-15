@@ -326,13 +326,17 @@ foca só na intensidade emotiva relativa.</li>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-bar-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> a cor é determinada pelo sinal do
-<code>score</code>, não por um limiar fixo: um <code>score</code> muito
-perto de zero recebe a mesma cor categórica (positivo/negativo) de um
-<code>score</code> extremo, mesmo que o primeiro seja um caso ambíguo.
-Padrão esperado aqui: os 5 primeiros documentos (favoráveis)
-verdes/positivos, os 5 seguintes (contrários) vermelhos/negativos, os 4
-últimos (neutros/técnicos) cinza.</p>
+<p><strong>Como interpretar:</strong> as barras são ordenadas por
+<code>score</code> (não pela ordem original dos documentos no corpus),
+então o gráfico já agrupa visualmente positivos no topo e negativos na
+base. A cor também é determinada pelo sinal do <code>score</code>, não
+por um limiar fixo: um <code>score</code> muito perto de zero recebe a
+mesma cor categórica (positivo/negativo) de um <code>score</code>
+extremo, mesmo que o primeiro seja um caso ambíguo. Padrão esperado
+aqui: os 5 documentos favoráveis em verde/positivo no topo, os 4
+neutros/técnicos com barra de largura zero (score = 0) no meio, e os 5
+contrários em laranja/negativo na base — a cor “negativa” do pacote é
+laranja, não vermelho.</p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -352,32 +356,46 @@ bimodal (dois picos, favor e contra) ou tem uma cauda longa?</p>
 negativo, um positivo) indicam um corpus polarizado, onde a maioria dos
 documentos adota uma posição clara. Um único pico perto de zero indica
 consenso ou, mais frequentemente, predominância de linguagem
-técnica/neutra. Com poucos documentos (como este exemplo de 14), a curva
-de densidade é instável; prefira o histograma de barras (§4) para
-amostras pequenas e reserve a densidade para corpora de centenas de
-documentos.</p>
+técnica/neutra. A estimativa de densidade por kernel (Silverman, 1986)
+suaviza a distribuição dos <code>score</code>s observados, e essa
+suavização fica instável com poucos pontos: com este exemplo de 14
+documentos, picos aparentes podem ser artefato da largura de banda
+escolhida, não um padrão real do corpus. Prefira o histograma de barras
+(§4) para amostras pequenas; a densidade fica mais confiável à medida
+que o número de documentos cresce.</p>
 </blockquote>
 </div>
 <div class="section level2">
 <h2 id="visualização-série-ordenada">6. Visualização: série ordenada<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o-s%C3%A9rie-ordenada"></a>
 </h2>
 <p>Se seus documentos têm ordem temporal (discursos ao longo do ano), a
-série mostra tendência.</p>
+série mostra tendência. <strong>Atenção:</strong>
+<code>ac_plot_sentiment(type = "line")</code> desenha o eixo X na ordem
+dos <em>levels</em> de <code>doc_id</code>; se <code>doc_id</code> for
+só texto (<code>character</code>), o R usa ordem alfabética de string
+por padrão, não a ordem de criação nem cronológica. Com rótulos como
+<code>doc_1</code>…<code>doc_14</code>, isso significa que
+<code>doc_10</code> apareceria logo depois de <code>doc_1</code> e antes
+de <code>doc_2</code>. Para evitar isso, transforme <code>doc_id</code>
+num <code>factor</code> com os <em>levels</em> na ordem desejada antes
+de plotar:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span>, type <span class="op">=</span> <span class="st">"line"</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="va">sent_ordenado</span> <span class="op">&lt;-</span> <span class="va">sent</span></span>
+<span><span class="va">sent_ordenado</span><span class="op">$</span><span class="va">doc_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sent_ordenado</span><span class="op">$</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">14</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent_ordenado</span>, type <span class="op">=</span> <span class="st">"line"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Sentimento ao longo dos documentos (ordem de entrada)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Substitua a ordem por data em corpora reais"</span></span>
+<span>    subtitle <span class="op">=</span> <span class="st">"doc_id reordenado explicitamente como factor (ver texto)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-line-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> a linha conecta documentos na
-ordem em que aparecem no corpus, não necessariamente em ordem
-cronológica real: use essa visualização só depois de ordenar o
-<code>data.frame</code> por data (ou outra variável de interesse). Uma
-tendência consistente (subindo ou caindo) é mais informativa que
-oscilação ponto a ponto, que costuma refletir apenas ruído em amostras
-pequenas.</p>
+<p><strong>Como interpretar:</strong> com a reordenação acima, a linha
+conecta documentos na verdadeira ordem de entrada (<code>doc_1</code> a
+<code>doc_14</code>); numa análise real, use a data de publicação como
+esse factor ordenado, não o <code>doc_id</code>. Uma tendência
+consistente (subindo ou caindo) é mais informativa que oscilação ponto a
+ponto, que costuma refletir apenas ruído em amostras pequenas.</p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -501,6 +519,8 @@ Subjectivity, Sentiment and Social Média Analysis</em>, PUCRS.</li>
 1-135.</li>
 <li>Silge, J.; Robinson, D. (2017). <em>Text Mining with R</em>.
 O’Reilly.</li>
+<li>Silverman, B. W. (1986). <em>Density Estimation for Statistics and
+Data Analysis</em>. Chapman and Hall.</li>
 <li>Sampaio, R. C.; Lycarião, D. (2021). <em>Análise de conteúdo
 categorial: manual de aplicação</em>. ENAP.</li>
 </ul>

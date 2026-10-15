@@ -1064,17 +1064,54 @@ gráfico de barras ordenado funciona bem com poucos pares:</p>
 um termo aparece?) passam a ter uma dimensão temporal (quando ele
 aparece mais?). É essencial para cobertura jornalística, séries de
 atendimento ao cliente, ou qualquer corpus com carimbo de data (Welbers,
-Van Atteveldt &amp; Benoit, 2017): a métrica agregada pode ser
-frequência de um termo, sentimento médio, ou qualquer saída numérica de
-outra função do pacote.</p>
+Van Atteveldt &amp; Benoit, 2017).</p>
+<p><code><a href="../reference/ac_temporal.html">ac_temporal()</a></code> é deliberadamente genérica: a coluna
+numérica agregada (<code>value_col</code>) pode ser a saída de qualquer
+outra função do pacote (score de <code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code>, índice de
+<code><a href="../reference/ac_readability.html">ac_readability()</a></code>, contagem de um termo de
+<code><a href="../reference/ac_count.html">ac_count()</a></code>…), desde que exista uma coluna de data no mesmo
+<code>data.frame</code>. Dois parâmetros controlam a agregação:</p>
+<ul>
+<li>
+<code>unit</code>: o tamanho da janela de tempo: <code>"day"</code>,
+<code>"week"</code>, <code>"month"</code> (padrão) ou
+<code>"year"</code>.</li>
+<li>
+<code>stat</code>: como agregar os valores dentro de cada janela:
+<code>"mean"</code> (padrão), <code>"sum"</code> ou <code>"n"</code>
+(conta documentos, ignorando <code>value_col</code>).</li>
+</ul>
+<p>No exemplo abaixo, <code>sentimento</code> já é o score de
+<code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code> pré-calculado para 8 notícias fictícias,
+cada uma com sua data de publicação:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">noticias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  data      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2024-01-01"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">65</span>, <span class="fl">80</span>, <span class="fl">95</span><span class="op">)</span>,</span>
+<span>  data       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2024-01-01"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">65</span>, <span class="fl">80</span>, <span class="fl">95</span><span class="op">)</span>,</span>
 <span>  sentimento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="op">-</span><span class="fl">0.3</span>, <span class="fl">0.0</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">serie</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_temporal.html">ac_temporal</a></span><span class="op">(</span><span class="va">noticias</span>, date_col <span class="op">=</span> <span class="st">"data"</span>, value_col <span class="op">=</span> <span class="st">"sentimento"</span>,</span>
 <span>                      unit <span class="op">=</span> <span class="st">"month"</span>, stat <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_temporal.html">ac_plot_temporal</a></span><span class="op">(</span><span class="va">serie</span>, ylab <span class="op">=</span> <span class="st">"Sentimento médio"</span><span class="op">)</span></span>
+<span><span class="va">serie</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
+<span><span class="co">#&gt;   period       value n_docs</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2024-01-01  0.066<span style="text-decoration: underline;">7</span>      3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2024-02-01 -<span style="color: #BB0000;">0.35</span>        2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2024-03-01  0.15        2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2024-04-01  0.5         1</span></span></code></pre></div>
+<blockquote>
+<p><strong>Como interpretar a tabela:</strong>
+<code><a href="../reference/ac_temporal.html">ac_temporal()</a></code> devolve uma linha por período, com
+<code>period</code> (data de início da janela), <code>value</code> (a
+estatística agregada, aqui a média do sentimento) e <code>n_docs</code>
+(quantos documentos caíram naquele período). <strong>Sempre olhe
+<code>n_docs</code> antes do <code>value</code></strong>: um
+<code>value</code> calculado sobre 1 documento (como o período de abril
+aqui) não é uma “média” de fato, é só aquele documento isolado, e deve
+ser tratado com a mesma cautela que uma amostra de n=1.</p>
+</blockquote>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_temporal.html">ac_plot_temporal</a></span><span class="op">(</span><span class="va">serie</span>, ylab <span class="op">=</span> <span class="st">"Sentimento médio"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
 <span><span class="co">#&gt; : span too small.  fewer data values than degrees of freedom.</span></span>
 <span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
@@ -1085,22 +1122,25 @@ outra função do pacote.</p>
 <span><span class="co">#&gt; : reciprocal condition number 0</span></span>
 <span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
 <span><span class="co">#&gt; : There are other near singularities as well. 3654.8</span></span></code></pre></div>
-<p><img src="quantitativo_files/figure-html/temporal-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="quantitativo_files/figure-html/plot-temporal-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> a linha de tendência (LOESS;
-Cleveland, 1979) suaviza flutuações de curto prazo para destacar a
-direção geral: aqui, queda até o meio do período seguida de recuperação.
-A suavização local precisa de pontos suficientes na vizinhança de cada
-ajuste para estimar a curva com estabilidade; com poucos pontos (como os
-4 meses deste exemplo), o próprio <code><a href="https://rdrr.io/r/stats/loess.html" class="external-link">loess()</a></code> já avisa sobre
+<p><strong>Como interpretar o gráfico:</strong> a linha de tendência
+(LOESS; Cleveland, 1979) suaviza flutuações de curto prazo para destacar
+a direção geral: aqui, queda até o meio do período seguida de
+recuperação. A suavização local precisa de pontos suficientes na
+vizinhança de cada ajuste para estimar a curva com estabilidade; com
+poucos pontos (4 meses, com <code>n_docs</code> variando de 1 a 3 por
+mês neste exemplo), o próprio <code><a href="https://rdrr.io/r/stats/loess.html" class="external-link">loess()</a></code> já avisa sobre
 instabilidade numérica (“span too small”, “pseudoinverse used”) — um
 sinal de que a linha de tendência está extrapolando mais do que
-suavizando. Nesses casos, prefira olhar os pontos brutos (ou o gráfico
-de barras logo abaixo) em vez de confiar na curva.</p>
+suavizando. Nesses casos, prefira olhar os pontos brutos da tabela (ou o
+gráfico de barras logo abaixo) em vez de confiar na curva; com séries
+mais longas e <code>n_docs</code> mais estável por período, a suavização
+se torna mais confiável.</p>
 </blockquote>
 <p>Uma visão alternativa, mais direta para comparar poucos períodos
 entre si, é o gráfico de barras:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">serie</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">period</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey40"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1124,7 +1164,7 @@ com posição conhecida, depois usa esse vocabulário aprendido para
 estimar a posição dos demais documentos (“virgens”). Aqui, avaliações de
 produto com nota conhecida servem de referência para estimar a
 satisfação implícita em avaliações sem nota.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resenhas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -1152,7 +1192,7 @@ satisfação implícita em avaliações sem nota.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> r4     2.11       2.23 TRUE        </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> r5     0.923      1.21 TRUE        </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> r6     5.33       5    FALSE</span></span></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_wordscores.html">ac_plot_wordscores</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/wordscores-plot-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
@@ -1173,7 +1213,7 @@ Corpora de referência maiores reduzem esse efeito.</p>
 </blockquote>
 <p>Uma visão complementar, útil para apresentar a escala completa num
 relatório, é ordenar os documentos num eixo horizontal:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wordscores</span><span class="op">$</span><span class="va">doc_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">$</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="va">wordscores</span><span class="op">$</span><span class="va">doc_id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">$</span><span class="va">score</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">wordscores</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">score</span>, y <span class="op">=</span> <span class="va">doc_id</span>, fill <span class="op">=</span> <span class="va">is_reference</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1197,7 +1237,7 @@ categorias (temas, enquadramentos, emoções), no espírito do General
 Inquirer (Stone et al., 1966) e de “Text as Data” (Grimmer &amp;
 Stewart, 2013): você define as categorias e as palavras de cada uma, e o
 pacote conta.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
 <span>  entrega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"atrasou"</span>, <span class="st">"atrasada"</span>, <span class="st">"rápida"</span>, <span class="st">"rastreio"</span><span class="op">)</span>,</span>
 <span>  produto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"defeito"</span>, <span class="st">"quebrado"</span>, <span class="st">"perfeito"</span>, <span class="st">"excelente"</span><span class="op">)</span></span>
@@ -1222,7 +1262,7 @@ validação abaixo é indispensável).</p>
 <p>Para visualizar a composição temática de vários documentos de uma
 vez, um gráfico de barras empilhadas às proporções funciona melhor que a
 tabela:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resultado_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
 <span><span class="va">long_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  doc_id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">resultado_dict</span><span class="op">$</span><span class="va">doc_id</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -1242,7 +1282,7 @@ tabela:</p>
 <p><code><a href="../reference/ac_emotion.html">ac_emotion()</a></code> é uma camada especializada do mesmo
 mecanismo para léxicos de emoção (inspirada no NRC Emotion Lexicon;
 Mohammad &amp; Turney, 2013), indo além de só positivo/negativo:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lexico_emocao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  termo  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elogiado"</span>, <span class="st">"reclamou"</span>, <span class="st">"defeito"</span>, <span class="st">"excelente"</span><span class="op">)</span>,</span>
 <span>  emocao <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alegria"</span>,  <span class="st">"raiva"</span>,    <span class="st">"tristeza"</span>, <span class="st">"alegria"</span><span class="op">)</span>,</span>
@@ -1260,7 +1300,7 @@ Mohammad &amp; Turney, 2013), indo além de só positivo/negativo:</p>
 comparar sua classificação a uma amostra codificada por humano: é a
 mesma lógica de <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> (para codificação por
 LLM), aplicada aqui ao método de dicionário.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
 <span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  doc_id    <span class="op">=</span> <span class="va">scored</span><span class="op">$</span><span class="va">doc_id</span>,</span>
@@ -1298,7 +1338,7 @@ posiciona grupos e termos no mesmo espaço geométrico. A lógica
 geométrica é simples: pontos próximos tendem a co-ocorrer mais do que o
 esperado pelo acaso, e a distância até a origem indica quão distintivo
 (vs. genérico) é um termo ou grupo.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">categorias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -1331,7 +1371,7 @@ equilibrada, interpretar só a Dim 1 perde informação relevante.</p>
 <p>Quando o mapa fica poluído de termos, uma alternativa é olhar só as
 coordenadas dos grupos, sem os termos: útil quando a pergunta é apenas
 “quão diferentes os grupos são entre si”:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ca</span><span class="op">$</span><span class="va">row_coords</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dim1</span>, y <span class="op">=</span> <span class="va">dim2</span>, label <span class="op">=</span> <span class="va">unit</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span> <span class="op">+</span></span>
