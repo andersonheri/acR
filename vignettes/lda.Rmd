@@ -23,6 +23,16 @@ knitr::opts_chunk$set(
   dpi        = 140
 )
 library(acR)
+has_topicmodels <- requireNamespace("topicmodels", quietly = TRUE)
+```
+
+```{r aviso-topicmodels, echo=FALSE, results="asis", eval=!has_topicmodels}
+cat(
+  "> **Nota:** o pacote `topicmodels` não está instalado neste ambiente.",
+  "Os trechos a seguir que dependem dele foram omitidos; instale com",
+  "`install.packages(\"topicmodels\")` para reproduzir a vignette completa.",
+  sep = "\n"
+)
 ```
 
 ## O que é LDA e para que serve
@@ -154,7 +164,7 @@ tende a favorecer K altos. A regra prática (Zhao et al., 2015):
 procure o "**cotovelo**" da curva: o ponto onde perplexidade para de cair
 rápido e começa a estabilizar.
 
-```{r tune}
+```{r tune, eval=has_topicmodels}
 tune <- ac_lda_tune(
   corpus_limpo,
   k_range = 2:8,
@@ -163,7 +173,7 @@ tune <- ac_lda_tune(
 tune
 ```
 
-```{r plot-tune}
+```{r plot-tune, eval=has_topicmodels}
 ac_plot_lda_tune(tune) +
   ggplot2::labs(
     title    = "Perplexidade por número de tópicos (K)",
@@ -192,7 +202,7 @@ reprodutibilidade: LDA é estocástico (Variational EM ou Gibbs sampling),
 rodadas diferentes com sementes diferentes retornam **tópicos com IDs
 diferentes** e pequenas variações nas distribuições.
 
-```{r lda}
+```{r lda, eval=has_topicmodels}
 modelo <- ac_lda(
   corpus_limpo,
   k    = 4L,
@@ -207,14 +217,14 @@ Cada linha é uma combinação (tópico, termo), com `beta` = probabilidade do
 termo dado o tópico. Filtramos os top termos para inspecionar o que cada
 tópico "significa".
 
-```{r beta}
+```{r beta, eval=has_topicmodels}
 beta <- modelo$terms
 head(beta, 10)
 ```
 
 Visualização: os 10 termos com maior β por tópico:
 
-```{r plot-topics, fig.height=7}
+```{r plot-topics, eval=has_topicmodels, fig.height=7}
 ac_plot_lda_topics(modelo, top_n = 10L) +
   ggplot2::labs(
     title    = "Top 10 termos por tópico (LDA, K=4)",
@@ -237,7 +247,7 @@ Visualização alternativa: uma *word cloud* ponderada por β dentro de cada
 tópico, útil em apresentações onde o eixo numérico do gráfico de barras
 pesa menos que o impacto visual imediato das palavras maiores:
 
-```{r plot-topics-alt, eval=requireNamespace("ggwordcloud", quietly = TRUE), fig.height=6}
+```{r plot-topics-alt, eval=has_topicmodels && requireNamespace("ggwordcloud", quietly = TRUE), fig.height=6}
 topico_escolhido <- 1L
 
 beta |>
@@ -258,14 +268,14 @@ beta |>
 Para cada documento, quais tópicos dominam? Um documento pode ser 90%
 tópico 1 (tema puro) ou distribuído entre vários tópicos (tema misto).
 
-```{r gamma}
+```{r gamma, eval=has_topicmodels}
 gamma <- modelo$documents
 head(gamma, 12)
 ```
 
 Sumário: qual o tópico dominante de cada documento?
 
-```{r dominante}
+```{r dominante, eval=has_topicmodels}
 dominante <- gamma |>
   dplyr::group_by(doc_id) |>
   dplyr::slice_max(gamma, n = 1L, with_ties = FALSE) |>
@@ -279,7 +289,7 @@ Comparando com o **tema real** de cada documento (o `meta$tema` que
 guardamos no corpus), conseguimos avaliar **quão bem o LDA recuperou a
 estrutura conhecida**:
 
-```{r validacao}
+```{r validacao, eval=has_topicmodels}
 # Recuperar o metadado 'tema' e cruzar com o tópico dominante
 tema_real <- corpus[, c("doc_id", "tema")]
 comparacao <- merge(dominante, tema_real, by = "doc_id")
@@ -309,7 +319,7 @@ A prática consolidada em análise de conteúdo com LDA (DiMaggio et al.,
 substantivo** e valide com pelo menos um segundo pesquisador. O `acR`
 facilita gerar essa tabela para incluir no artigo:
 
-```{r rotulos}
+```{r rotulos, eval=has_topicmodels}
 top_terms_por_topico <- beta |>
   dplyr::group_by(topic) |>
   dplyr::slice_max(beta, n = 7L, with_ties = FALSE) |>
@@ -329,7 +339,7 @@ gradiente, não como uma célula preenchida. Este heatmap mostra os
 documentos como linhas, os tópicos como colunas, e a cor como
 `gamma` (0 = nada; 1 = totalidade da massa).
 
-```{r gamma-heatmap, fig.height=6}
+```{r gamma-heatmap, eval=has_topicmodels, fig.height=6}
 gamma_ord <- gamma |>
   dplyr::mutate(doc_id = factor(doc_id, levels = sort(unique(doc_id))))
 

@@ -29,6 +29,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 set.seed(42)
+has_topicmodels <- requireNamespace("topicmodels", quietly = TRUE)
 ```
 
 ## Por que agrupar documentos?
@@ -268,7 +269,15 @@ heatmap é um documento e cada coluna, o cluster ao qual ele pertence
 (binário: 0 ou 1). À direita, cada linha é o mesmo documento e cada
 coluna é a proporção γ do tópico LDA: **um gradiente contínuo**.
 
-```{r plot-lda-vs-cluster, fig.height=5.5}
+```{r aviso-topicmodels-cluster, echo=FALSE, results="asis", eval=!has_topicmodels}
+cat(
+  "> **Nota:** o pacote `topicmodels` não está instalado neste ambiente;",
+  "o gráfico comparativo abaixo foi omitido. Instale com",
+  "`install.packages(\"topicmodels\")` para reproduzi-lo."
+)
+```
+
+```{r plot-lda-vs-cluster, eval=has_topicmodels, fig.height=5.5}
 lda_fit <- ac_lda(corpus, k = 2, seed = 42)
 
 hard <- clust$assignments |>
