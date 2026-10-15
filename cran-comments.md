@@ -1,10 +1,10 @@
 ## Submission summary
 
 Minor release of `acR` (0.4.0 → 0.6.0): twelve new quantitative
-content-analysis functions, a documentation URL fix, and a repository
-cleanup. All changes are additive (new exported functions, new
-vignette section) — no existing exported function changes behavior
-with its previous defaults.
+content-analysis functions, one behavior fix, a documentation
+overhaul, and a repository cleanup. All changes to exported functions
+are additive or strictly corrective — no existing exported function
+changes its documented, intended behavior.
 
 ### New in 0.5.0
 
@@ -41,11 +41,6 @@ and grounded in the relevant methodological literature via `@references`:
   against human-coded ground truth, the dictionary-method counterpart
   of `ac_qual_reliability()`.
 
-Documentation: new "Novidades" section (§10–16) in
-`vignette("quantitativo")`; cross-reference note in
-`vignette("qualitativo-llm")`; README highlights section and function
-finder table updated; `_pkgdown.yml` reference index updated.
-
 ### Fixed in 0.5.0 (found by `devtools::check()` before this submission)
 
 * `ac_temporal()`: `match.arg(stat)` ran after a check that already
@@ -64,30 +59,77 @@ finder table updated; `_pkgdown.yml` reference index updated.
 
 ### New in 0.6.0
 
-* No code changes. Fixes the package `URL` field in `DESCRIPTION` (and
-  the matching references in `_pkgdown.yml`, README, and this file):
-  the currently-published 0.4.0 points to `https://ahenriquecp.com/acR/`,
-  which is the maintainer's **personal** site, not the package's —
-  pkgdown is actually deployed to `https://andersonheri.github.io/acR/`.
-  Also removes a stale `docs/` directory that had been committed to
-  `main` by mistake years ago (already covered by `.Rbuildignore`; now
-  also added to `.gitignore` so it cannot reappear from a local
+**Behavior fix**
+
+* `ac_qual_codebook_translate()` required the `ellmer` package to be
+  installed even when the codebook was already in the target
+  language (a case where no LLM call happens at all). The
+  already-in-target-language short-circuit now runs before the
+  dependency check.
+
+**Documentation overhaul**
+
+* Full spelling pass (missing diacritics) across the README, all ten
+  vignettes, and every `roxygen2` comment in `R/*.R`.
+* The "which metric answers which question" lookup table in
+  `vignette("quantitativo")` was expanded to cover all twelve new
+  0.5.0 functions, organized into five methodological families (it
+  previously covered only the six pre-0.5.0 functions).
+* Added "How to interpret" callouts after essentially every plot and
+  result table across all ten vignettes, explaining axis meaning,
+  common thresholds, and interpretation pitfalls.
+* Added alternative visualizations (as extra `ggplot2` usage examples
+  inside the vignettes, not new exported functions) for several
+  0.5.0 techniques in `vignette("quantitativo")` and
+  `vignette("lda")`.
+* Added a "Suggested sequence for reporting results" section (table +
+  rationale) to `vignette("quantitativo")` and
+  `vignette("qualitativo-llm")`, guiding readers through which
+  analyses to run and report, and why, for a publication-ready
+  write-up.
+* Reduced em-dash usage to zero occurrences across the entire package
+  (README, vignettes, `roxygen2` comments), replaced by colons or
+  sentence restructuring, per standard Portuguese punctuation
+  conventions.
+* `man/*.Rd` regenerated via `devtools::document()` to resync with the
+  corrected `roxygen2` comments.
+
+**Vignette/test robustness**
+
+* `vignette("cluster")` and `vignette("lda")`: chunks depending on the
+  `topicmodels` Suggests package are now guarded with
+  `eval = requireNamespace("topicmodels", quietly = TRUE)`, so vignette
+  rebuilding no longer errors out on a system without that package
+  (it previously did, which would have been fragile for anyone
+  reproducing the vignettes locally without every Suggests installed).
+* Three tests exercising `ellmer`-dependent code paths gained
+  `skip_if_not_installed("ellmer")`, matching the pattern already used
+  by the rest of that test file.
+
+**Infrastructure maintenance**
+
+* Fixed references to the maintainer's **personal** domain
+  (`ahenriquecp.com`), which had been mistakenly pointed to as the
+  package's site in `_pkgdown.yml`, README, `DESCRIPTION`, and this
+  file; all now point to the real pkgdown URL
+  (`https://andersonheri.github.io/acR/`).
+* Removed a stale `docs/` directory that had been committed to `main`
+  by mistake years ago (already covered by `.Rbuildignore`; now also
+  added to `.gitignore` so it cannot reappear from a local
   `pkgdown::build_site()` run).
 
 ## Test environments
 
-* GitHub Actions matrix on the tip of `main` (after merging the branch
-  with the 0.5.0 functions): Ubuntu R-devel / release / oldrel-1,
-  macOS release, Windows release — all green.
-* R CMD check run locally (Ubuntu 24.04, R 4.3.3) with every `Imports`
-  installed and most `Suggests` installed from apt/conda-forge mirrors
-  (network access to CRAN itself was unavailable in that sandboxed
-  environment, so `irr`, `stopwords` were installed from alternative
-  mirrors and a handful of `Suggests` — `ellmer`, `ggwordcloud`,
-  `ipeaplot`, `quanteda`, `readtext`, `senatebR`, `tesseract`,
-  `topicmodels` — could not be installed there; the GitHub Actions run
-  above has the full matrix with all `Suggests` available and is
-  green).
+* GitHub Actions matrix on the tip of `main`: Ubuntu R-devel /
+  release / oldrel-1, macOS release, Windows release — all green
+  (`R-CMD-check.yaml`), plus `test-coverage.yaml` green.
+* `R CMD check` run locally (Ubuntu 24.04, R 4.3.3) with every
+  `Imports` installed; network access to CRAN itself was unavailable
+  in that sandboxed environment, so a handful of `Suggests`
+  (`ellmer`, `ggwordcloud`, `ipeaplot`, `quanteda`, `readtext`,
+  `senatebR`, `tesseract`, `topicmodels`) could not be installed
+  there. The GitHub Actions run above has the full matrix with all
+  `Suggests` available and is green.
 
 ## R CMD check results
 
@@ -96,9 +138,9 @@ installed:
 
 1. **Packages suggested but not available for checking** — only
    appears when one of the `Suggests` above is missing locally (as in
-   the sandboxed run noted above); not reproducible on an environment
-   with all `Suggests` installed, and not expected on CRAN's own
-   check machines.
+   the sandboxed run noted above, which also has no network access to
+   CRAN); not reproducible on an environment with all `Suggests`
+   installed, and not expected on CRAN's own check machines.
 2. **Unknown packages 'quanteda.textstats', 'topicmodels' in Rd xrefs**
    — pre-existing (not introduced by this release): `ac_keyness.Rd`
    and `ac_lda.Rd` link to `quanteda.textstats::textstat_keyness()`
@@ -107,20 +149,25 @@ installed:
    (it is not an `acR` dependency, only `quanteda` is) — not expected
    on CRAN's own check machines, which install all `Suggests`.
 
+`devtools::test()` locally: 927 passed / 0 failed / 58 skipped (all
+skips are `Suggests` not installed in the sandboxed environment —
+`ellmer`, `ggwordcloud`, `quanteda`, `readtext`, `senatebR`,
+`topicmodels` — or require network access; none of these are
+reproducible on CRAN's check machines or the green GitHub Actions
+matrix).
+
 ## Pre-submission checklist for this release
 
 1. ~~`devtools::document()`~~ — done; `man/*.Rd` and `NAMESPACE` are in
    sync with the roxygen comments in `R/*.R`.
-2. ~~`devtools::test()`~~ — done; 926 passed / 0 failed in the
-   sandboxed run (4 unrelated failures from `ellmer` not being
-   installable there are not present on the GitHub Actions matrix,
-   which is green).
+2. ~~`devtools::test()`~~ — done; see above.
 3. ~~`devtools::check()`~~ — done; see above.
 4. ~~Confirm the `URL` field resolves~~ — `https://andersonheri.github.io/acR/`
-   is live (pkgdown "release" build rebuilt from the clean 0.6.0
-   version tag).
-5. `devtools::submit_cran()`, and click the confirmation email — both
-   steps require your local machine/inbox.
+   is live.
+5. ~~Full documentation/spelling/didactic review~~ — done; see
+   "Documentation overhaul" above.
+6. `devtools::submit_cran()`, and click the confirmation email — both
+   steps require the maintainer's local machine/inbox.
 
 ## Downstream dependencies
 

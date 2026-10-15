@@ -1,6 +1,45 @@
 # acR 0.6.0
 
-Release de manutencao, sem mudanca de codigo em relacao a 0.5.0.
+## Correcao de comportamento
+
+* `ac_qual_codebook_translate()`: exigia o pacote `ellmer` instalado
+  mesmo quando o codebook ja estava no idioma de destino (caso em que
+  nenhuma chamada de LLM e necessaria). A checagem de idioma agora
+  acontece antes da checagem de dependencia.
+
+## Documentacao
+
+* Revisao ortografica completa (acentuacao) do README, das dez
+  vignettes e dos comentarios `roxygen2` em `R/*.R`.
+* Tabela "Qual metrica responde qual pergunta?" (`vignette("quantitativo")`)
+  expandida para cobrir as doze novas tecnicas introduzidas na 0.5.0,
+  organizada em cinco familias metodologicas.
+* Adicionados blocos "Como interpretar" apos graficos e tabelas de
+  resultado em todas as vignettes, explicando como ler cada
+  visualizacao e armadilhas comuns de interpretacao.
+* Adicionadas visualizacoes alternativas (como exemplos de uso de
+  `ggplot2`, sem novas funcoes exportadas) para varias das tecnicas da
+  0.5.0 em `vignette("quantitativo")` e `vignette("lda")`.
+* Novas secoes "Sequencia sugerida para reportar resultados" em
+  `vignette("quantitativo")` e `vignette("qualitativo-llm")`, com
+  tabela de etapas e justificativa metodologica para cada uma.
+* Reduzido o uso de travessao (`--`) para zero ocorrencias em todo o
+  pacote (README, vignettes e comentarios `roxygen2`), em favor de `:`
+  ou reestruturacao de frase.
+* `man/*.Rd` regenerado via `devtools::document()` para sincronizar com
+  os comentarios `roxygen2` corrigidos.
+
+## Robustez de testes e vignettes
+
+* `vignette("cluster")` e `vignette("lda")`: os trechos que dependem do
+  pacote Suggests `topicmodels` agora sao protegidos por
+  `eval = requireNamespace("topicmodels", quietly = TRUE)`, evitando
+  falha de `R CMD check` em ambientes sem esse pacote instalado.
+* Tres testes que exercitavam caminhos de codigo dependentes de
+  `ellmer` ganharam `skip_if_not_installed("ellmer")`, espelhando o
+  padrao ja usado no restante da suite.
+
+## Manutencao de infraestrutura
 
 * Corrigidas referencias ao dominio pessoal do mantenedor
   (`ahenriquecp.com`) que estavam, por engano, apontadas como site do
