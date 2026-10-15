@@ -189,29 +189,42 @@ ac_plot_sentiment(sent, type = "density") +
 > positivo) indicam um corpus polarizado, onde a maioria dos documentos
 > adota uma posição clara. Um único pico perto de zero indica consenso
 > ou, mais frequentemente, predominância de linguagem técnica/neutra.
-> Com poucos documentos (como este exemplo de 14), a curva de densidade
-> é instável; prefira o histograma de barras (§4) para amostras
-> pequenas e reserve a densidade para corpora de centenas de documentos.
+> A estimativa de densidade por kernel (Silverman, 1986) suaviza a
+> distribuição dos `score`s observados, e essa suavização fica instável
+> com poucos pontos: com este exemplo de 14 documentos, picos aparentes
+> podem ser artefato da largura de banda escolhida, não um padrão real
+> do corpus. Prefira o histograma de barras (§4) para amostras pequenas;
+> a densidade fica mais confiável à medida que o número de documentos
+> cresce.
 
 ## 6. Visualização: série ordenada
 
 Se seus documentos têm ordem temporal (discursos ao longo do ano), a
-série mostra tendência.
+série mostra tendência. **Atenção:** `ac_plot_sentiment(type = "line")`
+desenha o eixo X na ordem dos *levels* de `doc_id`; se `doc_id` for só
+texto (`character`), o R usa ordem alfabética de string por padrão, não
+a ordem de criação nem cronológica. Com rótulos como `doc_1`...`doc_14`,
+isso significa que `doc_10` apareceria logo depois de `doc_1` e antes de
+`doc_2`. Para evitar isso, transforme `doc_id` num `factor` com os
+*levels* na ordem desejada antes de plotar:
 
 ```{r plot-line, fig.height=5}
-ac_plot_sentiment(sent, type = "line") +
+sent_ordenado <- sent
+sent_ordenado$doc_id <- factor(sent_ordenado$doc_id, levels = paste0("doc_", 1:14))
+
+ac_plot_sentiment(sent_ordenado, type = "line") +
   ggplot2::labs(
     title    = "Sentimento ao longo dos documentos (ordem de entrada)",
-    subtitle = "Substitua a ordem por data em corpora reais"
+    subtitle = "doc_id reordenado explicitamente como factor (ver texto)"
   )
 ```
 
-> **Como interpretar:** a linha conecta documentos na ordem em que
-> aparecem no corpus, não necessariamente em ordem cronológica real:
-> use essa visualização só depois de ordenar o `data.frame` por data
-> (ou outra variável de interesse). Uma tendência consistente (subindo
-> ou caindo) é mais informativa que oscilação ponto a ponto, que
-> costuma refletir apenas ruído em amostras pequenas.
+> **Como interpretar:** com a reordenação acima, a linha conecta
+> documentos na verdadeira ordem de entrada (`doc_1` a `doc_14`); numa
+> análise real, use a data de publicação como esse factor ordenado, não
+> o `doc_id`. Uma tendência consistente (subindo ou caindo) é mais
+> informativa que oscilação ponto a ponto, que costuma refletir apenas
+> ruído em amostras pequenas.
 
 ## 7. Agregação por grupo (partido)
 
@@ -318,5 +331,7 @@ casos_limitrofes <- sent |> dplyr::filter(abs(score) <= 1)
 * Pang, B.; Lee, L. (2008). Opinion Mining and Sentiment Analysis.
   *Foundations and Trends in Information Retrieval*, 2(1-2), 1-135.
 * Silge, J.; Robinson, D. (2017). *Text Mining with R*. O'Reilly.
+* Silverman, B. W. (1986). *Density Estimation for Statistics and Data
+  Analysis*. Chapman and Hall.
 * Sampaio, R. C.; Lycarião, D. (2021). *Análise de conteúdo categorial:
   manual de aplicação*. ENAP.
