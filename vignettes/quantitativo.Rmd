@@ -31,8 +31,11 @@ tokenização → frequências → distintividade → visualização**.
 
 ## Qual métrica responde qual pergunta?
 
-O módulo quantitativo tem seis técnicas centrais. Aprender qual usar em cada
-situação vale mais que decorar sintaxe:
+O módulo quantitativo tem dezoito técnicas, agrupadas em cinco famílias.
+Aprender qual usar em cada situação vale mais que decorar sintaxe: a pergunta
+de pesquisa escolhe a técnica, não o contrário.
+
+**Frequência, distintividade e coocorrência**
 
 | Pergunta                                                             | Técnica         | Função                                     |
 |----------------------------------------------------------------------|-----------------|--------------------------------------------|
@@ -40,8 +43,39 @@ situação vale mais que decorar sintaxe:
 | Que palavras são **distintivas** de cada documento vs. o resto?      | TF-IDF          | `ac_tf_idf()` → `ac_plot_tf_idf()`         |
 | Que palavras separam **um grupo** do outro estatisticamente?         | *Keyness*       | `ac_keyness()` → `ac_plot_keyness()`       |
 | Que palavras **andam juntas** (associação sintagmática)?             | Coocorrência    | `ac_cooccurrence()` → `ac_plot_cooccurrence()` |
+| Que bigramas/trigramas aparecem juntos mais do que o esperado pelo acaso? | Colocações  | `ac_collocations()`                        |
 | **Onde no texto** um termo aparece com mais frequência?              | X-ray plot      | `ac_plot_xray()`                           |
+| Em que contexto exato um termo aparece a cada ocorrência?            | Concordância/KWIC | `ac_kwic()`                              |
 | Panorama visual rápido para relatório ou apresentação                | Nuvem de palavras | `ac_wordcloud()` (`ggwordcloud`)         |
+
+**Diagnóstico do corpus**
+
+| Pergunta                                                             | Técnica         | Função                                     |
+|----------------------------------------------------------------------|-----------------|--------------------------------------------|
+| O texto é fácil ou difícil de ler?                                   | Legibilidade    | `ac_readability()`                         |
+| O vocabulário é rico ou repetitivo?                                  | Diversidade lexical | `ac_lexical_diversity()`               |
+| O corpus se comporta como linguagem natural (não dominado por ruído)?| Lei de Zipf     | `ac_plot_zipf()`                           |
+
+**Série temporal**
+
+| Pergunta                                                             | Técnica         | Função                                     |
+|----------------------------------------------------------------------|-----------------|--------------------------------------------|
+| Um termo, sentimento ou qualquer métrica muda ao longo do tempo?     | Série temporal  | `ac_temporal()` → `ac_plot_temporal()`     |
+
+**Escalas e mapas**
+
+| Pergunta                                                             | Técnica         | Função                                     |
+|----------------------------------------------------------------------|-----------------|--------------------------------------------|
+| Onde cada documento se posiciona num espectro contínuo (favorável↔desfavorável)? | Wordscores | `ac_wordscores()`                 |
+| Como grupos e termos se relacionam num mapa 2D, sem assumir tópicos latentes? | Análise de correspondência | `ac_ca()`             |
+
+**Dicionários e léxicos**
+
+| Pergunta                                                             | Técnica         | Função                                     |
+|----------------------------------------------------------------------|-----------------|--------------------------------------------|
+| Quanto do texto pertence a cada categoria temática que eu defino?    | Dicionário multi-categoria | `ac_dictionary()`                  |
+| Que emoções (não só positivo/negativo) o texto expressa?             | Léxico de emoção | `ac_emotion()`                            |
+| Meu dicionário classifica bem, comparado a uma codificação humana?   | Validação de dicionário | `ac_dictionary_validate()`         |
 
 **Não é redundância.** As três métricas de frequência respondem perguntas
 diferentes:
@@ -349,7 +383,7 @@ Duas perguntas distintas sobre a *forma* do texto, independente do conteúdo:
   métrica recomendada para comparar textos de tamanhos diferentes.
 
 ```{r readability-setup}
-avaliações <- data.frame(
+avaliacoes <- data.frame(
   id = paste0("rev", 1:4),
   texto = c(
     "Este produto é incrível. Funciona perfeitamente bem e chegou rápido.",
@@ -359,7 +393,7 @@ avaliações <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
-corpus_aval <- ac_corpus(avaliações, text = texto, docid = id)
+corpus_aval <- ac_corpus(avaliacoes, text = texto, docid = id)
 ```
 
 ```{r readability}

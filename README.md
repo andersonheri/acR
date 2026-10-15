@@ -387,11 +387,11 @@ ac_lexical_diversity(corpus_limpo)
 ac_kwic(corpus_limpo, pattern = "reforma", window = 5)
 ac_collocations(corpus_limpo, measure = "pmi")
 
-dicionário <- ac_build_dictionary(
+dicionario <- ac_build_dictionary(
   economia = c("imposto", "orcamento", "deficit"),
   saude    = c("saude", "vacina", "hospital")
 )
-ac_dictionary(corpus_limpo, dicionário)
+ac_dictionary(corpus_limpo, dicionario)
 
 ca <- ac_ca(corpus_limpo, by = "partido")
 ac_plot_ca(ca)

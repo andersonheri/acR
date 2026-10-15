@@ -247,10 +247,10 @@ estrutura conhecida**:
 ```{r validacao}
 # Recuperar o metadado 'tema' e cruzar com o tópico dominante
 tema_real <- corpus[, c("doc_id", "tema")]
-comparação <- merge(dominante, tema_real, by = "doc_id")
+comparacao <- merge(dominante, tema_real, by = "doc_id")
 
 # Tabela de contingência: tópico dominante x tema real
-table(comparação$topico_dominante, comparação$tema)
+table(comparacao$topico_dominante, comparacao$tema)
 ```
 
 Se a diagonal for dominante (cada tópico se alinha bem com um tema real),
