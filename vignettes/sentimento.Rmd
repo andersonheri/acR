@@ -161,12 +161,16 @@ ac_plot_sentiment(sent, type = "bar") +
   )
 ```
 
-> **Como interpretar:** a cor é determinada pelo sinal do `score`, não
-> por um limiar fixo: um `score` muito perto de zero recebe a mesma cor
-> categórica (positivo/negativo) de um `score` extremo, mesmo que o
-> primeiro seja um caso ambíguo. Padrão esperado aqui: os 5 primeiros
-> documentos (favoráveis) verdes/positivos, os 5 seguintes (contrários)
-> vermelhos/negativos, os 4 últimos (neutros/técnicos) cinza.
+> **Como interpretar:** as barras são ordenadas por `score` (não pela
+> ordem original dos documentos no corpus), então o gráfico já agrupa
+> visualmente positivos no topo e negativos na base. A cor também é
+> determinada pelo sinal do `score`, não por um limiar fixo: um `score`
+> muito perto de zero recebe a mesma cor categórica (positivo/negativo)
+> de um `score` extremo, mesmo que o primeiro seja um caso ambíguo.
+> Padrão esperado aqui: os 5 documentos favoráveis em verde/positivo no
+> topo, os 4 neutros/técnicos com barra de largura zero (score = 0) no
+> meio, e os 5 contrários em laranja/negativo na base — a cor "negativa"
+> do pacote é laranja, não vermelho.
 
 ## 5. Visualização: distribuição (densidade)
 
