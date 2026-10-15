@@ -301,6 +301,19 @@ sólidos; cortes baixos indicam agrupamentos frouxos.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_cluster.html">ac_plot_cluster</a></span><span class="op">(</span><span class="va">clust</span>, kind <span class="op">=</span> <span class="st">"dendrogram"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cluster_files/figure-html/plot-dendrogram-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> leia de baixo para cima.
+Documentos que se unem em alturas baixas (perto de 0) são muito
+parecidos; a fusão final no topo (altura ≈ 1.9 neste exemplo) é a mais
+“forçada” do dendrograma, a última junção que o algoritmo faz antes de
+virar uma árvore só. Note que os 8 documentos de <code>democracia</code>
+(d01-d06) se unem bem abaixo dessa altura, formando um bloco sólido,
+enquanto os 8 documentos de <code>mercado</code> só se juntam num único
+ramo em torno da altura ≈ 1.3: mais baixo que o corte entre os dois
+temas, mas ainda assim uma fusão tardia. Isso já é o primeiro sinal
+visual de que o algoritmo vai dividir “mercado” em dois subgrupos antes
+de qualquer tabela de validação confirmar (seção 5).</p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="projeção-pca-a-geometria-do-corpus">4.2 Projeção PCA: a geometria do corpus<a class="anchor" aria-label="anchor" href="#proje%C3%A7%C3%A3o-pca-a-geometria-do-corpus"></a>
@@ -311,6 +324,19 @@ mostra a divisão do algoritmo.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_cluster.html">ac_plot_cluster</a></span><span class="op">(</span><span class="va">clust</span>, kind <span class="op">=</span> <span class="st">"scatter"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cluster_files/figure-html/plot-scatter-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> PC1 e PC2 juntos explicam só uma
+fração da variância total do corpus (ver o subtítulo do gráfico: PC1 ≈
+17,8%, PC2 ≈ 11,5%, pouco menos de 30% somados): a maior parte da
+variação entre documentos <strong>não</strong> está visível neste plano
+2D. Trate distâncias próximas como boa evidência de similaridade, mas
+não super-interprete distâncias moderadas: elas podem ser maiores ou
+menores no espaço de alta dimensão original do que parecem aqui. O
+padrão esperado neste exemplo: o grupo <code>democracia</code> (cluster
+1) aparece compacto de um lado, enquanto os dois subgrupos de
+<code>mercado</code> (clusters 2 e 3) ficam mais espalhados do outro
+lado — já visível antes mesmo de olhar as cores.</p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="mapa-de-calor-a-assinatura-da-separação">4.3 Mapa de calor: a assinatura da separação<a class="anchor" aria-label="anchor" href="#mapa-de-calor-a-assinatura-da-separa%C3%A7%C3%A3o"></a>
@@ -321,6 +347,19 @@ o carimbo de qualidade de um clustering bem-sucedido.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_cluster.html">ac_plot_cluster</a></span><span class="op">(</span><span class="va">clust</span>, kind <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cluster_files/figure-html/plot-heatmap-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> procure blocos quadrados escuros
+ao longo da diagonal; quanto mais nítida a borda entre um bloco e o
+resto da matriz, mais “limpa” é a separação daquele grupo. Fora da
+diagonal, a matriz deveria ficar clara (alta dissimilaridade entre
+grupos diferentes) — um retângulo fora da diagonal com tom intermediário
+sinaliza dois clusters que não são tão distintos entre si quanto o
+número de clusters sugere. Neste exemplo, o bloco de
+<code>democracia</code> (d01-d06) tem bordas nítidas; o bloco de
+<code>mercado</code> (d09-d15) também aparece separado do resto, mas
+internamente um pouco menos uniforme, condizente com ele conter dois
+subtemas (clusters 2 e 3) em vez de um só.</p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="termos-mais-distintivos-por-cluster">4.4 Termos mais distintivos por cluster<a class="anchor" aria-label="anchor" href="#termos-mais-distintivos-por-cluster"></a>
@@ -360,6 +399,25 @@ fortes por grupo.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cluster_files/figure-html/plot-top-terms-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> compare os termos entre painéis,
+não dentro de um painel só. Neste exemplo, o Cluster 1 fala claramente
+de <code>democracia</code>, <code>voto</code>,
+<code>participação</code>, <code>cidadania</code> — confirma o tema
+esperado. Já os clusters 2 e 3, ambos originados do tema
+<code>mercado</code>, revelam <strong>duas vertentes diferentes</strong>
+dentro do mesmo assunto: o Cluster 2 fala de eficiência e concorrência
+(<code>livre</code>, <code>produtividade</code>,
+<code>eficiência</code>, <code>concorrência</code>,
+<code>privatização</code>), enquanto o Cluster 3 fala de investimento e
+crescimento (<code>investimento</code>, <code>capital</code>,
+<code>privado</code>, <code>crescimento</code>, <code>juros</code>).
+Essa divisão não é ruído: é uma distinção substantiva que a categoria
+original <code>mercado</code> (usada só para montar o exemplo) não
+previa. Em dados reais, um cluster que “deveria” ser um só mas se divide
+assim pode indicar que sua variável de grupo original estava agregando
+demais.</p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="curva-de-silhueta-escolhendo-k-visualmente">4.5 Curva de silhueta: escolhendo <code>k</code> visualmente<a class="anchor" aria-label="anchor" href="#curva-de-silhueta-escolhendo-k-visualmente"></a>
@@ -395,6 +453,18 @@ indicam que a divisão seguinte é quase tão boa quanto.</p>
 <span>    <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="cluster_files/figure-html/plot-silhouette-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> o círculo vazado marca o
+<code>k</code> escolhido automaticamente (maior silhueta média). Neste
+exemplo, <code>k = 2</code> fica em ≈ 0,225 e <code>k = 3</code>
+(escolhido) em ≈ 0,232 — uma diferença pequena, típica de um “platô”:
+ambos os valores de <code>k</code> descrevem o corpus razoavelmente bem,
+e a escolha entre eles é uma questão de quanto detalhe você quer, não de
+um <code>k</code> certo e outro errado. Quando a diferença entre o pico
+e o segundo colocado é grande, confie mais no <code>k</code> automático;
+quando for pequena como aqui, vale a pena olhar os termos distintivos
+(seção 4.4) de cada <code>k</code> candidato antes de decidir.</p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="hard-vs--soft-comparando-com-lda">4.6 Hard vs. soft: comparando com LDA<a class="anchor" aria-label="anchor" href="#hard-vs--soft-comparando-com-lda"></a>
@@ -435,11 +505,22 @@ gradiente contínuo</strong>.</p>
 <span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme</span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">30</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cluster_files/figure-html/plot-lda-vs-cluster-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<p>Note como o hard clustering sempre pinta uma célula por linha (o
-documento é <em>do</em> grupo A ou <em>do</em> grupo B), enquanto o LDA
-distribui massa: a maior parte dos documentos é ~90% de um tópico, mas
-alguns ficam repartidos. <strong>É a mesma tipologia latente, expressa
-em duas métricas diferentes.</strong></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> no painel “Hard clustering”, cada
+linha pinta <strong>uma única célula</strong> (o documento é <em>do</em>
+grupo A ou <em>do</em> grupo B, nunca os dois); no painel “LDA (soft)”,
+a cor se distribui em gradiente entre as colunas de tópico — a maioria
+dos documentos concentra quase toda a massa (<code>gamma</code>) num
+único tópico, mas alguns ficam visivelmente repartidos entre dois. É a
+mesma tipologia latente, expressa em duas métricas diferentes: hard
+clustering força uma decisão binária onde LDA preserva a incerteza. Note
+também que este gráfico compara o <code>clust</code> de
+<strong>3</strong> clusters (o <code>k</code> automático da seção 3) com
+um LDA de <code>k = 2</code> <strong>tópicos</strong>: os números de
+grupo não precisam bater para a comparação fazer sentido — o que importa
+é a forma da matriz (uma célula acesa vs. um gradiente), não o número de
+colunas em cada painel.</p>
+</blockquote>
 </div>
 </div>
 <div class="section level2">
@@ -462,6 +543,20 @@ conferir a acurácia da partição:</p>
 concentrar-se num único cluster (permutação de rótulos é esperada: o
 clustering não sabe qual grupo é “democracia” ou “mercado”, só que são
 diferentes).</p>
+<blockquote>
+<p><strong>Como interpretar:</strong> olhando a tabela,
+<code>democracia</code> cai inteiro no Cluster 1 (8 de 8 documentos) —
+separação perfeita. Já <code>mercado</code> se divide entre os Clusters
+2 e 3 (4 documentos em cada), não porque o algoritmo errou, mas porque o
+<code>k</code> automático (seção 4.5) escolheu k = 3, e a seção 4.4 já
+mostrou que essa divisão captura uma distinção real de vocabulário
+dentro do tema <code>mercado</code>. A lição metodológica: uma tabela de
+validação “imperfeita” contra uma variável externa nem sempre significa
+que o clustering falhou — pode significar que sua variável de validação
+é mais grosseira que a estrutura que o algoritmo encontrou no texto.
+Vale sempre olhar os termos distintivos antes de concluir que um cluster
+“a mais” é erro.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="escolhendo-o-método">6. Escolhendo o método<a class="anchor" aria-label="anchor" href="#escolhendo-o-m%C3%A9todo"></a>
@@ -500,6 +595,20 @@ demais rodam com apenas o <code>stats</code> base.</p>
 <code class="sourceCode R"><span><span class="va">clust_km</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_cluster_documents.html">ac_cluster_documents</a></span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"kmeans"</span>, k <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_plot_cluster.html">ac_plot_cluster</a></span><span class="op">(</span><span class="va">clust_km</span>, kind <span class="op">=</span> <span class="st">"scatter"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="cluster_files/figure-html/kmeans-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> forçar <code>k = 2</code> aqui
+recupera exatamente a divisão original <code>democracia</code>
+vs. <code>mercado</code> (compare com a seção 4.2, onde o
+<code>k = 3</code> automático dividiu <code>mercado</code> em dois).
+Nenhum dos dois resultados está “errado”: <code>k = 3</code> encontrou
+uma subdivisão temática real (seção 4.4); <code>k = 2</code> corresponde
+à variável de dois níveis que você já sabia existir de antemão. Quando
+você já tem uma hipótese sobre o número de grupos (como aqui,
+“democracia vs. mercado”), fixar <code>k</code> manualmente costuma dar
+um resultado mais fácil de comunicar do que deixar a silhueta decidir;
+quando você está explorando um corpus sem hipótese prévia, o
+<code>k</code> automático tende a revelar mais estrutura.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="e-depois-integrando-com-o-pipeline">7. E depois? Integrando com o pipeline<a class="anchor" aria-label="anchor" href="#e-depois-integrando-com-o-pipeline"></a>

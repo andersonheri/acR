@@ -1050,21 +1050,50 @@ generaliza a lógica de
 para **qualquer** conjunto de categorias (temas, enquadramentos,
 emoções), no espírito do General Inquirer (Stone et al., 1966) e de
 “Text as Data” (Grimmer & Stewart, 2013): você define as categorias e as
-palavras de cada uma, e o pacote conta.
+palavras de cada uma, e o pacote conta. Esta seção tem três partes: o
+dicionário em si (15.1), uma camada especializada para emoções (15.2), e
+a validação contra codificação humana que toda análise de dicionário
+publicável precisa ter (15.3).
+
+Corpus de exemplo: seis registros de atendimento cobrindo problemas de
+**entrega** e de **produto**, às vezes os dois no mesmo registro.
+
+``` r
+
+atendimento2 <- data.frame(
+  id = paste0("call", 1:6),
+  texto = c(
+    "a entrega atrasou muito e o rastreio nao atualizava ha dias",
+    "o produto chegou com defeito e veio quebrado da fabrica",
+    "entrega rapida produto excelente superou expectativas",
+    "o rastreio mostrava entrega prevista mas o pacote nunca chegou",
+    "produto perfeito funciona bem sem nenhum problema",
+    "entrega no prazo mas o produto veio com defeito de fabricacao"
+  ),
+  stringsAsFactors = FALSE
+)
+corpus_atend2 <- ac_corpus(atendimento2, text = texto, docid = id)
+```
+
+#### 15.1 Dicionário multi-categoria
 
 ``` r
 
 dict <- ac_build_dictionary(
-  entrega = c("entrega", "atrasou", "atrasada", "rápida", "rastreio"),
+  entrega = c("entrega", "atrasou", "atrasada", "rapida", "rastreio", "prazo"),
   produto = c("defeito", "quebrado", "perfeito", "excelente")
 )
-ac_dictionary(corpus_atend, dict)
-#> # A tibble: 3 × 6
+resultado_dict <- ac_dictionary(corpus_atend2, dict)
+resultado_dict
+#> # A tibble: 6 × 6
 #>   doc_id total_tokens entrega_n produto_n entrega_prop produto_prop
 #>   <chr>         <int>     <int>     <int>        <dbl>        <dbl>
-#> 1 call1            11         0         1            0       0.0909
-#> 2 call2            12         0         1            0       0.0833
-#> 3 call3            12         0         1            0       0.0833
+#> 1 call1            11         3         0        0.273       0     
+#> 2 call2            10         0         2        0           0.2   
+#> 3 call3             6         2         1        0.333       0.167 
+#> 4 call4            10         2         0        0.2         0     
+#> 5 call5             7         0         1        0           0.143 
+#> 6 call6            11         2         1        0.182       0.0909
 ```
 
 > **Como interpretar:** a coluna `<categoria>_prop` é a proporção de
@@ -1072,8 +1101,10 @@ ac_dictionary(corpus_atend, dict)
 > sentenças ou de “sentimento”. Um `produto_prop` alto não significa que
 > o documento fala *bem* ou *mal* do produto, só que usa vocabulário da
 > categoria “produto” com frequência: dicionários contam palavras, não
-> interpretam contexto, negação ou ironia (por isso a validação abaixo é
-> indispensável).
+> interpretam contexto, negação ou ironia (por isso a validação em 15.3
+> é indispensável). Documentos podem pontuar em mais de uma categoria ao
+> mesmo tempo (`call3` e `call6` têm tokens de `entrega` **e**
+> `produto`): as categorias não são mutuamente exclusivas por padrão.
 
 Para visualizar a composição temática de vários documentos de uma vez,
 um gráfico de barras empilhadas às proporções funciona melhor que a
@@ -1081,7 +1112,6 @@ tabela:
 
 ``` r
 
-resultado_dict <- ac_dictionary(corpus_atend, dict)
 long_dict <- data.frame(
   doc_id   = rep(resultado_dict$doc_id, 2),
   categoria = rep(c("entrega", "produto"), each = nrow(resultado_dict)),
@@ -1100,6 +1130,17 @@ ggplot2::ggplot(long_dict, ggplot2::aes(x = doc_id, y = prop, fill = categoria))
 
 ![](quantitativo_files/figure-html/dictionary-plot-1.png)
 
+> **Como interpretar:** a altura total da barra é a proporção de tokens
+> do documento capturada por **qualquer** categoria do dicionário; o
+> restante (até completar 100%) é vocabulário fora do dicionário —
+> normal e esperado, já que a maior parte de qualquer texto é gramática
+> e palavras funcionais, não vocabulário temático. Barras com as duas
+> cores empilhadas (`call3`, `call6`) são documentos que mencionam
+> entrega e produto na mesma frase; barras de uma cor só, documentos
+> focados num único problema.
+
+#### 15.2 Léxico de emoções
+
 [`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md)
 é uma camada especializada do mesmo mecanismo para léxicos de emoção
 (inspirada no NRC Emotion Lexicon; Mohammad & Turney, 2013), indo além
@@ -1108,54 +1149,81 @@ de só positivo/negativo:
 ``` r
 
 lexico_emocao <- data.frame(
-  termo  = c("elogiado", "reclamou", "defeito", "excelente"),
-  emocao = c("alegria",  "raiva",    "tristeza", "alegria"),
+  termo  = c("excelente", "perfeito", "defeito", "quebrado", "atrasou"),
+  emocao = c("alegria",   "alegria",  "tristeza", "raiva",   "raiva"),
   stringsAsFactors = FALSE
 )
-ac_emotion(corpus_atend, lexicon = lexico_emocao)
-#> # A tibble: 3 × 8
+ac_emotion(corpus_atend2, lexicon = lexico_emocao)
+#> # A tibble: 6 × 8
 #>   doc_id total_tokens alegria_n raiva_n tristeza_n alegria_prop raiva_prop
 #>   <chr>         <int>     <int>   <int>      <int>        <dbl>      <dbl>
-#> 1 call1            11         0       1          1       0          0.0909
-#> 2 call2            12         0       0          1       0          0     
-#> 3 call3            12         1       0          1       0.0833     0     
+#> 1 call1            11         0       1          0        0         0.0909
+#> 2 call2            10         0       1          1        0         0.1   
+#> 3 call3             6         1       0          0        0.167     0     
+#> 4 call4            10         0       0          0        0         0     
+#> 5 call5             7         1       0          0        0.143     0     
+#> 6 call6            11         0       0          1        0         0     
 #> # ℹ 1 more variable: tristeza_prop <dbl>
 ```
+
+> **Como interpretar:** mecanicamente é a mesma lógica da seção 15.1
+> (conta palavras por categoria), só que as categorias são emoções em
+> vez de temas — por isso o mesmo cuidado se aplica: a função conta
+> vocabulário associado à emoção, não detecta a emoção real do autor.
+> Note que `call1` (“atrasou”) pontua em `raiva`, não em `tristeza`,
+> porque foi essa a emoção atribuída a “atrasou” no léxico de exemplo: a
+> qualidade do resultado depende inteiramente de que léxico você usa. O
+> pacote não distribui um léxico de emoções pronto (por isso o exemplo
+> define um na mão); para português, procure léxicos adaptados do NRC ou
+> construa o seu com
+> [`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md)
+> a partir de categorias validadas na literatura da sua área.
+
+#### 15.3 Validação contra codificação humana
 
 Nenhum dicionário deveria ser usado numa análise publicável sem comparar
 sua classificação a uma amostra codificada por humano: é a mesma lógica
 de
 [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
-(para codificação por LLM), aplicada aqui ao método de dicionário.
+(para codificação por LLM), aplicada aqui ao método de dicionário. Para
+ilustrar os dois tipos de erro que a validação revela, o `humano` abaixo
+discorda do dicionário em um ponto: em `call1` (“a entrega atrasou
+muito…”), o revisor humano leu o registro como uma reclamação sobre o
+*produto* em geral, não especificamente sobre a entrega — uma
+divergência plausível entre dicionário e leitor humano, que ao mesmo
+tempo produz um falso positivo para “entrega” (o dicionário marcou, o
+humano não) e um falso negativo para “produto” (o humano marcou, o
+dicionário não).
 
 ``` r
 
-scored <- ac_dictionary(corpus_atend, dict)
 humano <- tibble::tibble(
-  doc_id    = scored$doc_id,
-  categoria = c("entrega", "entrega|produto", "produto")
+  doc_id    = resultado_dict$doc_id,
+  categoria = c("produto", "produto", "entrega|produto", "entrega", "produto", "entrega|produto")
 )
-ac_dictionary_validate(scored, humano)
+ac_dictionary_validate(resultado_dict, humano)
 #> # A tibble: 2 × 12
 #>   categoria     n    vp    fp    fn    vn concordancia precisao recall    f1
 #>   <chr>     <int> <int> <int> <int> <int>        <dbl>    <dbl>  <dbl> <dbl>
-#> 1 entrega       3     0     0     2     1        0.333   NA          0  NA  
-#> 2 produto       3     2     1     0     0        0.667    0.667      1   0.8
+#> 1 entrega       6     3     1     0     2        0.833     0.75    1   0.857
+#> 2 produto       6     4     0     1     1        0.833     1       0.8 0.889
 #> # ℹ 2 more variables: gwet_ac1 <dbl>, krippendorff_alfa <dbl>
 ```
 
 > **Como interpretar:** leia `precisao` e `recall` por categoria, não só
-> a `concordancia` geral. Precisão baixa numa categoria significa que o
-> dicionário marca falsos positivos nela (palavras da lista aparecem em
-> documentos que um humano não classificaria assim); recall baixo
-> significa que o dicionário deixa passar casos verdadeiros (faltam
-> palavras na lista). No exemplo, `precisao` é `NA` para “entrega”: o
-> dicionário nunca marcou nenhum documento como “entrega”
-> (`vp + fp = 0`), então a razão fica indefinida (divisão por zero) em
-> vez de ser um valor baixo. Krippendorff (2018) considera
-> `krippendorff_alfa` acima de 0.80 adequado para publicação sem
-> reservas, e entre 0.67 e 0.80 aceitável com discussão dos casos
-> divergentes no texto.
+> uma `concordancia` geral. No exemplo, `entrega` tem **precisão** menor
+> (0.75): o dicionário marcou `call1` como “entrega”, mas o humano
+> discordou — um falso positivo. `produto` tem **recall** menor (0.8): o
+> humano marcou um caso como “produto” que o dicionário não capturou —
+> um falso negativo. Essa é a diferença prática entre os dois erros:
+> precisão baixa é o dicionário marcando demais (alarme falso); recall
+> baixo é o dicionário deixando passar (caso perdido), e qual dos dois
+> importa mais depende do uso: numa triagem para revisão humana, recall
+> alto é mais importante (não quer perder casos); num relatório
+> automático sem revisão, precisão alta é mais importante (não quer
+> alarmes falsos). Krippendorff (2018) considera `krippendorff_alfa`
+> acima de 0.80 adequado para publicação sem reservas, e entre 0.67 e
+> 0.80 aceitável com discussão dos casos divergentes no texto.
 
 ### 16. Análise de correspondência (CA): um mapa de grupos e termos
 

@@ -1276,19 +1276,46 @@ isolado.</p>
 categorias (temas, enquadramentos, emoções), no espírito do General
 Inquirer (Stone et al., 1966) e de “Text as Data” (Grimmer &amp;
 Stewart, 2013): você define as categorias e as palavras de cada uma, e o
-pacote conta.</p>
+pacote conta. Esta seção tem três partes: o dicionário em si (15.1), uma
+camada especializada para emoções (15.2), e a validação contra
+codificação humana que toda análise de dicionário publicável precisa ter
+(15.3).</p>
+<p>Corpus de exemplo: seis registros de atendimento cobrindo problemas
+de <strong>entrega</strong> e de <strong>produto</strong>, às vezes os
+dois no mesmo registro.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">atendimento2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"call"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
+<span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"a entrega atrasou muito e o rastreio nao atualizava ha dias"</span>,</span>
+<span>    <span class="st">"o produto chegou com defeito e veio quebrado da fabrica"</span>,</span>
+<span>    <span class="st">"entrega rapida produto excelente superou expectativas"</span>,</span>
+<span>    <span class="st">"o rastreio mostrava entrega prevista mas o pacote nunca chegou"</span>,</span>
+<span>    <span class="st">"produto perfeito funciona bem sem nenhum problema"</span>,</span>
+<span>    <span class="st">"entrega no prazo mas o produto veio com defeito de fabricacao"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">corpus_atend2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">atendimento2</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="dicionário-multi-categoria">15.1 Dicionário multi-categoria<a class="anchor" aria-label="anchor" href="#dicion%C3%A1rio-multi-categoria"></a>
+</h4>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
-<span>  entrega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"atrasou"</span>, <span class="st">"atrasada"</span>, <span class="st">"rápida"</span>, <span class="st">"rastreio"</span><span class="op">)</span>,</span>
+<span>  entrega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"atrasou"</span>, <span class="st">"atrasada"</span>, <span class="st">"rapida"</span>, <span class="st">"rastreio"</span>, <span class="st">"prazo"</span><span class="op">)</span>,</span>
 <span>  produto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"defeito"</span>, <span class="st">"quebrado"</span>, <span class="st">"perfeito"</span>, <span class="st">"excelente"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
+<span><span class="va">resultado_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend2</span>, <span class="va">dict</span><span class="op">)</span></span>
+<span><span class="va">resultado_dict</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
 <span><span class="co">#&gt;   doc_id total_tokens entrega_n produto_n entrega_prop produto_prop</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> call1            11         0         1            0       0.090<span style="text-decoration: underline;">9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> call2            12         0         1            0       0.083<span style="text-decoration: underline;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> call3            12         0         1            0       0.083<span style="text-decoration: underline;">3</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> call1            11         3         0        0.273       0     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> call2            10         0         2        0           0.2   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> call3             6         2         1        0.333       0.167 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> call4            10         2         0        0.2         0     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> call5             7         0         1        0           0.143 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> call6            11         2         1        0.182       0.090<span style="text-decoration: underline;">9</span></span></span></code></pre></div>
 <blockquote>
 <p><strong>Como interpretar:</strong> a coluna
 <code>&lt;categoria&gt;_prop</code> é a proporção de tokens do documento
@@ -1297,14 +1324,17 @@ pertencentes àquela categoria, não a proporção de sentenças ou de
 documento fala <em>bem</em> ou <em>mal</em> do produto, só que usa
 vocabulário da categoria “produto” com frequência: dicionários contam
 palavras, não interpretam contexto, negação ou ironia (por isso a
-validação abaixo é indispensável).</p>
+validação em 15.3 é indispensável). Documentos podem pontuar em mais de
+uma categoria ao mesmo tempo (<code>call3</code> e <code>call6</code>
+têm tokens de <code>entrega</code> <strong>e</strong>
+<code>produto</code>): as categorias não são mutuamente exclusivas por
+padrão.</p>
 </blockquote>
 <p>Para visualizar a composição temática de vários documentos de uma
 vez, um gráfico de barras empilhadas às proporções funciona melhor que a
 tabela:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">resultado_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
-<span><span class="va">long_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">long_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  doc_id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">resultado_dict</span><span class="op">$</span><span class="va">doc_id</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"produto"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">resultado_dict</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  prop      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">resultado_dict</span><span class="op">$</span><span class="va">entrega_prop</span>, <span class="va">resultado_dict</span><span class="op">$</span><span class="va">produto_prop</span><span class="op">)</span></span>
@@ -1319,54 +1349,102 @@ tabela:</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/dictionary-plot-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> a altura total da barra é a
+proporção de tokens do documento capturada por <strong>qualquer</strong>
+categoria do dicionário; o restante (até completar 100%) é vocabulário
+fora do dicionário — normal e esperado, já que a maior parte de qualquer
+texto é gramática e palavras funcionais, não vocabulário temático.
+Barras com as duas cores empilhadas (<code>call3</code>,
+<code>call6</code>) são documentos que mencionam entrega e produto na
+mesma frase; barras de uma cor só, documentos focados num único
+problema.</p>
+</blockquote>
+</div>
+<div class="section level4">
+<h4 id="léxico-de-emoções">15.2 Léxico de emoções<a class="anchor" aria-label="anchor" href="#l%C3%A9xico-de-emo%C3%A7%C3%B5es"></a>
+</h4>
 <p><code><a href="../reference/ac_emotion.html">ac_emotion()</a></code> é uma camada especializada do mesmo
 mecanismo para léxicos de emoção (inspirada no NRC Emotion Lexicon;
 Mohammad &amp; Turney, 2013), indo além de só positivo/negativo:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lexico_emocao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  termo  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elogiado"</span>, <span class="st">"reclamou"</span>, <span class="st">"defeito"</span>, <span class="st">"excelente"</span><span class="op">)</span>,</span>
-<span>  emocao <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alegria"</span>,  <span class="st">"raiva"</span>,    <span class="st">"tristeza"</span>, <span class="st">"alegria"</span><span class="op">)</span>,</span>
+<span>  termo  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"excelente"</span>, <span class="st">"perfeito"</span>, <span class="st">"defeito"</span>, <span class="st">"quebrado"</span>, <span class="st">"atrasou"</span><span class="op">)</span>,</span>
+<span>  emocao <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alegria"</span>,   <span class="st">"alegria"</span>,  <span class="st">"tristeza"</span>, <span class="st">"raiva"</span>,   <span class="st">"raiva"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_emotion.html">ac_emotion</a></span><span class="op">(</span><span class="va">corpus_atend</span>, lexicon <span class="op">=</span> <span class="va">lexico_emocao</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
+<span><span class="fu"><a href="../reference/ac_emotion.html">ac_emotion</a></span><span class="op">(</span><span class="va">corpus_atend2</span>, lexicon <span class="op">=</span> <span class="va">lexico_emocao</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
 <span><span class="co">#&gt;   doc_id total_tokens alegria_n raiva_n tristeza_n alegria_prop raiva_prop</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> call1            11         0       1          1       0          0.090<span style="text-decoration: underline;">9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> call2            12         0       0          1       0          0     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> call3            12         1       0          1       0.083<span style="text-decoration: underline;">3</span>     0     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> call1            11         0       1          0        0         0.090<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> call2            10         0       1          1        0         0.1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> call3             6         1       0          0        0.167     0     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> call4            10         0       0          0        0         0     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> call5             7         1       0          0        0.143     0     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> call6            11         0       0          1        0         0     </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: tristeza_prop &lt;dbl&gt;</span></span></span></code></pre></div>
+<blockquote>
+<p><strong>Como interpretar:</strong> mecanicamente é a mesma lógica da
+seção 15.1 (conta palavras por categoria), só que as categorias são
+emoções em vez de temas — por isso o mesmo cuidado se aplica: a função
+conta vocabulário associado à emoção, não detecta a emoção real do
+autor. Note que <code>call1</code> (“atrasou”) pontua em
+<code>raiva</code>, não em <code>tristeza</code>, porque foi essa a
+emoção atribuída a “atrasou” no léxico de exemplo: a qualidade do
+resultado depende inteiramente de que léxico você usa. O pacote não
+distribui um léxico de emoções pronto (por isso o exemplo define um na
+mão); para português, procure léxicos adaptados do NRC ou construa o seu
+com <code><a href="../reference/ac_build_dictionary.html">ac_build_dictionary()</a></code> a partir de categorias validadas
+na literatura da sua área.</p>
+</blockquote>
+</div>
+<div class="section level4">
+<h4 id="validação-contra-codificação-humana">15.3 Validação contra codificação humana<a class="anchor" aria-label="anchor" href="#valida%C3%A7%C3%A3o-contra-codifica%C3%A7%C3%A3o-humana"></a>
+</h4>
 <p>Nenhum dicionário deveria ser usado numa análise publicável sem
 comparar sua classificação a uma amostra codificada por humano: é a
 mesma lógica de <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> (para codificação por
-LLM), aplicada aqui ao método de dicionário.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
-<span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  doc_id    <span class="op">=</span> <span class="va">scored</span><span class="op">$</span><span class="va">doc_id</span>,</span>
-<span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"entrega|produto"</span>, <span class="st">"produto"</span><span class="op">)</span></span>
+LLM), aplicada aqui ao método de dicionário. Para ilustrar os dois tipos
+de erro que a validação revela, o <code>humano</code> abaixo discorda do
+dicionário em um ponto: em <code>call1</code> (“a entrega atrasou
+muito…”), o revisor humano leu o registro como uma reclamação sobre o
+<em>produto</em> em geral, não especificamente sobre a entrega — uma
+divergência plausível entre dicionário e leitor humano, que ao mesmo
+tempo produz um falso positivo para “entrega” (o dicionário marcou, o
+humano não) e um falso negativo para “produto” (o humano marcou, o
+dicionário não).</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  doc_id    <span class="op">=</span> <span class="va">resultado_dict</span><span class="op">$</span><span class="va">doc_id</span>,</span>
+<span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"produto"</span>, <span class="st">"produto"</span>, <span class="st">"entrega|produto"</span>, <span class="st">"entrega"</span>, <span class="st">"produto"</span>, <span class="st">"entrega|produto"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate</a></span><span class="op">(</span><span class="va">scored</span>, <span class="va">humano</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate</a></span><span class="op">(</span><span class="va">resultado_dict</span>, <span class="va">humano</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 12</span></span></span>
 <span><span class="co">#&gt;   categoria     n    vp    fp    fn    vn concordancia precisao recall    f1</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> entrega       3     0     0     2     1        0.333   <span style="color: #BB0000;">NA</span>          0  <span style="color: #BB0000;">NA</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> produto       3     2     1     0     0        0.667    0.667      1   0.8</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> entrega       6     3     1     0     2        0.833     0.75    1   0.857</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> produto       6     4     0     1     1        0.833     1       0.8 0.889</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: gwet_ac1 &lt;dbl&gt;, krippendorff_alfa &lt;dbl&gt;</span></span></span></code></pre></div>
 <blockquote>
 <p><strong>Como interpretar:</strong> leia <code>precisao</code> e
-<code>recall</code> por categoria, não só a <code>concordancia</code>
-geral. Precisão baixa numa categoria significa que o dicionário marca
-falsos positivos nela (palavras da lista aparecem em documentos que um
-humano não classificaria assim); recall baixo significa que o dicionário
-deixa passar casos verdadeiros (faltam palavras na lista). No exemplo,
-<code>precisao</code> é <code>NA</code> para “entrega”: o dicionário
-nunca marcou nenhum documento como “entrega” (<code>vp + fp = 0</code>),
-então a razão fica indefinida (divisão por zero) em vez de ser um valor
-baixo. Krippendorff (2018) considera <code>krippendorff_alfa</code>
-acima de 0.80 adequado para publicação sem reservas, e entre 0.67 e 0.80
-aceitável com discussão dos casos divergentes no texto.</p>
+<code>recall</code> por categoria, não só uma <code>concordancia</code>
+geral. No exemplo, <code>entrega</code> tem <strong>precisão</strong>
+menor (0.75): o dicionário marcou <code>call1</code> como “entrega”, mas
+o humano discordou — um falso positivo. <code>produto</code> tem
+<strong>recall</strong> menor (0.8): o humano marcou um caso como
+“produto” que o dicionário não capturou — um falso negativo. Essa é a
+diferença prática entre os dois erros: precisão baixa é o dicionário
+marcando demais (alarme falso); recall baixo é o dicionário deixando
+passar (caso perdido), e qual dos dois importa mais depende do uso: numa
+triagem para revisão humana, recall alto é mais importante (não quer
+perder casos); num relatório automático sem revisão, precisão alta é
+mais importante (não quer alarmes falsos). Krippendorff (2018) considera
+<code>krippendorff_alfa</code> acima de 0.80 adequado para publicação
+sem reservas, e entre 0.67 e 0.80 aceitável com discussão dos casos
+divergentes no texto.</p>
 </blockquote>
+</div>
 </div>
 <div class="section level3">
 <h3 id="análise-de-correspondência-ca-um-mapa-de-grupos-e-termos">16. Análise de correspondência (CA): um mapa de grupos e termos<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-de-correspond%C3%AAncia-ca-um-mapa-de-grupos-e-termos"></a>
@@ -1378,7 +1456,7 @@ posiciona grupos e termos no mesmo espaço geométrico. A lógica
 geométrica é simples: pontos próximos tendem a co-ocorrer mais do que o
 esperado pelo acaso, e a distância até a origem indica quão distintivo
 (vs. genérico) é um termo ou grupo.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">categorias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -1411,7 +1489,7 @@ equilibrada, interpretar só a Dim 1 perde informação relevante.</p>
 <p>Quando o mapa fica poluído de termos, uma alternativa é olhar só as
 coordenadas dos grupos, sem os termos: útil quando a pergunta é apenas
 “quão diferentes os grupos são entre si”:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ca</span><span class="op">$</span><span class="va">row_coords</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dim1</span>, y <span class="op">=</span> <span class="va">dim2</span>, label <span class="op">=</span> <span class="va">unit</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span> <span class="op">+</span></span>
