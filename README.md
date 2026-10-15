@@ -547,7 +547,7 @@ Souza, M., & Vieira, R. (2012). Sentiment analysis on Twitter data for
 Portuguese language. *PROPOR*.
 
 Wang, X. et al. (2023). Self-consistency improves chain of thought reasoning
-in language models. *EMNLP*.
+in language models. *ICLR*.
 
 Wickham, H. et al. (2025). *ellmer: Chat with Large Language Models*. Posit.
 <https://ellmer.tidyverse.org>

@@ -204,3 +204,10 @@ test_that("ac_plot_cluster(kind='heatmap') funciona para kmeans", {
   p <- ac_plot_cluster(cl, kind = "heatmap")
   expect_s3_class(p, "ggplot")
 })
+
+test_that("distancia cosseno e calculada como distancia de corda (euclidiana)", {
+  m <- rbind(a = c(1, 0), b = c(0, 1), c = c(2, 0))
+  d <- as.matrix(.cluster_distance(m, "cosine"))
+  expect_equal(d["a", "b"], sqrt(2))   # ortogonais: sqrt(2 * (1 - 0))
+  expect_equal(d["a", "c"], 0)         # mesma direcao, tamanho diferente
+})

@@ -28,9 +28,17 @@ por TF-IDF; \code{"count"} usa contagens brutas.}
 entre 2 e 8; requer \code{cluster}. Se \code{cluster} não estiver instalado,
 \code{k = 3} e o fallback.}
 
-\item{distance}{Métrica de dissimilaridade. \code{"cosine"} (padrao) e o
-classico em textos; \code{"euclidean"} funciona melhor com vetores
-normalizados.}
+\item{distance}{Métrica de dissimilaridade. \code{"cosine"} (padrão) é o
+clássico em textos (Salton & McGill, 1983): compara a \emph{composição}
+do vocabulário, não o tamanho do documento. Internamente ela é
+calculada como distância de corda, \eqn{\sqrt{2(1 - \cos\theta)}},
+que é a distância euclidiana entre os vetores normalizados para
+norma 1 (Legendre & Legendre, 2012). A ordem dos pares é a mesma de
+\eqn{1 - \cos\theta}, mas a distância de corda é euclidiana, o que
+o critério de Ward (\code{hclust}) e o k-means exigem (Murtagh & Legendre,
+2014). Com \code{"cosine"}, o k-means também roda sobre os vetores
+normalizados. \code{"euclidean"} usa os vetores brutos, sensíveis ao
+tamanho do documento.}
 
 \item{min_docs}{Mínimo de documentos para não emitir warning de corpus
 pequeno. Padrao: \code{15L}.}
@@ -52,9 +60,9 @@ Objeto de classe \code{ac_cluster} com:
 para descobrir tipologias latentes, montar amostras estratificadas de
 revisao humana ou produzir dendrogramas para relatórios metodologicos.
 
-Não substitui \code{\link[=ac_lda]{ac_lda()}}: LDA e clustering \emph{soft} (cada documento vira
-uma mistura de tópicos), enquanto esta função devolve \strong{uma etiqueta
-por documento}.
+Não substitui \code{\link[=ac_lda]{ac_lda()}}: o LDA é um modelo de pertencimento misto
+(cada documento vira uma mistura de tópicos), enquanto esta função
+devolve \strong{uma etiqueta por documento}.
 }
 \examples{
 # Corpus com dois blocos tematicos
@@ -74,6 +82,21 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 clust  <- ac_cluster_documents(corpus, k = 2)
 clust$assignments
 
+}
+\references{
+Legendre, P.; Legendre, L. (2012). \emph{Numerical Ecology} (3rd ed.).
+Elsevier.
+
+Murtagh, F.; Legendre, P. (2014). Ward's hierarchical agglomerative
+clustering method: Which algorithms implement Ward's criterion?
+\emph{Journal of Classification}, 31(3), 274-295.
+
+Rousseeuw, P. J. (1987). Silhouettes: a graphical aid to the
+interpretation and validation of cluster analysis. \emph{Journal of
+Computational and Applied Mathematics}, 20, 53-65.
+
+Salton, G.; McGill, M. J. (1983). \emph{Introduction to Modern Information
+Retrieval}. McGraw-Hill.
 }
 \seealso{
 \code{\link[=ac_lda]{ac_lda()}}, \code{\link[=ac_plot_cluster]{ac_plot_cluster()}}

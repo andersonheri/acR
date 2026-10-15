@@ -117,9 +117,15 @@ pipe-separada sem espaco (\code{"técnica|politica"}).
 multilabel, unidos por \code{" | "} (espaco dos dois lados).
 \item \code{confidence_score}: grau de certeza da categoria vencedora (0-1).
 Presente quando \code{confidence} e \code{"total"} ou \code{"both"}.
-\item \code{confidence_level}: \code{"alta"}, \code{"média"}, \code{"baixa"} -- interpretação
-de \code{confidence_score} (Landis & Koch, 1977). Acompanha
-\code{confidence_score}.
+\item \code{confidence_level}: \code{"alta"} (\verb{>= 0,80}), \code{"média"} (\verb{>= 0,61}) ou
+\code{"baixa"} -- faixas \strong{convencionadas pelo pacote} para resumir
+\code{confidence_score}. Não vêm da literatura de confiabilidade: as
+faixas de Landis & Koch (1977) são para kappa, não para proporção
+de rodadas concordantes. A ideia de usar a concordância entre
+amostras como sinal de incerteza vem de Wang et al. (2023) e Xiong
+et al. (2024), que mostram que ela se correlaciona com acerto, mas
+não propõem cortes universais. Com \code{k_consistency = 3}, os valores
+possíveis são só 1/3, 2/3 e 1. Acompanha \code{confidence_score}.
 \item \verb{<categoria>_confidence}: uma coluna por categoria do codebook
 (ex.: \code{positivo_confidence}, \code{negativo_confidence}), com a
 proporção de rodadas de self-consistency que escolheram aquela
@@ -219,7 +225,12 @@ coded_both[, c("doc_id", "categoria", "confidence_score",
 }
 \references{
 Wang, X. et al. (2023). Self-Consistency Improves Chain of Thought Reasoning
-in Language Models. \emph{EMNLP}.
+in Language Models. \emph{International Conference on Learning
+Representations (ICLR)}.
+
+Xiong, M. et al. (2024). Can LLMs Express Their Uncertainty? An
+Empirical Evaluation of Confidence Elicitation in LLMs.
+\emph{International Conference on Learning Representations (ICLR)}.
 
 Landis, J. R.; Koch, G. G. (1977). The Measurement of Observer Agreement
 for Categorical Data. \emph{Biometrics}, 33(1), 159-174.

@@ -80,7 +80,7 @@ dicionarios, todas documentadas na vignette `vignette("quantitativo")`
 * **`ac_wordscores()`/`ac_plot_wordscores()`**: escalonamento
   ideologico/continuo de documentos a partir de um pequeno conjunto de
   referencia com posicao conhecida (Laver, Benoit & Garry, 2003), com
-  reescalonamento `"lbg"` ou `"mv"` (Martin & Vanberg, 2007).
+  reescalonamento `"lbg"` ou `"mv"` (Martin & Vanberg, 2008).
 * **`ac_ca()`/`ac_plot_ca()`**: analise de correspondencia (biplot de
   documentos/grupos x termos) calculada nativamente via `base::svd()`
   (Greenacre, 2007), alternativa geometrica e deterministica a

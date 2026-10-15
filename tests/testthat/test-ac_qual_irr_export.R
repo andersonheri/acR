@@ -66,7 +66,7 @@ test_that("ac_qual_irr() kappa = 1 para concordancia perfeita", {
   result <- ac_qual_irr(.irr_perfeito, .irr_perfeito,
                         method = "cohen_kappa", verbose = FALSE)
   expect_equal(result$metrics$estimate, 1.0, tolerance = 1e-6)
-  expect_equal(result$metrics$interpretation, "Quase perfeita")
+  expect_equal(result$metrics$interpretation, "quase perfeita (Landis & Koch, 1977)")
 })
 
 test_that("ac_qual_irr() n_docs esta correto", {
@@ -112,22 +112,60 @@ test_that("ac_qual_irr() avisa sobre documentos sem par", {
   )
 })
 
-test_that(".irr_interpret_kappa() retorna interpretacoes corretas", {
-  expect_equal(.irr_interpret_kappa(-0.1), "Pobre")
-  expect_equal(.irr_interpret_kappa(0.10), "Leve")
-  expect_equal(.irr_interpret_kappa(0.30), "Razoavel")
-  expect_equal(.irr_interpret_kappa(0.50), "Moderada")
-  expect_equal(.irr_interpret_kappa(0.70), "Substancial")
-  expect_equal(.irr_interpret_kappa(0.90), "Quase perfeita")
-  expect_equal(.irr_interpret_kappa(NA),   "N/A")
+test_that(".ac_landis_koch() usa os limites exatos de Landis & Koch (1977)", {
+  expect_equal(.ac_landis_koch(-0.1), "pobre")
+  expect_equal(.ac_landis_koch(0.10), "leve")
+  expect_equal(.ac_landis_koch(0.20), "leve")
+  expect_equal(.ac_landis_koch(0.30), "razoável")
+  expect_equal(.ac_landis_koch(0.50), "moderada")
+  expect_equal(.ac_landis_koch(0.70), "substancial")
+  expect_equal(.ac_landis_koch(0.80), "substancial")   # 0,61-0,80
+  expect_equal(.ac_landis_koch(0.81), "quase perfeita")
+  expect_true(is.na(.ac_landis_koch(NA)))
 })
 
-test_that(".irr_interpret_pa() retorna interpretacoes corretas", {
-  expect_equal(.irr_interpret_pa(0.50), "Insuficiente")
-  expect_equal(.irr_interpret_pa(0.65), "Aceitavel")
-  expect_equal(.irr_interpret_pa(0.75), "Bom")
-  expect_equal(.irr_interpret_pa(0.85), "Muito bom")
-  expect_equal(.irr_interpret_pa(0.95), "Excelente")
+test_that("alfa de Krippendorff e lido pelas faixas de Krippendorff (2018)", {
+  expect_match(.ac_interpret_agreement(0.85, "alpha"), "^confi")
+  expect_match(.ac_interpret_agreement(0.70, "alpha"), "provis")
+  expect_match(.ac_interpret_agreement(0.60, "alpha"), "^insuficiente")
+})
+
+test_that("percentual usa as faixas de Neuendorf (2017) e F1 nao recebe rotulo", {
+  expect_match(.ac_interpret_agreement(0.95, "percent"), "^alta")
+  expect_match(.ac_interpret_agreement(0.75, "percent"), "explorat")
+  expect_match(.ac_interpret_agreement(0.50, "percent"), "^insuficiente")
+  expect_match(.ac_interpret_agreement(0.99, "f1"), "sem faixa")
+})
+
+test_that("ac_qual_irr() da IC bootstrap dentro de [-1, 1]", {
+  skip_if_not_installed("irr")
+  g <- data.frame(id_discurso = 1:5, categoria = c("a", "b", "a", "c", "a"))
+  p <- data.frame(id_discurso = 1:5, categoria = c("a", "b", "b", "c", "a"))
+  r <- withr::with_seed(1, ac_qual_irr(g, p, verbose = FALSE, bootstrap = 200))
+  ci <- r$metrics[r$metrics$metric != "Percent Agreement", c("ci_lower", "ci_upper")]
+  expect_true(all(ci$ci_lower >= -1 & ci$ci_upper <= 1, na.rm = TRUE))
+  expect_false(anyNA(r$metrics$ci_lower[r$metrics$metric != "Percent Agreement"]))
+})
+
+test_that("ac_qual_irr() aceita weight = 'linear' (mapeado para 'equal' do irr)", {
+  skip_if_not_installed("irr")
+  g <- data.frame(id_discurso = 1:6,
+                  categoria = factor(c("baixo", "medio", "alto", "medio", "baixo", "alto"),
+                                     levels = c("baixo", "medio", "alto")))
+  p <- data.frame(id_discurso = 1:6,
+                  categoria = c("baixo", "alto", "alto", "medio", "medio", "alto"))
+  expect_no_error(
+    r <- ac_qual_irr(g, p, method = "cohen_kappa", weight = "linear",
+                     verbose = FALSE, bootstrap = 0)
+  )
+  expect_equal(r$categories, c("baixo", "medio", "alto"))
+})
+
+test_that("ac_qual_irr() rejeita id duplicado", {
+  skip_if_not_installed("irr")
+  g <- data.frame(id_discurso = c(1, 1, 2), categoria = c("a", "b", "a"))
+  p <- data.frame(id_discurso = c(1, 2), categoria = c("a", "a"))
+  expect_error(ac_qual_irr(g, p, verbose = FALSE), "duplicado")
 })
 
 test_that("print.ac_irr() nao lanca erro", {

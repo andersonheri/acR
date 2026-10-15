@@ -184,3 +184,22 @@ test_that(".empty_cooc_tibble() retorna tibble com 0 linhas e colunas corretas",
   r_dice <- acR:::.empty_cooc_tibble(c("count","dice"))
   expect_true("dice" %in% names(r_dice))
 })
+
+test_that("ac_cooccurrence() conta cada encontro na janela uma unica vez", {
+  df <- data.frame(id = "d1", t = "a b x a b", stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  co <- ac_cooccurrence(ac_tokenize(corp), window = 1L, min_count = 1L, measure = "count")
+  # "a b" adjacentes 2 vezes; "b x" e "x a" 1 vez cada
+  expect_equal(co$cooc[co$word1 == "a" & co$word2 == "b"], 2L)
+  expect_equal(co$cooc[co$word1 == "b" & co$word2 == "x"], 1L)
+  expect_false(any(co$word1 == co$word2))
+})
+
+test_that("ac_cooccurrence(unit = 'document') usa frequencia documental no Dice", {
+  df <- data.frame(id = c("d1", "d2"), t = c("a a a b", "a c"), stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  co <- ac_cooccurrence(ac_tokenize(corp), unit = "document", min_count = 1L,
+                        measure = c("count", "dice"))
+  # a em 2 docs, b em 1, juntos em 1: Dice = 2*1/(2+1)
+  expect_equal(co$dice[co$word1 == "a" & co$word2 == "b"], 2 / 3)
+})

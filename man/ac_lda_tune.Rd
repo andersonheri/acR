@@ -9,6 +9,7 @@ ac_lda_tune(
   k_range = 5:20,
   seed = 42L,
   method = c("VEM", "Gibbs"),
+  folds = 5L,
   ...
 )
 }
@@ -17,20 +18,42 @@ ac_lda_tune(
 
 \item{k_range}{Vetor de valores de k a testar. Padrão: \code{5:20}.}
 
-\item{seed}{Semente. Padrão: \code{42}.}
+\item{seed}{Semente (ajuste dos modelos e sorteio das partes da
+validação cruzada). Padrão: \code{42}.}
 
 \item{method}{Método de estimação. Padrão: \code{"VEM"}.}
 
-\item{...}{Ignorado.}
+\item{folds}{Número de partes da validação cruzada. Padrão: \code{5}
+(limitado ao número de documentos). Use \code{1} para pular a validação
+cruzada e calcular só a perplexidade de treino (não recomendado).}
+
+\item{...}{Argumentos adicionais passados a \code{\link[topicmodels:lda]{topicmodels::LDA()}}.}
 }
 \value{
-Tibble com colunas \code{k}, \code{perplexity} e, se disponível,
-métricas do pacote \code{ldatuning}.
+Tibble com colunas \code{k}, \code{perplexity} (média da perplexidade
+nas partes de teste da validação cruzada), \code{perplexity_sd} (desvio
+padrão entre as partes) e \code{perplexity_train} (perplexidade no corpus
+inteiro usado no ajuste).
 }
 \description{
 \code{ac_lda_tune()} ajusta modelos LDA para diferentes valores de k e
-calcula métricas de qualidade para auxiliar na seleção do número
-ideal de tópicos.
+calcula a \strong{perplexidade fora da amostra} por validação cruzada, para
+auxiliar na seleção do número de tópicos.
+
+Por que fora da amostra: a perplexidade calculada nos mesmos documentos
+usados para ajustar o modelo cai quase sempre à medida que k cresce,
+porque mais tópicos = mais parâmetros para memorizar o corpus. Blei, Ng
+& Jordan (2003) e Wallach et al. (2009) avaliam a perplexidade em
+documentos \strong{não vistos} no ajuste; Zhao et al. (2015) usam validação
+cruzada em 5 partes, como faz esta função por padrão. A versão de
+treino continua disponível na coluna \code{perplexity_train}, só para
+comparação.
+
+Perplexidade é um critério de ajuste preditivo, não de qualidade
+substantiva: Chang et al. (2009) mostram que modelos com melhor
+perplexidade podem produzir tópicos \strong{menos} interpretáveis para
+humanos. Use a curva para delimitar uma faixa de k e decida dentro
+dela lendo os tópicos.
 }
 \examples{
 \donttest{
@@ -52,11 +75,27 @@ df <- data.frame(
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 
-# 2. Testar k de 2 a 5 e comparar perplexidade (menor = melhor ajuste)
+# 2. Testar k de 2 a 5: perplexidade fora da amostra (validacao cruzada)
 tune <- ac_lda_tune(corpus, k_range = 2:5)
 tune
 }
 
+}
+\references{
+Blei, D. M.; Ng, A. Y.; Jordan, M. I. (2003). Latent Dirichlet
+Allocation. \emph{Journal of Machine Learning Research}, 3, 993-1022.
+
+Chang, J.; Gerrish, S.; Wang, C.; Boyd-Graber, J.; Blei, D. M. (2009).
+Reading tea leaves: How humans interpret topic models. \emph{Advances in
+Neural Information Processing Systems}, 22, 288-296.
+
+Wallach, H. M.; Murray, I.; Salakhutdinov, R.; Mimno, D. (2009).
+Evaluation methods for topic models. \emph{Proceedings of the 26th
+International Conference on Machine Learning}, 1105-1112.
+
+Zhao, W. et al. (2015). A heuristic approach to determine an
+appropriate number of topics in topic modeling. \emph{BMC Bioinformatics},
+16(Suppl 13), S8.
 }
 \seealso{
 \code{\link[=ac_lda]{ac_lda()}}, \code{\link[=ac_plot_lda_tune]{ac_plot_lda_tune()}}

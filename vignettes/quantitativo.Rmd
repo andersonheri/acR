@@ -1045,7 +1045,7 @@ ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
 * Laver, M.; Benoit, K.; Garry, J. (2003). Extracting Policy Positions from
   Political Texts Using Words as Data. *American Political Science
   Review*, 97(2), 311-331.
-* Martin, L. W.; Vanberg, G. (2007). A Robust Transformation Procedure
+* Martin, L. W.; Vanberg, G. (2008). A Robust Transformation Procedure
   for Interpreting Political Text. *Political Analysis*, 16(1), 93-100.
 * Martins, T. B. F. et al. (1996). Readability formulas applied to
   textbooks in Brazilian Portuguese. *Memorandum*, 28.

@@ -12,9 +12,10 @@ ac_count(corpus, n = 1L, drop_punct = FALSE, by = NULL, sort = TRUE, ...)
 \item{n}{Tamanho do n-grama a ser tokenizado. Encaminhado para
 \code{\link[=ac_tokenize]{ac_tokenize()}}. Veja \code{?ac_tokenize} para detalhes.}
 
-\item{drop_punct}{Lógico. Se \code{TRUE}, remove tokens compostos apenas
-por pontuação antes de calcular as frequências (via
-\code{drop_punct = TRUE} em \code{\link[=ac_tokenize]{ac_tokenize()}}).}
+\item{drop_punct}{Lógico. Se \code{TRUE}, remove a pontuação das bordas
+dos tokens e descarta tokens compostos só de pontuação antes de
+calcular as frequências (via \code{drop_punct = TRUE} em
+\code{\link[=ac_tokenize]{ac_tokenize()}}).}
 
 \item{by}{Vetor de nomes de colunas de metadados em \code{corpus} a serem
 usados como grupos de agregacao. Se \code{NULL} (padrao), as contagens

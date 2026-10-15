@@ -6,9 +6,9 @@
 #' para descobrir tipologias latentes, montar amostras estratificadas de
 #' revisao humana ou produzir dendrogramas para relatórios metodologicos.
 #'
-#' Não substitui [ac_lda()]: LDA e clustering *soft* (cada documento vira
-#' uma mistura de tópicos), enquanto esta função devolve **uma etiqueta
-#' por documento**.
+#' Não substitui [ac_lda()]: o LDA é um modelo de pertencimento misto
+#' (cada documento vira uma mistura de tópicos), enquanto esta função
+#' devolve **uma etiqueta por documento**.
 #'
 #' @param corpus Objeto `ac_corpus`.
 #' @param method Algoritmo. `"hclust"` (padrao) usa agrupamento hierarquico
@@ -21,9 +21,17 @@
 #'   c("hclust","kmeans")`, tenta escolher automaticamente por silhouette
 #'   entre 2 e 8; requer `cluster`. Se `cluster` não estiver instalado,
 #'   `k = 3` e o fallback.
-#' @param distance Métrica de dissimilaridade. `"cosine"` (padrao) e o
-#'   classico em textos; `"euclidean"` funciona melhor com vetores
-#'   normalizados.
+#' @param distance Métrica de dissimilaridade. `"cosine"` (padrão) é o
+#'   clássico em textos (Salton & McGill, 1983): compara a *composição*
+#'   do vocabulário, não o tamanho do documento. Internamente ela é
+#'   calculada como distância de corda, \eqn{\sqrt{2(1 - \cos\theta)}},
+#'   que é a distância euclidiana entre os vetores normalizados para
+#'   norma 1 (Legendre & Legendre, 2012). A ordem dos pares é a mesma de
+#'   \eqn{1 - \cos\theta}, mas a distância de corda é euclidiana, o que
+#'   o critério de Ward (`hclust`) e o k-means exigem (Murtagh & Legendre,
+#'   2014). Com `"cosine"`, o k-means também roda sobre os vetores
+#'   normalizados. `"euclidean"` usa os vetores brutos, sensíveis ao
+#'   tamanho do documento.
 #' @param min_docs Mínimo de documentos para não emitir warning de corpus
 #'   pequeno. Padrao: `15L`.
 #'
@@ -54,6 +62,21 @@
 #' corpus <- ac_corpus(df, text = texto, docid = id)
 #' clust  <- ac_cluster_documents(corpus, k = 2)
 #' clust$assignments
+#'
+#' @references
+#' Legendre, P.; Legendre, L. (2012). *Numerical Ecology* (3rd ed.).
+#' Elsevier.
+#'
+#' Murtagh, F.; Legendre, P. (2014). Ward's hierarchical agglomerative
+#' clustering method: Which algorithms implement Ward's criterion?
+#' *Journal of Classification*, 31(3), 274-295.
+#'
+#' Rousseeuw, P. J. (1987). Silhouettes: a graphical aid to the
+#' interpretation and validation of cluster analysis. *Journal of
+#' Computational and Applied Mathematics*, 20, 53-65.
+#'
+#' Salton, G.; McGill, M. J. (1983). *Introduction to Modern Information
+#' Retrieval*. McGraw-Hill.
 #'
 #' @seealso [ac_lda()], [ac_plot_cluster()]
 #' @concept quantitative
@@ -98,10 +121,14 @@ ac_cluster_documents <- function(corpus,
 
   # -- distancias ------------------------------------------------------------
   d <- .cluster_distance(mat, distance)
+  # k-means so conhece distancia euclidiana: para "cosine", rodar sobre os
+  # vetores normalizados (norma 1) torna-o coerente com a distancia de
+  # corda usada no hclust/pam e na silhueta.
+  mat_km <- if (distance == "cosine") .cluster_l2_normalize(mat) else mat
 
   # -- escolher k automatico ------------------------------------------------
   if (is.null(k) && method %in% c("hclust", "kmeans")) {
-    k <- .cluster_pick_k(mat, d, method)
+    k <- .cluster_pick_k(mat_km, d, method)
   } else if (is.null(k)) {
     k <- min(3L, n_docs - 1L)
   }
@@ -115,7 +142,7 @@ ac_cluster_documents <- function(corpus,
   # -- ajustar modelo -------------------------------------------------------
   fit <- switch(method,
     hclust = stats::hclust(d, method = "ward.D2"),
-    kmeans = stats::kmeans(mat, centers = k, nstart = 25L),
+    kmeans = stats::kmeans(mat_km, centers = k, nstart = 25L),
     pam    = .cluster_pam(d, k)
   )
 
@@ -197,12 +224,20 @@ print.ac_cluster <- function(x, ...) {
   if (distance == "euclidean") {
     return(stats::dist(mat, method = "euclidean"))
   }
-  # cosine: 1 - cos(theta)
+  # cosine -> distancia de corda sqrt(2 * (1 - cos)): euclidiana entre os
+  # vetores de norma 1, entao valida para Ward.D2 e k-means. Usar
+  # 1 - cos direto no Ward viola a premissa euclidiana do metodo
+  # (Murtagh & Legendre, 2014).
+  mat_n <- .cluster_l2_normalize(mat)
+  sim   <- mat_n %*% t(mat_n)
+  sim   <- pmin(pmax(sim, -1), 1)
+  stats::as.dist(sqrt(2 * (1 - sim)))
+}
+
+.cluster_l2_normalize <- function(mat) {
   norm <- sqrt(rowSums(mat * mat))
   norm[norm == 0] <- 1
-  mat_n <- mat / norm
-  sim   <- mat_n %*% t(mat_n)
-  stats::as.dist(1 - sim)
+  mat / norm
 }
 
 #' @noRd

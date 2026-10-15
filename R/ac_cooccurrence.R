@@ -12,16 +12,47 @@
 #' @param unit Unidade de co-ocorrência: `"window"` (padrão) ou `"document"`.
 #' @param measure Medidas de associação a calcular. Um ou mais de:
 #'   `"count"` (frequência conjunta), `"pmi"` (pointwise mutual information),
-#'   `"dice"` (coeficiente Dice). Padrão: `c("count", "pmi")`.
+#'   `"dice"` (coeficiente Dice). Padrão: as três.
 #' @param min_count Frequência mínima de co-ocorrência para incluir o par.
 #'   Padrão: `2`.
 #' @param ... Ignorado.
 #'
 #' @return Tibble com colunas:
 #'   * `word1`, `word2`: par de termos (ordenado alfabeticamente);
-#'   * `cooc`: frequência de co-ocorrência;
-#'   * `pmi` (se solicitado): pointwise mutual information;
+#'   * `cooc`: frequência de co-ocorrência. Com `unit = "window"`, é o
+#'     número de vezes em que os dois termos aparecem a até `window`
+#'     tokens um do outro (cada encontro conta **uma** vez); com
+#'     `unit = "document"`, é o número de documentos que contêm os dois;
+#'   * `pmi` (se solicitado): pointwise mutual information, em bits;
 #'   * `dice` (se solicitado): coeficiente Dice.
+#'
+#' @details
+#' **PMI** (Church & Hanks, 1990) compara a probabilidade conjunta com a
+#' esperada sob independência: \eqn{\log_2 [P(x,y) / (P(x)P(y))]}. Zero
+#' indica que o par aparece junto tanto quanto o acaso preveria; valores
+#' positivos, mais que o acaso. PMI superestima pares raros (Evert, 2005),
+#' por isso use `min_count` para descartá-los.
+#'
+#' **Dice** (Smadja, McKeown & Hatzivassiloglou, 1996) é
+#' \eqn{2 f(x,y) / (f(x) + f(y))}, entre 0 e 1.
+#'
+#' As probabilidades usam a mesma unidade da contagem conjunta: com
+#' `unit = "window"`, frequências de token e o total de tokens do corpus
+#' (aproximação usual de Church & Hanks); com `unit = "document"`,
+#' frequência documental (em quantos documentos o termo aparece) e o
+#' número de documentos. Pares de um termo com ele mesmo são ignorados.
+#'
+#' @references
+#' Church, K. W.; Hanks, P. (1990). Word association norms, mutual
+#' information, and lexicography. *Computational Linguistics*, 16(1),
+#' 22-29.
+#'
+#' Evert, S. (2005). *The Statistics of Word Cooccurrences: Word Pairs and
+#' Collocations*. Tese (Doutorado), Universität Stuttgart.
+#'
+#' Smadja, F.; McKeown, K. R.; Hatzivassiloglou, V. (1996). Translating
+#' collocations for bilingual lexicons: A statistical approach.
+#' *Computational Linguistics*, 22(1), 1-38.
 #'
 #' @examples
 #' # Corpus tematico: coocorrência revela associações conceituais
@@ -102,13 +133,23 @@ ac_cooccurrence <- function(corpus,
     return(.empty_cooc_tibble(measure))
   }
 
-  # Frequências marginais para PMI e Dice
+  # Frequências marginais para PMI e Dice, na MESMA unidade de cooc:
+  # janela -> frequência de token e total de tokens; documento ->
+  # frequência documental e número de documentos. Misturar as unidades
+  # (cooc em documentos, freq em tokens) dava Dice e PMI sem sentido.
   if (any(c("pmi", "dice") %in% measure)) {
-    freq_tbl <- tokens_tbl |>
-      dplyr::count(token, name = "freq") |>
-      dplyr::rename(word = token)
-
-    total_tokens <- sum(freq_tbl$freq)
+    if (unit == "window") {
+      freq_tbl <- tokens_tbl |>
+        dplyr::count(token, name = "freq") |>
+        dplyr::rename(word = token)
+      total_tokens <- sum(freq_tbl$freq)
+    } else {
+      freq_tbl <- tokens_tbl |>
+        dplyr::distinct(doc_id, token) |>
+        dplyr::count(token, name = "freq") |>
+        dplyr::rename(word = token)
+      total_tokens <- dplyr::n_distinct(tokens_tbl$doc_id)
+    }
 
     cooc_tbl <- cooc_tbl |>
       dplyr::left_join(freq_tbl |> dplyr::rename(freq1 = freq),
@@ -132,7 +173,7 @@ ac_cooccurrence <- function(corpus,
   if ("dice" %in% measure) {
     cooc_tbl <- cooc_tbl |>
       dplyr::mutate(
-        dice = pmin((2 * cooc) / (freq1 + freq2), 1)
+        dice = (2 * cooc) / (freq1 + freq2)
       )
   }
 
@@ -163,13 +204,16 @@ ac_cooccurrence <- function(corpus,
     if (n < 2L) next
 
     rows <- vector("list", n)
-    for (j in seq_len(n)) {
-      lo  <- max(1L, j - window)
-      hi  <- min(n,  j + window)
-      ctx <- setdiff(lo:hi, j)
-      if (length(ctx) == 0L) next
+    for (j in seq_len(n - 1L)) {
+      # Olhar so para a FRENTE: o par (j, j+d) e registrado uma unica vez.
+      # Olhar para os dois lados contava cada encontro duas vezes (uma a
+      # partir de cada palavra), dobrando cooc e somando 1 bit ao PMI.
+      hi  <- min(n, j + window)
+      ctx <- (j + 1L):hi
       w1 <- toks[j]
       w2 <- toks[ctx]
+      w2 <- w2[w2 != w1]
+      if (length(w2) == 0L) next
       # Ordenar par alfabeticamente para evitar (A,B) e (B,A) duplicados
       pair_min <- pmin(w1, w2)
       pair_max <- pmax(w1, w2)

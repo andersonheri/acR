@@ -12,7 +12,8 @@ ac_qual_irr(
   cat_col = "categoria",
   weight = "unweighted",
   conf_level = 0.95,
-  verbose = TRUE
+  verbose = TRUE,
+  bootstrap = 1000L
 )
 }
 \arguments{
@@ -32,14 +33,21 @@ Padrao: \code{"id_discurso"}.}
 \item{cat_col}{\code{character}. Nome da coluna de categoria nos data.frames.
 Padrao: \code{"categoria"}.}
 
-\item{weight}{\code{character}. Tipo de ponderacao para Cohen's Kappa:
-\code{"unweighted"} (padrao), \code{"linear"}, \code{"squared"}. Ignorado para
-categorias nominais sem ordem natural.}
+\item{weight}{\code{character}. Tipo de ponderação para Cohen's Kappa:
+\code{"unweighted"} (padrão), \code{"linear"} ou \code{"squared"} (Cohen, 1968).
+Os pesos só fazem sentido para categorias \strong{ordinais}: a ordem usada
+é a dos níveis do fator em \code{gold[[cat_col]]} (se for fator) ou a
+ordem alfabética (caso contrário). Para categorias nominais, use
+\code{"unweighted"}.}
 
 \item{conf_level}{\code{numeric}. Nivel de confianca para intervalos (0-1).
 Padrao: \code{0.95}.}
 
 \item{verbose}{\code{logical}. Se \code{TRUE} (padrao), imprime resumo formatado.}
+
+\item{bootstrap}{\code{integer}. Número de réplicas \emph{bootstrap} (reamostragem
+de documentos) para os intervalos de confiança de Kappa, Fleiss e
+Alpha. Padrão: \code{1000}. Use \code{0} para não calcular IC.}
 }
 \value{
 Um objeto de classe \code{ac_irr} (lista) com os elementos:
@@ -65,9 +73,9 @@ painel} de anotadores. Use-a diretamente quando você tem duas rodadas
 humanas para calibrar entre codificadores antes de acender a LLM, ou
 quando quer comparar LLMs entre si sobre a mesma amostra.
 
-A função aceita dois formatos de entrada: (a) dois data.frames com colunas
-\code{id} e \code{categoria}, representando anotador 1 e anotador 2; ou (b) um único
-data.frame em formato largo com uma coluna por anotador.
+A entrada são dois data.frames (anotador 1 e anotador 2), cada um com
+uma coluna de identificador e uma de categoria, alinhados pelo
+identificador.
 }
 \details{
 \subsection{Interpretação do Kappa (Landis & Koch, 1977)}{\tabular{ll}{
@@ -80,20 +88,43 @@ data.frame em formato largo com uma coluna por anotador.
    0.81 - 1.00 \tab Quase perfeita \cr
 }
 
+
+Os próprios autores chamam essas faixas de arbitrárias (Landis & Koch,
+1977, p. 165): são rótulos de referência, não testes.
 }
 
 \subsection{Fleiss' Kappa}{
 
-Extensao do Kappa de Cohen para mais de dois anotadores. Requer que
-\code{predicted} contenha uma coluna por anotador adicional, ou que sejam
-passados como lista via \code{...}.
+Generalização do kappa para vários anotadores (Fleiss, 1971). Com dois
+anotadores, como aqui, ela supõe uma distribuição marginal comum aos
+dois e por isso equivale ao \emph{pi} de Scott, não ao kappa de Cohen; os
+valores ficam próximos, mas não idênticos.
 }
 
 \subsection{Krippendorff's Alpha}{
 
-Métrica mais geral: funciona com qualquer número de anotadores, lida com
-dados faltantes e suporta escalas nominais, ordinais e de intervalo
-(KRIPPENDORFF, 2018).
+Métrica mais geral: funciona com qualquer número de anotadores e lida
+com dados faltantes (Krippendorff, 2018). Esta função calcula a versão
+\strong{nominal}. A interpretação segue Krippendorff (2018, sec. 12.4), não
+Landis & Koch: alfa \verb{>= 0,800} confiável; \verb{0,667-0,800} só para
+conclusões provisórias; \verb{< 0,667} insuficiente.
+}
+
+\subsection{Percentual de concordância}{
+
+Não corrige por acaso. Rótulos segundo Neuendorf (2017): \verb{>= 0,90}
+alta; \verb{>= 0,80} aceitável na maioria dos casos; \verb{>= 0,70} só em
+estudos exploratórios; abaixo disso, insuficiente.
+}
+
+\subsection{Intervalos de confiança}{
+
+Calculados por \emph{bootstrap} percentil, reamostrando documentos com
+reposição (Efron & Tibshirani, 1993). Uma versão anterior usava
+\code{kappa / z} como erro-padrão, mas o \code{z} do \code{irr} é calculado \strong{sob a
+hipótese nula} (kappa = 0); esse erro-padrão não serve para IC em
+torno do kappa estimado (Fleiss, Cohen & Everitt, 1969) e gerava
+limites fora de [-1, 1].
 }
 }
 \examples{
@@ -125,6 +156,23 @@ KRIPPENDORFF, K. \strong{Content Analysis: An Introduction to Its Methodology}.
 
 LANDIS, J. R.; KOCH, G. G. The measurement of observer agreement for
 categorical data. \strong{Biometrics}, v. 33, n. 1, p. 159-174, 1977.
+
+COHEN, J. Weighted kappa: nominal scale agreement with provision for
+scaled disagreement or partial credit. \strong{Psychological Bulletin},
+v. 70, n. 4, p. 213-220, 1968.
+
+EFRON, B.; TIBSHIRANI, R. J. \strong{An Introduction to the Bootstrap}.
+New York: Chapman & Hall, 1993.
+
+FLEISS, J. L. Measuring nominal scale agreement among many raters.
+\strong{Psychological Bulletin}, v. 76, n. 5, p. 378-382, 1971.
+
+FLEISS, J. L.; COHEN, J.; EVERITT, B. S. Large sample standard errors
+of kappa and weighted kappa. \strong{Psychological Bulletin}, v. 72, n. 5,
+p. 323-327, 1969.
+
+NEUENDORF, K. A. \strong{The Content Analysis Guidebook}. 2. ed. Thousand
+Oaks: SAGE, 2017.
 }
 \seealso{
 \code{\link[=ac_qual_code]{ac_qual_code()}}, \code{\link[=ac_qual_sample]{ac_qual_sample()}}

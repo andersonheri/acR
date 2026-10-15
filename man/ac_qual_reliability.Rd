@@ -55,7 +55,7 @@ Tibble com colunas: \code{metric}, \code{estimate}, \code{ci_lower}, \code{ci_up
 \code{interpretation}. Quando \code{by_variable = TRUE}, o resultado carrega
 também um atributo \code{by_variable}: um tibble com uma linha por
 categoria do codebook e colunas \code{categoria}, \code{n}, \code{vp}, \code{fp}, \code{fn},
-\code{vn}, \verb{concordância}, \code{precisao}, \code{recall}, \code{f1}, \code{gwet_ac1},
+\code{vn}, \code{concordância}, \code{precisao}, \code{recall}, \code{f1}, \code{gwet_ac1},
 \code{krippendorff_alfa}.
 }
 \description{
@@ -76,20 +76,50 @@ que LLM e humano concordam. Fácil de reportar, mas ignora concordância
 por acaso: infla para categorias binárias com distribuição desigual.
 \item \strong{Alpha de Krippendorff} (\code{krippendorff}): padrão-ouro em análise de
 conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
-número de categorias. Valores > 0,80 = quase perfeita; > 0,67 = aceitável
-para publicação; < 0,60 = codebook precisa ser refinado.
-\item \strong{AC1 de Gwet} (\code{gwet_ac1}): alternativa a Krippendorff mais estável
-quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
-kappa despenca com alta concordância se uma categoria domina).
-\item \strong{F1 macro} (\code{f1_macro}): média não ponderada dos F1 por categoria.
-Útil quando você quer garantir que a LLM está indo bem também nas
-categorias raras, não só nas frequentes.
+número de categorias. Krippendorff (2018, sec. 12.4) recomenda
+alfa >= 0,800 para conclusões sem ressalvas e 0,667 <= alfa < 0,800
+apenas para conclusões provisórias; abaixo de 0,667 os dados não
+devem sustentar conclusões.
+\item \strong{AC1 de Gwet} (\code{gwet_ac1}): alternativa mais estável quando as
+categorias são muito desbalanceadas (o "paradoxo do kappa" de
+Feinstein & Cicchetti, 1990: kappa despenca mesmo com alta
+concordância observada se uma categoria domina). Gwet (2014) propõe
+o AC1 justamente para esse caso.
+\item \strong{F1 macro} (\code{f1_macro}): média não ponderada dos F1 por categoria
+(Sokolova & Lapalme, 2009). Útil quando você quer garantir que a LLM
+está indo bem também nas categorias raras, não só nas frequentes.
+\strong{Não} é corrigido por acaso, então não deve ser lido com as faixas
+de Landis & Koch (1977), que foram propostas para o kappa.
 }
+\subsection{Como a coluna \code{interpretation} é preenchida}{
+
+Cada métrica usa a referência própria dela, para não misturar escalas:
+\itemize{
+\item \strong{Alpha de Krippendorff}: \verb{>= 0,800} confiável; \verb{0,667-0,800} só
+conclusões provisórias; \verb{< 0,667} insuficiente (Krippendorff, 2018).
+\item \strong{AC1 de Gwet}: faixas de Landis & Koch (1977): \verb{< 0} pobre;
+\verb{0-0,20} leve; \verb{0,21-0,40} razoável; \verb{0,41-0,60} moderada;
+\verb{0,61-0,80} substancial; \verb{0,81-1} quase perfeita. Gwet (2014, cap. 6)
+usa essas faixas como referência de \emph{benchmarking}.
+\item \strong{Percent agreement}: \verb{>= 0,90} alta; \verb{0,80-0,90} aceitável na
+maioria dos casos; \verb{0,70-0,80} só em estudos exploratórios; \verb{< 0,70}
+insuficiente (Neuendorf, 2017; Lombard, Snyder-Duch & Bracken, 2002).
+\item \strong{F1 macro}: não há faixa canônica na literatura; o valor é
+reportado sem rótulo qualitativo.
+}
+
+Essas faixas são convenções, não testes estatísticos: o próprio Landis
+& Koch (1977, p. 165) as chamam de arbitrárias. Por isso o IC
+\emph{bootstrap} importa: um alfa de 0,82 com IC de 0,61 a 0,95 \strong{não}
+permite afirmar que a confiabilidade passa de 0,800 (Krippendorff,
+2018, sec. 12.5, decide justamente pela probabilidade de o alfa ficar
+abaixo do mínimo exigido).
 
 Intervalos de confiança de 95\% vêm de \emph{bootstrap} não paramétrico
 (padrão: 1000 réplicas). Reporte pelo menos Krippendorff e F1 macro
 no artigo, com os ICs; discuta divergências humano × LLM em amostra
 de casos representativos.
+}
 }
 \examples{
 # Simular saidas: LLM (coded) e revisao humana (humano_df)
@@ -122,5 +152,20 @@ Advanced Analytics.
 
 Landis, J. R.; Koch, G. G. (1977). The Measurement of Observer Agreement
 for Categorical Data. \emph{Biometrics}, 33(1), 159-174.
+
+Feinstein, A. R.; Cicchetti, D. V. (1990). High agreement but low
+kappa: I. The problems of two paradoxes. \emph{Journal of Clinical
+Epidemiology}, 43(6), 543-549.
+
+Lombard, M.; Snyder-Duch, J.; Bracken, C. C. (2002). Content analysis
+in mass communication: Assessment and reporting of intercoder
+reliability. \emph{Human Communication Research}, 28(4), 587-604.
+
+Neuendorf, K. A. (2017). \emph{The Content Analysis Guidebook} (2nd ed.).
+SAGE.
+
+Sokolova, M.; Lapalme, G. (2009). A systematic analysis of performance
+measures for classification tasks. \emph{Information Processing &
+Management}, 45(4), 427-437.
 }
 \concept{qualitative}

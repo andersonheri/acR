@@ -488,3 +488,29 @@ test_that("ac_qual_sample(exclude_ids = ...) remove documentos do universo amost
   expect_false(any(amostra$doc_id %in% c("d1", "d2")))
   expect_equal(nrow(amostra), 8L)
 })
+
+test_that("alfa de Krippendorff com categorias de texto nao gera aviso de coercao", {
+  llm <- tibble::tibble(doc_id = paste0("d", 1:6),
+                        categoria = c("a", "b", "a", "c", "a", "b"))
+  hum <- tibble::tibble(doc_id = paste0("d", 1:6),
+                        categoria = c("a", "b", "b", "c", "a", "b"))
+  expect_no_warning(
+    r <- suppressMessages(ac_qual_reliability(llm, hum, metrics = "krippendorff",
+                                              bootstrap = 50))
+  )
+  expect_equal(r$estimate, irr::kripp.alpha(rbind(c(1, 2, 1, 3, 1, 2),
+                                                  c(1, 2, 2, 3, 1, 2)),
+                                            method = "nominal")$value)
+  expect_match(r$interpretation, "Krippendorff")
+})
+
+test_that("F1 macro nao recebe rotulo de Landis & Koch", {
+  expect_false(grepl("Landis", .ac_interpret_agreement(0.95, "f1")))
+})
+
+test_that("ac_qual_sample() usa amostra aleatoria por padrao", {
+  coded <- tibble::tibble(doc_id = paste0("d", 1:20), categoria = "a",
+                          confidence_score = seq(0.5, 1, length.out = 20))
+  s <- suppressMessages(ac_qual_sample(coded, n = 5))
+  expect_true(all(s$sample_reason == "random"))
+})

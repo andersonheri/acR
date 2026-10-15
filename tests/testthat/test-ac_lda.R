@@ -116,3 +116,30 @@ test_that("ac_plot_lda_tune() retorna ggplot", {
   p <- ac_plot_lda_tune(tune)
   expect_s3_class(p, "ggplot")
 })
+
+test_that("ac_plot_lda_topics() mostra so o termo no rotulo do eixo", {
+  skip_if_not_installed("topicmodels")
+  skip_if_not_installed("tidytext")
+  skip_if_not_installed("ggplot2")
+  df <- data.frame(id = paste0("d", 1:6),
+                   t = rep(c("voto eleicao democracia", "juros mercado inflacao"), 3),
+                   stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  m <- suppressMessages(ac_lda(corp, k = 2))
+  b <- ggplot2::ggplot_build(ac_plot_lda_topics(m, top_n = 2))
+  rot <- b$layout$panel_params[[1]]$y$get_labels()
+  expect_false(any(grepl("___", rot)))
+})
+
+test_that("ac_lda_tune() retorna perplexidade fora da amostra e de treino", {
+  skip_if_not_installed("topicmodels")
+  skip_if_not_installed("tidytext")
+  df <- data.frame(id = paste0("d", 1:9),
+                   t = rep(c("voto eleicao democracia", "juros mercado inflacao",
+                             "saude hospital medico"), 3),
+                   stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  tune <- suppressMessages(ac_lda_tune(corp, k_range = 2:3, folds = 3))
+  expect_named(tune, c("k", "perplexity", "perplexity_sd", "perplexity_train"))
+  expect_true(all(is.finite(tune$perplexity)))
+})
