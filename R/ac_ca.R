@@ -260,6 +260,16 @@ ac_plot_ca <- function(ca, top_terms = 20L, title = NULL) {
   cols <- cols[order(-cols$dist), , drop = FALSE]
   cols <- utils::head(cols, top_terms)
 
+  # Termos com o mesmo perfil (ex.: usados por um unico grupo) caem
+  # exatamente no mesmo ponto e os rotulos se sobrepunham ilegiveis.
+  # Junta-os num rotulo so ("educado, rapido, resolveu").
+  chave <- paste(round(cols$dim1, 6), round(cols$dim2, 6))
+  cols <- do.call(rbind, lapply(split(cols, factor(chave, levels = unique(chave))), function(g) {
+    out <- g[1, , drop = FALSE]
+    out$term <- paste(sort(g$term), collapse = ", ")
+    out
+  }))
+
   var_exp <- ca$variance_explained
   eixo_x <- sprintf("Dim 1 (%.1f%%)", var_exp[1] * 100)
   eixo_y <- if (length(var_exp) >= 2) sprintf("Dim 2 (%.1f%%)", var_exp[2] * 100) else "Dim 2"
@@ -283,6 +293,9 @@ ac_plot_ca <- function(ca, top_terms = 20L, title = NULL) {
       data = cols, ggplot2::aes(x = dim1, y = dim2, label = term),
       color = "#762a83", size = 3, vjust = 1.3
     ) +
+    # Folga nas bordas para rotulos longos (termos agrupados) nao cortarem
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = 0.25)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = 0.12)) +
     ggplot2::labs(
       title    = title %||% "Analise de correspondencia",
       subtitle = "Unidades (verde) e termos (roxo) no mesmo espaco",

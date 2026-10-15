@@ -53,3 +53,14 @@ test_that("ac_plot_keyness avisa se style = ipea sem ipeaplot", {
     expect_s3_class(p, "ggplot")
   }
 })
+
+test_that("ac_plot_keyness(n) desenha exatamente n termos por lado mesmo com empates", {
+  skip_if_not_installed("ggplot2")
+  kn <- tibble::tibble(
+    token = paste0("t", 1:10),
+    keyness = c(3, 1, 1, 1, 1, -2, -1, -1, -1, -1),
+    direction = rep(c("A", "B"), each = 5)
+  )
+  p <- ac_plot_keyness(kn, n = 2)
+  expect_equal(nrow(p$data), 4L)
+})

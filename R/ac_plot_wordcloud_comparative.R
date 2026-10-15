@@ -272,8 +272,10 @@ ac_plot_xray <- function(corpus,
     cli::cli_abort("{.arg terms} deve ser um vetor character n\u00e3o vazio.")
   }
 
-  # Tokenizar
-  tokens_tbl <- ac_tokenize(corpus)
+  # Tokenizar sem pontuacao nas bordas: com ac_tokenize() padrao,
+  # "trabalhadores." (fim de frase) nao casava com "trabalhadores" e a
+  # ocorrencia sumia do grafico.
+  tokens_tbl <- ac_tokenize(corpus, drop_punct = TRUE)
 
   if (isTRUE(ignore_case)) {
     tokens_tbl$token <- tolower(tokens_tbl$token)

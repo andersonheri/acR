@@ -22,7 +22,8 @@ de facetas. Se \code{NULL} (padrao), produz um único grafico. Se não for
 
 \item{n}{Número de termos a exibir. Se \code{NULL} (padrao), usa todas as
 linhas de \code{x}. Se informado, seleciona os top \code{n} termos por \code{tf_idf}
-no geral ou em cada grupo definido por \code{by}.}
+no geral ou em cada grupo definido por \code{by}. Empates na última
+posição são desfeitos em ordem alfabética.}
 
 \item{style}{Estilo grafico. Pode ser \code{"default"} (padrao) ou \code{"ipea"}.
 Quando \code{"ipea"}, a função tenta aplicar \code{ipeaplot::theme_ipea()}.}

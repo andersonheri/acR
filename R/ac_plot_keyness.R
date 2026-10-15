@@ -13,6 +13,7 @@
 #' @param n Número de termos a exibir por direcao. Se `NULL` (padrao),
 #'   usa todas as linhas de `x`. Se informado, seleciona os top `n`
 #'   termos com `keyness` positivo e os top `n` com `keyness` negativo.
+#'   Empates na última posição são desfeitos em ordem alfabética.
 #' @param style Estilo grafico. Pode ser `"default"` (padrao) ou `"ipea"`.
 #'   Quando `"ipea"`, a função tenta aplicar `ipeaplot::theme_ipea()`.
 #' @param flip Lógico. Se `TRUE` (padrao), usa barras horizontais com
@@ -94,19 +95,25 @@ ac_plot_keyness <- function(
     }
     n <- as.integer(n)
     
+    # Exatamente `n` termos, empates desfeitos em ordem alfabetica: com
+    # with_ties = TRUE, num corpus pequeno em que quase todo termo empata
+    # (ex.: varios com contagem 1), o grafico pedia 6 barras e desenhava 45.
     if (show_reference) {
       df_pos <- df_plot |>
         dplyr::filter(keyness > 0) |>
-        dplyr::slice_max(order_by = keyness, n = n, with_ties = TRUE)
+        dplyr::arrange(dplyr::desc(keyness), token) |>
+        dplyr::slice_head(n = n)
       
       df_neg <- df_plot |>
         dplyr::filter(keyness < 0) |>
-        dplyr::slice_min(order_by = keyness, n = n, with_ties = TRUE)
+        dplyr::arrange(keyness, token) |>
+        dplyr::slice_head(n = n)
       
       df_plot <- dplyr::bind_rows(df_pos, df_neg)
     } else {
       df_plot <- df_plot |>
-        dplyr::slice_max(order_by = keyness, n = n, with_ties = TRUE)
+        dplyr::arrange(dplyr::desc(keyness), token) |>
+        dplyr::slice_head(n = n)
     }
   }
   

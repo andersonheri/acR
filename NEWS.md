@@ -67,7 +67,33 @@ produzidos pelas funcoes afetadas mudam em relacao a 0.5.0.
   incertos serve para diagnosticar erros, nao para estimar
   concordancia. Vignettes e README atualizados.
 
+* `ac_top_terms()`: sem `by`, uma tabela por documento (saida padrao de
+  `ac_count()`) era ranqueada linha a linha, sem somar o termo entre
+  documentos; com empates mantidos, o "top 15" de um corpus pequeno
+  devolvia o vocabulario inteiro. Agora soma por termo (ou por grupo) e
+  devolve exatamente `n` termos, com desempate alfabetico.
+* `ac_plot_keyness()` e `ac_plot_tf_idf()`: o mesmo problema de empates
+  (pedir `n = 6` desenhava dezenas de barras); agora exatamente `n` por
+  lado ou grupo. `ac_plot_top_terms()` passa a mostrar o termo mais
+  frequente no topo.
+* `ac_plot_xray()`: tokenizava sem remover pontuacao, entao um termo
+  seguido de virgula ou ponto ("trabalhadores.") nao era encontrado.
+* `ac_plot_ca()`: termos com o mesmo perfil caem no mesmo ponto e os
+  rotulos se sobrepunham ilegiveis; agora sao agrupados num rotulo so.
+
 ## Correcoes de interpretacao nas vignettes
+
+* Os 44 blocos "Como interpretar" foram reescritos como "Como ler este
+  grafico/esta tabela", em quatro passos fixos: onde olhar, o que este
+  exemplo mostra (com os numeros da saida), em palavras simples e
+  cuidado (com a referencia da literatura).
+* `vignette("quantitativo")`: exemplo de analise de correspondencia
+  trocado (no anterior, cada categoria tinha vocabulario exclusivo e o
+  mapa era degenerado); leitura do grafico de Zipf corrigida (a linha
+  ideal parte do primeiro ponto, que por isso sempre cai sobre ela).
+* `vignette("sentimento")`: o X-ray buscava termos que nao ocorrem no
+  corpus. `vignette("lda")`: o mapa de calor de gama ordena os
+  documentos numericamente, deixando os temas visiveis em blocos.
 
 * Todas as vignettes foram re-executadas com o codigo corrigido e cada
   bloco "Como interpretar" foi conferido contra a saida real.

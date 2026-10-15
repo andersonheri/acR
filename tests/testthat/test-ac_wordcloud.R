@@ -63,3 +63,12 @@ test_that("ac_wordcloud rejeita backend invalido", {
   # match.arg lanca simpleError, nao rlang_error
   expect_error(ac_wordcloud(freq, backend = "matplotlib"))
 })
+
+test_that("ac_plot_xray() acha termos seguidos de pontuacao", {
+  skip_if_not_installed("ggplot2")
+  df <- data.frame(id = "d1", texto = "a reforma prejudica os trabalhadores.",
+                   stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = texto, docid = id)
+  p <- ac_plot_xray(corp, terms = "trabalhadores")
+  expect_equal(nrow(p$data), 1L)
+})

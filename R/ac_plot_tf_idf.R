@@ -15,7 +15,8 @@
 #'   `NULL`, cria facetas por combinacao das colunas informadas.
 #' @param n Número de termos a exibir. Se `NULL` (padrao), usa todas as
 #'   linhas de `x`. Se informado, seleciona os top `n` termos por `tf_idf`
-#'   no geral ou em cada grupo definido por `by`.
+#'   no geral ou em cada grupo definido por `by`. Empates na última
+#'   posição são desfeitos em ordem alfabética.
 #' @param style Estilo grafico. Pode ser `"default"` (padrao) ou `"ipea"`.
 #'   Quando `"ipea"`, a função tenta aplicar `ipeaplot::theme_ipea()`.
 #' @param flip Lógico. Se `TRUE` (padrao), usa barras horizontais com
@@ -105,12 +106,18 @@ ac_plot_tf_idf <- function(
     }
     n <- as.integer(n)
     
+    # Exatamente `n` termos, empates desfeitos em ordem alfabetica: com
+    # with_ties = TRUE, num corpus pequeno em que quase todo termo empata
+    # (ex.: varios com contagem 1), o grafico pedia 6 barras e desenhava 45.
     if (is.null(by)) {
-      x <- dplyr::slice_max(x, order_by = tf_idf, n = n, with_ties = TRUE)
+      x <- x |>
+        dplyr::arrange(dplyr::desc(tf_idf), token) |>
+        dplyr::slice_head(n = n)
     } else {
       x <- x |>
         dplyr::group_by(dplyr::across(dplyr::all_of(by))) |>
-        dplyr::slice_max(order_by = tf_idf, n = n, with_ties = TRUE) |>
+        dplyr::arrange(dplyr::desc(tf_idf), token, .by_group = TRUE) |>
+        dplyr::slice_head(n = n) |>
         dplyr::ungroup()
     }
   }
