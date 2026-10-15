@@ -53,10 +53,34 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="acr-060">acR 0.6.0<a class="anchor" aria-label="anchor" href="#acr-060"></a></h2>
-<p>Release de manutencao, sem mudanca de codigo em relacao a 0.5.0.</p>
+<div class="section level3">
+<h3 id="correcao-de-comportamento-0-6-0">Correcao de comportamento<a class="anchor" aria-label="anchor" href="#correcao-de-comportamento-0-6-0"></a></h3>
+<ul><li>
+<code><a href="../reference/ac_qual_codebook_translate.html">ac_qual_codebook_translate()</a></code>: exigia o pacote <code>ellmer</code> instalado mesmo quando o codebook ja estava no idioma de destino (caso em que nenhuma chamada de LLM e necessaria). A checagem de idioma agora acontece antes da checagem de dependencia.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentacao-0-6-0">Documentacao<a class="anchor" aria-label="anchor" href="#documentacao-0-6-0"></a></h3>
+<ul><li>Revisao ortografica completa (acentuacao) do README, das dez vignettes e dos comentarios <code>roxygen2</code> em <code>R/*.R</code>.</li>
+<li>Tabela “Qual metrica responde qual pergunta?” (<code><a href="../articles/quantitativo.html">vignette("quantitativo")</a></code>) expandida para cobrir as doze novas tecnicas introduzidas na 0.5.0, organizada em cinco familias metodologicas.</li>
+<li>Adicionados blocos “Como interpretar” apos graficos e tabelas de resultado em todas as vignettes, explicando como ler cada visualizacao e armadilhas comuns de interpretacao.</li>
+<li>Adicionadas visualizacoes alternativas (como exemplos de uso de <code>ggplot2</code>, sem novas funcoes exportadas) para varias das tecnicas da 0.5.0 em <code><a href="../articles/quantitativo.html">vignette("quantitativo")</a></code> e <code><a href="../articles/lda.html">vignette("lda")</a></code>.</li>
+<li>Novas secoes “Sequencia sugerida para reportar resultados” em <code><a href="../articles/quantitativo.html">vignette("quantitativo")</a></code> e <code><a href="../articles/qualitativo-llm.html">vignette("qualitativo-llm")</a></code>, com tabela de etapas e justificativa metodologica para cada uma.</li>
+<li>Reduzido o uso de travessao (<code>--</code>) para zero ocorrencias em todo o pacote (README, vignettes e comentarios <code>roxygen2</code>), em favor de <code>:</code> ou reestruturacao de frase.</li>
+<li>
+<code>man/*.Rd</code> regenerado via <code>devtools::document()</code> para sincronizar com os comentarios <code>roxygen2</code> corrigidos.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="robustez-de-testes-e-vignettes-0-6-0">Robustez de testes e vignettes<a class="anchor" aria-label="anchor" href="#robustez-de-testes-e-vignettes-0-6-0"></a></h3>
+<ul><li>
+<code><a href="../articles/cluster.html">vignette("cluster")</a></code> e <code><a href="../articles/lda.html">vignette("lda")</a></code>: os trechos que dependem do pacote Suggests <code>topicmodels</code> agora sao protegidos por <code>eval = requireNamespace("topicmodels", quietly = TRUE)</code>, evitando falha de <code>R CMD check</code> em ambientes sem esse pacote instalado.</li>
+<li>Tres testes que exercitavam caminhos de codigo dependentes de <code>ellmer</code> ganharam <code>skip_if_not_installed("ellmer")</code>, espelhando o padrao ja usado no restante da suite.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="manutencao-de-infraestrutura-0-6-0">Manutencao de infraestrutura<a class="anchor" aria-label="anchor" href="#manutencao-de-infraestrutura-0-6-0"></a></h3>
 <ul><li>Corrigidas referencias ao dominio pessoal do mantenedor (<code>ahenriquecp.com</code>) que estavam, por engano, apontadas como site do pacote em <code>_pkgdown.yml</code>, README, <code>DESCRIPTION</code> e <code>cran-comments.md</code>; agora todas apontam para a URL real do pkgdown (<code>https://andersonheri.github.io/acR/</code>).</li>
 <li>Removida do controle de versao a pasta <code>docs/</code> que vinha sendo comitada por engano em <code>main</code> desde uma configuracao antiga de publicacao (hoje o site e publicado via GitHub Actions na branch <code>gh-pages</code>); ja estava em <code>.Rbuildignore</code> e agora tambem esta em <code>.gitignore</code>.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="acr-050">acR 0.5.0<a class="anchor" aria-label="anchor" href="#acr-050"></a></h2>
 <p>Doze novas tecnicas quantitativas de diagnostico de corpus, escalas e dicionarios, todas documentadas na vignette <code><a href="../articles/quantitativo.html">vignette("quantitativo")</a></code> (secao “Novidades”), com exemplos fora do dominio parlamentar (avaliacoes de produto, atendimento ao cliente, noticias).</p>
