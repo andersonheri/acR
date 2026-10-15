@@ -196,7 +196,7 @@ e Gwet (2014).
 
 * **[Codificação com LLMs](qualitativo-llm.html)** — codebook completo, `ellmer`,
   *self-consistency*, tradução, fusão.
-* **[Análise de proposições](análise-proposicoes.html)** — pipeline real de
+* **[Análise de proposições](analise-proposicoes.html)** — pipeline real de
   ponta-a-ponta em texto legislativo brasileiro.
 * **[LDA](lda.html)** — modelagem de tópicos.
 * **[Sentimento](sentimento.html)** — pipeline detalhado com OpLexicon.
