@@ -42,7 +42,7 @@ Tibble com colunas `doc_id` e `categoria`.
 
 ``` r
 if (requireNamespace("openxlsx", quietly = TRUE)) {
-  # Simular uma planilha ja preenchida pelo codificador humano
+  # Simular uma planilha já preenchida pelo codificador humano
   arquivo <- tempfile(fileext = ".xlsx")
   openxlsx::write.xlsx(
     data.frame(
@@ -56,7 +56,7 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
   humano <- ac_qual_import_human(arquivo)
   humano
 }
-#> ✅ 3 classificações humanas importadas de /tmp/Rtmpm0T14X/file1b40772ffa7e.xlsx
+#> ✅ 3 classificações humanas importadas de /tmp/RtmpNBPnPR/file1a802d09969b.xlsx
 #> # A tibble: 3 × 2
 #>   doc_id categoria
 #>   <chr>  <chr>    

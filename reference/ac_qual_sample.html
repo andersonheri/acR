@@ -101,7 +101,7 @@ divergiram (requer <code>confidence_score &lt; 1</code>);</p></li>
 proporcional ao tamanho de cada estrato (método do maior resto),
 respeitando um mínimo por estrato. Diferente de <code>"stratified"</code>
 (que divide <code>n</code> igualmente entre categorias), preserva a
-distribuição original de <code>strata</code> na amostra — a escolha correta
+distribuição original de <code>strata</code> na amostra: a escolha correta
 quando a amostra alimenta uma estimativa populacional (ex.:
 <code><a href="ac_qual_reliability.html">ac_qual_reliability()</a></code> ponderada), não só uma checagem
 qualitativa de cada categoria.</p></li>
@@ -120,7 +120,7 @@ proporcional, mesmo que a alocação exata dê menos. Padrão <code>1</code>.</p
 
 <dt id="arg-min-stratum-size">min_stratum_size<a class="anchor" aria-label="anchor" href="#arg-min-stratum-size"></a></dt>
 <dd><p>Estratos da população com menos documentos
-que isso são agrupados em <code>"Outras"</code> antes de alocar — evita
+que isso são agrupados em <code>"Outras"</code> antes de alocar: evita
 alocar uma fração ínfima da amostra a uma categoria com 2
 documentos na população inteira. Padrão <code>10</code>.</p></dd>
 
@@ -150,7 +150,7 @@ ponderadas.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Simular saida de ac_qual_code() com 20 documentos ja classificados</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Simular saida de ac_qual_code() com 20 documentos já classificados</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">coded</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  doc_id           <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span>,</span></span>

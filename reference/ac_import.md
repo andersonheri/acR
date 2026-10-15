@@ -31,19 +31,19 @@ ac_import(path, text_field = NULL, lang_ocr = "por", id_from = "filename", ...)
 - text_field:
 
   Nome da coluna que contem o texto, para arquivos tabulares (`.xlsx`,
-  `.xls`, `.csv`). Obrigatorio nesses formatos.
+  `.xls`, `.csv`). Obrigatório nesses formatos.
 
 - lang_ocr:
 
   Lingua para OCR em imagens e PDFs escaneados. Padrao: `'por'`
-  (portugues). Use
+  (português). Use
   [`tesseract::tesseract_info()`](https://docs.ropensci.org/tesseract/reference/tesseract.html)
   para ver linguas instaladas.
 
 - id_from:
 
   Como gerar os IDs dos documentos. `'filename'` (padrao) usa o nome do
-  arquivo sem extensao. `'rownum'` usa numeros sequenciais. Ou um vetor
+  arquivo sem extensao. `'rownum'` usa números sequenciais. Ou um vetor
   de strings com os IDs desejados.
 
 - ...:
@@ -53,7 +53,7 @@ ac_import(path, text_field = NULL, lang_ocr = "por", id_from = "filename", ...)
 
 ## Value
 
-Um objeto `ac_corpus` pronto para uso com todas as funcoes do acR.
+Um objeto `ac_corpus` pronto para uso com todas as funções do acR.
 
 ## Details
 
@@ -81,9 +81,9 @@ parser ser OCR ou readtext. IDs duplicados (dois arquivos com o mesmo
 `basename`) sao desambiguados automaticamente com um sufixo `_2`, `_3`,
 ... e um aviso e emitido.
 
-**Dependencias opcionais**: `readtext` e `tesseract` nao sao importados
+**Dependências opcionais**: `readtext` e `tesseract` não sao importados
 automaticamente – o `ac_import()` verifica se estao instalados e orienta
-a instalacao caso necessario.
+a instalacao caso necessário.
 
 ## References
 
@@ -105,7 +105,7 @@ Ooms, J. (2024). tesseract: Open Source OCR Engine. R package.
 ``` r
 if (FALSE) { # \dontrun{
 # PDF com texto selecionavel
-corpus <- ac_import('relatorio.pdf')
+corpus <- ac_import('relatório.pdf')
 
 # Pasta inteira de Word
 corpus <- ac_import('proposicoes/*.docx')
@@ -113,7 +113,7 @@ corpus <- ac_import('proposicoes/*.docx')
 # Excel -- indicar a coluna de texto
 corpus <- ac_import('respostas.xlsx', text_field = 'resposta')
 
-# PDF escaneado (OCR em portugues)
+# PDF escaneado (OCR em português)
 corpus <- ac_import('ata_manuscrita.pdf', lang_ocr = 'por')
 
 # Imagem (OCR)

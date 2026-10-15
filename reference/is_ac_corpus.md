@@ -27,7 +27,7 @@ corpus <- ac_corpus(c("Texto um.", "Texto dois."))
 is_ac_corpus(corpus)         # TRUE
 #> [1] TRUE
 
-# Estruturas comuns nao contam
+# Estruturas comuns não contam
 is_ac_corpus(data.frame())   # FALSE
 #> [1] FALSE
 is_ac_corpus("texto solto")  # FALSE

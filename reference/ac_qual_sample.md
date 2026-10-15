@@ -50,8 +50,8 @@ ac_qual_sample(
     ao tamanho de cada estrato (método do maior resto), respeitando um
     mínimo por estrato. Diferente de `"stratified"` (que divide `n`
     igualmente entre categorias), preserva a distribuição original de
-    `strata` na amostra — a escolha correta quando a amostra alimenta
-    uma estimativa populacional (ex.:
+    `strata` na amostra: a escolha correta quando a amostra alimenta uma
+    estimativa populacional (ex.:
     [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
     ponderada), não só uma checagem qualitativa de cada categoria.
 
@@ -68,7 +68,7 @@ ac_qual_sample(
 - min_stratum_size:
 
   Estratos da população com menos documentos que isso são agrupados em
-  `"Outras"` antes de alocar — evita alocar uma fração ínfima da amostra
+  `"Outras"` antes de alocar: evita alocar uma fração ínfima da amostra
   a uma categoria com 2 documentos na população inteira. Padrão `10`.
 
 - exclude_ids:
@@ -95,7 +95,7 @@ ponderadas.
 ## Examples
 
 ``` r
-# Simular saida de ac_qual_code() com 20 documentos ja classificados
+# Simular saida de ac_qual_code() com 20 documentos já classificados
 set.seed(1)
 coded <- tibble::tibble(
   doc_id           = paste0("doc_", 1:20),

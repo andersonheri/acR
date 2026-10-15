@@ -1,13 +1,13 @@
-# Calcular estatisticas de keyness entre dois grupos
+# Calcular estatísticas de keyness entre dois grupos
 
-`ac_keyness()` calcula estatisticas de "keyness" para comparar a
+`ac_keyness()` calcula estatísticas de "keyness" para comparar a
 distribuicao de termos entre dois grupos. O criterio que define os
 grupos e do pesquisador: partido, periodo, tema, regiao, autor, condicao
-experimental ou qualquer variavel categorica no corpus. A funcao e
+experimental ou qualquer variável categorica no corpus. A função e
 inspirada em `quanteda.textstats::textstat_keyness()` e utiliza tabelas
 2x2 por termo.
 
-A entrada tipica e uma tabela de frequencias gerada por
+A entrada típica e uma tabela de frequências gerada por
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
 agregada por uma coluna de grupo:
 
@@ -27,7 +27,7 @@ ac_keyness(x, group, target, measure = c("chi2", "ll"), sort = TRUE)
 
   Um `data.frame` ou
   [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
-  contendo, no minimo, as colunas `token`, `n` e uma coluna de grupo.
+  contendo, no mínimo, as colunas `token`, `n` e uma coluna de grupo.
 
 - group:
 
@@ -37,17 +37,17 @@ ac_keyness(x, group, target, measure = c("chi2", "ll"), sort = TRUE)
 - target:
 
   Valor de `group` que sera considerado o grupo alvo (por exemplo,
-  `"Governo"`). O outro valor sera tratado como grupo de referencia.
+  `"Governo"`). O outro valor sera tratado como grupo de referência.
 
 - measure:
 
-  Estatistica de keyness a ser usada. Pode ser `"chi2"` (padrao) para
+  Estatística de keyness a ser usada. Pode ser `"chi2"` (padrao) para
   qui-quadrado com 1 grau de liberdade, ou `"ll"` para log-likelihood
   (G^2).
 
 - sort:
 
-  Logico. Se `TRUE` (padrao), ordena a saida por `keyness` em ordem
+  Lógico. Se `TRUE` (padrao), ordena a saida por `keyness` em ordem
   decrescente (termos mais caracteristicos do grupo alvo no topo).
 
 ## Value
@@ -58,7 +58,7 @@ com uma linha por termo, contendo:
 
 - `token`
 
-- `group` (nome da coluna de grupo, repetido para referencia)
+- `group` (nome da coluna de grupo, repetido para referência)
 
 - `target`, `reference`
 
@@ -66,20 +66,20 @@ com uma linha por termo, contendo:
 
 - `total_target`, `total_reference`
 
-- `keyness` (estatistica assinada, positiva quando o termo e mais
+- `keyness` (estatística assinada, positiva quando o termo e mais
   frequente no grupo alvo, negativa quando e mais frequente no grupo de
-  referencia)
+  referência)
 
 - `direction` (nome do grupo em que o termo e relativamente mais
   frequente)
 
 ## Details
 
-Para cada termo, a funcao constroi uma tabela 2x2:
+Para cada termo, a função constroi uma tabela 2x2:
 
-- `a = n_target` (frequencia do termo no grupo alvo)
+- `a = n_target` (frequência do termo no grupo alvo)
 
-- `b = n_reference` (frequencia do termo no grupo de referencia)
+- `b = n_reference` (frequência do termo no grupo de referência)
 
 - `c = total_target - a`
 
@@ -91,11 +91,11 @@ Em seguida, calcula:
 
 - log-likelihood ratio (G^2) na opcao `measure = "ll"`.
 
-Em ambos os casos, a estatistica e multiplicada pelo sinal da diferenca
-de frequencias relativas `(a / total_target - b / total_reference)`, de
+Em ambos os casos, a estatística e multiplicada pelo sinal da diferenca
+de frequências relativas `(a / total_target - b / total_reference)`, de
 forma que valores positivos indiquem termos mais caracteristicos do
 grupo alvo e valores negativos termos mais caracteristicos do grupo de
-referencia.
+referência.
 
 ## See also
 
@@ -106,29 +106,29 @@ referencia.
 ## Examples
 
 ``` r
-# Comparar vocabulario entre dois grupos (aqui, dois temas legislativos).
+# Comparar vocabulário entre dois grupos (aqui, dois temas legislativos).
 # O criterio de grupo e do pesquisador: partido, periodo, regiao, tema...
 df <- data.frame(
   id    = paste0("d", 1:8),
   texto = c(
-    "reforma tributaria simplifica sistema impostos empresas",
+    "reforma tributária simplifica sistema impostos empresas",
     "IVA dual substitui PIS COFINS ICMS federal",
-    "aliquotas excecoes tributarias setores economicos",
-    "reforma tributaria unifica impostos indiretos",
+    "aliquotas excecoes tributárias setores economicos",
+    "reforma tributária unifica impostos indiretos",
     "programa habitacional amplia recursos moradia popular",
     "deficit habitacional afeta familias baixa renda",
-    "urbanizacao favelas regularizacao fundiaria municipios",
+    "urbanizacao favelas regularizacao fundiária municipios",
     "moradia digna direito social constituicao"
   ),
-  tema  = rep(c("tributario", "habitacao"), each = 4),
+  tema  = rep(c("tributário", "habitacao"), each = 4),
   stringsAsFactors = FALSE
 )
 
 corp <- ac_corpus(df, text = texto, docid = id)
 freq <- ac_count(corp, by = "tema")
 
-# Termos-chave do grupo "tributario" versus o resto
-key <- ac_keyness(freq, group = "tema", target = "tributario")
+# Termos-chave do grupo "tributário" versus o resto
+key <- ac_keyness(freq, group = "tema", target = "tributário")
 head(key)
 #> # A tibble: 6 × 10
 #>   token group target reference n_target n_reference total_target total_reference

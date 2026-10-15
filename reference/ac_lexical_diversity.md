@@ -1,16 +1,16 @@
 # Calcular diversidade lexical (riqueza de vocabulário)
 
 `ac_lexical_diversity()` mede quão variado é o vocabulário dos
-documentos de um `ac_corpus` — uma pergunta recorrente em linguística
+documentos de um `ac_corpus`: uma pergunta recorrente em linguística
 computacional (textos de falantes nativos vs. aprendizes de uma língua),
 análise de redações escolares, estudos de estilo autoral, ou comparação
 de roteiros/transcrições por gênero ou locutor.
 
 Calcula três métricas, cada uma respondendo à mesma pergunta de forma
-diferente — e cada uma com um ponto fraco diferente:
+diferente: e cada uma com um ponto fraco diferente:
 
 - **TTR** (*Type-Token Ratio*): proporção simples `tipos / tokens`.
-  Fácil de entender, mas extremamente sensível ao tamanho do texto —
+  Fácil de entender, mas extremamente sensível ao tamanho do texto:
   textos mais longos quase sempre têm TTR menor, então **não compare TTR
   entre documentos de tamanhos muito diferentes**.
 
@@ -73,7 +73,7 @@ study of sophisticated approaches to lexical diversity assessment.
 ## Examples
 
 ``` r
-# Transcricoes de dois narradores com estilos de vocabulario distintos
+# Transcricoes de dois narradores com estilos de vocabulário distintos
 df <- data.frame(
   id = paste0("t", 1:4),
   texto = c(
@@ -82,10 +82,10 @@ df <- data.frame(
       "o felino ascendeu ao parapeito, permaneceu imovel por instantes,",
       "descendeu com cautela e retornou ao ponto de partida original"
     ),
-    "ela correu muito rapido e muito rapido e muito rapido ainda",
+    "ela correu muito rápido e muito rápido e muito rápido ainda",
     paste(
       "a atleta acelerou vertiginosamente, superando marcas anteriores",
-      "com uma performance notavel e consistente ao longo do percurso"
+      "com uma performance notável e consistente ao longo do percurso"
     )
   ),
   narrador = c("simples", "rebuscado", "simples", "rebuscado"),
@@ -102,7 +102,7 @@ ac_lexical_diversity(corpus)
 #> 3 t3           11       6 0.545    0.747  11  
 #> 4 t4           17      17 1        1      17  
 
-# Comparar riqueza de vocabulario entre os dois estilos narrativos
+# Comparar riqueza de vocabulário entre os dois estilos narrativos
 ac_lexical_diversity(corpus, by = "narrador")
 #> # A tibble: 2 × 6
 #>   narrador  n_tokens n_types   ttr herdan_c  mtld

@@ -8,7 +8,7 @@ referências bibliográficas.
 assistidas por LLM: o revisor ou leitor não consegue reproduzir a
 rodada sem saber exatamente qual modelo, qual codebook, quais
 parâmetros e qual amostra foram usados. Sem esse relatório, o leitor
-tem que confiar no autor — algo que a tradição de análise de conteúdo
+tem que confiar no autor: algo que a tradição de análise de conteúdo
 (Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido
 e pode ser anexado como material suplementar do artigo, publicado como
 apêndice ou depositado num repositório de dados junto com o codebook em
@@ -23,7 +23,7 @@ referências bibliográficas.
 assistidas por LLM: o revisor ou leitor não consegue reproduzir a
 rodada sem saber exatamente qual modelo, qual codebook, quais
 parâmetros e qual amostra foram usados. Sem esse relatório, o leitor
-tem que confiar no autor — algo que a tradição de análise de conteúdo
+tem que confiar no autor: algo que a tradição de análise de conteúdo
 (Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido
 e pode ser anexado como material suplementar do artigo, publicado como
 apêndice ou depositado num repositório de dados junto com o codebook em
@@ -92,7 +92,7 @@ referências bibliográficas.</p>
 assistidas por LLM: <strong>o revisor ou leitor não consegue reproduzir a
 rodada</strong> sem saber exatamente qual modelo, qual codebook, quais
 parâmetros e qual amostra foram usados. Sem esse relatório, o leitor
-tem que confiar no autor — algo que a tradição de análise de conteúdo
+tem que confiar no autor: algo que a tradição de análise de conteúdo
 (Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido
 e pode ser anexado como material suplementar do artigo, publicado como
 apêndice ou depositado num repositório de dados junto com o codebook em
@@ -126,7 +126,7 @@ em português ou inglês (para submissões internacionais).</p>
 
 
 <dt id="arg-codebook">codebook<a class="anchor" aria-label="anchor" href="#arg-codebook"></a></dt>
-<dd><p>Objeto <code>ac_codebook</code> usado na classificacao.</p></dd>
+<dd><p>Objeto <code>ac_codebook</code> usado na classificação.</p></dd>
 
 
 <dt id="arg-reliability">reliability<a class="anchor" aria-label="anchor" href="#arg-reliability"></a></dt>
@@ -136,11 +136,11 @@ fornecido, adiciona secao de confiabilidade inter-codificador.</p></dd>
 
 <dt id="arg-chat">chat<a class="anchor" aria-label="anchor" href="#arg-chat"></a></dt>
 <dd><p>Opcional. Objeto <code>Chat</code> do <code>ellmer</code> (ou string de modelo);
-se fornecido, extrai provedor/modelo/parametros para o relatorio.</p></dd>
+se fornecido, extrai provedor/modelo/parametros para o relatório.</p></dd>
 
 
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
-<dd><p>Titulo do relatorio. Padrao: gerado a partir do nome do codebook.</p></dd>
+<dd><p>Título do relatório. Padrao: gerado a partir do nome do codebook.</p></dd>
 
 
 <dt id="arg-author">author<a class="anchor" aria-label="anchor" href="#arg-author"></a></dt>
@@ -148,7 +148,7 @@ se fornecido, extrai provedor/modelo/parametros para o relatorio.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>Descricao livre do metodo de coleta do corpus (opcional).</p></dd>
+<dd><p>Descrição livre do metodo de coleta do corpus (opcional).</p></dd>
 
 
 <dt id="arg-format">format<a class="anchor" aria-label="anchor" href="#arg-format"></a></dt>
@@ -195,10 +195,10 @@ se fornecido, extrai provedor/modelo/parametros para o relatorio.</p></dd>
 <span class="r-in"><span>  reasoning        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"..."</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Gerar relatorio em markdown temporario</span></span></span>
+<span class="r-in"><span><span class="co"># Gerar relatório em markdown temporário</span></span></span>
 <span class="r-in"><span><span class="va">arquivo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".md"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_qual_report</span><span class="op">(</span><span class="va">coded</span>, <span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo</span>, author <span class="op">=</span> <span class="st">"Fulano de Tal"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Relatorio salvo em <span style="color: #0000BB;">/tmp/Rtmpm0T14X/file1b40bb06806.md</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Relatorio salvo em <span style="color: #0000BB;">/tmp/RtmpNBPnPR/file1a806be096d3.md</span></span>
 <span class="r-in"><span><span class="co"># readLines(arquivo, n = 20)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -53,7 +53,7 @@ cb <- ac_qual_codebook(
   name         = "tom",
   instructions = "Classifique o tom do texto.",
   categories   = list(
-    formal   = list(definition = "Linguagem tecnica e impessoal."),
+    formal   = list(definition = "Linguagem técnica e impessoal."),
     informal = list(definition = "Linguagem coloquial ou emotiva.")
   )
 )
@@ -79,7 +79,7 @@ prompt <- as_prompt(cb, reasoning = TRUE, reasoning_length = "short")
 #> Cada texto deve ser classificado em EXATAMENTE UMA categoria.
 #> 
 #> CATEGORIAS:
-#> - formal: Linguagem tecnica e impessoal.
+#> - formal: Linguagem técnica e impessoal.
 #> 
 #> - informal: Linguagem coloquial ou emotiva.
 #> 
@@ -90,5 +90,5 @@ prompt <- as_prompt(cb, reasoning = TRUE, reasoning_length = "short")
 #> } 
 #> ────────────────────────────────────────────────────────────────────────────────
 substr(prompt, 1, 200)  # inspecionar o comeco do prompt
-#> [1] "Você é assistente de análise de conteúdo qualitativa.\n\nClassifique o tom do texto.\n\nCada texto deve ser classificado em EXATAMENTE UMA categoria.\n\nCATEGORIAS:\n- formal: Linguagem tecnica e impessoal.\n"
+#> [1] "Você é assistente de análise de conteúdo qualitativa.\n\nClassifique o tom do texto.\n\nCada texto deve ser classificado em EXATAMENTE UMA categoria.\n\nCATEGORIAS:\n- formal: Linguagem técnica e impessoal.\n"
 ```

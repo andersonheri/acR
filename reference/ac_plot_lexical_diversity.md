@@ -56,7 +56,7 @@ df <- data.frame(
   texto = c(
     "o gato subiu no muro e desceu depois correu e subiu de novo",
     "o felino ascendeu ao parapeito e descendeu com cautela depois",
-    "ela correu muito rapido e muito rapido e muito rapido ainda",
+    "ela correu muito rápido e muito rápido e muito rápido ainda",
     "a atleta acelerou vertiginosamente superando marcas anteriores"
   ),
   narrador = c("simples", "rebuscado", "simples", "rebuscado"),

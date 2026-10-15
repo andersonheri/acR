@@ -1,9 +1,9 @@
-# Exporta resultados de analise de conteudo em multiplos formatos
+# Exporta resultados de análise de conteúdo em múltiplos formatos
 
 Exporta data.frames de resultados (corpus codificado, tabelas de
-frequencia, metricas de confiabilidade) para CSV, LaTeX, Excel (.xlsx)
+frequência, métricas de confiabilidade) para CSV, LaTeX, Excel (.xlsx)
 ou RDS. Pensada para facilitar a transicao entre o pipeline `acR` e a
-escrita academica (tabelas em artigos) ou o compartilhamento de dados
+escrita acadêmica (tabelas em artigos) ou o compartilhamento de dados
 replicaveis.
 
 ## Usage
@@ -33,7 +33,7 @@ ac_export(
   `character`. Caminho do arquivo de saida, incluindo extensao (ex.:
   `"resultados.csv"`, `"tabela1.tex"`, `"dados.xlsx"`). Se `NULL`, o
   formato e inferido pelo argumento `format` e o arquivo e salvo no
-  diretorio de trabalho com nome `"acR_export"`.
+  diretório de trabalho com nome `"acR_export"`.
 
 - format:
 
@@ -43,7 +43,7 @@ ac_export(
 - overwrite:
 
   `logical`. Se `TRUE` (padrao), sobrescreve arquivo existente. Se
-  `FALSE`, lanca erro se o arquivo ja existir.
+  `FALSE`, lanca erro se o arquivo já existir.
 
 - latex_caption:
 
@@ -81,7 +81,7 @@ importacao em Stata, SPSS, Python e R.
 
 ### LaTeX
 
-Gera codigo LaTeX via
+Gera código LaTeX via
 [`knitr::kable()`](https://rdrr.io/pkg/knitr/man/kable.html) com
 `format = "latex"`, empacotado em ambiente `table` com `\\centering`,
 `\\caption` e `\\label`. Adicione `\\usepackage{booktabs}` no preambulo
@@ -90,9 +90,9 @@ do documento para melhor tipografia.
 ### Excel
 
 Usa
-[`writexl::write_xlsx()`](https://docs.ropensci.org/writexl//reference/write_xlsx.html)
-— sem dependencia de Java ou LibreOffice. Cria arquivo `.xlsx`
-compativel com Excel 2007+, Google Sheets e LibreOffice Calc.
+[`writexl::write_xlsx()`](https://docs.ropensci.org/writexl//reference/write_xlsx.html):
+sem dependência de Java ou LibreOffice. Cria arquivo `.xlsx` compativel
+com Excel 2007+, Google Sheets e LibreOffice Calc.
 
 ### RDS
 
@@ -116,35 +116,35 @@ resultados <- data.frame(
   confianca     = c(0.94, 0.91, 0.87)
 )
 
-# Escrevemos em tempdir() para nao poluir o filesystem do usuario
+# Escrevemos em tempdir() para não poluir o filesystem do usuário
 out_csv <- file.path(tempdir(), "resultados.csv")
 out_tex <- file.path(tempdir(), "resultados.tex")
 out_rds <- file.path(tempdir(), "resultados.rds")
 
 # CSV
 ac_export(resultados, out_csv)
-#> ✔ Exportado para /tmp/Rtmpm0T14X/resultados.csv (csv).
+#> ✔ Exportado para /tmp/RtmpNBPnPR/resultados.csv (csv).
 
 # LaTeX (para incluir em artigo)
 ac_export(
   resultados,
   out_tex,
-  latex_caption = "Classificacao do tom dos discursos por LLM",
+  latex_caption = "Classificação do tom dos discursos por LLM",
   latex_label   = "tab:tom_discursos"
 )
-#> ✔ Exportado para /tmp/Rtmpm0T14X/resultados.tex (latex).
+#> ✔ Exportado para /tmp/RtmpNBPnPR/resultados.tex (latex).
 
 # RDS (replicabilidade)
 ac_export(resultados, out_rds)
-#> ✔ Exportado para /tmp/Rtmpm0T14X/resultados.rds (rds).
+#> ✔ Exportado para /tmp/RtmpNBPnPR/resultados.rds (rds).
 
 # Excel (requer openxlsx ou writexl instalado)
 if (requireNamespace("writexl", quietly = TRUE) ||
     requireNamespace("openxlsx", quietly = TRUE)) {
   out_xlsx <- file.path(tempdir(), "resultados.xlsx")
-  ac_export(resultados, out_xlsx, excel_sheet = "Classificacao")
+  ac_export(resultados, out_xlsx, excel_sheet = "Classificação")
 }
-#> ✔ Exportado para /tmp/Rtmpm0T14X/resultados.xlsx (xlsx).
+#> ✔ Exportado para /tmp/RtmpNBPnPR/resultados.xlsx (xlsx).
 
 # Objeto ac_irr (comparar codificacao humana vs. LLM)
 gold <- data.frame(
@@ -157,5 +157,5 @@ predicted <- data.frame(
 )
 irr_result <- ac_qual_irr(gold, predicted, verbose = FALSE)
 ac_export(irr_result, file.path(tempdir(), "confiabilidade.csv"))
-#> ✔ Exportado para /tmp/Rtmpm0T14X/confiabilidade.csv (csv).
+#> ✔ Exportado para /tmp/RtmpNBPnPR/confiabilidade.csv (csv).
 ```

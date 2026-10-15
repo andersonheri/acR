@@ -41,13 +41,13 @@ ac_fetch_senado(
 
 - legislatura_inicio:
 
-  `integer` ou `NULL`. Numero da legislatura de inicio (ex.: `56` para
+  `integer` ou `NULL`. Número da legislatura de inicio (ex.: `56` para
   2019-2023, `57` para 2023-2027). Ignorado se `data_inicio` for
   fornecido.
 
 - legislatura_fim:
 
-  `integer` ou `NULL`. Numero da legislatura de fim. Se `NULL`, usa o
+  `integer` ou `NULL`. Número da legislatura de fim. Se `NULL`, usa o
   mesmo valor de `legislatura_inicio`.
 
 - partido:
@@ -70,7 +70,7 @@ ac_fetch_senado(
 
 - n_max:
 
-  `integer`. Numero maximo de discursos a retornar. Padrao: `100`. Use
+  `integer`. Número máximo de discursos a retornar. Padrao: `100`. Use
   `Inf` para coletar todos.
 
 - verbose:
@@ -88,11 +88,11 @@ Um `data.frame` com as mesmas colunas de
 
 - `id_discurso`:
 
-  `character`. Identificador unico.
+  `character`. Identificador único.
 
 - `id_deputado`:
 
-  `character`. Codigo do senador na API.
+  `character`. Código do senador na API.
 
 - `nome_deputado`:
 
@@ -118,7 +118,7 @@ Um `data.frame` com as mesmas colunas de
 
   `character`. Tipo/fase do discurso.
 
-- `sumario`:
+- `sumário`:
 
   `character`. Resumo do discurso.
 
@@ -155,7 +155,7 @@ dois corpora com [`rbind()`](https://rdrr.io/r/base/cbind.html) ou
 
 ### Backend
 
-Esta funcao usa senatebR (Santos, 2026) como backend para acesso a API
+Esta função usa senatebR (Santos, 2026) como backend para acesso a API
 do Senado Federal. O senatebR deve estar instalado:
 `install.packages("senatebR")`.
 

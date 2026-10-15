@@ -2,7 +2,7 @@
 
 `ac_temporal()` agrega qualquer métrica por documento (sentimento,
 frequência de um termo, legibilidade, confiança de classificação...) em
-janelas de tempo, para análise diacrônica — a pergunta "isso mudou ao
+janelas de tempo, para análise diacrônica: a pergunta "isso mudou ao
 longo do tempo?" aparece em quase todo estudo de conteúdo com timestamp:
 cobertura de imprensa sobre um tema, reclamações de clientes por mês,
 evolução do tom de comunicados de uma empresa, posts de redes sociais
@@ -13,8 +13,8 @@ A função é deliberadamente genérica: não importa se o valor vem de
 [`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md),
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
 filtrado para um termo específico, ou da saída de
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
-— qualquer tibble com uma coluna de data e uma coluna numérica serve de
+[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md):
+qualquer tibble com uma coluna de data e uma coluna numérica serve de
 entrada.
 
 ## Usage
@@ -34,7 +34,7 @@ ac_temporal(
 - data:
 
   Tibble (ou `data.frame`) com, no mínimo, uma coluna de data e uma
-  coluna numérica a agregar — tipicamente o resultado de uma das funções
+  coluna numérica a agregar: tipicamente o resultado de uma das funções
   de análise do pacote, unido aos metadados do corpus (ex.:
   [`dplyr::left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)
   de
@@ -80,7 +80,7 @@ Welbers, K.; Van Atteveldt, W.; Benoit, K. (2017). Text Analysis in R.
 
 ``` r
 # Reclamacoes de clientes ao longo de alguns meses, com score de
-# sentimento ja calculado por documento (ex.: saida de ac_sentiment())
+# sentimento já calculado por documento (ex.: saida de ac_sentiment())
 df <- data.frame(
   doc_id = paste0("d", 1:6),
   data   = as.Date(c("2024-01-05", "2024-01-20", "2024-02-02",

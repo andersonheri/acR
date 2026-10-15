@@ -37,7 +37,7 @@ Objeto `ggplot`.
 
 ``` r
 # \donttest{
-# Corpus sintetico com dois blocos tematicos
+# Corpus sintético com dois blocos tematicos
 df <- data.frame(
   id = paste0("d", 1:8),
   texto = c(
@@ -45,10 +45,10 @@ df <- data.frame(
     "cidadania direitos participacao democracia",
     "voto direitos liberdade cidadania",
     "democracia voto participacao popular",
-    "mercado economia eficiencia privatizacao",
-    "privatizacao mercado livre eficiencia",
+    "mercado economia eficiência privatizacao",
+    "privatizacao mercado livre eficiência",
     "economia crescimento investimento mercado",
-    "eficiencia mercado economia livre"
+    "eficiência mercado economia livre"
   ),
   stringsAsFactors = FALSE
 )

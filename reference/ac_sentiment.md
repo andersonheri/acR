@@ -79,15 +79,15 @@ Construction of a Portuguese Opinion Lexicon from multiple resources.
 ## Examples
 
 ``` r
-# Discursos com valencia afetiva variada
+# Discursos com valência afetiva variada
 df <- data.frame(
   id = paste0("d", 1:6),
   texto = c(
-    "A reforma tributaria e um passo excelente para o pais",
+    "A reforma tributária e um passo excelente para o pais",
     "Esta proposta e um desastre, um retrocesso terrivel",
-    "O relator apresentou o parecer na sessao ordinaria",
-    "Comemoramos essa vitoria historica com muita alegria",
-    "Rejeitamos com veemencia essa medida injusta e ilegal",
+    "O relator apresentou o parecer na sessão ordinária",
+    "Comemoramos essa vitória histórica com muita alegria",
+    "Rejeitamos com veemência essa medida injusta e ilegal",
     "A comissao encerra os trabalhos as 18h"
   ),
   partido = rep(c("A", "B"), 3),
@@ -100,9 +100,9 @@ ac_sentiment(corpus)
 #> # A tibble: 6 × 6
 #>   doc_id n_pos n_neg n_neu score sentiment
 #>   <chr>  <int> <int> <int> <int> <chr>    
-#> 1 d1         1     1     8     0 neutro   
+#> 1 d1         2     1     7     1 positivo 
 #> 2 d2         0     1     7    -1 negativo 
-#> 3 d3         0     0     8     0 neutro   
+#> 3 d3         0     1     7    -1 negativo 
 #> 4 d4         0     0     7     0 neutro   
 #> 5 d5         0     2     6    -2 negativo 
 #> 6 d6         0     0     7     0 neutro   
@@ -112,9 +112,9 @@ ac_sentiment(corpus, by = "partido")
 #> # A tibble: 6 × 7
 #>   doc_id partido n_pos n_neg n_neu score sentiment
 #>   <chr>  <chr>   <int> <int> <int> <int> <chr>    
-#> 1 d1     A           1     1     8     0 neutro   
+#> 1 d1     A           2     1     7     1 positivo 
 #> 2 d2     B           0     1     7    -1 negativo 
-#> 3 d3     A           0     0     8     0 neutro   
+#> 3 d3     A           0     1     7    -1 negativo 
 #> 4 d4     B           0     0     7     0 neutro   
 #> 5 d5     A           0     2     6    -2 negativo 
 #> 6 d6     B           0     0     7     0 neutro   
@@ -122,12 +122,12 @@ ac_sentiment(corpus, by = "partido")
 # Metodo alternativo: razao positivos/negativos
 ac_sentiment(corpus, method = "ratio")
 #> # A tibble: 6 × 6
-#>   doc_id n_pos n_neg n_neu score sentiment
-#>   <chr>  <int> <int> <int> <dbl> <chr>    
-#> 1 d1         1     1     8     0 neutro   
-#> 2 d2         0     1     7    -1 negativo 
-#> 3 d3         0     0     8     0 neutro   
-#> 4 d4         0     0     7     0 neutro   
-#> 5 d5         0     2     6    -1 negativo 
-#> 6 d6         0     0     7     0 neutro   
+#>   doc_id n_pos n_neg n_neu  score sentiment
+#>   <chr>  <int> <int> <int>  <dbl> <chr>    
+#> 1 d1         2     1     7  0.333 positivo 
+#> 2 d2         0     1     7 -1     negativo 
+#> 3 d3         0     1     7 -1     negativo 
+#> 4 d4         0     0     7  0     neutro   
+#> 5 d5         0     2     6 -1     negativo 
+#> 6 d6         0     0     7  0     neutro   
 ```

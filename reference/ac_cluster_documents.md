@@ -1,14 +1,14 @@
-# Agrupamento nao supervisionado de documentos
+# Agrupamento não supervisionado de documentos
 
 `ac_cluster_documents()` particiona os documentos de um corpus em grupos
-"duros" (hard clustering) com base na similaridade de vocabulario. Serve
+"duros" (hard clustering) com base na similaridade de vocabulário. Serve
 para descobrir tipologias latentes, montar amostras estratificadas de
-revisao humana ou produzir dendrogramas para relatorios metodologicos.
+revisao humana ou produzir dendrogramas para relatórios metodologicos.
 
-Nao substitui
+Não substitui
 [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md):
-LDA e clustering *soft* (cada documento vira uma mistura de topicos),
-enquanto esta funcao devolve **uma etiqueta por documento**.
+LDA e clustering *soft* (cada documento vira uma mistura de tópicos),
+enquanto esta função devolve **uma etiqueta por documento**.
 
 ## Usage
 
@@ -42,19 +42,19 @@ ac_cluster_documents(
 
 - k:
 
-  Numero de grupos. Se `NULL` (padrao) e
+  Número de grupos. Se `NULL` (padrao) e
   `method %in% c("hclust","kmeans")`, tenta escolher automaticamente por
-  silhouette entre 2 e 8; requer `cluster`. Se `cluster` nao estiver
+  silhouette entre 2 e 8; requer `cluster`. Se `cluster` não estiver
   instalado, `k = 3` e o fallback.
 
 - distance:
 
-  Metrica de dissimilaridade. `"cosine"` (padrao) e o classico em
+  Métrica de dissimilaridade. `"cosine"` (padrao) e o classico em
   textos; `"euclidean"` funciona melhor com vetores normalizados.
 
 - min_docs:
 
-  Minimo de documentos para nao emitir warning de corpus pequeno.
+  Mínimo de documentos para não emitir warning de corpus pequeno.
   Padrao: `15L`.
 
 ## Value
@@ -71,7 +71,7 @@ Objeto de classe `ac_cluster` com:
 
 - `k`:
 
-  Numero final de grupos.
+  Número final de grupos.
 
 - `method`, `features`, `distance`:
 
@@ -79,7 +79,7 @@ Objeto de classe `ac_cluster` com:
 
 - `silhouette`:
 
-  Silhueta media (NA se `cluster` nao instalado).
+  Silhueta média (NA se `cluster` não instalado).
 
 - `dtm`:
 
@@ -100,10 +100,10 @@ df <- data.frame(
             "cidadania direitos participacao democracia",
             "voto direitos liberdade cidadania",
             "democracia voto participacao popular",
-            "mercado economia eficiencia privatizacao",
-            "privatizacao mercado livre eficiencia",
+            "mercado economia eficiência privatizacao",
+            "privatizacao mercado livre eficiência",
             "economia crescimento investimento mercado",
-            "eficiencia mercado economia livre"),
+            "eficiência mercado economia livre"),
   stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)

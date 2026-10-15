@@ -63,7 +63,7 @@ Frequencias, associacoes e modelagem estatistica de textos.
 - [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
   : Calcular tf-idf para termos em documentos ou grupos
 - [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
-  : Calcular estatisticas de keyness entre dois grupos
+  : Calcular estatísticas de keyness entre dois grupos
 - [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md)
   : Calcular co-ocorrências de termos
 - [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
@@ -73,7 +73,7 @@ Frequencias, associacoes e modelagem estatistica de textos.
 - [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
   : Ajustar múltiplos modelos LDA para selecionar k
 - [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md)
-  : Agrupamento nao supervisionado de documentos
+  : Agrupamento não supervisionado de documentos
 - [`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md)
   : Calcular legibilidade textual (Índice de Flesch adaptado ao
   português)
@@ -124,14 +124,14 @@ geracao de system prompts.
 - [`as_prompt()`](https://andersonheri.github.io/acR/reference/as_prompt.md)
   : Converter codebook em system prompt para LLM
 - [`ac_qual_search_literature()`](https://andersonheri.github.io/acR/reference/ac_qual_search_literature.md)
-  : Buscar referencias bibliograficas sobre um conceito via OpenAlex e
+  : Buscar referências bibliograficas sobre um conceito via OpenAlex e
   LLM
 - [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
   : Classificar textos com LLM usando um codebook
 - [`ac_chat_local()`](https://andersonheri.github.io/acR/reference/ac_chat_local.md)
   : Conectar a um servidor LLM local compativel com OpenAI
 - [`ac_estimate_tokens()`](https://andersonheri.github.io/acR/reference/ac_estimate_tokens.md)
-  : Estimar numero de tokens de um texto
+  : Estimar número de tokens de um texto
 - [`ac_calibrate_tokens()`](https://andersonheri.github.io/acR/reference/ac_calibrate_tokens.md)
   : Calibrar a razao caracteres/token contra um modelo real
 - [`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)
@@ -186,7 +186,7 @@ Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 - [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md)
   : Visualizar rede de co-ocorrência de termos
 - [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md)
-  : Plotar estatisticas de keyness
+  : Plotar estatísticas de keyness
 - [`ac_plot_lda_topics()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.md)
   : Visualizar top termos por tópico
 - [`ac_plot_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_tune.md)
@@ -208,7 +208,7 @@ Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 - [`ac_plot_wordscores()`](https://andersonheri.github.io/acR/reference/ac_plot_wordscores.md)
   : Visualizar escores Wordscores por documento
 - [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)
-  : Gráfico X-ray — dispersão lexical de termos no corpus
+  : Gráfico X-ray: dispersão lexical de termos no corpus
 - [`ac_plot_zipf()`](https://andersonheri.github.io/acR/reference/ac_plot_zipf.md)
   : Visualizar a Lei de Zipf (frequência × posto)
 - [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
@@ -223,4 +223,4 @@ Graficos modernos baseados em ggplot2, com tema e paleta consistentes.
 Exporta resultados para CSV, LaTeX, Excel e RDS.
 
 - [`ac_export()`](https://andersonheri.github.io/acR/reference/ac_export.md)
-  : Exporta resultados de analise de conteudo em multiplos formatos
+  : Exporta resultados de análise de conteúdo em múltiplos formatos

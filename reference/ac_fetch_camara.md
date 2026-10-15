@@ -1,10 +1,10 @@
 # Busca discursos de deputados federais via API da Camara dos Deputados
 
-Coleta discursos parlamentares diretamente da API publica da Camara dos
+Coleta discursos parlamentares diretamente da API pública da Camara dos
 Deputados (v2), retornando um `data.frame` padronizado e pronto para uso
-nas funcoes do `acR`. A coleta e feita em duas etapas: (1) lista
+nas funções do `acR`. A coleta e feita em duas etapas: (1) lista
 deputados conforme os filtros informados; (2) para cada deputado, busca
-os discursos no periodo solicitado, com paginacao automatica.
+os discursos no periodo solicitado, com paginacao automática.
 
 ## Usage
 
@@ -34,7 +34,7 @@ ac_fetch_camara(
 
 - legislatura:
 
-  `integer` ou `NULL`. Numero da legislatura (ex.: `57` para 2023-2027).
+  `integer` ou `NULL`. Número da legislatura (ex.: `57` para 2023-2027).
   Se `NULL`, usa o periodo definido por `data_inicio` e `data_fim` sem
   filtrar por legislatura.
 
@@ -51,13 +51,13 @@ ac_fetch_camara(
 
 - n_max:
 
-  `integer`. Numero maximo de discursos a retornar. Padrao: `100`. Use
+  `integer`. Número máximo de discursos a retornar. Padrao: `100`. Use
   `Inf` para coletar todos (atencao: pode ser lento).
 
 - tipo_discurso:
 
   `character`. Tipo de evento parlamentar. Opcoes principais:
-  `"plenario"` (padrao), `"comissao"`, `"todos"`.
+  `"plenário"` (padrao), `"comissao"`, `"todos"`.
 
 - verbose:
 
@@ -74,7 +74,7 @@ Um `data.frame` com as colunas:
 
 - `id_discurso`:
 
-  `character`. Identificador unico do discurso.
+  `character`. Identificador único do discurso.
 
 - `id_deputado`:
 
@@ -104,9 +104,9 @@ Um `data.frame` com as colunas:
 
   `character`. Tipo de fase do evento.
 
-- `sumario`:
+- `sumário`:
 
-  `character`. Sumario do discurso (quando disponivel).
+  `character`. Sumário do discurso (quando disponivel).
 
 - `texto`:
 
@@ -118,7 +118,7 @@ Um `data.frame` com as colunas:
 
 ## Details
 
-A API Dados Abertos da Camara (v2) nao dispoe de endpoint unico para
+A API Dados Abertos da Camara (v2) não dispoe de endpoint único para
 discursos por periodo. O fluxo de coleta e:
 
 1.  `GET /api/v2/deputados` - lista deputados com filtros de partido/UF.
@@ -128,7 +128,7 @@ discursos por periodo. O fluxo de coleta e:
 
 O filtro `tipo_discurso` atua sobre o campo `tipoDiscurso` retornado
 pela API. Valores observados: `"DISCURSO"`, `"DISCURSO ENCAMINHADO"`,
-`"BREVE COMUNICACAO"`, `"PELA ORDEM"`, `"COMUNICACAO PARLAMENTAR"`.
+`"BREVE COMUNICAÇÃO"`, `"PELA ORDEM"`, `"COMUNICAÇÃO PARLAMENTAR"`.
 
 ## References
 
@@ -146,7 +146,7 @@ para transformar o resultado em corpus.
 
 ``` r
 if (FALSE) { # \dontrun{
-# Discursos do plenario, marco de 2024
+# Discursos do plenário, marco de 2024
 disc <- ac_fetch_camara(
   data_inicio = "2024-03-11",
   data_fim    = "2024-03-15",

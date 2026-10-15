@@ -39,8 +39,8 @@ caracteres).
 
 ``` r
 dict <- ac_build_dictionary(
-  positivo = c("bom", "otimo"),
-  negativo = c("mau", "pessimo")
+  positivo = c("bom", "ótimo"),
+  negativo = c("mau", "péssimo")
 )
 arquivo <- tempfile(fileext = ".yaml")
 ac_dictionary_save(dict, arquivo)

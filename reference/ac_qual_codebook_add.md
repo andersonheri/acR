@@ -40,7 +40,7 @@ cb <- ac_qual_codebook(
   instructions = "Classifique o tom.",
   categories   = list(
     positivo = list(definition = "Tom propositivo."),
-    negativo = list(definition = "Tom critico.")
+    negativo = list(definition = "Tom crítico.")
   )
 )
 #> ! Categoria "positivo": sem exemplos positivos (examples_pos).
@@ -56,7 +56,7 @@ cb <- ac_qual_codebook(
 cb <- ac_qual_codebook_add(cb,
   neutro = list(
     definition   = "Tom neutro, sem posicionamento claro.",
-    examples_pos = c("O projeto foi apresentado na sessao de hoje.")
+    examples_pos = c("O projeto foi apresentado na sessão de hoje.")
   )
 )
 #> ! Categoria "neutro": sem exemplos negativos (examples_neg).

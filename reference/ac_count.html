@@ -111,21 +111,21 @@ variáveis de agrupamento e <code>token</code> (agregando vários documentos).</
 
 
 <dt id="arg-drop-punct">drop_punct<a class="anchor" aria-label="anchor" href="#arg-drop-punct"></a></dt>
-<dd><p>Logico. Se <code>TRUE</code>, remove tokens compostos apenas
-por pontuacao antes de calcular as frequencias (via
+<dd><p>Lógico. Se <code>TRUE</code>, remove tokens compostos apenas
+por pontuação antes de calcular as frequências (via
 <code>drop_punct = TRUE</code> em <code><a href="ac_tokenize.html">ac_tokenize()</a></code>).</p></dd>
 
 
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
 <dd><p>Vetor de nomes de colunas de metadados em <code>corpus</code> a serem
 usados como grupos de agregacao. Se <code>NULL</code> (padrao), as contagens
-sao feitas por documento (<code>doc_id</code>). Se nao for <code>NULL</code>, as colunas
-indicadas sao usadas como grupos e <code>doc_id</code> nao entra no resultado.</p></dd>
+sao feitas por documento (<code>doc_id</code>). Se não for <code>NULL</code>, as colunas
+indicadas sao usadas como grupos e <code>doc_id</code> não entra no resultado.</p></dd>
 
 
 <dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
-<dd><p>Logico. Se <code>TRUE</code> (padrao), ordena a saida em ordem
-decrescente de frequencia (<code>n</code>).</p></dd>
+<dd><p>Lógico. Se <code>TRUE</code> (padrao), ordena a saida em ordem
+decrescente de frequência (<code>n</code>).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -136,7 +136,7 @@ decrescente de frequencia (<code>n</code>).</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Um <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble()</a></code>:</p><ul><li><p>Se <code>by = NULL</code>: colunas <code>doc_id</code>, <code>token</code>, <code>n</code>;</p></li>
-<li><p>Se <code>by</code> nao nulo: colunas <code>by</code>, <code>token</code>, <code>n</code>.</p></li>
+<li><p>Se <code>by</code> não nulo: colunas <code>by</code>, <code>token</code>, <code>n</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -158,7 +158,7 @@ decrescente de frequencia (<code>n</code>).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">corp</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">df</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">partido</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Frequencia de palavras (unigramas) por documento</span></span></span>
+<span class="r-in"><span><span class="co"># Frequência de palavras (unigramas) por documento</span></span></span>
 <span class="r-in"><span><span class="fu">ac_count</span><span class="op">(</span><span class="va">corp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    doc_id token          n</span>
@@ -184,7 +184,7 @@ decrescente de frequencia (<code>n</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> d3     na             1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> d3     senador        1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Frequencia de palavras por partido</span></span></span>
+<span class="r-in"><span><span class="co"># Frequência de palavras por partido</span></span></span>
 <span class="r-in"><span><span class="fu">ac_count</span><span class="op">(</span><span class="va">corp</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 14 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    partido token          n</span>
@@ -204,7 +204,7 @@ decrescente de frequencia (<code>n</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> PT      deputado       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> PT      senador        1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Frequencia de bigramas por partido, removendo apenas pontuacao</span></span></span>
+<span class="r-in"><span><span class="co"># Frequência de bigramas por partido, removendo apenas pontuação</span></span></span>
 <span class="r-in"><span><span class="fu">ac_count</span><span class="op">(</span><span class="va">corp</span>, n <span class="op">=</span> <span class="fl">2</span>, drop_punct <span class="op">=</span> <span class="cn">TRUE</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 13 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    partido token                n</span>

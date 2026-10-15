@@ -3,8 +3,8 @@
 `ac_plot_zipf()` produz o gráfico diagnóstico clássico de Zipf (1949):
 frequência de cada palavra contra sua posição no ranking de frequência
 (1º, 2º, 3º... termo mais comum), em escala log-log. Em praticamente
-qualquer corpus de linguagem natural — avaliações de produto, letras de
-música, posts de redes sociais, discursos — essa relação é
+qualquer corpus de linguagem natural: avaliações de produto, letras de
+música, posts de redes sociais, discursos: essa relação é
 aproximadamente linear com inclinação próxima de -1: a palavra mais
 frequente aparece cerca de duas vezes mais que a segunda, três vezes
 mais que a terceira, e assim por diante.
@@ -56,15 +56,15 @@ Addison-Wesley.
 ## Examples
 
 ``` r
-# Avaliacoes de produtos de duas categorias
+# Avaliações de produtos de duas categorias
 df <- data.frame(
   id = paste0("r", 1:6),
   texto = c(
     "bom produto bom preco bom atendimento",
     "produto bom mas entrega lenta",
     "preco justo produto funcional",
-    "pessimo atendimento produto com defeito",
-    "excelente produto rapido e eficiente",
+    "péssimo atendimento produto com defeito",
+    "excelente produto rápido e eficiente",
     "produto ok nada de especial"
   ),
   categoria = rep(c("eletronico", "casa"), 3),

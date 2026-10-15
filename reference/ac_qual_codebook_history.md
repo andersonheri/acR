@@ -45,7 +45,7 @@ cb <- ac_qual_codebook(
 #> ! Categoria "negativo": sem exemplos negativos (examples_neg).
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 cb <- ac_qual_codebook_add(cb,
-  neutro = list(definition = "Sem valencia clara.")
+  neutro = list(definition = "Sem valência clara.")
 )
 #> ! Categoria "neutro": sem exemplos positivos (examples_pos).
 #> ℹ Exemplos melhoram a precisão da classificação (Sampaio & Lycarião, 2021).
@@ -57,13 +57,13 @@ cb <- ac_qual_codebook_remove(cb, "neutro")
 #> ✔ 1 categoria removida: "neutro".
 #> ℹ Codebook agora tem 2 categorias.
 
-# Ver historico completo de acoes registradas
+# Ver histórico completo de acoes registradas
 ac_qual_codebook_history(cb)
 #> 
 #> ── Histórico: "sentimento" ─────────────────────────────────────────────────────
 #> # A tibble: 2 × 3
 #>   timestamp           action detail
 #>   <chr>               <chr>  <chr> 
-#> 1 2026-10-15 14:31:41 add    neutro
-#> 2 2026-10-15 14:31:41 remove neutro
+#> 1 2026-10-15 14:37:01 add    neutro
+#> 2 2026-10-15 14:37:01 remove neutro
 ```

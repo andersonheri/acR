@@ -14,7 +14,7 @@ pergunta diferente:
 
 - **Percent agreement** (`percent_agreement`): fração de documentos em
   que LLM e humano concordam. Fácil de reportar, mas ignora concordância
-  por acaso — infla para categorias binárias com distribuição desigual.
+  por acaso: infla para categorias binárias com distribuição desigual.
 
 - **Alpha de Krippendorff** (`krippendorff`): padrão-ouro em análise de
   conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
@@ -22,7 +22,7 @@ pergunta diferente:
   aceitável para publicação; \< 0,60 = codebook precisa ser refinado.
 
 - **AC1 de Gwet** (`gwet_ac1`): alternativa a Krippendorff mais estável
-  quando as categorias são muito desbalanceadas (o "paradoxo do kappa" —
+  quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
   kappa despenca com alta concordância se uma categoria domina).
 
 - **F1 macro** (`f1_macro`): média não ponderada dos F1 por categoria.
@@ -84,7 +84,7 @@ ac_qual_reliability(
   Lógico. Se `TRUE`, calcula também métricas binárias (concordância,
   precisão, recall, F1, Gwet AC1, alfa de Krippendorff) para cada
   categoria do codebook individualmente, tratando a presença de cada
-  categoria como um problema sim/não — essencial quando
+  categoria como um problema sim/não: essencial quando
   `multilabel = TRUE`, onde um único `categoria` (`"a|b"`) mistura
   várias decisões binárias independentes que as métricas agregadas
   (acima) não conseguem diagnosticar separadamente. Denominadores zero
@@ -95,7 +95,7 @@ ac_qual_reliability(
 
   Vetor de valores da coluna `status` (ver
   [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md))
-  a excluir da comparação antes de calcular as métricas por variável —
+  a excluir da comparação antes de calcular as métricas por variável:
   documentos que falharam na classificação não têm uma categoria
   confiável para comparar. Ignorado se `llm` não tiver coluna `status`.
   Padrão:
@@ -111,7 +111,7 @@ Tibble com colunas: `metric`, `estimate`, `ci_lower`, `ci_upper`,
 `interpretation`. Quando `by_variable = TRUE`, o resultado carrega
 também um atributo `by_variable`: um tibble com uma linha por categoria
 do codebook e colunas `categoria`, `n`, `vp`, `fp`, `fn`, `vn`,
-`concordancia`, `precisao`, `recall`, `f1`, `gwet_ac1`,
+`concordância`, `precisao`, `recall`, `f1`, `gwet_ac1`,
 `krippendorff_alfa`.
 
 ## References
@@ -139,7 +139,7 @@ humano_df <- tibble::tibble(
   categoria = c("favor", "contra", "contra", "contra", "favor")
 )
 
-# Calcular metricas de confiabilidade (bootstrap curto so para demonstrar;
+# Calcular métricas de confiabilidade (bootstrap curto so para demonstrar;
 # em uso real, deixe o padrao de 1000 replicas)
 rel <- ac_qual_reliability(
   llm       = coded,

@@ -79,7 +79,7 @@ cb_estilo <- ac_qual_codebook(
 #> ! Categoria "logos": sem exemplos negativos (examples_neg).
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 
-# Fundir em um unico codebook com 4 categorias
+# Fundir em um único codebook com 4 categorias
 cb <- ac_qual_codebook_merge(cb_tom, cb_estilo, name = "tom_estilo")
 #> ✔ Fundidos: 4 categorias.
 names(cb$categories)  # "positivo" "negativo" "pathos" "logos"

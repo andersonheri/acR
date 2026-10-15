@@ -44,7 +44,7 @@ Objeto `ggplot`.
 
 ``` r
 # \donttest{
-# Corpus sintetico com dois blocos tematicos
+# Corpus sintético com dois blocos tematicos
 df <- data.frame(
   id = paste0("d", 1:8),
   texto = c(
@@ -52,10 +52,10 @@ df <- data.frame(
     "cidadania direitos participacao democracia",
     "voto direitos liberdade cidadania",
     "democracia voto participacao popular",
-    "mercado economia eficiencia privatizacao",
-    "privatizacao mercado livre eficiencia",
+    "mercado economia eficiência privatizacao",
+    "privatizacao mercado livre eficiência",
     "economia crescimento investimento mercado",
-    "eficiencia mercado economia livre"
+    "eficiência mercado economia livre"
   ),
   stringsAsFactors = FALSE
 )
@@ -63,7 +63,7 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 lda    <- ac_lda(corpus, k = 2)
 #> Ajustando LDA com k = 2 tópicos...
 
-# Grafico com os 5 termos mais probabilisticos por topico
+# Grafico com os 5 termos mais probabilisticos por tópico
 ac_plot_lda_topics(lda, top_n = 5)
 
 # }

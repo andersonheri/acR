@@ -43,7 +43,7 @@ Invisível: caminho do arquivo gerado.
 
 ``` r
 if (requireNamespace("openxlsx", quietly = TRUE)) {
-  # Amostra de documentos ja classificados pela LLM
+  # Amostra de documentos já classificados pela LLM
   coded <- tibble::tibble(
     doc_id           = paste0("doc_", 1:5),
     categoria        = c("favor", "contra", "favor", "contra", "favor"),
@@ -51,14 +51,14 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
   )
   amostra <- ac_qual_sample(coded, n = 3, strategy = "uncertainty")
 
-  # Exportar para revisao humana em arquivo temporario
+  # Exportar para revisao humana em arquivo temporário
   arquivo <- tempfile(fileext = ".xlsx")
   ac_qual_export_for_review(amostra, path = arquivo)
   file.exists(arquivo)
 }
 #> ℹ Amostra de 3 documentos selecionada (estratégia: "uncertainty").
 #> ℹ Use `ac_qual_export_for_review()` para exportar para Excel.
-#> ✅ Planilha exportada: /tmp/Rtmpm0T14X/file1b40732e277f.xlsx
+#> ✅ Planilha exportada: /tmp/RtmpNBPnPR/file1a805e7e484e.xlsx
 #> ℹ Preencha a coluna "categoria_humano" com a classificação.
 #> ℹ Use `ac_qual_import_human()` para importar após preenchimento.
 #> [1] TRUE

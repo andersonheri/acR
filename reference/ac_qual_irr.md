@@ -36,7 +36,7 @@ ac_qual_irr(
 
 - gold:
 
-  `data.frame`. Anotacoes de referencia (anotador humano ou gold
+  `data.frame`. Anotacoes de referência (anotador humano ou gold
   standard). Deve conter colunas `id_discurso` (ou `id`) e `categoria`.
 
 - predicted:
@@ -47,9 +47,9 @@ ac_qual_irr(
 
 - method:
 
-  `character`. Metrica(s) a calcular. Opcoes: `"all"` (padrao),
+  `character`. Métrica(s) a calcular. Opcoes: `"all"` (padrao),
   `"cohen_kappa"`, `"fleiss_kappa"`, `"krippendorff"`,
-  `"percent_agreement"`. Aceita vetor de multiplas opcoes.
+  `"percent_agreement"`. Aceita vetor de múltiplas opcoes.
 
 - id_col:
 
@@ -90,11 +90,11 @@ Um objeto de classe `ac_irr` (lista) com os elementos:
 
 - `n_docs`:
 
-  `integer`. Numero de documentos comparados.
+  `integer`. Número de documentos comparados.
 
 - `n_annotators`:
 
-  `integer`. Numero de anotadores.
+  `integer`. Número de anotadores.
 
 - `categories`:
 
@@ -102,18 +102,18 @@ Um objeto de classe `ac_irr` (lista) com os elementos:
 
 - `method`:
 
-  `character`. Metrica(s) calculadas.
+  `character`. Métrica(s) calculadas.
 
 ## Details
 
-### Interpretacao do Kappa (Landis & Koch, 1977)
+### Interpretação do Kappa (Landis & Koch, 1977)
 
 |             |                |
 |-------------|----------------|
-| Kappa       | Concordancia   |
+| Kappa       | Concordância   |
 | \< 0.00     | Pobre          |
 | 0.00 - 0.20 | Leve           |
-| 0.21 - 0.40 | Razoavel       |
+| 0.21 - 0.40 | Razoável       |
 | 0.41 - 0.60 | Moderada       |
 | 0.61 - 0.80 | Substancial    |
 | 0.81 - 1.00 | Quase perfeita |
@@ -126,7 +126,7 @@ passados como lista via `...`.
 
 ### Krippendorff's Alpha
 
-Metrica mais geral: funciona com qualquer numero de anotadores, lida com
+Métrica mais geral: funciona com qualquer número de anotadores, lida com
 dados faltantes e suporta escalas nominais, ordinais e de intervalo
 (KRIPPENDORFF, 2018).
 

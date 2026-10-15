@@ -6,11 +6,11 @@ razao caracteres/token observada – para usar como `chars_per_token` em
 [`ac_estimate_tokens()`](https://andersonheri.github.io/acR/reference/ac_estimate_tokens.md)
 (ou como `chars_per_token` em
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
-/ futuras funcoes que dependam da estimativa).
+/ futuras funções que dependam da estimativa).
 
 Faz uma chamada real ao modelo por texto de amostra (com uma mensagem
-minima, para medir so o consumo de tokens de entrada), entao usa poucos
-textos – o suficiente para calibrar, nao uma amostra representativa de
+mínima, para medir so o consumo de tokens de entrada), então usa poucos
+textos – o suficiente para calibrar, não uma amostra representativa de
 todo o corpus.
 
 ## Usage
@@ -23,7 +23,7 @@ ac_calibrate_tokens(chat_factory, textos)
 
 - chat_factory:
 
-  Funcao `function(temperature, system_prompt) Chat` que constroi o chat
+  Função `function(temperature, system_prompt) Chat` que constroi o chat
   a usar (o mesmo padrao aceito por `model` em
   [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)).
   Permite calibrar contra o provedor/modelo exato que sera usado na
@@ -36,7 +36,7 @@ ac_calibrate_tokens(chat_factory, textos)
 
 ## Value
 
-Numero: a mediana de caracteres por token observada na amostra.
+Número: a mediana de caracteres por token observada na amostra.
 
 ## Examples
 

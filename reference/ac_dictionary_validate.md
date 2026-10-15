@@ -7,7 +7,7 @@ de
 ou
 [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
 com categorias binarizadas) contra uma codificação de referência humana,
-categoria por categoria — a mesma lógica de validação que
+categoria por categoria: a mesma lógica de validação que
 [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
 aplica à classificação por LLM (com `by_variable = TRUE`), agora para o
 método de dicionário.
@@ -15,7 +15,7 @@ método de dicionário.
 Nenhum dicionário deveria ser usado numa análise publicável sem essa
 etapa (Grimmer & Stewart, 2013): um dicionário construído à mão pode
 parecer razoável e ainda assim ter baixa precisão ou recall numa
-categoria específica — só a comparação com uma amostra codificada por
+categoria específica: só a comparação com uma amostra codificada por
 humano revela isso.
 
 ## Usage
@@ -36,8 +36,8 @@ ac_dictionary_validate(scored, human, cat_col = "categoria", threshold = 0)
 
 - human:
 
-  Tibble com colunas `doc_id` e uma coluna de categoria (ver `cat_col`)
-  — a codificação humana de referência, no mesmo formato aceito por
+  Tibble com colunas `doc_id` e uma coluna de categoria (ver `cat_col`):
+  a codificação humana de referência, no mesmo formato aceito por
   [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
   (multilabel como string separada por `"|"`).
 
@@ -54,8 +54,8 @@ ac_dictionary_validate(scored, human, cat_col = "categoria", threshold = 0)
 ## Value
 
 Tibble com uma linha por categoria do dicionário e colunas `categoria`,
-`n`, `vp`, `fp`, `fn`, `vn`, `concordancia`, `precisao`, `recall`, `f1`,
-`gwet_ac1`, `krippendorff_alfa` — as mesmas colunas de
+`n`, `vp`, `fp`, `fn`, `vn`, `concordância`, `precisao`, `recall`, `f1`,
+`gwet_ac1`, `krippendorff_alfa`: as mesmas colunas de
 `attr(ac_qual_reliability(...), "by_variable")`. Denominadores
 indefinidos (ex.: uma categoria que nenhum dos dois lados marcou) geram
 `NA`, nunca `0` ou `1` artificiais.
@@ -80,18 +80,18 @@ df <- data.frame(
     "a entrega atrasou muito",
     "o produto chegou com defeito",
     "cobraram duas vezes no cartao",
-    "entrega rapida e produto perfeito"
+    "entrega rápida e produto perfeito"
   ),
   stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 dict <- ac_build_dictionary(
-  entrega = c("entrega", "atrasou", "rapida"),
+  entrega = c("entrega", "atrasou", "rápida"),
   produto = c("defeito", "perfeito")
 )
 scored <- ac_dictionary(corpus, dict)
 
-# Codificacao humana de referencia (simulada para o exemplo)
+# Codificacao humana de referência (simulada para o exemplo)
 human <- tibble::tibble(
   doc_id    = paste0("d", 1:4),
   categoria = c("entrega", "produto", NA, "entrega|produto")

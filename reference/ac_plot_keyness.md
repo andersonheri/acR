@@ -1,12 +1,12 @@
-# Plotar estatisticas de keyness
+# Plotar estatísticas de keyness
 
-`ac_plot_keyness()` cria um grafico de barras com as estatisticas de
+`ac_plot_keyness()` cria um grafico de barras com as estatísticas de
 keyness calculadas por
 [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md),
 destacando os termos mais caracteristicos do grupo alvo e do grupo de
-referencia.
+referência.
 
-A funcao usa
+A função usa
 [ggplot2](https://ggplot2.tidyverse.org/reference/ggplot2-package.html)
 como base e pode, opcionalmente, aplicar o estilo editorial do pacote
 `ipeaplot`.
@@ -29,29 +29,29 @@ ac_plot_keyness(
 
   Um `data.frame` ou
   [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
-  contendo, no minimo, as colunas `token`, `keyness` e `direction`.
+  contendo, no mínimo, as colunas `token`, `keyness` e `direction`.
 
 - n:
 
-  Numero de termos a exibir por direcao. Se `NULL` (padrao), usa todas
+  Número de termos a exibir por direcao. Se `NULL` (padrao), usa todas
   as linhas de `x`. Se informado, seleciona os top `n` termos com
   `keyness` positivo e os top `n` com `keyness` negativo.
 
 - style:
 
   Estilo grafico. Pode ser `"default"` (padrao) ou `"ipea"`. Quando
-  `"ipea"`, a funcao tenta aplicar
+  `"ipea"`, a função tenta aplicar
   [`ipeaplot::theme_ipea()`](https://rdrr.io/pkg/ipeaplot/man/theme_ipea.html).
 
 - flip:
 
-  Logico. Se `TRUE` (padrao), usa barras horizontais com
+  Lógico. Se `TRUE` (padrao), usa barras horizontais com
   [`ggplot2::coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html).
 
 - show_reference:
 
-  Logico. Se `TRUE` (padrao), mostra termos caracteristicos do grupo
-  alvo e do grupo de referencia. Se `FALSE`, mostra apenas os termos com
+  Lógico. Se `TRUE` (padrao), mostra termos caracteristicos do grupo
+  alvo e do grupo de referência. Se `FALSE`, mostra apenas os termos com
   `keyness` positivo.
 
 ## Value

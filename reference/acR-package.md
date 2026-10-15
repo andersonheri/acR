@@ -41,7 +41,7 @@ Useful links:
 
 - <https://github.com/andersonheri/acR>
 
-- <https://ahenriquecp.com/acR/>
+- <https://andersonheri.github.io/acR/>
 
 - Report bugs at <https://github.com/andersonheri/acR/issues>
 

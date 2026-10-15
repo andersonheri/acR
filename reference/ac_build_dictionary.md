@@ -2,7 +2,7 @@
 
 `ac_build_dictionary()` monta um dicionário no formato esperado por
 [`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md)
-a partir de argumentos nomeados — cada argumento é uma categoria, e seu
+a partir de argumentos nomeados: cada argumento é uma categoria, e seu
 valor é o vetor de palavras daquela categoria.
 
 ## Usage
@@ -31,14 +31,14 @@ Lista nomeada de vetores de caracteres (um dicionário).
 
 ``` r
 dict <- ac_build_dictionary(
-  positivo = c("bom", "otimo", "excelente"),
-  negativo = c("mau", "pessimo", "horrivel")
+  positivo = c("bom", "ótimo", "excelente"),
+  negativo = c("mau", "péssimo", "horrivel")
 )
 dict
 #> $positivo
-#> [1] "bom"       "otimo"     "excelente"
+#> [1] "bom"       "ótimo"     "excelente"
 #> 
 #> $negativo
-#> [1] "mau"      "pessimo"  "horrivel"
+#> [1] "mau"      "péssimo"  "horrivel"
 #> 
 ```

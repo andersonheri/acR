@@ -36,7 +36,7 @@ ac_plot_cluster(
 
 - title:
 
-  Titulo do grafico.
+  Título do grafico.
 
 - palette:
 
@@ -60,10 +60,10 @@ df <- data.frame(
             "cidadania direitos participacao",
             "voto direitos liberdade",
             "democracia voto participacao",
-            "mercado economia eficiencia",
+            "mercado economia eficiência",
             "privatizacao mercado livre",
             "economia crescimento mercado",
-            "eficiencia mercado livre")
+            "eficiência mercado livre")
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 clust  <- ac_cluster_documents(corpus, k = 2)

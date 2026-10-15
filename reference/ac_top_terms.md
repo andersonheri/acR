@@ -1,7 +1,7 @@
 # Selecionar os termos mais frequentes
 
 `ac_top_terms()` seleciona os `n` termos mais frequentes a partir de uma
-tabela de frequencias (tipicamente o resultado de
+tabela de frequências (tipicamente o resultado de
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)).
 
 Pode operar em dois modos:
@@ -24,25 +24,25 @@ ac_top_terms(x, n = 20L, by = NULL, sort = TRUE)
 
   Um `data.frame` ou
   [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
-  contendo, no minimo, as colunas `token` e `n`. Em geral, o resultado
+  contendo, no mínimo, as colunas `token` e `n`. Em geral, o resultado
   de
   [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
 
 - n:
 
-  Numero de termos a selecionar. Valor inteiro \>= 1.
+  Número de termos a selecionar. Valor inteiro \>= 1.
 
 - by:
 
   Vetor de nomes de colunas em `x` a serem usados como grupos de
   agregacao. Se `NULL` (padrao), a selecao e feita no conjunto total. Se
-  nao for `NULL`, os `n` termos mais frequentes sao selecionados dentro
+  não for `NULL`, os `n` termos mais frequentes sao selecionados dentro
   de cada combinacao de `by`.
 
 - sort:
 
-  Logico. Se `TRUE` (padrao), ordena a saida em ordem decrescente de
-  frequencia (`n`). Se `FALSE`, preserva a ordem retornada pela operacao
+  Lógico. Se `TRUE` (padrao), ordena a saida em ordem decrescente de
+  frequência (`n`). Se `FALSE`, preserva a ordem retornada pela operacao
   interna de selecao, apenas garantindo que os grupos (quando houver)
   venham juntos.
 

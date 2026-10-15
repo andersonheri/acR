@@ -5,13 +5,13 @@ geométrico de modo que unidades e termos próximos no gráfico tendem
 a co-ocorrer mais do que o esperado pelo acaso (Greenacre, 2007). É
 uma alternativa simples e determinística à Alocação de Dirichlet
 Latente (LDA, já disponível em ac_lda()) para visualizar
-associações entre vocabulário e grupos em duas dimensões — sem
+associações entre vocabulário e grupos em duas dimensões: sem
 assumir um número de tópicos latentes, e com uma interpretação
 geométrica direta (distâncias no biplot ~ dissimilaridade de perfis
 de frequência).
 É útil, por exemplo, para visualizar como o vocabulário difere entre
 categorias de atendimento ao cliente, entre seções de um conjunto de
-notícias, ou entre partidos/períodos legislativos — qualquer
+notícias, ou entre partidos/períodos legislativos: qualquer
 situação em que se queira um "mapa" conjunto de grupos e das
 palavras que os caracterizam.
 Implementação: SVD (base::svd()) sobre os resíduos padronizados de
@@ -25,13 +25,13 @@ geométrico de modo que unidades e termos próximos no gráfico tendem
 a co-ocorrer mais do que o esperado pelo acaso (Greenacre, 2007). É
 uma alternativa simples e determinística à Alocação de Dirichlet
 Latente (LDA, já disponível em ac_lda()) para visualizar
-associações entre vocabulário e grupos em duas dimensões — sem
+associações entre vocabulário e grupos em duas dimensões: sem
 assumir um número de tópicos latentes, e com uma interpretação
 geométrica direta (distâncias no biplot ~ dissimilaridade de perfis
 de frequência).
 É útil, por exemplo, para visualizar como o vocabulário difere entre
 categorias de atendimento ao cliente, entre seções de um conjunto de
-notícias, ou entre partidos/períodos legislativos — qualquer
+notícias, ou entre partidos/períodos legislativos: qualquer
 situação em que se queira um "mapa" conjunto de grupos e das
 palavras que os caracterizam.
 Implementação: SVD (base::svd()) sobre os resíduos padronizados de
@@ -99,13 +99,13 @@ geométrico de modo que unidades e termos próximos no gráfico tendem
 a co-ocorrer mais do que o esperado pelo acaso (Greenacre, 2007). É
 uma alternativa simples e determinística à Alocação de Dirichlet
 Latente (LDA, já disponível em <code><a href="ac_lda.html">ac_lda()</a></code>) para visualizar
-associações entre vocabulário e grupos em duas dimensões — sem
+associações entre vocabulário e grupos em duas dimensões: sem
 assumir um número de tópicos latentes, e com uma interpretação
 geométrica direta (distâncias no biplot ~ dissimilaridade de perfis
 de frequência).</p>
 <p>É útil, por exemplo, para visualizar como o vocabulário difere entre
 categorias de atendimento ao cliente, entre seções de um conjunto de
-notícias, ou entre partidos/períodos legislativos — qualquer
+notícias, ou entre partidos/períodos legislativos: qualquer
 situação em que se queira um "mapa" conjunto de grupos e das
 palavras que os caracterizam.</p>
 <p>Implementação: SVD (<code><a href="https://rdrr.io/r/base/svd.html" class="external-link">base::svd()</a></code>) sobre os resíduos padronizados de
@@ -186,11 +186,11 @@ ed.). Chapman and Hall/CRC.</p>
 <span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"entrega atrasada rastreio sumiu"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"pedido atrasou muito, rastreio nao atualiza"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"pedido atrasou muito, rastreio não atualiza"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"produto com defeito, chegou quebrado"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"veio quebrado, qualidade pessima"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"atendimento excelente, resolveram rapido"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"suporte educado e rapido, resolveu tudo"</span></span></span>
+<span class="r-in"><span>    <span class="st">"veio quebrado, qualidade péssima"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"atendimento excelente, resolveram rápido"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"suporte educado e rápido, resolveu tudo"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"entrega"</span>, <span class="st">"produto"</span>, <span class="st">"produto"</span>,</span></span>
 <span class="r-in"><span>                 <span class="st">"atendimento"</span>, <span class="st">"atendimento"</span><span class="op">)</span>,</span></span>

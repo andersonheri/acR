@@ -15,7 +15,7 @@ e
 [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
 Para análises que dependem de expressões compostas (\\reforma
 tributária\\, \\desenvolvimento sustentável\\), use `n = 2L` para
-bigramas — cada n-grama vira uma unidade de contagem independente.
+bigramas: cada n-grama vira uma unidade de contagem independente.
 
 ## Usage
 
@@ -50,15 +50,15 @@ ac_tokenize(
 
 - keep_empty:
 
-  Logico. Se `FALSE` (padrao), documentos que resultarem em texto vazio
-  apos a limpeza nao geram linhas na saida. Se `TRUE`, cada documento
+  Lógico. Se `FALSE` (padrao), documentos que resultarem em texto vazio
+  após a limpeza não geram linhas na saida. Se `TRUE`, cada documento
   vazio gera uma linha com `token = NA` quando `n = 1`.
 
 - drop_punct:
 
-  Logico. Se `TRUE`, remove da sequencia tokens que consistem apenas de
-  pontuacao (por exemplo `"!"`, `"..."`) antes de construir n-gramas.
-  Tokens que misturam letras e pontuacao (por exemplo `"ola,"`) sao
+  Lógico. Se `TRUE`, remove da sequência tokens que consistem apenas de
+  pontuação (por exemplo `"!"`, `"..."`) antes de construir n-gramas.
+  Tokens que misturam letras e pontuação (por exemplo `"ola,"`) sao
   mantidos.
 
 - ...:
@@ -113,7 +113,7 @@ tokens
 #> 10 d2            3 valer,  
 #> 11 d2            4 agora!  
 
-# Removendo tokens que sao apenas pontuacao
+# Removendo tokens que sao apenas pontuação
 df2 <- data.frame(
   id    = "d1",
   texto = "Ola, mundo ! ..."

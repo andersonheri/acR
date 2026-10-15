@@ -74,7 +74,7 @@ Tibble com colunas:
 - `tier`: categoria (`"frontier"`, `"balanced"`, `"fast"`, `"free"`,
   `"local"`);
 
-- `pt_support`: suporte estimado ao português (`"alto"`, `"medio"`,
+- `pt_support`: suporte estimado ao português (`"alto"`, `"médio"`,
   `"baixo"`);
 
 - `acr_string`: string pronta para uso em `model = ...` no `acR`.

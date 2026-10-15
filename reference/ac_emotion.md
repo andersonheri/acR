@@ -1,7 +1,7 @@
 # Classificar emoções com um léxico de palavra-emoção
 
 `ac_emotion()` conta, por documento, quantas palavras caem em cada
-categoria de emoção de um léxico fornecido pelo usuário — indo além da
+categoria de emoção de um léxico fornecido pelo usuário: indo além da
 polaridade binária de
 [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
 para distinguir, por exemplo, se um texto negativo expressa raiva, medo
@@ -14,7 +14,7 @@ português está sujeita aos termos de licença do léxico de origem, que o
 usuário deve obter e licenciar por conta própria (o NRC é gratuito para
 pesquisa, mas não redistribuível livremente dentro de outro pacote).
 `ac_emotion()` é agnóstica ao léxico: funciona com qualquer tabela
-palavra→emoção que você tenha — o NRC traduzido, um léxico doméstico, ou
+palavra→emoção que você tenha: o NRC traduzido, um léxico doméstico, ou
 uma lista construída à mão para um domínio específico (ex.: emoções em
 avaliações de atendimento ao cliente).
 
@@ -79,7 +79,7 @@ Association Lexicon. *Computational Intelligence*, 29(3), 436-465.
 ## Examples
 
 ``` r
-# Lexico de emocao minimo, construido a mao para este exemplo
+# Lexico de emocao mínimo, construido a mao para este exemplo
 # (em uso real, substitua por um lexico de emocoes licenciado em PT)
 lexico <- data.frame(
   termo  = c("alegria", "feliz", "medo", "assustado", "raiva", "furioso"),
@@ -91,8 +91,8 @@ df <- data.frame(
   id = paste0("d", 1:3),
   texto = c(
     "fiquei muito feliz com a alegria do momento",
-    "fiquei assustado, senti muito medo da situacao",
-    "fiquei furioso, aquela raiva nao passava"
+    "fiquei assustado, senti muito medo da situação",
+    "fiquei furioso, aquela raiva não passava"
   ),
   stringsAsFactors = FALSE
 )

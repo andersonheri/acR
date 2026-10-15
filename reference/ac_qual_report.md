@@ -10,7 +10,7 @@ referências bibliográficas.
 assistidas por LLM: **o revisor ou leitor não consegue reproduzir a
 rodada** sem saber exatamente qual modelo, qual codebook, quais
 parâmetros e qual amostra foram usados. Sem esse relatório, o leitor tem
-que confiar no autor — algo que a tradição de análise de conteúdo
+que confiar no autor: algo que a tradição de análise de conteúdo
 (Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido e
 pode ser anexado como material suplementar do artigo, publicado como
 apêndice ou depositado num repositório de dados junto com o codebook em
@@ -45,7 +45,7 @@ ac_qual_report(
 
 - codebook:
 
-  Objeto `ac_codebook` usado na classificacao.
+  Objeto `ac_codebook` usado na classificação.
 
 - reliability:
 
@@ -56,11 +56,11 @@ ac_qual_report(
 - chat:
 
   Opcional. Objeto `Chat` do `ellmer` (ou string de modelo); se
-  fornecido, extrai provedor/modelo/parametros para o relatorio.
+  fornecido, extrai provedor/modelo/parametros para o relatório.
 
 - title:
 
-  Titulo do relatorio. Padrao: gerado a partir do nome do codebook.
+  Título do relatório. Padrao: gerado a partir do nome do codebook.
 
 - author:
 
@@ -68,7 +68,7 @@ ac_qual_report(
 
 - method:
 
-  Descricao livre do metodo de coleta do corpus (opcional).
+  Descrição livre do metodo de coleta do corpus (opcional).
 
 - format:
 
@@ -115,9 +115,9 @@ coded <- tibble::tibble(
   reasoning        = rep("...", 5)
 )
 
-# Gerar relatorio em markdown temporario
+# Gerar relatório em markdown temporário
 arquivo <- tempfile(fileext = ".md")
 ac_qual_report(coded, cb, path = arquivo, author = "Fulano de Tal")
-#> ✔ Relatorio salvo em /tmp/Rtmpm0T14X/file1b40bb06806.md
+#> ✔ Relatorio salvo em /tmp/RtmpNBPnPR/file1a806be096d3.md
 # readLines(arquivo, n = 20)
 ```

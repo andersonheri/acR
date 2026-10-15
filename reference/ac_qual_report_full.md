@@ -1,7 +1,7 @@
 # Gerar relatório consolidado de múltiplas variáveis de conteúdo
 
 `ac_qual_report_full()` gera **um único** documento (Markdown ou HTML)
-consolidando resultados de N variáveis de codificação qualitativa — cada
+consolidando resultados de N variáveis de codificação qualitativa: cada
 uma com seu próprio codebook, rodada de
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
 e, opcionalmente, métricas de
@@ -18,7 +18,7 @@ N vezes e emendar os relatórios manualmente, ou escrever um consolidador
 ad hoc por projeto.
 
 Aceita variáveis `multilabel = TRUE` e `multilabel = FALSE` no mesmo
-relatório — cada seção herda a apresentação apropriada para o tipo.
+relatório: cada seção herda a apresentação apropriada para o tipo.
 
 ## Usage
 
@@ -57,7 +57,7 @@ ac_qual_report_full(
 
   Opcional. Objeto `Chat` do `ellmer` ou string de modelo
   `"provider/model"`. Aplica-se a todas as variáveis (assumindo que
-  todas foram classificadas com o mesmo modelo — se não, deixe `NULL`).
+  todas foram classificadas com o mesmo modelo: se não, deixe `NULL`).
 
 - title:
 
@@ -97,7 +97,7 @@ para relatório de uma única variável.
 ## Examples
 
 ``` r
-# Duas variaveis de conteudo, cada uma com seu codebook
+# Duas variáveis de conteúdo, cada uma com seu codebook
 cb_tom <- ac_qual_codebook(
   name = "tom",
   instructions = "Classifique o tom.",
@@ -151,5 +151,5 @@ ac_qual_report_full(
   path = arquivo,
   author = "Fulano de Tal"
 )
-#> ✔ Relatorio salvo em /tmp/Rtmpm0T14X/file1b40557eedc7.md
+#> ✔ Relatorio salvo em /tmp/RtmpNBPnPR/file1a80cd5d558.md
 ```

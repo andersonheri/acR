@@ -52,7 +52,7 @@ ac_plot_wordcloud_comparative(
 
 - seed:
 
-  Semente para o posicionamento aleatorio dos termos. Padrao `42L`
+  Semente para o posicionamento aleatório dos termos. Padrao `42L`
   (garante layout reproduzivel entre chamadas).
 
 - backend:
@@ -76,15 +76,15 @@ Objeto `ggplot`.
 ## Examples
 
 ``` r
-# Corpus dividido em dois grupos com vocabulario contrastante
+# Corpus dividido em dois grupos com vocabulário contrastante
 df <- data.frame(
   id     = paste0("d", 1:6),
   texto  = c(
     "democracia participacao popular voto",
     "direitos cidadania liberdade democracia",
     "participacao popular igualdade direitos",
-    "mercado economia privatizacao eficiencia",
-    "privatizacao mercado livre eficiencia",
+    "mercado economia privatizacao eficiência",
+    "privatizacao mercado livre eficiência",
     "economia crescimento mercado investimento"
   ),
   grupo = c("A","A","A","B","B","B")

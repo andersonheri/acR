@@ -93,7 +93,7 @@ Practical Guide for Model Setting and Fine-Tuning. *arXiv*, 2307.02179.
 ## Examples
 
 ``` r
-# Recomendação padrão para classificacao em PT com orcamento medio
+# Recomendação padrão para classificação em PT com orcamento médio
 ac_qual_recommend_model()
 #> 
 #> ── Recomendacoes de modelo acR ─────────────────────────────────────────────────

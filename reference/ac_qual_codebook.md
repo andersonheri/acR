@@ -28,9 +28,9 @@ Suporta três modos de construção:
   gerando um banco estruturado com trecho original, tradução, autor,
   ano, revista e link. O pesquisador revisa e aprova interativamente.
 
-Todo codebook mantém um `history` das modificações — quem alterou,
-quando e o quê. Essencial para auditoria metodológica quando o
-instrumento evolui entre a versão piloto e a versão final publicada.
+Todo codebook mantém um `history` das modificações: quem alterou, quando
+e o quê. Essencial para auditoria metodológica quando o instrumento
+evolui entre a versão piloto e a versão final publicada.
 
 ## Usage
 
@@ -152,7 +152,7 @@ manual de aplicação*. Brasília: ENAP.
 
 ``` r
 # Codebook manual com duas categorias, cada uma com exemplos positivos
-# (o que E) e negativos (o que NAO e, para desambiguar categorias vizinhas)
+# (o que E) e negativos (o que NÃO e, para desambiguar categorias vizinhas)
 cb <- ac_qual_codebook(
   name         = "tom_discurso",
   instructions = "Classifique o tom geral do discurso.",
@@ -164,7 +164,7 @@ cb <- ac_qual_codebook(
       weight       = 1  # peso relativo no prompt; use >1 para priorizar
     ),
     negativo = list(
-      definition   = "Discurso com tom critico ou confrontacional.",
+      definition   = "Discurso com tom crítico ou confrontacional.",
       examples_pos = c("Esta proposta vai arruinar o pais."),
       examples_neg = c("Apresento esta emenda para melhorar o texto."),
       weight       = 1
@@ -178,7 +178,7 @@ cb  # imprime resumo do codebook
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 14:31
+#> • Criado em: 15/10/2026 14:37
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.
@@ -186,6 +186,6 @@ cb  # imprime resumo do codebook
 #> Categorias:
 #> • "positivo": Discurso com tom propositivo e colaborativo.
 #> Ex+: Proponho que trabalhemos juntos nesta agenda.
-#> • "negativo": Discurso com tom critico ou confrontacional.
+#> • "negativo": Discurso com tom crítico ou confrontacional.
 #> Ex+: Esta proposta vai arruinar o pais.
 ```

@@ -2,15 +2,15 @@
 
 `ac_dictionary_import()` constrói um dicionário (ver
 [`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md))
-a partir de uma tabela em formato longo — uma linha por par
-palavra-categoria — o formato em que léxicos costumam ser distribuídos
+a partir de uma tabela em formato longo: uma linha por par
+palavra-categoria, o formato em que léxicos costumam ser distribuídos
 (CSV, planilha). Útil para importar listas de palavras construídas fora
 do R, ou léxicos de terceiros já traduzidos/adaptados para português (o
 pacote não distribui nenhum léxico de categorias além do OpLexicon usado
 em
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
-— veja `vignette("dicionarios")` para onde encontrar léxicos de
-terceiros e como adaptá-los a este formato).
+[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md);
+veja `vignette("dicionários")` para onde encontrar léxicos de terceiros
+e como adaptá-los a este formato).
 
 ## Usage
 
@@ -53,15 +53,15 @@ valor distinto de `category_col`.
 
 ``` r
 lexico <- data.frame(
-  termo     = c("bom", "otimo", "mau", "pessimo"),
+  termo     = c("bom", "ótimo", "mau", "péssimo"),
   categoria = c("positivo", "positivo", "negativo", "negativo"),
   stringsAsFactors = FALSE
 )
 ac_dictionary_import(lexico)
 #> $negativo
-#> [1] "mau"     "pessimo"
+#> [1] "mau"     "péssimo"
 #> 
 #> $positivo
-#> [1] "bom"   "otimo"
+#> [1] "bom"   "ótimo"
 #> 
 ```

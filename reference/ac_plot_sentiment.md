@@ -55,14 +55,14 @@ Objeto `ggplot`.
 ## Examples
 
 ``` r
-# Corpus com quatro documentos de valencias distintas
+# Corpus com quatro documentos de valências distintas
 df <- data.frame(
   id = c("a", "b", "c", "d"),
   texto = c(
-    "excelente otimo positivo bom",
-    "pessimo terrivel negativo ruim",
+    "excelente ótimo positivo bom",
+    "péssimo terrivel negativo ruim",
     "aprovada proposta reuniao",
-    "bom resultado positivo otimo"
+    "bom resultado positivo ótimo"
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)

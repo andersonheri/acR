@@ -1,4 +1,4 @@
-# Gráfico X-ray — dispersão lexical de termos no corpus
+# Gráfico X-ray: dispersão lexical de termos no corpus
 
 `ac_plot_xray()` exibe a posição de ocorrência de um ou mais termos ao
 longo do texto de cada documento, como marcações verticais numa linha
@@ -60,7 +60,7 @@ df <- data.frame(
   id = c("d1", "d2"),
   texto = c(
     "democracia liberdade igualdade democracia direitos democracia",
-    "mercado liberdade privatizacao mercado eficiencia mercado"
+    "mercado liberdade privatizacao mercado eficiência mercado"
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)

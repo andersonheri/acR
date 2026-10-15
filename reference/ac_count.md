@@ -49,21 +49,21 @@ ac_count(corpus, n = 1L, drop_punct = FALSE, by = NULL, sort = TRUE, ...)
 
 - drop_punct:
 
-  Logico. Se `TRUE`, remove tokens compostos apenas por pontuacao antes
-  de calcular as frequencias (via `drop_punct = TRUE` em
+  Lógico. Se `TRUE`, remove tokens compostos apenas por pontuação antes
+  de calcular as frequências (via `drop_punct = TRUE` em
   [`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)).
 
 - by:
 
   Vetor de nomes de colunas de metadados em `corpus` a serem usados como
   grupos de agregacao. Se `NULL` (padrao), as contagens sao feitas por
-  documento (`doc_id`). Se nao for `NULL`, as colunas indicadas sao
-  usadas como grupos e `doc_id` nao entra no resultado.
+  documento (`doc_id`). Se não for `NULL`, as colunas indicadas sao
+  usadas como grupos e `doc_id` não entra no resultado.
 
 - sort:
 
-  Logico. Se `TRUE` (padrao), ordena a saida em ordem decrescente de
-  frequencia (`n`).
+  Lógico. Se `TRUE` (padrao), ordena a saida em ordem decrescente de
+  frequência (`n`).
 
 - ...:
 
@@ -78,7 +78,7 @@ Um
 
 - Se `by = NULL`: colunas `doc_id`, `token`, `n`;
 
-- Se `by` nao nulo: colunas `by`, `token`, `n`.
+- Se `by` não nulo: colunas `by`, `token`, `n`.
 
 ## See also
 
@@ -102,7 +102,7 @@ df <- data.frame(
 
 corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
 
-# Frequencia de palavras (unigramas) por documento
+# Frequência de palavras (unigramas) por documento
 ac_count(corp)
 #> # A tibble: 20 × 3
 #>    doc_id token          n
@@ -128,7 +128,7 @@ ac_count(corp)
 #> 19 d3     na             1
 #> 20 d3     senador        1
 
-# Frequencia de palavras por partido
+# Frequência de palavras por partido
 ac_count(corp, by = "partido")
 #> # A tibble: 14 × 3
 #>    partido token          n
@@ -148,7 +148,7 @@ ac_count(corp, by = "partido")
 #> 13 PT      deputado       1
 #> 14 PT      senador        1
 
-# Frequencia de bigramas por partido, removendo apenas pontuacao
+# Frequência de bigramas por partido, removendo apenas pontuação
 ac_count(corp, n = 2, drop_punct = TRUE, by = "partido")
 #> # A tibble: 13 × 3
 #>    partido token                n

@@ -108,7 +108,7 @@ data.frame em formato largo com uma coluna por anotador.</p>
 
 
 <dl><dt id="arg-gold">gold<a class="anchor" aria-label="anchor" href="#arg-gold"></a></dt>
-<dd><p><code>data.frame</code>. Anotacoes de referencia (anotador humano ou
+<dd><p><code>data.frame</code>. Anotacoes de referência (anotador humano ou
 gold standard). Deve conter colunas <code>id_discurso</code> (ou <code>id</code>) e <code>categoria</code>.</p></dd>
 
 
@@ -118,9 +118,9 @@ gold standard). Deve conter colunas <code>id_discurso</code> (ou <code>id</code>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p><code>character</code>. Metrica(s) a calcular. Opcoes: <code>"all"</code> (padrao),
+<dd><p><code>character</code>. Métrica(s) a calcular. Opcoes: <code>"all"</code> (padrao),
 <code>"cohen_kappa"</code>, <code>"fleiss_kappa"</code>, <code>"krippendorff"</code>, <code>"percent_agreement"</code>.
-Aceita vetor de multiplas opcoes.</p></dd>
+Aceita vetor de múltiplas opcoes.</p></dd>
 
 
 <dt id="arg-id-col">id_col<a class="anchor" aria-label="anchor" href="#arg-id-col"></a></dt>
@@ -158,16 +158,16 @@ Padrao: <code>0.95</code>.</p></dd>
 <dd><p><code>table</code>. Matriz de confusao entre os anotadores.</p></dd>
 
 <dt><code>n_docs</code></dt>
-<dd><p><code>integer</code>. Numero de documentos comparados.</p></dd>
+<dd><p><code>integer</code>. Número de documentos comparados.</p></dd>
 
 <dt><code>n_annotators</code></dt>
-<dd><p><code>integer</code>. Numero de anotadores.</p></dd>
+<dd><p><code>integer</code>. Número de anotadores.</p></dd>
 
 <dt><code>categories</code></dt>
 <dd><p><code>character</code>. Categorias encontradas.</p></dd>
 
 <dt><code>method</code></dt>
-<dd><p><code>character</code>. Metrica(s) calculadas.</p></dd>
+<dd><p><code>character</code>. Métrica(s) calculadas.</p></dd>
 
 
 </dl></div>
@@ -175,8 +175,8 @@ Padrao: <code>0.95</code>.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
 <div class="section">
-<h3 id="interpretacao-do-kappa-landis-amp-koch-">Interpretacao do Kappa (Landis &amp; Koch, 1977)<a class="anchor" aria-label="anchor" href="#interpretacao-do-kappa-landis-amp-koch-"></a></h3>
-<table class="table table"><tr><td>Kappa</td><td>Concordancia</td></tr><tr><td>&lt; 0.00</td><td>Pobre</td></tr><tr><td>0.00 - 0.20</td><td>Leve</td></tr><tr><td>0.21 - 0.40</td><td>Razoavel</td></tr><tr><td>0.41 - 0.60</td><td>Moderada</td></tr><tr><td>0.61 - 0.80</td><td>Substancial</td></tr><tr><td>0.81 - 1.00</td><td>Quase perfeita</td></tr></table></div>
+<h3 id="interpreta-o-do-kappa-landis-amp-koch-">Interpretação do Kappa (Landis &amp; Koch, 1977)<a class="anchor" aria-label="anchor" href="#interpreta-o-do-kappa-landis-amp-koch-"></a></h3>
+<table class="table table"><tr><td>Kappa</td><td>Concordância</td></tr><tr><td>&lt; 0.00</td><td>Pobre</td></tr><tr><td>0.00 - 0.20</td><td>Leve</td></tr><tr><td>0.21 - 0.40</td><td>Razoável</td></tr><tr><td>0.41 - 0.60</td><td>Moderada</td></tr><tr><td>0.61 - 0.80</td><td>Substancial</td></tr><tr><td>0.81 - 1.00</td><td>Quase perfeita</td></tr></table></div>
 
 <div class="section">
 <h3 id="fleiss-kappa">Fleiss' Kappa<a class="anchor" aria-label="anchor" href="#fleiss-kappa"></a></h3>
@@ -191,7 +191,7 @@ passados como lista via <code>...</code>.</p>
 <h3 id="krippendorff-s-alpha">Krippendorff's Alpha<a class="anchor" aria-label="anchor" href="#krippendorff-s-alpha"></a></h3>
 
 
-<p>Metrica mais geral: funciona com qualquer numero de anotadores, lida com
+<p>Métrica mais geral: funciona com qualquer número de anotadores, lida com
 dados faltantes e suporta escalas nominais, ordinais e de intervalo
 (KRIPPENDORFF, 2018).</p>
 </div>

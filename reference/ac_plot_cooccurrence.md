@@ -79,11 +79,11 @@ df <- data.frame(
   )
 )
 
-# 2. Calcular co-ocorrencias de termos
+# 2. Calcular co-ocorrências de termos
 corpus <- ac_corpus(df, text = texto, docid = id) |> ac_clean()
 cooc <- ac_cooccurrence(ac_tokenize(corpus), min_count = 1)
 
-# 3. Rede visualizada com ggraph (dependencia opcional)
+# 3. Rede visualizada com ggraph (dependência opcional)
 if (requireNamespace("ggraph", quietly = TRUE)) {
   ac_plot_cooccurrence(cooc)
 }

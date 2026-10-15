@@ -115,7 +115,7 @@ grupos). Padrão: as primeiras N cores de <code><a href="ac_palette.html">ac_pal
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Semente para o posicionamento aleatorio dos termos. Padrao
+<dd><p>Semente para o posicionamento aleatório dos termos. Padrao
 <code>42L</code> (garante layout reproduzivel entre chamadas).</p></dd>
 
 
@@ -140,15 +140,15 @@ com <code>geom_text</code> + jitter reproduzivel).</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Corpus dividido em dois grupos com vocabulario contrastante</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Corpus dividido em dois grupos com vocabulário contrastante</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  id     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  texto  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"democracia participacao popular voto"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"direitos cidadania liberdade democracia"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"participacao popular igualdade direitos"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"mercado economia privatizacao eficiencia"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"privatizacao mercado livre eficiencia"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"mercado economia privatizacao eficiência"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"privatizacao mercado livre eficiência"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"economia crescimento mercado investimento"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  grupo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span></span></span>

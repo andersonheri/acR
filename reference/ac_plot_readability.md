@@ -2,7 +2,7 @@
 
 `ac_plot_readability()` compara a distribuição do Índice de Flesch (ver
 [`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md))
-entre grupos, com boxplots — a forma usual de reportar legibilidade
+entre grupos, com boxplots: a forma usual de reportar legibilidade
 comparada na literatura de linguística computacional e comunicação.
 
 ## Usage
@@ -53,20 +53,20 @@ Objeto `ggplot`.
 df <- data.frame(
   id = paste0("r", 1:6),
   texto = c(
-    "Bom. Gostei. Rapido.",
-    "Facil de montar e usar no dia a dia.",
+    "Bom. Gostei. Rápido.",
+    "Fácil de montar e usar no dia a dia.",
     paste(
       "A configuracao inicial demanda familiaridade com conceitos",
-      "de rede que extrapolam o publico leigo habitual."
+      "de rede que extrapolam o público leigo habitual."
     ),
     "Perfeito, superou expectativas.",
     paste(
-      "A ausencia de documentacao tecnica compromete a integracao",
+      "A ausência de documentacao técnica compromete a integracao",
       "com sistemas legados preexistentes na infraestrutura corporativa."
     ),
     "Simples e direto, recomendo."
   ),
-  categoria = rep(c("facil", "dificil"), 3),
+  categoria = rep(c("fácil", "difícil"), 3),
   stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id, meta = categoria)

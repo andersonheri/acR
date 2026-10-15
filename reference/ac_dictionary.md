@@ -1,7 +1,7 @@
 # Classificar conteúdo com um dicionário multi-categoria
 
 `ac_dictionary()` conta, para cada documento de um `ac_corpus`, quantas
-palavras caem em cada categoria de um dicionário — generalização do
+palavras caem em cada categoria de um dicionário: generalização do
 método que
 [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
 já aplica só para polaridade (positivo/negativo). Um dicionário aqui é
@@ -12,13 +12,12 @@ produto, ou qualquer taxonomia definida a priori pelo pesquisador.
 Métodos de dicionário são o método mais antigo e mais transparente de
 análise de conteúdo assistida por computador (Stone et al., 1966, *The
 General Inquirer*; revisado em Grimmer & Stewart, 2013): toda decisão de
-classificação é auditável — basta olhar a lista de palavras. O preço é a
+classificação é auditável: basta olhar a lista de palavras. O preço é a
 falta de sensibilidade a contexto: a palavra "não" imediatamente antes
 de um termo do dicionário não inverte a contagem, e sarcasmo ou negação
 sofisticada passam batido. Para esses casos, o pipeline de LLM
 ([`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md))
-é a alternativa — mais caro, menos transparente, mas sensível a
-contexto.
+é a alternativa: mais caro, menos transparente, mas sensível a contexto.
 
 ## Usage
 
@@ -34,7 +33,7 @@ ac_dictionary(corpus, dictionary, by = NULL, case_insensitive = TRUE)
 
 - dictionary:
 
-  Lista nomeada de vetores de caracteres — uma entrada por categoria,
+  Lista nomeada de vetores de caracteres: uma entrada por categoria,
   cada uma com as palavras daquela categoria (ver
   [`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md)).
   Palavras são comparadas a tokens individuais (correspondência exata,
@@ -79,17 +78,17 @@ Pitfalls of Automatic Content Analysis Methods for Political Texts.
 df <- data.frame(
   id = paste0("c", 1:4),
   texto = c(
-    "a entrega atrasou muito e o rastreio nao funcionava",
+    "a entrega atrasou muito e o rastreio não funcionava",
     "o produto chegou com defeito e quebrado na caixa",
     "cobraram duas vezes no cartao e o reembolso demorou",
-    "entrega rapida mas o produto tinha um defeito de fabrica"
+    "entrega rápida mas o produto tinha um defeito de fabrica"
   ),
   stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 
 dict <- ac_build_dictionary(
-  entrega    = c("entrega", "atrasou", "rastreio", "rapida"),
+  entrega    = c("entrega", "atrasou", "rastreio", "rápida"),
   produto    = c("defeito", "quebrado", "fabrica"),
   financeiro = c("cobraram", "cartao", "reembolso")
 )

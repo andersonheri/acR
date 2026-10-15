@@ -13,7 +13,7 @@ ponderada das posições dos documentos de referência em que ela
 aparece (ponderada pela frequência relativa da palavra em cada
 referência). Um documento virgem recebe a média dos escores de suas
 palavras, ponderada pela frequência relativa delas no próprio
-documento virgem — só palavras que também aparecem nos documentos de
+documento virgem: só palavras que também aparecem nos documentos de
 referência contam.
 Fora da ciência política (onde o método nasceu, aplicado a manifestos
 partidários), a mesma lógica serve para qualquer escala contínua
@@ -34,7 +34,7 @@ ponderada das posições dos documentos de referência em que ela
 aparece (ponderada pela frequência relativa da palavra em cada
 referência). Um documento virgem recebe a média dos escores de suas
 palavras, ponderada pela frequência relativa delas no próprio
-documento virgem — só palavras que também aparecem nos documentos de
+documento virgem: só palavras que também aparecem nos documentos de
 referência contam.
 Fora da ciência política (onde o método nasceu, aplicado a manifestos
 partidários), a mesma lógica serve para qualquer escala contínua
@@ -109,7 +109,7 @@ ponderada das posições dos documentos de referência em que ela
 aparece (ponderada pela frequência relativa da palavra em cada
 referência). Um documento virgem recebe a média dos escores de suas
 palavras, ponderada pela frequência relativa delas no próprio
-documento virgem — só palavras que também aparecem nos documentos de
+documento virgem: só palavras que também aparecem nos documentos de
 referência contam.</p>
 <p>Fora da ciência política (onde o método nasceu, aplicado a manifestos
 partidários), a mesma lógica serve para qualquer escala contínua
@@ -160,7 +160,7 @@ Vanberg, 2007).</p></li>
 
 
 <dt id="arg-drop-punct">drop_punct<a class="anchor" aria-label="anchor" href="#arg-drop-punct"></a></dt>
-<dd><p>Logico, encaminhado para <code><a href="ac_count.html">ac_count()</a></code>. Padrão:
+<dd><p>Lógico, encaminhado para <code><a href="ac_count.html">ac_count()</a></code>. Padrão:
 <code>TRUE</code>.</p></dd>
 
 </dl></div>
@@ -186,16 +186,16 @@ for Interpreting Political Text. <em>Political Analysis</em>, 16(1), 93-100.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Avaliacoes de produto com nota conhecida (referencia) e sem nota</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Avaliações de produto com nota conhecida (referência) e sem nota</span></span></span>
 <span class="r-in"><span><span class="co"># (a estimar), usadas como escala continua de satisfacao</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"produto excelente, superou expectativas, recomendo muito"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"muito bom, chegou rapido e funciona perfeitamente"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"produto regular, cumpre o basico"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"nao funcionou bem, qualidade ruim, nao recomendo"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"pessimo, quebrado e com defeito, decepcao total"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"muito bom, chegou rápido e funciona perfeitamente"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"produto regular, cumpre o básico"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"não funcionou bem, qualidade ruim, não recomendo"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"péssimo, quebrado e com defeito, decepcao total"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"produto ok, nada de especial mas atende"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span></span>

@@ -28,7 +28,7 @@ ac_corpus(data, text = NULL, docid = NULL, meta = NULL, lang = "pt", ...)
   Nome da coluna de texto, sem aspas (usa *tidyselect* / *non-standard
   evaluation*). Apenas relevante quando `data` é um `data.frame`. Se
   `NULL` (padrão), a função tenta detectar automaticamente uma coluna
-  chamada `text`, `texto`, `doc`, `content` ou `conteudo`.
+  chamada `text`, `texto`, `doc`, `content` ou `conteúdo`.
 
 - docid:
 
@@ -79,7 +79,7 @@ problema:
 5.  `doc_id` não pode conter `NA`.
 
 Documentos com texto vazio ou `NA` geram aviso (`warning`) mas são
-mantidos no corpus com texto `""` — o usuário decide se filtra depois.
+mantidos no corpus com texto `""`: o usuário decide se filtra depois.
 
 ## Examples
 

@@ -107,14 +107,14 @@ formato <code>"YYYY-MM-DD"</code>. Se <code>NULL</code>, usa o inicio da
 
 
 <dt id="arg-legislatura-inicio">legislatura_inicio<a class="anchor" aria-label="anchor" href="#arg-legislatura-inicio"></a></dt>
-<dd><p><code>integer</code> ou <code>NULL</code>. Numero da
+<dd><p><code>integer</code> ou <code>NULL</code>. Número da
 legislatura de inicio (ex.: <code>56</code> para 2019-2023,
 <code>57</code> para 2023-2027). Ignorado se <code>data_inicio</code> for
 fornecido.</p></dd>
 
 
 <dt id="arg-legislatura-fim">legislatura_fim<a class="anchor" aria-label="anchor" href="#arg-legislatura-fim"></a></dt>
-<dd><p><code>integer</code> ou <code>NULL</code>. Numero da
+<dd><p><code>integer</code> ou <code>NULL</code>. Número da
 legislatura de fim. Se <code>NULL</code>, usa o mesmo valor de
 <code>legislatura_inicio</code>.</p></dd>
 
@@ -138,7 +138,7 @@ filtrar pelo nome do senador (busca parcial, case-insensitive). Ex.:
 
 
 <dt id="arg-n-max">n_max<a class="anchor" aria-label="anchor" href="#arg-n-max"></a></dt>
-<dd><p><code>integer</code>. Numero maximo de discursos a retornar.
+<dd><p><code>integer</code>. Número máximo de discursos a retornar.
 Padrao: <code>100</code>. Use <code>Inf</code> para coletar todos.</p></dd>
 
 
@@ -156,10 +156,10 @@ Padrao: <code>0.3</code>.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Um <code>data.frame</code> com as mesmas colunas de
 <code><a href="ac_fetch_camara.html">ac_fetch_camara()</a></code>:</p><dl><dt><code>id_discurso</code></dt>
-<dd><p><code>character</code>. Identificador unico.</p></dd>
+<dd><p><code>character</code>. Identificador único.</p></dd>
 
 <dt><code>id_deputado</code></dt>
-<dd><p><code>character</code>. Codigo do senador na API.</p></dd>
+<dd><p><code>character</code>. Código do senador na API.</p></dd>
 
 <dt><code>nome_deputado</code></dt>
 <dd><p><code>character</code>. Nome do senador.</p></dd>
@@ -179,7 +179,7 @@ Padrao: <code>0.3</code>.</p></dd>
 <dt><code>tipo_discurso</code></dt>
 <dd><p><code>character</code>. Tipo/fase do discurso.</p></dd>
 
-<dt><code>sumario</code></dt>
+<dt><code>sumário</code></dt>
 <dd><p><code>character</code>. Resumo do discurso.</p></dd>
 
 <dt><code>texto</code></dt>
@@ -214,7 +214,7 @@ Padrao: <code>0.3</code>.</p></dd>
 <h3 id="backend">Backend<a class="anchor" aria-label="anchor" href="#backend"></a></h3>
 
 
-<p>Esta funcao usa <span class="pkg">senatebR</span> (Santos, 2026) como backend para acesso
+<p>Esta função usa <span class="pkg">senatebR</span> (Santos, 2026) como backend para acesso
 a API do Senado Federal. O <span class="pkg">senatebR</span> deve estar instalado:
 <code>install.packages("senatebR")</code>.</p>
 </div>

@@ -70,7 +70,7 @@ ac_clean(
 
 - remove_mentions:
 
-  Se `TRUE`, remove menções (\\usuario). Padrão: `FALSE`.
+  Se `TRUE`, remove menções (\\usuário). Padrão: `FALSE`.
 
 - remove_stopwords:
 

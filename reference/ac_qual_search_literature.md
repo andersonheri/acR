@@ -1,13 +1,13 @@
-# Buscar referencias bibliograficas sobre um conceito via OpenAlex e LLM
+# Buscar referências bibliograficas sobre um conceito via OpenAlex e LLM
 
-`ac_qual_search_literature()` busca referencias academicas reais na API
+`ac_qual_search_literature()` busca referências acadêmicas reais na API
 do OpenAlex e usa um modelo de linguagem via `ellmer` para sintetizar os
-abstracts em portugues. Retorna um tibble com metadados bibliograficos
+abstracts em português. Retorna um tibble com metadados bibliograficos
 verificados e definicoes sintetizadas pela LLM.
 
 A arquitetura e: OpenAlex recupera registros reais (autor, ano, DOI,
-abstract, revista, numero de citacoes); a LLM sintetiza o abstract em
-portugues e extrai o trecho mais relevante. Isso evita alucinacoes
+abstract, revista, número de citacoes); a LLM sintetiza o abstract em
+português e extrai o trecho mais relevante. Isso evita alucinacoes
 bibliograficas comuns quando a LLM opera sem fonte externa.
 
 ## Usage
@@ -29,7 +29,7 @@ ac_qual_search_literature(
 
 - concept:
 
-  String. Conceito ou termo teorico a buscar (ex:
+  String. Conceito ou termo teórico a buscar (ex:
   `"democratic backsliding"`, `"state capacity"`).
 
 - chat:
@@ -47,13 +47,13 @@ ac_qual_search_literature(
 
 - n_refs:
 
-  Inteiro. Numero de referencias a retornar. Padrao: `5`.
+  Inteiro. Número de referências a retornar. Padrao: `5`.
 
 - journals:
 
   Periodicos a considerar. Opcoes:
 
-  - `"default"`: lista curada de periodicos de referencia em CP/CS/AP;
+  - `"default"`: lista curada de periodicos de referência em CP/CS/AP;
 
   - `"all"`: sem restricao de periodico;
 
@@ -65,7 +65,7 @@ ac_qual_search_literature(
 
 - min_citations:
 
-  Inteiro. Numero minimo de citacoes. Padrao: `0`.
+  Inteiro. Número mínimo de citacoes. Padrao: `0`.
 
 - ...:
 
@@ -94,7 +94,7 @@ if (FALSE) { # \dontrun{
 # Chat via Groq (plano gratuito com gpt-oss-120b)
 chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
-# Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma
+# Buscar 5 referências mais citadas sobre o conceito e sintetizar cada uma
 lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
   n_refs        = 5,

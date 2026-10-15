@@ -121,7 +121,7 @@ Padrão: <code>2</code>.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Corpus tematico: coocorrencia revela associacoes conceituais</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Corpus tematico: coocorrência revela associações conceituais</span></span></span>
 <span class="r-in"><span><span class="co"># (que palavras "andam juntas" no discurso).</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span></span>
@@ -129,8 +129,8 @@ Padrão: <code>2</code>.</p></dd>
 <span class="r-in"><span>    <span class="st">"democracia participacao voto liberdade cidadania popular"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"cidadania direitos participacao democracia representacao politica"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"voto direitos liberdade cidadania soberania popular"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"mercado economia eficiencia privatizacao competicao livre"</span>,</span></span>
-<span class="r-in"><span>    <span class="st">"privatizacao mercado livre eficiencia produtividade lucro"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"mercado economia eficiência privatizacao competicao livre"</span>,</span></span>
+<span class="r-in"><span>    <span class="st">"privatizacao mercado livre eficiência produtividade lucro"</span>,</span></span>
 <span class="r-in"><span>    <span class="st">"economia crescimento investimento mercado capital juros"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span></span>
@@ -140,7 +140,7 @@ Padrão: <code>2</code>.</p></dd>
 <span class="r-in"><span>  <span class="fu"><a href="ac_clean.html">ac_clean</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">tokens</span> <span class="op">&lt;-</span> <span class="fu"><a href="ac_tokenize.html">ac_tokenize</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Janela de 3 tokens, sem filtro de frequencia minima</span></span></span>
+<span class="r-in"><span><span class="co"># Janela de 3 tokens, sem filtro de frequência mínima</span></span></span>
 <span class="r-in"><span><span class="co"># (em corpora reais use min_count &gt;= 5 para reduzir ruido)</span></span></span>
 <span class="r-in"><span><span class="va">cooc</span> <span class="op">&lt;-</span> <span class="fu">ac_cooccurrence</span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">3L</span>, min_count <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cooc</span><span class="op">)</span></span></span>
@@ -154,7 +154,7 @@ Padrão: <code>2</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             4  4.58     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     4  5.17     1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Coocorrencia com PMI (associacao normalizada por acaso)</span></span></span>
+<span class="r-in"><span><span class="co"># Coocorrência com PMI (associação normalizada por acaso)</span></span></span>
 <span class="r-in"><span><span class="va">cooc_pmi</span> <span class="op">&lt;-</span> <span class="fu">ac_cooccurrence</span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">3L</span>, measure <span class="op">=</span> <span class="st">"pmi"</span>,</span></span>
 <span class="r-in"><span>                            min_count <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cooc_pmi</span><span class="op">)</span></span></span>

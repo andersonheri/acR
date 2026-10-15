@@ -1,7 +1,7 @@
 # Salvar codebook em arquivo YAML
 
 Serializa um objeto `ac_codebook` em disco no formato YAML, preservando
-instrucoes, categorias, exemplos, referencias e historico de
+instrucoes, categorias, exemplos, referências e histórico de
 modificacoes. YAML foi escolhido por ser legivel por humanos e
 versionavel em Git.
 
@@ -38,7 +38,7 @@ cb <- ac_qual_codebook(
   instructions = "Classifique o tom do discurso.",
   categories   = list(
     positivo = list(definition = "Tom propositivo e colaborativo."),
-    negativo = list(definition = "Tom critico e confrontacional.")
+    negativo = list(definition = "Tom crítico e confrontacional.")
   )
 )
 #> ! Categoria "positivo": sem exemplos positivos (examples_pos).
@@ -50,10 +50,10 @@ cb <- ac_qual_codebook(
 #> ! Categoria "negativo": sem exemplos negativos (examples_neg).
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 
-# Salvar em arquivo temporario (usar caminho real fora de exemplos)
+# Salvar em arquivo temporário (usar caminho real fora de exemplos)
 arquivo <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo)
-#> ✅ Codebook salvo em /tmp/Rtmpm0T14X/file1b4010b88757.yaml
+#> ✅ Codebook salvo em /tmp/RtmpNBPnPR/file1a80713d2632.yaml
 
 # Reabrir para conferir
 cb_recarregado <- ac_qual_load_codebook(arquivo)

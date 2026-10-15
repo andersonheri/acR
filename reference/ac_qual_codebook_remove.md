@@ -37,7 +37,7 @@ cb <- ac_qual_codebook(
   instructions = "Classifique o tom.",
   categories   = list(
     positivo = list(definition = "Tom propositivo."),
-    negativo = list(definition = "Tom critico."),
+    negativo = list(definition = "Tom crítico."),
     neutro   = list(definition = "Tom neutro.")
   )
 )
@@ -54,7 +54,7 @@ cb <- ac_qual_codebook(
 #> ! Categoria "neutro": sem exemplos negativos (examples_neg).
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 
-# Remover a categoria "neutro" (aceita tambem um vetor de nomes)
+# Remover a categoria "neutro" (aceita também um vetor de nomes)
 cb <- ac_qual_codebook_remove(cb, "neutro")
 #> ✔ 1 categoria removida: "neutro".
 #> ℹ Codebook agora tem 2 categorias.

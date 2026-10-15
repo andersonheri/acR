@@ -8,7 +8,7 @@ contíguas de tokens dentro de cada documento.
 É o segundo passo canônico do pipeline quantitativo, geralmente entre
 ac_clean() e ac_count(). Para análises que dependem de expressões
 compostas (\"reforma tributária\", \"desenvolvimento sustentável\"),
-use n = 2L para bigramas — cada n-grama vira uma unidade de contagem
+use n = 2L para bigramas: cada n-grama vira uma unidade de contagem
 independente.'><meta property="og:description" content='ac_tokenize() recebe um objeto ac_corpus() e retorna um
 tibble em formato tidy, com um token por linha, no estilo
 usado em análises de texto no ecossistema tidy.
@@ -18,7 +18,7 @@ contíguas de tokens dentro de cada documento.
 É o segundo passo canônico do pipeline quantitativo, geralmente entre
 ac_clean() e ac_count(). Para análises que dependem de expressões
 compostas (\"reforma tributária\", \"desenvolvimento sustentável\"),
-use n = 2L para bigramas — cada n-grama vira uma unidade de contagem
+use n = 2L para bigramas: cada n-grama vira uma unidade de contagem
 independente.'><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -82,7 +82,7 @@ contíguas de tokens dentro de cada documento.</p>
 <p>É o segundo passo canônico do pipeline quantitativo, geralmente entre
 <code><a href="ac_clean.html">ac_clean()</a></code> e <code><a href="ac_count.html">ac_count()</a></code>. Para análises que dependem de expressões
 compostas (\"reforma tributária\", \"desenvolvimento sustentável\"),
-use <code>n = 2L</code> para bigramas — cada n-grama vira uma unidade de contagem
+use <code>n = 2L</code> para bigramas: cada n-grama vira uma unidade de contagem
 independente.</p>
     </div>
 
@@ -118,17 +118,17 @@ a 1. Para <code>n = 1</code>, o resultado sao tokens individuais; para
 
 
 <dt id="arg-keep-empty">keep_empty<a class="anchor" aria-label="anchor" href="#arg-keep-empty"></a></dt>
-<dd><p>Logico. Se <code>FALSE</code> (padrao), documentos que
-resultarem em texto vazio apos a limpeza nao geram linhas na
+<dd><p>Lógico. Se <code>FALSE</code> (padrao), documentos que
+resultarem em texto vazio após a limpeza não geram linhas na
 saida. Se <code>TRUE</code>, cada documento vazio gera uma linha com
 <code>token = NA</code> quando <code>n = 1</code>.</p></dd>
 
 
 <dt id="arg-drop-punct">drop_punct<a class="anchor" aria-label="anchor" href="#arg-drop-punct"></a></dt>
-<dd><p>Logico. Se <code>TRUE</code>, remove da sequencia tokens
-que consistem apenas de pontuacao (por exemplo <code>"!"</code>, <code>"..."</code>)
+<dd><p>Lógico. Se <code>TRUE</code>, remove da sequência tokens
+que consistem apenas de pontuação (por exemplo <code>"!"</code>, <code>"..."</code>)
 antes de construir n-gramas. Tokens que misturam letras e
-pontuacao (por exemplo <code>"ola,"</code>) sao mantidos.</p></dd>
+pontuação (por exemplo <code>"ola,"</code>) sao mantidos.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -176,7 +176,7 @@ pontuacao (por exemplo <code>"ola,"</code>) sao mantidos.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> d2            3 valer,  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> d2            4 agora!  </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Removendo tokens que sao apenas pontuacao</span></span></span>
+<span class="r-in"><span><span class="co"># Removendo tokens que sao apenas pontuação</span></span></span>
 <span class="r-in"><span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  id    <span class="op">=</span> <span class="st">"d1"</span>,</span></span>
 <span class="r-in"><span>  texto <span class="op">=</span> <span class="st">"Ola, mundo ! ..."</span></span></span>

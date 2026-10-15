@@ -2,8 +2,8 @@
 
 Le um arquivo YAML gerado por
 [`ac_qual_save_codebook()`](https://andersonheri.github.io/acR/reference/ac_qual_save_codebook.md)
-e reconstroi o objeto `ac_codebook` na sessao atual. Uso tipico: retomar
-uma analise iniciada em outra sessao ou por outro pesquisador.
+e reconstroi o objeto `ac_codebook` na sessão atual. Uso típico: retomar
+uma análise iniciada em outra sessão ou por outro pesquisador.
 
 ## Usage
 
@@ -28,7 +28,7 @@ Objeto `ac_codebook`.
 ## Examples
 
 ``` r
-# Preparar um codebook e salvar em arquivo temporario
+# Preparar um codebook e salvar em arquivo temporário
 cb <- ac_qual_codebook(
   name         = "polaridade",
   instructions = "Classifique a polaridade do texto.",
@@ -47,9 +47,9 @@ cb <- ac_qual_codebook(
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 arquivo <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo)
-#> ✅ Codebook salvo em /tmp/Rtmpm0T14X/file1b40333a4c11.yaml
+#> ✅ Codebook salvo em /tmp/RtmpNBPnPR/file1a802f447996.yaml
 
-# Recarregar em outra sessao
+# Recarregar em outra sessão
 cb_novo <- ac_qual_load_codebook(arquivo)
 names(cb_novo$categories)  # "favor" "contra"
 #> [1] "favor"  "contra"
