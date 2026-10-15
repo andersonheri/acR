@@ -1,4 +1,4 @@
-# Analise quantitativa de texto
+# Análise quantitativa de texto
 
 Esta vignette percorre o **módulo quantitativo** do `acR` em cima de um
 corpus de discursos parlamentares fabricado para o exemplo. Cada etapa é
@@ -243,7 +243,7 @@ ac_plot_top_terms(top) +
   ggplot2::labs(
     title    = "Termos mais frequentes no corpus",
     subtitle = "Discursos legislativos - 12 documentos fabricados",
-    caption  = "acR - vignette Analise Quantitativa"
+    caption  = "acR - vignette Análise Quantitativa"
   )
 ```
 

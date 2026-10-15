@@ -1,4 +1,4 @@
-# Quickstart — acR em 5 minutos
+# Quickstart: acR em 5 minutos
 
 Quer entender o `acR` sem ler nada longo? Este é o menor caminho
 ponta-a-ponta usando apenas as funções que rodam **offline e sem chave

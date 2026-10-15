@@ -414,7 +414,7 @@ variações ou utilitários — veja **[Funções disponíveis
 |----|----|----|
 | Importar arquivos (PDF, Word, Excel, TXT, imagem com OCR) | [`ac_import()`](https://andersonheri.github.io/acR/reference/ac_import.md) | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
 | Criar corpus a partir de `data.frame` ou vetor | [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md) | [Quickstart](https://andersonheri.github.io/acR/articles/quickstart.html) |
-| Coletar discursos da Câmara/Senado | [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md) · [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md) | [Estudo de caso](https://andersonheri.github.io/acR/articles/analise-proposicoes.html) |
+| Coletar discursos da Câmara/Senado | [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md) · [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md) | [Estudo de caso](https://andersonheri.github.io/acR/articles/an%C3%A1lise-proposicoes.html) |
 | Limpar texto (stopwords, URLs, acentos, NAs) | [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md) + [`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Contar tokens | [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
 | Top termos + gráfico | [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md) → [`ac_plot_top_terms()`](https://andersonheri.github.io/acR/reference/ac_plot_top_terms.md) | [Quantitativo](https://andersonheri.github.io/acR/articles/quantitativo.html) |
@@ -484,7 +484,7 @@ navegáveis, referência de todas as funções e changelog.
   completo](https://andersonheri.github.io/acR/articles/qualitativo-llm.html)
   — codebook, self-consistency, revisão humana e concordância.
 - [Estudo de caso: proposições
-  legislativas](https://andersonheri.github.io/acR/articles/analise-proposicoes.html)
+  legislativas](https://andersonheri.github.io/acR/articles/an%C3%A1lise-proposicoes.html)
   — aplicação real com dados da Câmara.
 
 ### Pipeline quantitativo

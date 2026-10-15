@@ -1,4 +1,4 @@
-# Replicabilidade ponta-a-ponta — do codebook ao relatório de método
+# Replicabilidade ponta-a-ponta: do codebook ao relatório de método
 
 Esta vignette demonstra o pipeline **completo** de análise de conteúdo
 qualitativa assistida por LLM, com foco na **replicabilidade**: cada
@@ -48,7 +48,7 @@ df <- data.frame(
     "O texto substitutivo altera o artigo 145 da Constituicao Federal.",
     "O relatório incorporou 47 emendas apresentadas em plenário.",
     "A comissao aprovou o parecer com 15 votos a favor e 8 contra.",
-    "O projeto seguira para votacao na próxima sessao ordinária."
+    "O projeto seguira para votacao na próxima sessão ordinária."
   ),
   partido = c("PT","PSD","PL","MDB","PSOL","PT","PDT","PSOL",
               "MDB","PSDB","PL","MDB"),
@@ -120,7 +120,7 @@ cb
 #> • Categorias (3): "favor", "contra", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 14:01
+#> • Criado em: 15/10/2026 14:05
 #> 
 #> Instrução geral:
 #> Classifique a posicao do parlamentar sobre a reforma tributária com base no
@@ -143,9 +143,9 @@ análise em outra sessão:
 
 arquivo_cb <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo_cb)
-#> ✅ Codebook salvo em /tmp/RtmpcO7tC1/file22f85d958936.yaml
+#> ✅ Codebook salvo em /tmp/RtmpwfJ3TI/file22447ec32c57.yaml
 cat("Codebook salvo em:", arquivo_cb, "\n")
-#> Codebook salvo em: /tmp/RtmpcO7tC1/file22f85d958936.yaml
+#> Codebook salvo em: /tmp/RtmpwfJ3TI/file22447ec32c57.yaml
 ```
 
 ## 3. Classificação com live view
@@ -544,7 +544,7 @@ ac_qual_report(
 )
 #> Warning: Unknown or uninitialised column: `metrics`.
 #> ✔ Relatorio salvo em
-#> /tmp/RtmpcO7tC1/relatório-22f8cc649b.md
+#> /tmp/RtmpwfJ3TI/relatório-2244766c2142.md
 ```
 
 Primeiras 40 linhas do relatório gerado:
@@ -554,7 +554,7 @@ Primeiras 40 linhas do relatório gerado:
 cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> # Classificação de posicionamento na reforma tributária
 #> 
-#> - **Gerado em:** 2026-10-15 14:01:18 UTC
+#> - **Gerado em:** 2026-10-15 14:05:15 UTC
 #> - **Versao do acR:** 0.6.0
 #> - **Autor(es):** Silva, A.; Souza, B.
 #> - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).
@@ -570,7 +570,7 @@ cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> | Idioma        | `pt` |
 #> | Modo        | `manual` |
 #> | Multilabel  | `FALSE` |
-#> | Criado em     | 2026-10-15 14:01:17 |
+#> | Criado em     | 2026-10-15 14:05:14 |
 #> 
 #> **Instrucoes ao codificador:**
 #> 

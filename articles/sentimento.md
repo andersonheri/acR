@@ -1,4 +1,4 @@
-# Analise de sentimento
+# Análise de sentimento
 
 ## O que é análise de sentimento com léxico
 

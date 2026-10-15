@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Replicabilidade ponta-a-ponta — do codebook ao relatório de método • acR</title>
+<title>Replicabilidade ponta-a-ponta: do codebook ao relatório de método • acR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -18,7 +18,7 @@
 <link href="../deps/Inter_Tight-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Replicabilidade ponta-a-ponta — do codebook ao relatório de método">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Replicabilidade ponta-a-ponta: do codebook ao relatório de método">
 <meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros.">
 <meta property="og:title" content="acR — Analise de Conteudo em R">
 <meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento.">
@@ -84,7 +84,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Replicabilidade ponta-a-ponta — do codebook ao relatório de método</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Replicabilidade ponta-a-ponta: do codebook ao relatório de método</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/main/vignettes/replicabilidade.Rmd" class="external-link"><code>vignettes/replicabilidade.Rmd</code></a></small>
@@ -150,7 +150,7 @@ importação de PDFs.</p>
 <span>    <span class="st">"O texto substitutivo altera o artigo 145 da Constituicao Federal."</span>,</span>
 <span>    <span class="st">"O relatório incorporou 47 emendas apresentadas em plenário."</span>,</span>
 <span>    <span class="st">"A comissao aprovou o parecer com 15 votos a favor e 8 contra."</span>,</span>
-<span>    <span class="st">"O projeto seguira para votacao na próxima sessao ordinária."</span></span>
+<span>    <span class="st">"O projeto seguira para votacao na próxima sessão ordinária."</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>,<span class="st">"PSD"</span>,<span class="st">"PL"</span>,<span class="st">"MDB"</span>,<span class="st">"PSOL"</span>,<span class="st">"PT"</span>,<span class="st">"PDT"</span>,<span class="st">"PSOL"</span>,</span>
 <span>              <span class="st">"MDB"</span>,<span class="st">"PSDB"</span>,<span class="st">"PL"</span>,<span class="st">"MDB"</span><span class="op">)</span>,</span>
@@ -220,7 +220,7 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"favor"</span>, <span style="color: #0000BB;">"contra"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 14:01</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 14:05</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique a posicao do parlamentar sobre a reforma tributária com base no</span></span>
@@ -239,9 +239,9 @@ análise em outra sessão:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arquivo_cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo_cb</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpcO7tC1/file22f85d958936.yaml</span></span></span>
+<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpwfJ3TI/file22447ec32c57.yaml</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Codebook salvo em:"</span>, <span class="va">arquivo_cb</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpcO7tC1/file22f85d958936.yaml</span></span></code></pre></div>
+<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpwfJ3TI/file22447ec32c57.yaml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classificação-com-live-view">3. Classificação com live view<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-live-view"></a>
@@ -616,13 +616,13 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Unknown or uninitialised column: `metrics`.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Relatorio salvo em</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpcO7tC1/relatório-22f8cc649b.md</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpwfJ3TI/relatório-2244766c2142.md</span></span></span></code></pre></div>
 <p>Primeiras 40 linhas do relatório gerado:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">arquivo_md</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Classificação de posicionamento na reforma tributária</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 14:01:18 UTC</span></span>
+<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 14:05:15 UTC</span></span>
 <span><span class="co">#&gt; - **Versao do acR:** 0.6.0</span></span>
 <span><span class="co">#&gt; - **Autor(es):** Silva, A.; Souza, B.</span></span>
 <span><span class="co">#&gt; - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).</span></span>
@@ -638,7 +638,7 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="co">#&gt; | Idioma        | `pt` |</span></span>
 <span><span class="co">#&gt; | Modo        | `manual` |</span></span>
 <span><span class="co">#&gt; | Multilabel  | `FALSE` |</span></span>
-<span><span class="co">#&gt; | Criado em     | 2026-10-15 14:01:17 |</span></span>
+<span><span class="co">#&gt; | Criado em     | 2026-10-15 14:05:14 |</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; **Instrucoes ao codificador:**</span></span>
 <span><span class="co">#&gt; </span></span>
