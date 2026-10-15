@@ -1209,10 +1209,10 @@ ac_qual_codebook_merge <- function(cb1, cb2, name=NULL, on_conflict=c('error','k
 #' @export
 ac_qual_codebook_translate <- function(codebook, to=c('en','pt'), chat=NULL, model='anthropic/claude-sonnet-4-5', translate_examples=TRUE) {
   if (!inherits(codebook,'ac_codebook')) cli::cli_abort('{.arg codebook} deve ser ac_codebook.')
-  if (!requireNamespace('ellmer',quietly=TRUE)) cli::cli_abort('ellmer necessario.')
-  if (!requireNamespace('jsonlite',quietly=TRUE)) cli::cli_abort('jsonlite necessario.')
   to <- match.arg(to)
   if (codebook$lang==to) { cli::cli_inform('J\u00e1 em {.val {to}}.'); return(codebook) }
+  if (!requireNamespace('ellmer',quietly=TRUE)) cli::cli_abort('ellmer necessario.')
+  if (!requireNamespace('jsonlite',quietly=TRUE)) cli::cli_abort('jsonlite necessario.')
   effective_model <- if (!is.null(chat)) chat else model
   lang_names <- c(pt='portugu\u00eas brasileiro',en='English')
   payload <- list(instructions=codebook$instructions,categories=purrr::imap(codebook$categories,function(cat,nm){entry<-list(name=nm,definition=cat$definition);if(isTRUE(translate_examples)){entry$examples_pos<-cat$examples_pos;entry$examples_neg<-cat$examples_neg};entry}))

@@ -52,6 +52,7 @@ test_that("ac_qual_code() rejeita codebook invalido", {
 })
 
 test_that("ac_qual_code() rejeita chat invalido", {
+  skip_if_not_installed("ellmer")
   corpus <- make_corpus_test()
   cb     <- make_codebook_test()
   expect_error(
@@ -541,6 +542,7 @@ test_that(".ac_make_chat() aceita funcao-fabrica function(temperature, system_pr
 })
 
 test_that(".ac_make_chat() aplica temperature a objeto Chat pre-configurado", {
+  skip_if_not_installed("ellmer")
   fake <- make_fake_chat()
   chat <- acR:::.ac_make_chat(fake, "sys", 0.9, list())
   expect_false(is.null(chat$model@params))

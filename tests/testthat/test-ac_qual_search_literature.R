@@ -20,6 +20,7 @@ test_that("ac_qual_search_literature() rejeita concept nao-string", {
 })
 
 test_that("ac_qual_search_literature() rejeita chat invalido", {
+  skip_if_not_installed("ellmer")
   expect_error(
     ac_qual_search_literature(concept = "state capacity", chat = "nao_e_chat"),
     regexp = "Chat"
