@@ -56,12 +56,14 @@ em português ou inglês (para submissões internacionais)."><meta property="og:
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUALITATIVO (LLMs)</h6></li>
     <li><a class="dropdown-item" href="../articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a></li>
+    <li><a class="dropdown-item" href="../articles/qualitativo-llm.html#por-que-essa-ordem-e-o-que-reportar-em-cada-etapa">  ↳ Por que essa ordem, e o que reportar em cada etapa</a></li>
     <li><a class="dropdown-item" href="../articles/analise-proposicoes.html">  ↳ Estudo de caso: proposições legislativas</a></li>
     <li><a class="dropdown-item" href="../articles/llm-local-em-escala.html">  ↳ LLM local em escala (LM Studio, llama.cpp)</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>PIPELINE QUANTITATIVO</h6></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html">Frequências, keyness e coocorrência</a></li>
     <li><a class="dropdown-item" href="../articles/quantitativo.html#nuvem-de-palavras">  ↳ Nuvens de palavras (ggwordcloud) e comparativa</a></li>
+    <li><a class="dropdown-item" href="../articles/quantitativo.html#sequ%C3%AAncia-sugerida-para-reportar-resultados">  ↳ Sequência sugerida para reportar resultados</a></li>
     <li><a class="dropdown-item" href="../articles/cluster.html">Agrupamento não supervisionado de documentos</a></li>
     <li><a class="dropdown-item" href="../articles/sentimento.html">Análise de sentimento (OpLexicon)</a></li>
     <li><a class="dropdown-item" href="../articles/lda.html">Modelagem de tópicos (LDA)</a></li>
@@ -198,7 +200,7 @@ se fornecido, extrai provedor/modelo/parametros para o relatório.</p></dd>
 <span class="r-in"><span><span class="co"># Gerar relatório em markdown temporário</span></span></span>
 <span class="r-in"><span><span class="va">arquivo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".md"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_qual_report</span><span class="op">(</span><span class="va">coded</span>, <span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo</span>, author <span class="op">=</span> <span class="st">"Fulano de Tal"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Relatorio salvo em <span style="color: #0000BB;">/tmp/RtmprxGpli/file1b253b00995f.md</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Relatorio salvo em <span style="color: #0000BB;">/tmp/Rtmp14YpSS/file1aaa5a9d64dc.md</span></span>
 <span class="r-in"><span><span class="co"># readLines(arquivo, n = 20)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
