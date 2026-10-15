@@ -168,6 +168,18 @@ agrupamentos frouxos.
 ac_plot_cluster(clust, kind = "dendrogram")
 ```
 
+> **Como interpretar:** leia de baixo para cima. Documentos que se unem
+> em alturas baixas (perto de 0) são muito parecidos; a fusão final no
+> topo (altura ≈ 1.9 neste exemplo) é a mais "forçada" do dendrograma,
+> a última junção que o algoritmo faz antes de virar uma árvore só. Note
+> que os 8 documentos de `democracia` (d01-d06) se unem bem abaixo dessa
+> altura, formando um bloco sólido, enquanto os 8 documentos de
+> `mercado` só se juntam num único ramo em torno da altura ≈ 1.3: mais
+> baixo que o corte entre os dois temas, mas ainda assim uma fusão
+> tardia. Isso já é o primeiro sinal visual de que o algoritmo vai
+> dividir "mercado" em dois subgrupos antes de qualquer tabela de
+> validação confirmar (seção 5).
+
 ### 4.2 Projeção PCA: a geometria do corpus
 
 Cada documento vira um ponto no plano das duas componentes principais.
@@ -178,6 +190,18 @@ divisão do algoritmo.
 ac_plot_cluster(clust, kind = "scatter")
 ```
 
+> **Como interpretar:** PC1 e PC2 juntos explicam só uma fração da
+> variância total do corpus (ver o subtítulo do gráfico: PC1 ≈ 17,8%,
+> PC2 ≈ 11,5%, pouco menos de 30% somados): a maior parte da variação
+> entre documentos **não** está visível neste plano 2D.
+> Trate distâncias próximas como boa evidência de similaridade, mas não
+> super-interprete distâncias moderadas: elas podem ser maiores ou
+> menores no espaço de alta dimensão original do que parecem aqui. O
+> padrão esperado neste exemplo: o grupo `democracia` (cluster 1)
+> aparece compacto de um lado, enquanto os dois subgrupos de `mercado`
+> (clusters 2 e 3) ficam mais espalhados do outro lado — já visível
+> antes mesmo de olhar as cores.
+
 ### 4.3 Mapa de calor: a assinatura da separação
 
 Ordena os documentos pelo dendrograma e desenha a matriz de
@@ -187,6 +211,18 @@ de qualidade de um clustering bem-sucedido.
 ```{r plot-heatmap, fig.height=6}
 ac_plot_cluster(clust, kind = "heatmap")
 ```
+
+> **Como interpretar:** procure blocos quadrados escuros ao longo da
+> diagonal; quanto mais nítida a borda entre um bloco e o resto da
+> matriz, mais "limpa" é a separação daquele grupo. Fora da diagonal, a
+> matriz deveria ficar clara (alta dissimilaridade entre grupos
+> diferentes) — um retângulo fora da diagonal com tom intermediário
+> sinaliza dois clusters que não são tão distintos entre si quanto o
+> número de clusters sugere. Neste exemplo, o bloco de `democracia`
+> (d01-d06) tem bordas nítidas; o bloco de `mercado` (d09-d15) também
+> aparece separado do resto, mas internamente um pouco menos uniforme,
+> condizente com ele conter dois subtemas (clusters 2 e 3) em vez de um
+> só.
 
 ### 4.4 Termos mais distintivos por cluster
 
@@ -226,6 +262,20 @@ ggplot(top_por_cluster, aes(tf_idf, token, fill = doc_id)) +
   theme_ac()
 ```
 
+> **Como interpretar:** compare os termos entre painéis, não dentro de
+> um painel só. Neste exemplo, o Cluster 1 fala claramente de
+> `democracia`, `voto`, `participação`, `cidadania` — confirma o tema
+> esperado. Já os clusters 2 e 3, ambos originados do tema `mercado`,
+> revelam **duas vertentes diferentes** dentro do mesmo assunto: o
+> Cluster 2 fala de eficiência e concorrência (`livre`, `produtividade`,
+> `eficiência`, `concorrência`, `privatização`), enquanto o Cluster 3
+> fala de investimento e crescimento (`investimento`, `capital`,
+> `privado`, `crescimento`, `juros`). Essa divisão não é ruído: é uma
+> distinção substantiva que a categoria original `mercado` (usada só
+> para montar o exemplo) não previa. Em dados reais, um cluster que
+> "deveria" ser um só mas se divide assim pode indicar que sua variável
+> de grupo original estava agregando demais.
+
 ### 4.5 Curva de silhueta: escolhendo `k` visualmente
 
 Quando o `k` automático parecer arbitrário, olhe para a curva. A
@@ -260,6 +310,16 @@ if (requireNamespace("cluster", quietly = TRUE)) {
     theme_ac()
 }
 ```
+
+> **Como interpretar:** o círculo vazado marca o `k` escolhido
+> automaticamente (maior silhueta média). Neste exemplo, `k = 2` fica em
+> ≈ 0,225 e `k = 3` (escolhido) em ≈ 0,232 — uma diferença pequena,
+> típica de um "platô": ambos os valores de `k` descrevem o corpus
+> razoavelmente bem, e a escolha entre eles é uma questão de quanto
+> detalhe você quer, não de um `k` certo e outro errado. Quando a
+> diferença entre o pico e o segundo colocado é grande, confie mais no
+> `k` automático; quando for pequena como aqui, vale a pena olhar os
+> termos distintivos (seção 4.4) de cada `k` candidato antes de decidir.
 
 ### 4.6 Hard vs. soft: comparando com LDA
 
@@ -308,11 +368,19 @@ ggplot(plot_df, aes(tipo, doc_id, fill = valor)) +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
 ```
 
-Note como o hard clustering sempre pinta uma célula por linha (o
-documento é *do* grupo A ou *do* grupo B), enquanto o LDA distribui
-massa: a maior parte dos documentos é ~90% de um tópico, mas alguns
-ficam repartidos. **É a mesma tipologia latente, expressa em duas
-métricas diferentes.**
+> **Como interpretar:** no painel "Hard clustering", cada linha pinta
+> **uma única célula** (o documento é *do* grupo A ou *do* grupo B,
+> nunca os dois); no painel "LDA (soft)", a cor se distribui em
+> gradiente entre as colunas de tópico — a maioria dos documentos
+> concentra quase toda a massa (`gamma`) num único tópico, mas alguns
+> ficam visivelmente repartidos entre dois. É a mesma tipologia latente,
+> expressa em duas métricas diferentes: hard clustering força uma
+> decisão binária onde LDA preserva a incerteza. Note também que este
+> gráfico compara o `clust` de **3** clusters (o `k` automático da
+> seção 3) com um LDA de `k = 2` **tópicos**: os números de grupo não
+> precisam bater para a comparação fazer sentido — o que importa é a
+> forma da matriz (uma célula acesa vs. um gradiente), não o número de
+> colunas em cada painel.
 
 ## 5. Validando contra a verdade
 
@@ -329,6 +397,18 @@ validacao
 Se o algoritmo separou corretamente, cada `tema_real` deve concentrar-se
 num único cluster (permutação de rótulos é esperada: o clustering não
 sabe qual grupo é "democracia" ou "mercado", só que são diferentes).
+
+> **Como interpretar:** olhando a tabela, `democracia` cai inteiro no
+> Cluster 1 (8 de 8 documentos) — separação perfeita. Já `mercado` se
+> divide entre os Clusters 2 e 3 (4 documentos em cada), não porque o
+> algoritmo errou, mas porque o `k` automático (seção 4.5) escolheu
+> k = 3, e a seção 4.4 já mostrou que essa divisão captura uma distinção
+> real de vocabulário dentro do tema `mercado`. A lição metodológica:
+> uma tabela de validação "imperfeita" contra uma variável externa nem
+> sempre significa que o clustering falhou — pode significar que sua
+> variável de validação é mais grosseira que a estrutura que o algoritmo
+> encontrou no texto. Vale sempre olhar os termos distintivos antes de
+> concluir que um cluster "a mais" é erro.
 
 ## 6. Escolhendo o método
 
@@ -347,6 +427,17 @@ sabe qual grupo é "democracia" ou "mercado", só que são diferentes).
 clust_km <- ac_cluster_documents(corpus, method = "kmeans", k = 2)
 ac_plot_cluster(clust_km, kind = "scatter")
 ```
+
+> **Como interpretar:** forçar `k = 2` aqui recupera exatamente a
+> divisão original `democracia` vs. `mercado` (compare com a seção 4.2,
+> onde o `k = 3` automático dividiu `mercado` em dois). Nenhum dos dois
+> resultados está "errado": `k = 3` encontrou uma subdivisão temática
+> real (seção 4.4); `k = 2` corresponde à variável de dois níveis que
+> você já sabia existir de antemão. Quando você já tem uma hipótese
+> sobre o número de grupos (como aqui, "democracia vs. mercado"), fixar
+> `k` manualmente costuma dar um resultado mais fácil de comunicar do
+> que deixar a silhueta decidir; quando você está explorando um corpus
+> sem hipótese prévia, o `k` automático tende a revelar mais estrutura.
 
 ## 7. E depois? Integrando com o pipeline
 
