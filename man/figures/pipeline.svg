@@ -95,11 +95,15 @@
 
   <!-- Step 3A: Quantitativo -->
   <g transform="translate(500, 75)">
-    <rect class="box-shell quant" width="370" height="100" rx="12"/>
+    <rect class="box-shell quant" width="370" height="180" rx="12"/>
     <text class="step-num"         x="16" y="24">ETAPA 3A</text>
     <text class="step-title quant" x="16" y="48">Análise estatística</text>
     <text class="step-fn quant"    x="16" y="70">ac_count() · ac_keyness() · ac_lda()</text>
     <text class="step-fn quant"    x="16" y="86">ac_sentiment() · ac_cooccurrence()</text>
+    <text class="step-fn quant"    x="16" y="102">ac_readability() · ac_lexical_diversity()</text>
+    <text class="step-fn quant"    x="16" y="118">ac_plot_zipf() · ac_kwic() · ac_collocations()</text>
+    <text class="step-fn quant"    x="16" y="134">ac_temporal() · ac_wordscores() · ac_ca()</text>
+    <text class="step-fn quant"    x="16" y="150">ac_dictionary() · ac_emotion()</text>
   </g>
 
   <!-- Lane label: Qualitativo -->
@@ -113,17 +117,18 @@
 
   <!-- Step 3B: Qualitativo -->
   <g transform="translate(500, 325)">
-    <rect class="box-shell quali" width="370" height="100" rx="12"/>
+    <rect class="box-shell quali" width="370" height="120" rx="12"/>
     <text class="step-num"         x="16" y="24">ETAPA 3B</text>
     <text class="step-title quali" x="16" y="48">Codificação com LLM</text>
     <text class="step-fn quali"    x="16" y="70">ac_qual_codebook() · ac_qual_code()</text>
     <text class="step-fn quali"    x="16" y="86">as_prompt() · live = "terminal"|"shiny"</text>
+    <text class="step-fn quali"    x="16" y="102">ac_chat_local() · ac_estimate_tokens()</text>
   </g>
 
   <!-- Arrow 3A -> 4 -->
-  <path class="arrow" d="M872,125 L895,125 L895,215 L915,215" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M872,165 L895,165 L895,215 L915,215" marker-end="url(#arrow)"/>
   <!-- Arrow 3B -> 4 -->
-  <path class="arrow" d="M872,375 L895,375 L895,245 L915,245" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M872,385 L895,385 L895,245 L915,245" marker-end="url(#arrow)"/>
 
   <!-- Step 4: Validacao -->
   <g transform="translate(920, 180)">
