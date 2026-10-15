@@ -348,7 +348,8 @@ print.ac_irr <- function(x, ...) {
   df$estimate <- sprintf("%.3f", df$estimate)
   df$ci_lower <- ifelse(is.na(df$ci_lower), "", sprintf("%.3f", as.numeric(df$ci_lower)))
   df$ci_upper <- ifelse(is.na(df$ci_upper), "", sprintf("%.3f", as.numeric(df$ci_upper)))
-  df$ic_95    <- paste0("[", df$ci_lower, ", ", df$ci_upper, "]")
+  df$ic_95    <- ifelse(df$ci_lower == "" & df$ci_upper == "", "--",
+                        paste0("[", df$ci_lower, ", ", df$ci_upper, "]"))
 
   cat(format("Metrica",        width = 35),
       format("Estimativa", width = 12),

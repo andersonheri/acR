@@ -9,7 +9,10 @@
 #' @param k Número de tópicos. Padrão: `10`.
 #' @param seed Semente para reprodutibilidade. Padrão: `42`.
 #' @param method Método de estimação: `"VEM"` (padrão) ou `"Gibbs"`.
-#' @param ... Argumentos adicionais passados a [topicmodels::LDA()].
+#' @param ... Use `control = list(...)` para repassar parâmetros de
+#'   controle a [topicmodels::LDA()] (ex.: `control = list(alpha = 0.1,
+#'   iter = 2000)` com `method = "Gibbs"`). A `seed` é incluída
+#'   automaticamente se `control` não tiver uma.
 #'
 #' @return Lista de classe `ac_lda` com:
 #'   * `model`: objeto `LDA` do pacote `topicmodels`;
@@ -93,8 +96,7 @@ ac_lda <- function(corpus,
     dtm,
     k       = k,
     method  = method,
-    control = list(seed = seed),
-    ...
+    control = .ac_lda_control(seed, ...)
   )
 
   # Extrair beta (termos × tópicos)
@@ -173,7 +175,10 @@ print.ac_lda <- function(x, ...) {
 #' @param folds Número de partes da validação cruzada. Padrão: `5`
 #'   (limitado ao número de documentos). Use `1` para pular a validação
 #'   cruzada e calcular só a perplexidade de treino (não recomendado).
-#' @param ... Argumentos adicionais passados a [topicmodels::LDA()].
+#' @param ... Use `control = list(...)` para repassar parâmetros de
+#'   controle a [topicmodels::LDA()] (ex.: `control = list(alpha = 0.1,
+#'   iter = 2000)` com `method = "Gibbs"`). A `seed` é incluída
+#'   automaticamente se `control` não tiver uma.
 #'
 #' @return Tibble com colunas `k`, `perplexity` (média da perplexidade
 #'   nas partes de teste da validação cruzada), `perplexity_sd` (desvio
@@ -251,13 +256,13 @@ ac_lda_tune <- function(corpus,
 
   cli::cli_inform(c(
     "Testando k = {min(k_range)} a {max(k_range)}...",
-    "i" = if (folds > 1L) "Perplexidade fora da amostra: validação cruzada em {folds} partes." else
-      "folds = 1: só perplexidade de treino (tende a cair sempre com k)."
+    "i" = if (folds > 1L) "Perplexidade fora da amostra: valida\u00e7\u00e3o cruzada em {folds} partes." else
+      "folds = 1: s\u00f3 perplexidade de treino (tende a cair sempre com k)."
   ))
 
   ajustar <- function(m, k) {
     topicmodels::LDA(m, k = k, method = method,
-                     control = list(seed = seed), ...)
+                     control = .ac_lda_control(seed, ...))
   }
 
   results <- purrr::map(
@@ -270,6 +275,16 @@ ac_lda_tune <- function(corpus,
         vapply(seq_len(folds), function(f) {
           treino <- dtm[fold_id != f, ]
           teste  <- dtm[fold_id == f, ]
+          # Palavras que nunca aparecem no treino recebem probabilidade
+          # ~0 no modelo e explodem a perplexidade (valores de 1e30+), o
+          # que mede so o vocabulario novo, nao a qualidade dos topicos.
+          # Avaliar o teste so sobre o vocabulario do treino e a pratica
+          # usual na avaliacao fora da amostra.
+          # (DocumentTermMatrix e triplet esparso: $i linhas, $j colunas)
+          vocab_treino <- seq_len(ncol(treino)) %in% unique(treino$j)
+          treino <- treino[, vocab_treino]
+          teste  <- teste[, vocab_treino]
+          teste  <- teste[seq_len(nrow(teste)) %in% unique(teste$i), ]
           modelo <- ajustar(treino, k)
           topicmodels::perplexity(modelo, newdata = teste)
         }, numeric(1))
@@ -440,7 +455,7 @@ ac_plot_lda_tune <- function(tune_result, title = NULL, ...) {
     ggplot2::scale_x_continuous(breaks = tune_result$k) +
     ggplot2::labs(
       title    = title %||% "Sele\u00e7\u00e3o do n\u00famero de t\u00f3picos (k)",
-      subtitle = "Perplexidade fora da amostra (menor = melhor previsão de documentos novos)",
+      subtitle = "Perplexidade fora da amostra (menor = melhor previs\u00e3o de documentos novos)",
       x        = "N\u00famero de t\u00f3picos (k)",
       y        = "Perplexidade",
       caption  = "acR \u2022 ac_plot_lda_tune()"
@@ -458,6 +473,17 @@ ac_plot_lda_tune <- function(tune_result, title = NULL, ...) {
 # ============================================================
 # Auxiliares internas
 # ============================================================
+
+# Junta a semente do acR com um `control` passado pelo usuario via `...`
+# (ex.: control = list(alpha = 0.1, iter = 2000) para Gibbs). Antes, ac_lda()
+# passava control = list(seed) e repassava `...`, entao qualquer control do
+# usuario gerava "argumento formal casado por multiplos argumentos".
+.ac_lda_control <- function(seed, ...) {
+  dots <- list(...)
+  ctl  <- dots$control %||% list()
+  if (is.null(ctl$seed)) ctl$seed <- seed
+  ctl
+}
 
 #' @keywords internal
 #' @noRd

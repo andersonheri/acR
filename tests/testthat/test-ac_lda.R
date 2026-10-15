@@ -143,3 +143,16 @@ test_that("ac_lda_tune() retorna perplexidade fora da amostra e de treino", {
   expect_named(tune, c("k", "perplexity", "perplexity_sd", "perplexity_train"))
   expect_true(all(is.finite(tune$perplexity)))
 })
+
+test_that("ac_lda() aceita control do usuario e preserva a semente", {
+  skip_if_not_installed("topicmodels")
+  skip_if_not_installed("tidytext")
+  df <- data.frame(id = paste0("d", 1:6),
+                   t = rep(c("voto eleicao democracia", "juros mercado inflacao"), 3),
+                   stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  m <- suppressMessages(ac_lda(corp, k = 2, method = "Gibbs",
+                               control = list(alpha = 0.1, iter = 200)))
+  expect_equal(m$model@alpha, 0.1)
+  expect_equal(m$model@control@seed, 42L)
+})

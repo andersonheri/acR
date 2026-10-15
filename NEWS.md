@@ -1,5 +1,96 @@
 # acR 0.6.0
 
+## Correcoes metodologicas (auditoria de codigo e interpretacoes)
+
+Cada item abaixo e uma correcao de resultado, nao so de texto: numeros
+produzidos pelas funcoes afetadas mudam em relacao a 0.5.0.
+
+* `ac_tokenize(drop_punct = TRUE)` (e tudo que o usa: `ac_count()`,
+  `ac_dictionary()`, `ac_wordscores()`, `ac_lexical_diversity()`,
+  `ac_collocations()`, `ac_ca()`): a pontuacao colada a palavra agora e
+  removida das bordas do token (`"excelente,"` -> `"excelente"`). Antes
+  so tokens inteiramente de pontuacao eram descartados, e a mesma
+  palavra virava dois tipos diferentes. Pontuacao interna (`"e-mail"`,
+  `"3,5"`) e preservada.
+* `ac_cooccurrence()`: com `unit = "window"`, cada encontro de dois
+  termos era contado duas vezes (uma a partir de cada palavra),
+  dobrando `cooc` e somando 1 bit ao PMI; agora conta uma vez. Pares de
+  um termo com ele mesmo sao ignorados. Com `unit = "document"`, Dice e
+  PMI passam a usar frequencia documental e numero de documentos (antes
+  misturavam documentos com tokens, e o Dice era truncado em 1).
+* `ac_collocations(n = 3)`: a tabela 2x2 compara a primeira palavra com
+  o bigrama restante (antes, w1 x w3, ignorando a palavra do meio).
+  Corrigida a afirmacao de que o log-likelihood e a medida do
+  `quanteda.textstats::textstat_collocations()` (que usa lambda).
+* `ac_wordscores()`: `rescale = "lbg"` agora segue a formula de Laver,
+  Benoit & Garry (2003, p. 316), com media e desvio-padrao dos
+  documentos **virgens** (antes usava as referencias reestimadas); exige
+  2 ou mais virgens e avisa quando ha menos de 5. `rescale = "mv"`
+  ancora nas referencias de menor e maior escore conhecido (Martin &
+  Vanberg, 2008). Corrigido o ano da referencia (2008, nao 2007).
+* `ac_cluster_documents()`: a distancia cosseno e calculada como
+  distancia de corda, sqrt(2(1 - cos)), que e euclidiana e portanto
+  valida para Ward.D2 (Murtagh & Legendre, 2014); com `distance =
+  "cosine"`, o k-means roda sobre vetores normalizados. Antes o Ward
+  recebia 1 - cos e o k-means ignorava a distancia escolhida.
+* `ac_lda_tune()`: a perplexidade agora e calculada fora da amostra, por
+  validacao cruzada (`folds = 5`), avaliando o teste sobre o vocabulario
+  do treino. A perplexidade de treino, que cai quase sempre com k,
+  continua na coluna `perplexity_train`. `method = "Gibbs"` deixou de
+  dar erro, e `...` agora repassa `control` ao `topicmodels::LDA()`.
+* `ac_lda()`: aceita `control = list(...)` (antes dava erro de argumento
+  duplicado). `ac_plot_lda_topics()` mostrava rotulos como
+  `"termo___Topico 1"` no eixo; agora mostra so o termo.
+* `ac_sentiment()`: termos repetidos no OpLexicon (28 termos com mais de
+  uma classe gramatical, alguns com polaridades opostas) eram contados
+  duas vezes; agora cada termo tem uma polaridade (sinal da soma). O
+  argumento `by` passa a agregar de fato por grupo, como a documentacao
+  dizia (antes devolvia uma linha por documento).
+* `ac_qual_irr()`: o intervalo de confianca usava `kappa / z` como
+  erro-padrao, mas o `z` do `irr` e calculado sob a hipotese nula; o IC
+  saia de [-1, 1]. Agora e *bootstrap* percentil (novo argumento
+  `bootstrap`, padrao 1000) para kappa, Fleiss e alfa. `weight =
+  "linear"` estava documentado mas dava erro (o `irr` chama de
+  `"equal"`); kappa ponderado respeita a ordem dos niveis do fator.
+  IDs duplicados geram erro em vez de produto cartesiano silencioso.
+* Interpretacao das metricas de concordancia (`ac_qual_reliability()`,
+  `ac_qual_irr()`, `ac_qual_report()`): cada metrica usa a referencia
+  propria. Alfa de Krippendorff pelas faixas de Krippendorff (2018:
+  0,800 / 0,667), e nao pelas de Landis & Koch; AC1 de Gwet e kappa por
+  Landis & Koch (1977), com os limites exatos do artigo; percentual por
+  Neuendorf (2017); F1 macro sem rotulo (nao e corrigido por acaso).
+  `confidence_level` de `ac_qual_code()` deixa de ser atribuido a
+  Landis & Koch: e uma convencao do pacote.
+* `ac_qual_sample()`: o padrao passa de `"uncertainty"` para `"random"`.
+  A amostra usada para estimar confiabilidade precisa ser
+  representativa (Krippendorff, 2018, cap. 12); amostrar os casos
+  incertos serve para diagnosticar erros, nao para estimar
+  concordancia. Vignettes e README atualizados.
+
+## Correcoes de interpretacao nas vignettes
+
+* Todas as vignettes foram re-executadas com o codigo corrigido e cada
+  bloco "Como interpretar" foi conferido contra a saida real.
+* `vignette("lda")`: o corpus de exemplo (frases de ~7 palavras) nao
+  permitia ao LDA recuperar os temas (pureza perto do acaso); os
+  documentos viraram paragrafos de tres frases e o exemplo usa Gibbs
+  com alfa = 0,1, com justificativa na literatura (Griffiths & Steyvers,
+  2004; Wallach, Mimno & McCallum, 2009; Hong & Davison, 2010). A
+  escolha de K passou a usar perplexidade fora da amostra.
+* `vignette("cluster")`: alturas do dendrograma e silhuetas atualizadas;
+  incluida a leitura de Kaufman & Rousseeuw (1990) para silhueta media
+  baixa; corrigida a comparacao com LDA (o ajuste padrao dava gama =
+  0,5/0,5 para todos os documentos).
+* `vignette("sentimento")`: callouts reescritos a partir da saida real
+  (erros de cobertura e de sentido no dominio do OpLexicon, Loughran &
+  McDonald, 2011); alerta de que as densidades coloridas pelo sinal do
+  escore separam-se por construcao.
+* `vignette("quantitativo")`: keyness com ressalvas de contagem baixa e
+  comparacoes multiplas; Wordscores com `rescale = "mv"`; mapa de AC
+  lido pela direcao (Greenacre, 2007); MTLD e C de Herdan sem faixas
+  inventadas; grafico de barras do Wordscores com alerta de eixo sem
+  zero significativo (Cleveland, 1985).
+
 ## Correcao de comportamento
 
 * `ac_qual_codebook_translate()`: exigia o pacote `ellmer` instalado

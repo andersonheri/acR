@@ -15,7 +15,9 @@ ac_lda(corpus, k = 10L, seed = 42L, method = c("VEM", "Gibbs"), ...)
 
 \item{method}{Método de estimação: \code{"VEM"} (padrão) ou \code{"Gibbs"}.}
 
-\item{...}{Argumentos adicionais passados a \code{\link[topicmodels:lda]{topicmodels::LDA()}}.}
+\item{...}{Use \code{control = list(...)} para repassar parâmetros de
+controle a \code{\link[topicmodels:lda]{topicmodels::LDA()}} (ex.: \code{control = list(alpha = 0.1, iter = 2000)} com \code{method = "Gibbs"}). A \code{seed} é incluída
+automaticamente se \code{control} não tiver uma.}
 }
 \value{
 Lista de classe \code{ac_lda} com:

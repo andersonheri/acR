@@ -284,7 +284,7 @@ resultado <- ac_qual_code(
 ### Passo 5: Validar com codificadores humanos
 
 ```r
-amostra <- ac_qual_sample(resultado, n = 15, strategy = "uncertainty")
+amostra <- ac_qual_sample(resultado, n = 15)   # aleatória (padrão): representativa
 ac_qual_export_for_review(sample = amostra, path = "revisao.xlsx", corpus = corpus_limpo)
 
 humano <- ac_qual_import_human("revisao.xlsx")

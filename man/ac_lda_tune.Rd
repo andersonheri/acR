@@ -27,7 +27,9 @@ validação cruzada). Padrão: \code{42}.}
 (limitado ao número de documentos). Use \code{1} para pular a validação
 cruzada e calcular só a perplexidade de treino (não recomendado).}
 
-\item{...}{Argumentos adicionais passados a \code{\link[topicmodels:lda]{topicmodels::LDA()}}.}
+\item{...}{Use \code{control = list(...)} para repassar parâmetros de
+controle a \code{\link[topicmodels:lda]{topicmodels::LDA()}} (ex.: \code{control = list(alpha = 0.1, iter = 2000)} com \code{method = "Gibbs"}). A \code{seed} é incluída
+automaticamente se \code{control} não tiver uma.}
 }
 \value{
 Tibble com colunas \code{k}, \code{perplexity} (média da perplexidade
