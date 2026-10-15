@@ -70,6 +70,8 @@ navbar:
       - text: "PIPELINE QUALITATIVO (LLMs)"
       - text: "Codificação com LLMs — guia completo"
         href: articles/qualitativo-llm.html
+      - text: "  ↳ Por que essa ordem, e o que reportar em cada etapa"
+        href: articles/qualitativo-llm.html#por-que-essa-ordem-e-o-que-reportar-em-cada-etapa
       - text: "  ↳ Estudo de caso: proposições legislativas"
         href: articles/analise-proposicoes.html
       - text: "  ↳ LLM local em escala (LM Studio, llama.cpp)"
@@ -80,6 +82,8 @@ navbar:
         href: articles/quantitativo.html
       - text: "  ↳ Nuvens de palavras (ggwordcloud) e comparativa"
         href: articles/quantitativo.html#nuvem-de-palavras
+      - text: "  ↳ Sequência sugerida para reportar resultados"
+        href: articles/quantitativo.html#sequência-sugerida-para-reportar-resultados
       - text: "Agrupamento não supervisionado de documentos"
         href: articles/cluster.html
       - text: "Análise de sentimento (OpLexicon)"
