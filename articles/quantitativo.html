@@ -693,13 +693,12 @@ corpus.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/coocorr%C3%AAncia-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> o tamanho/cor do nó costuma
-refletir seu grau (quantas conexões ele tem): nós maiores são mais
-centrais na rede, conectando-se a mais termos diferentes. A espessura da
-aresta reflete a força da coocorrência entre aquele par específico.
-Agrupamentos visuais (<em>clusters</em> de nós bem conectados entre si,
-mas pouco conectados ao resto) costumam corresponder a sub-temas do
-corpus.</p>
+<p><strong>Como interpretar:</strong> o tamanho do nó reflete seu grau
+(quantas conexões ele tem): nós maiores são mais centrais na rede,
+conectando-se a mais termos diferentes. A espessura da aresta reflete a
+força da coocorrência entre aquele par específico. Agrupamentos visuais
+(<em>clusters</em> de nós bem conectados entre si, mas pouco conectados
+ao resto) costumam corresponder a sub-temas do corpus.</p>
 </blockquote>
 <div class="section level3">
 <h3 id="trocando-o-peso-pmi-em-vez-de-contagem">9.1 Trocando o peso: PMI em vez de contagem<a class="anchor" aria-label="anchor" href="#trocando-o-peso-pmi-em-vez-de-contagem"></a>
@@ -817,13 +816,23 @@ métrica recomendada para comparar textos de tamanhos diferentes.</li>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> rev3            4        4        10   36.3 dificil      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> rev4           30        1        81  -<span style="color: #BB0000;">10.0</span> muito dificil</span></span></code></pre></div>
 <blockquote>
-<p><strong>Como interpretar:</strong> a coluna <code>flesch</code> vai
-de 0 a 100. Valores acima de 75 indicam texto de fácil leitura (frases
-curtas, palavras com poucas sílabas); valores abaixo de 25 indicam texto
-difícil (frases longas, vocabulário técnico). No exemplo, a avaliação
-“Bom. Chegou. Funciona.” deve pontuar bem mais alto que o manual
-técnico, mesmo os dois sendo avaliações do mesmo produto: a métrica mede
-<em>forma</em>, não qualidade do conteúdo.</p>
+<p><strong>Como interpretar:</strong> o índice de Flesch (1948),
+adaptado ao português por Martins et al. (1996), não é limitado a 0-100
+na prática: é uma combinação linear de duas razões (palavras/frase e
+sílabas/palavra) sem teto nem piso, e pode produzir valores negativos em
+textos muito densos, como o manual técnico do exemplo (-18.5). A coluna
+<code>nivel</code> categoriza o escore em quatro faixas (adaptadas da
+literatura educacional brasileira que usa o índice):
+<code>&gt;= 75</code> muito fácil, <code>50-74,9</code> fácil,
+<code>25-49,9</code> difícil, <code>&lt; 25</code> muito difícil. Note
+que mesmo a avaliação curta e coloquial (“Bom. Chegou. Funciona.”) cai
+em <em>difícil</em> (36.3), não em <em>fácil</em>: o peso do termo
+sílabas/palavra na fórmula (84,6×) é alto o bastante para que poucas
+palavras longas já derrubem o escore, mesmo com frases curtas. Ainda
+assim, pontua bem mais alto que o manual técnico (-18.5): a métrica mede
+<em>forma</em>, não qualidade do conteúdo, e seu valor está em
+comparações relativas entre textos, não em ler o número isolado contra
+uma escala fixa de “bom”/“ruim”.</p>
 </blockquote>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_lexical_diversity.html">ac_lexical_diversity</a></span><span class="op">(</span><span class="va">corpus_aval</span><span class="op">)</span></span>
@@ -835,11 +844,21 @@ técnico, mesmo os dois sendo avaliações do mesmo produto: a métrica mede
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> rev3          4       4 1        1       4  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> rev4         30      25 0.833    0.946  50.4</span></span></code></pre></div>
 <blockquote>
-<p><strong>Como interpretar:</strong> o MTLD não tem um limite teórico
-fixo, mas na prática valores abaixo de 40-50 indicam vocabulário
-repetitivo (poucas palavras diferentes sustentando o texto); valores
-acima de 80-100 indicam vocabulário variado. Compare sempre o MTLD entre
-textos, não em isolado: ele só tem sentido como medida relativa.</p>
+<p><strong>Como interpretar:</strong> o MTLD (McCarthy &amp; Jarvis,
+2010) não tem um limite teórico fixo, mas na prática valores abaixo de
+40-50 costumam indicar vocabulário repetitivo (poucas palavras
+diferentes sustentando o texto); valores acima de 80-100 indicam
+vocabulário variado. <strong>Atenção a textos muito curtos:</strong> o
+algoritmo mede quantas vezes o TTR acumulado cai abaixo de um limiar
+(0,72) conforme o texto avança; se o documento termina antes de atingir
+esse limiar mesmo uma vez (como <code>rev1</code> e <code>rev3</code>
+aqui, com vocabulário 100% único), a métrica devolve o próprio número de
+tokens, não uma medida de diversidade de fato. Por isso
+<code>rev1</code> (10 tokens) e <code>rev3</code> (4 tokens) têm MTLD
+igual à sua contagem de palavras: a literatura de diversidade lexical
+recomenda amostras mais longas (dezenas a centenas de tokens) para o
+MTLD estabilizar como medida comparável. Compare sempre o MTLD entre
+textos de tamanho semelhante, nunca em isolado.</p>
 </blockquote>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lexical_diversity.html">ac_plot_lexical_diversity</a></span><span class="op">(</span><span class="fu"><a href="../reference/ac_lexical_diversity.html">ac_lexical_diversity</a></span><span class="op">(</span><span class="va">corpus_aval</span><span class="op">)</span>, group_col <span class="op">=</span> <span class="st">"doc_id"</span>,</span>
@@ -895,29 +914,59 @@ de documentos.</p>
 <code>ac_plot_zipf(freq_tbl, by = "grupo")</code> faceta um painel por
 grupo, útil para comparar se todos os subcorpora têm comportamento
 igualmente “natural” ou se algum se destoa (por exemplo, por ter sido
-coletado de uma fonte com vocabulário mais técnico ou repetitivo).</p>
+coletado de uma fonte com vocabulário mais técnico ou repetitivo). Um
+exemplo com duas fontes bem diferentes: textos jornalísticos variados
+vs. um manual técnico que repete o mesmo vocabulário especializado.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">grupos_zipf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>,</span>
+<span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"O presidente anunciou um pacote de medidas economicas para estimular o crescimento."</span>,</span>
+<span>    <span class="st">"A prefeitura inaugurou um novo parque publico no bairro central da cidade."</span>,</span>
+<span>    <span class="st">"Cientistas descobriram uma nova especie de inseto na floresta amazonica."</span>,</span>
+<span>    <span class="st">"O time local venceu a partida decisiva do campeonato estadual de futebol."</span>,</span>
+<span>    <span class="st">"A exposicao de arte contemporanea atraiu milhares de visitantes no fim de semana."</span>,</span>
+<span>    <span class="st">"Pesquisadores desenvolveram uma vacina experimental contra uma doenca rara."</span>,</span>
+<span>    <span class="st">"O sistema deve ser configurado conforme o manual tecnico do equipamento."</span>,</span>
+<span>    <span class="st">"Configure o equipamento tecnico seguindo o manual de configuracao tecnica."</span>,</span>
+<span>    <span class="st">"O manual tecnico especifica a configuracao tecnica do sistema tecnico."</span>,</span>
+<span>    <span class="st">"Consulte o manual tecnico para configurar corretamente o sistema tecnico."</span>,</span>
+<span>    <span class="st">"A configuracao tecnica do equipamento segue o manual tecnico padrao."</span>,</span>
+<span>    <span class="st">"O equipamento tecnico requer configuracao conforme manual tecnico oficial."</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  fonte <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"noticias"</span>, <span class="st">"manual_tecnico"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">corpus_zipf_grupo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">grupos_zipf</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span>, meta <span class="op">=</span> <span class="va">fonte</span><span class="op">)</span></span>
+<span><span class="va">freq_zipf_grupo</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_zipf_grupo</span>, by <span class="op">=</span> <span class="st">"fonte"</span>, drop_punct <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_zipf.html">ac_plot_zipf</a></span><span class="op">(</span><span class="va">freq_zipf_grupo</span>, by <span class="op">=</span> <span class="st">"fonte"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="quantitativo_files/figure-html/zipf-grupo-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> compare o ponto de posto 1 (a
+palavra mais frequente) de cada painel em relação à linha tracejada: em
+<code>manual_tecnico</code>, “tecnico” aparece bem mais acima da linha
+teórica do que a palavra mais frequente de <code>noticias</code>, sinal
+de um vocabulário mais concentrado em poucos termos repetidos, esperado
+num texto técnico/formulaico. Com corpora deste tamanho (6 documentos
+curtos por grupo) a curva de ambos os painéis ainda se desvia
+visivelmente da linha teórica (como já discutido acima): o que vale
+comparar aqui é a posição <em>relativa</em> dos pontos iniciais entre os
+grupos, não o ajuste absoluto de nenhum dos dois à reta.</p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="concordância-kwic-e-colocações">12. Concordância (KWIC) e colocações<a class="anchor" aria-label="anchor" href="#concord%C3%A2ncia-kwic-e-coloca%C3%A7%C3%B5es"></a>
 </h3>
 <p>Frequência bruta não mostra <em>como</em> uma palavra é usada. Duas
-ferramentas complementares respondem a essa lacuna:</p>
-<ul>
-<li>
-<strong>KWIC</strong> (<em>keyword-in-context</em>, Sinclair, 1991):
-lista cada ocorrência de um termo com o contexto antes/depois. É o
-primeiro passo de qualquer análise de discurso baseada em corpus
-(<em>corpus-based discourse analysis</em>): antes de interpretar por que
-um termo é frequente, leia como ele é usado.</li>
-<li>
-<strong>Colocações</strong> (<code><a href="../reference/ac_collocations.html">ac_collocations()</a></code>): quais
-bigramas/trigramas aparecem juntos mais do que o esperado pelo acaso,
-medido por PMI (Church &amp; Hanks, 1990), log-likelihood (Dunning,
-1993) ou qui-quadrado. Vai além da frequência bruta de n-gramas: um
-bigrama pode ser raro e ainda assim estatisticamente muito
-associado.</li>
-</ul>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+ferramentas complementares respondem a essa lacuna:
+<strong>KWIC</strong> mostra o contexto de cada ocorrência individual;
+<strong>colocações</strong> medem, de forma agregada, quais pares de
+palavras andam juntos mais do que o acaso explicaria. São técnicas
+distintas que respondem perguntas diferentes, então cada uma tem sua
+própria subseção abaixo.</p>
+<p>Corpus de exemplo para as duas: três registros fictícios de
+atendimento ao cliente.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">atendimento</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"call"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -927,9 +976,18 @@ associado.</li>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">corpus_atend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">atendimento</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/ac_kwic.html">ac_kwic</a></span><span class="op">(</span><span class="va">corpus_atend</span>, pattern <span class="op">=</span> <span class="st">"defeito"</span>, window <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">corpus_atend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">atendimento</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="kwic-ver-cada-ocorrência-em-contexto">12.1 KWIC: ver cada ocorrência em contexto<a class="anchor" aria-label="anchor" href="#kwic-ver-cada-ocorr%C3%AAncia-em-contexto"></a>
+</h4>
+<p><strong>KWIC</strong> (<em>keyword-in-context</em>, Sinclair, 1991)
+lista cada ocorrência de um termo com o texto imediatamente antes e
+depois dele. É o primeiro passo de qualquer análise de discurso baseada
+em corpus (<em>corpus-based discourse analysis</em>): antes de
+interpretar por que um termo é frequente, leia como ele é usado em cada
+caso individual.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_kwic.html">ac_kwic</a></span><span class="op">(</span><span class="va">corpus_atend</span>, pattern <span class="op">=</span> <span class="st">"defeito"</span>, window <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
 <span><span class="co">#&gt;   doc_id position before                keyword after                    </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    </span></span>
@@ -945,7 +1003,18 @@ contagem de frequência trataria as três ocorrências como idênticas, mas
 o contexto mostra que a terceira é, na verdade, uma menção à
 <em>ausência</em> do problema.</p>
 </blockquote>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+</div>
+<div class="section level4">
+<h4 id="colocações-associação-estatística-entre-palavras">12.2 Colocações: associação estatística entre palavras<a class="anchor" aria-label="anchor" href="#coloca%C3%A7%C3%B5es-associa%C3%A7%C3%A3o-estat%C3%ADstica-entre-palavras"></a>
+</h4>
+<p>Enquanto o KWIC mostra ocorrências individuais,
+<strong>colocações</strong> (<code><a href="../reference/ac_collocations.html">ac_collocations()</a></code>) respondem a
+uma pergunta agregada: quais bigramas/trigramas aparecem juntos mais do
+que o esperado pelo acaso, medido por PMI (Church &amp; Hanks, 1990),
+log-likelihood (Dunning, 1993) ou qui-quadrado. Vai além da frequência
+bruta de n-gramas: um bigrama pode ser raro e ainda assim
+estatisticamente muito associado.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_collocations.html">ac_collocations</a></span><span class="op">(</span><span class="va">corpus_atend</span>, n <span class="op">=</span> <span class="fl">2</span>, measure <span class="op">=</span> <span class="st">"pmi"</span>, min_count <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 31 × 3</span></span></span>
 <span><span class="co">#&gt;    collocation      count association</span></span>
@@ -973,7 +1042,7 @@ desconsidere pares com contagem muito baixa.</p>
 </blockquote>
 <p>Para visualizar as colocações mais fortes em vez de ler a tabela, um
 gráfico de barras ordenado funciona bem com poucos pares:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">colocacoes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_collocations.html">ac_collocations</a></span><span class="op">(</span><span class="va">corpus_atend</span>, n <span class="op">=</span> <span class="fl">2</span>, measure <span class="op">=</span> <span class="st">"pmi"</span>, min_count <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">colocacoes_top</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">colocacoes</span>, <span class="fl">8</span><span class="op">)</span></span>
 <span></span>
@@ -987,6 +1056,7 @@ gráfico de barras ordenado funciona bem com poucos pares:</p>
 <span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/collocations-plot-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
+</div>
 <div class="section level3">
 <h3 id="análise-temporaldiacrônica">13. Análise temporal/diacrônica<a class="anchor" aria-label="anchor" href="#an%C3%A1lise-temporaldiacr%C3%B4nica"></a>
 </h3>
@@ -997,7 +1067,7 @@ atendimento ao cliente, ou qualquer corpus com carimbo de data (Welbers,
 Van Atteveldt &amp; Benoit, 2017): a métrica agregada pode ser
 frequência de um termo, sentimento médio, ou qualquer saída numérica de
 outra função do pacote.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">noticias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  data      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2024-01-01"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">35</span>, <span class="fl">50</span>, <span class="fl">65</span>, <span class="fl">80</span>, <span class="fl">95</span><span class="op">)</span>,</span>
 <span>  sentimento <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="op">-</span><span class="fl">0.3</span>, <span class="fl">0.0</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span><span class="op">)</span></span>
@@ -1017,16 +1087,20 @@ outra função do pacote.</p>
 <span><span class="co">#&gt; : There are other near singularities as well. 3654.8</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/temporal-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> a linha de tendência (LOESS,
-ativada por padrão) suaviza flutuações de curto prazo para destacar a
+<p><strong>Como interpretar:</strong> a linha de tendência (LOESS;
+Cleveland, 1979) suaviza flutuações de curto prazo para destacar a
 direção geral: aqui, queda até o meio do período seguida de recuperação.
-Com poucos pontos (como neste exemplo de 4 meses), a suavização é menos
-confiável; prefira olhar os pontos brutos quando a série for curta, e
-use a linha de tendência só com séries de 8-10 períodos ou mais.</p>
+A suavização local precisa de pontos suficientes na vizinhança de cada
+ajuste para estimar a curva com estabilidade; com poucos pontos (como os
+4 meses deste exemplo), o próprio <code><a href="https://rdrr.io/r/stats/loess.html" class="external-link">loess()</a></code> já avisa sobre
+instabilidade numérica (“span too small”, “pseudoinverse used”) — um
+sinal de que a linha de tendência está extrapolando mais do que
+suavizando. Nesses casos, prefira olhar os pontos brutos (ou o gráfico
+de barras logo abaixo) em vez de confiar na curva.</p>
 </blockquote>
 <p>Uma visão alternativa, mais direta para comparar poucos períodos
 entre si, é o gráfico de barras:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">serie</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">period</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey40"</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1050,7 +1124,7 @@ com posição conhecida, depois usa esse vocabulário aprendido para
 estimar a posição dos demais documentos (“virgens”). Aqui, avaliações de
 produto com nota conhecida servem de referência para estimar a
 satisfação implícita em avaliações sem nota.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resenhas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -1078,7 +1152,7 @@ satisfação implícita em avaliações sem nota.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> r4     2.11       2.23 TRUE        </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> r5     0.923      1.21 TRUE        </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> r6     5.33       5    FALSE</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_wordscores.html">ac_plot_wordscores</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/wordscores-plot-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
@@ -1088,11 +1162,18 @@ um escore de 4.2 só tem sentido comparado aos escores de referência
 pontos cinzas (estimados) são a real saída do método. Documentos
 estimados muito próximos de uma única referência tendem a compartilhar
 bastante vocabulário com ela; documentos no meio da escala costumam ser
-ambíguos ou neutros, não necessariamente mal classificados.</p>
+ambíguos ou neutros, não necessariamente mal classificados. Note que
+<code>r3</code> e <code>r6</code> empatam em <code>score_raw = 5</code>,
+o teto da escala de referência (1-5): com um conjunto de referência tão
+pequeno (4 documentos), o método tem pouco vocabulário para diferenciar
+documentos que puxam fortemente para o mesmo extremo, e o rescalonamento
+<code>"lbg"</code> (Martin &amp; Vanberg, 2007) pode inclusive
+extrapolar ligeiramente além do teto (<code>score = 5.33</code>).
+Corpora de referência maiores reduzem esse efeito.</p>
 </blockquote>
 <p>Uma visão complementar, útil para apresentar a escala completa num
 relatório, é ordenar os documentos num eixo horizontal:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wordscores</span><span class="op">$</span><span class="va">doc_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">$</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="va">wordscores</span><span class="op">$</span><span class="va">doc_id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">wordscores</span><span class="op">$</span><span class="va">score</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">wordscores</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">score</span>, y <span class="op">=</span> <span class="va">doc_id</span>, fill <span class="op">=</span> <span class="va">is_reference</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1116,7 +1197,7 @@ categorias (temas, enquadramentos, emoções), no espírito do General
 Inquirer (Stone et al., 1966) e de “Text as Data” (Grimmer &amp;
 Stewart, 2013): você define as categorias e as palavras de cada uma, e o
 pacote conta.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
 <span>  entrega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"atrasou"</span>, <span class="st">"atrasada"</span>, <span class="st">"rápida"</span>, <span class="st">"rastreio"</span><span class="op">)</span>,</span>
 <span>  produto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"defeito"</span>, <span class="st">"quebrado"</span>, <span class="st">"perfeito"</span>, <span class="st">"excelente"</span><span class="op">)</span></span>
@@ -1141,7 +1222,7 @@ validação abaixo é indispensável).</p>
 <p>Para visualizar a composição temática de vários documentos de uma
 vez, um gráfico de barras empilhadas às proporções funciona melhor que a
 tabela:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">resultado_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
 <span><span class="va">long_dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  doc_id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">resultado_dict</span><span class="op">$</span><span class="va">doc_id</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -1161,7 +1242,7 @@ tabela:</p>
 <p><code><a href="../reference/ac_emotion.html">ac_emotion()</a></code> é uma camada especializada do mesmo
 mecanismo para léxicos de emoção (inspirada no NRC Emotion Lexicon;
 Mohammad &amp; Turney, 2013), indo além de só positivo/negativo:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lexico_emocao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  termo  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elogiado"</span>, <span class="st">"reclamou"</span>, <span class="st">"defeito"</span>, <span class="st">"excelente"</span><span class="op">)</span>,</span>
 <span>  emocao <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alegria"</span>,  <span class="st">"raiva"</span>,    <span class="st">"tristeza"</span>, <span class="st">"alegria"</span><span class="op">)</span>,</span>
@@ -1179,7 +1260,7 @@ Mohammad &amp; Turney, 2013), indo além de só positivo/negativo:</p>
 comparar sua classificação a uma amostra codificada por humano: é a
 mesma lógica de <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> (para codificação por
 LLM), aplicada aqui ao método de dicionário.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scored</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
 <span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  doc_id    <span class="op">=</span> <span class="va">scored</span><span class="op">$</span><span class="va">doc_id</span>,</span>
@@ -1198,10 +1279,13 @@ LLM), aplicada aqui ao método de dicionário.</p>
 geral. Precisão baixa numa categoria significa que o dicionário marca
 falsos positivos nela (palavras da lista aparecem em documentos que um
 humano não classificaria assim); recall baixo significa que o dicionário
-deixa passar casos verdadeiros (faltam palavras na lista). Krippendorff
-(2018) considera <code>krippendorff_alfa</code> acima de 0.80 adequado
-para publicação sem reservas, e entre 0.67 e 0.80 aceitável com
-discussão dos casos divergentes no texto.</p>
+deixa passar casos verdadeiros (faltam palavras na lista). No exemplo,
+<code>precisao</code> é <code>NA</code> para “entrega”: o dicionário
+nunca marcou nenhum documento como “entrega” (<code>vp + fp = 0</code>),
+então a razão fica indefinida (divisão por zero) em vez de ser um valor
+baixo. Krippendorff (2018) considera <code>krippendorff_alfa</code>
+acima de 0.80 adequado para publicação sem reservas, e entre 0.67 e 0.80
+aceitável com discussão dos casos divergentes no texto.</p>
 </blockquote>
 </div>
 <div class="section level3">
@@ -1214,7 +1298,7 @@ posiciona grupos e termos no mesmo espaço geométrico. A lógica
 geométrica é simples: pontos próximos tendem a co-ocorrer mais do que o
 esperado pelo acaso, e a distância até a origem indica quão distintivo
 (vs. genérico) é um termo ou grupo.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">categorias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -1247,12 +1331,14 @@ equilibrada, interpretar só a Dim 1 perde informação relevante.</p>
 <p>Quando o mapa fica poluído de termos, uma alternativa é olhar só as
 coordenadas dos grupos, sem os termos: útil quando a pergunta é apenas
 “quão diferentes os grupos são entre si”:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ca</span><span class="op">$</span><span class="va">row_coords</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dim1</span>, y <span class="op">=</span> <span class="va">dim2</span>, label <span class="op">=</span> <span class="va">unit</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span>vjust <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>mult <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Análise de correspondência: só grupos"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Distância entre pontos reflete dissimilaridade de vocabulário"</span></span>
@@ -1268,8 +1354,13 @@ coordenadas dos grupos, sem os termos: útil quando a pergunta é apenas
 <li>Church, K. W.; Hanks, P. (1990). Word Association Norms, Mutual
 Information, and Lexicography. <em>Computational Linguistics</em>,
 16(1), 22-29.</li>
+<li>Cleveland, W. S. (1979). Robust Locally Weighted Regression and
+Smoothing Scatterplots. <em>Journal of the American Statistical
+Association</em>, 74(368), 829-836.</li>
 <li>Dunning, T. (1993). Accurate Methods for the Statistics of Surprise
 and Coincidence. <em>Computational Linguistics</em>, 19(1), 61-74.</li>
+<li>Flesch, R. (1948). A New Readability Yardstick. <em>Journal of
+Applied Psychology</em>, 32(3), 221-233.</li>
 <li>Greenacre, M. (2007). <em>Correspondence Analysis in Practice</em>
 (2nd ed.). Chapman and Hall/CRC.</li>
 <li>Grimmer, J.; Stewart, B. M. (2013). Text as Data: The Promise and
@@ -1281,6 +1372,9 @@ Its Methodology</em>. 4. ed. SAGE.</li>
 <li>Laver, M.; Benoit, K.; Garry, J. (2003). Extracting Policy Positions
 from Political Texts Using Words as Data. <em>American Political Science
 Review</em>, 97(2), 311-331.</li>
+<li>Martin, L. W.; Vanberg, G. (2007). A Robust Transformation Procedure
+for Interpreting Political Text. <em>Political Analysis</em>, 16(1),
+93-100.</li>
 <li>Martins, T. B. F. et al. (1996). Readability formulas applied to
 textbooks in Brazilian Portuguese. <em>Memorandum</em>, 28.</li>
 <li>McCarthy, P. M.; Jarvis, S. (2010). MTLD, vocd-D, and HD-D: A

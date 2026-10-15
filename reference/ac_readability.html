@@ -130,7 +130,9 @@ documento (ex.: <code>"categoria"</code>, <code>"fonte"</code>, <code>"ano"</cod
     <p>Tibble com colunas:</p><ul><li><p><code>doc_id</code> (ou as colunas de <code>by</code>, se informado);</p></li>
 <li><p><code>n_palavras</code>, <code>n_frases</code>, <code>n_silabas</code>: contagens usadas na fórmula;</p></li>
 <li><p><code>flesch</code>: Índice de Legibilidade de Flesch adaptado ao português
-(0-100; valores mais altos = texto mais fácil de ler);</p></li>
+(tipicamente 0-100, mas sem teto nem piso matemático: textos muito
+densos podem produzir valores negativos; valores mais altos =
+texto mais fácil de ler);</p></li>
 <li><p><code>nivel</code>: interpretação categórica do índice (ver <code>@details</code>).</p></li>
 </ul></div>
     <div class="section level2">

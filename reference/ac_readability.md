@@ -47,7 +47,9 @@ Tibble com colunas:
 - `n_palavras`, `n_frases`, `n_silabas`: contagens usadas na fórmula;
 
 - `flesch`: Índice de Legibilidade de Flesch adaptado ao português
-  (0-100; valores mais altos = texto mais fácil de ler);
+  (tipicamente 0-100, mas sem teto nem piso matemático: textos muito
+  densos podem produzir valores negativos; valores mais altos = texto
+  mais fácil de ler);
 
 - `nivel`: interpretação categórica do índice (ver `@details`).
 
