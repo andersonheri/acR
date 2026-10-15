@@ -1,8 +1,8 @@
 # Introdução ao acR: pipeline integrado de análise de conteúdo
 
 Esta vignette percorre o pipeline completo do `acR` em um exemplo
-pequeno mas realista — discursos parlamentares favoráveis e contrários a
-uma reforma — mostrando o *output* efetivo de cada etapa. Se você
+pequeno mas realista (discursos parlamentares favoráveis e contrários a
+uma reforma), mostrando o *output* efetivo de cada etapa. Se você
 prefere um tour de 5 minutos com só o essencial, veja o
 **[Quickstart](https://andersonheri.github.io/acR/articles/quickstart.md)**.
 
@@ -59,7 +59,7 @@ corpus
 ## 1. Frequências e termos salientes
 
 Antes de contar, precisamos **remover stopwords**. Sem essa etapa, os
-termos mais frequentes seriam `o`, `a`, `de`, `que` — carregam pouca
+termos mais frequentes seriam `o`, `a`, `de`, `que`: carregam pouca
 informação temática e mascaram os padrões reais do corpus.
 
 ``` r
@@ -139,6 +139,12 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ![](introducao-acR_files/figure-html/plot-keyness-1.png)
 
+> **Como interpretar:** barras maiores indicam termos mais distintivos
+> do grupo-alvo (`target`), não apenas mais frequentes. Um termo raro
+> que aparece quase só num dos lados pode ter χ² alto mesmo com contagem
+> absoluta baixa, por isso vale sempre olhar a tabela `key` junto do
+> gráfico antes de interpretar uma barra isolada.
+
 ## 3. Sentimento por documento (OpLexicon)
 
 Escore agregado de polaridade de cada documento, usando o léxico
@@ -171,6 +177,14 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 ```
 
 ![](introducao-acR_files/figure-html/plot-sentimento-1.png)
+
+> **Como interpretar:** o escore de cada documento é relativo ao léxico
+> OpLexicon, não uma medida absoluta de “o quão positivo” é o texto.
+> Compare documentos entre si (quem está mais à direita é mais positivo
+> que quem está mais à esquerda) em vez de fixar um limiar universal de
+> corte. A
+> [`vignette("sentimento")`](https://andersonheri.github.io/acR/articles/sentimento.md)
+> detalha essa leitura com mais formas de visualização.
 
 ## 4. Escolher um modelo LLM
 
@@ -380,15 +394,15 @@ Koch (1977) e Gwet (2014).
 ## Próximos passos
 
 - **[Codificação com
-  LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)**
-  — codebook completo, `ellmer`, *self-consistency*, tradução, fusão.
+  LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)**:
+  codebook completo, `ellmer`, *self-consistency*, tradução, fusão.
 - **[Análise de
-  proposições](https://andersonheri.github.io/acR/articles/analise-proposicoes.md)**
-  — pipeline real de ponta-a-ponta em texto legislativo brasileiro.
-- **[LDA](https://andersonheri.github.io/acR/articles/lda.md)** —
+  proposições](https://andersonheri.github.io/acR/articles/analise-proposicoes.md)**:
+  pipeline real de ponta-a-ponta em texto legislativo brasileiro.
+- **[LDA](https://andersonheri.github.io/acR/articles/lda.md)**:
   modelagem de tópicos.
-- **[Sentimento](https://andersonheri.github.io/acR/articles/sentimento.md)**
-  — pipeline detalhado com OpLexicon.
+- **[Sentimento](https://andersonheri.github.io/acR/articles/sentimento.md)**:
+  pipeline detalhado com OpLexicon.
 
 ## Referências
 

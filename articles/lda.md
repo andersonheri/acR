@@ -11,9 +11,9 @@ com pesos diferentes.
 
 Duas matrizes de saída são o coração do modelo:
 
-- **beta (β)** — probabilidade de cada termo em cada tópico. Responde:
+- **beta (β)**: probabilidade de cada termo em cada tópico. Responde:
   *“que palavras definem este tópico?”*.
-- **gamma (γ)** — probabilidade de cada tópico em cada documento.
+- **gamma (γ)**: probabilidade de cada tópico em cada documento.
   Responde: *“que temas dominam este documento?”*.
 
 > **Quando usar LDA?** Quando você tem um corpus grande demais para ler
@@ -165,8 +165,8 @@ escolha ideal é um balanço:
 
 A métrica clássica é **perplexidade** (menor = melhor ajuste), mas ela
 tende a favorecer K altos. A regra prática (Zhao et al., 2015): procure
-o “**cotovelo**” da curva — o ponto onde perplexidade para de cair
-rápido e começa a estabilizar.
+o “**cotovelo**” da curva: o ponto onde perplexidade para de cair rápido
+e começa a estabilizar.
 
 ``` r
 
@@ -202,16 +202,24 @@ ac_plot_lda_tune(tune) +
 ![](lda_files/figure-html/plot-tune-1.png)
 
 Como este corpus foi construído com **4 temas nítidos**, esperamos que o
-“cotovelo” apareça em K = 4. Em corpora reais raramente é tão limpo — o
+“cotovelo” apareça em K = 4. Em corpora reais raramente é tão limpo: o
 cotovelo dá uma faixa (ex. K entre 5 e 8), e a escolha final é uma
 combinação da métrica com **interpretabilidade** dos tópicos que saem.
+
+> **Como interpretar:** a curva quase sempre cai rápido nos primeiros
+> valores de K e depois desacelera. O “cotovelo” é onde a queda passa de
+> acentuada para suave, não necessariamente o ponto de menor
+> perplexidade absoluta (esse costuma ficar no K mais alto testado,
+> superajustando o modelo). Se a curva for monotonicamente decrescente
+> sem um cotovelo claro, prefira o K mais baixo que ainda produzir
+> tópicos interpretáveis na etapa 5.
 
 ## 4. Treinar o modelo LDA
 
 Com K definido, ajustamos o modelo. `seed` é obrigatório para
-reprodutibilidade — LDA é estocástico (Variational EM ou Gibbs
-sampling), rodadas diferentes com sementes diferentes retornam **tópicos
-com IDs diferentes** e pequenas variações nas distribuições.
+reprodutibilidade: LDA é estocástico (Variational EM ou Gibbs sampling),
+rodadas diferentes com sementes diferentes retornam **tópicos com IDs
+diferentes** e pequenas variações nas distribuições.
 
 ``` r
 
@@ -256,7 +264,7 @@ head(beta, 10)
 #> 10     1 dados      0.0175
 ```
 
-Visualização — os 10 termos com maior β por tópico:
+Visualização: os 10 termos com maior β por tópico:
 
 ``` r
 
@@ -269,9 +277,39 @@ ac_plot_lda_topics(modelo, top_n = 10L) +
 
 ![](lda_files/figure-html/plot-topics-1.png)
 
+> **Como interpretar:** leia cada painel de baixo para cima, do termo
+> com maior β para o menor. O rótulo do tópico não vem do modelo, vem de
+> **você**: olhe os termos dominantes e proponha um nome substantivo.
+> Termos genéricos demais nos 2-3 primeiros lugares (ex. “governo”,
+> “política”) em todos os tópicos sugerem que faltou remover alguma
+> *stopword* específica do domínio na etapa 2.
+
 O gráfico permite **rotular** os tópicos. Nomeamos com base nos termos
-dominantes — se um tópico é dominado por *reforma*, *tributária*, *iva*,
+dominantes: se um tópico é dominado por *reforma*, *tributária*, *iva*,
 *aliquotas*, chamamos de “Reforma Tributária”.
+
+Visualização alternativa: uma *word cloud* ponderada por β dentro de
+cada tópico, útil em apresentações onde o eixo numérico do gráfico de
+barras pesa menos que o impacto visual imediato das palavras maiores:
+
+``` r
+
+topico_escolhido <- 1L
+
+beta |>
+  dplyr::filter(topic == topico_escolhido) |>
+  dplyr::slice_max(beta, n = 25L, with_ties = FALSE) |>
+  ggplot2::ggplot(ggplot2::aes(label = term, size = beta, color = beta)) +
+  ggwordcloud::geom_text_wordcloud() +
+  ggplot2::scale_size_area(max_size = 14) +
+  ggplot2::scale_color_gradient(low = ac_palette(1), high = ac_palette(2)) +
+  ggplot2::labs(
+    title = paste("Nuvem de termos do tópico", topico_escolhido)
+  ) +
+  theme_ac()
+```
+
+![](lda_files/figure-html/plot-topics-alt-1.png)
 
 ## 6. Distribuição de tópicos por documento (matriz γ)
 
@@ -347,6 +385,15 @@ table(comparacao$topico_dominante, comparacao$tema)
 #>   4        2         3          2          1
 ```
 
+> **Como interpretar:** procure a estrutura diagonal. Se cada linha
+> (tópico dominante) tiver a maior contagem concentrada numa única
+> coluna (tema real), o modelo recuperou bem a estrutura, mesmo que os
+> números de tópico não coincidam com a ordem dos temas (LDA não “sabe”
+> que o tópico 3 é “educação”, apenas que ele é diferente dos demais).
+> Contagens espalhadas por várias colunas numa mesma linha indicam que
+> aquele tópico está misturando temas que deveriam ser distintos:
+> considere aumentar K ou revisar a limpeza do corpus.
+
 Se a diagonal for dominante (cada tópico se alinha bem com um tema
 real), o modelo capturou a estrutura. Em corpora reais sem “rótulo
 verdadeiro”, essa validação vem da **interpretação humana** dos tópicos
@@ -381,7 +428,7 @@ top_terms_por_topico
 
 ## 8. Visualizando as misturas: γ como heatmap
 
-Uma das forças didáticas do LDA é que γ **não é** uma etiqueta — é uma
+Uma das forças didáticas do LDA é que γ **não é** uma etiqueta: é uma
 proporção. Documentos que “quase pertencem a um tema” aparecem como um
 gradiente, não como uma célula preenchida. Este heatmap mostra os
 documentos como linhas, os tópicos como colunas, e a cor como `gamma` (0
@@ -417,16 +464,26 @@ ggplot2::ggplot(
 
 ![](lda_files/figure-html/gamma-heatmap-1.png)
 
+> **Como interpretar:** cada linha (documento) soma 1 ao longo das
+> colunas (tópicos), porque γ é uma distribuição de probabilidade.
+> Linhas com uma única célula escura são documentos “puros” num tema;
+> linhas com duas ou três células de cor intermediária são documentos de
+> tema misto, o caso mais comum em discurso político real. Não existe um
+> limiar universal para “documento pertence ao tópico X”: a prática
+> usual é reportar o tópico de maior γ (ver `dominante` acima) e, quando
+> γ do segundo tópico estiver próximo do primeiro, sinalizar o documento
+> como ambíguo na análise.
+
 Compare mentalmente com o heatmap “hard clustering” da
 [`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)
 §4.6: lá, cada linha tem **uma** célula acesa (pertence ao grupo A
 **ou** ao B). Aqui, muitas linhas têm massa espalhada entre dois ou três
 tópicos. É a mesma tipologia latente, descrita em duas resoluções
-diferentes — hard é uma projeção do soft.
+diferentes: hard é uma projeção do soft.
 
 ## 9. Exportar
 
-Salvamos as duas matrizes principais para reuso — em outros scripts, no
+Salvamos as duas matrizes principais para reuso: em outros scripts, no
 Excel, ou para colar em tabelas de artigo:
 
 ``` r

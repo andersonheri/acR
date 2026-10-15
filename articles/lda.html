@@ -106,10 +106,10 @@ diferentes.</p>
 <p>Duas matrizes de saída são o coração do modelo:</p>
 <ul>
 <li>
-<strong>beta (β)</strong> — probabilidade de cada termo em cada
+<strong>beta (β)</strong>: probabilidade de cada termo em cada
 tópico. Responde: <em>“que palavras definem este tópico?”</em>.</li>
 <li>
-<strong>gamma (γ)</strong> — probabilidade de cada tópico em cada
+<strong>gamma (γ)</strong>: probabilidade de cada tópico em cada
 documento. Responde: <em>“que temas dominam este documento?”</em>.</li>
 </ul>
 <blockquote>
@@ -293,8 +293,8 @@ temas.</p>
 </ul>
 <p>A métrica clássica é <strong>perplexidade</strong> (menor = melhor
 ajuste), mas ela tende a favorecer K altos. A regra prática (Zhao et
-al., 2015): procure o “<strong>cotovelo</strong>” da curva — o ponto
-onde perplexidade para de cair rápido e começa a estabilizar.</p>
+al., 2015): procure o “<strong>cotovelo</strong>” da curva: o ponto onde
+perplexidade para de cair rápido e começa a estabilizar.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tune</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda_tune.html">ac_lda_tune</a></span><span class="op">(</span></span>
 <span>  <span class="va">corpus_limpo</span>,</span>
@@ -323,15 +323,24 @@ onde perplexidade para de cair rápido e começa a estabilizar.</p>
 <p><img src="lda_files/figure-html/plot-tune-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>Como este corpus foi construído com <strong>4 temas nítidos</strong>,
 esperamos que o “cotovelo” apareça em K = 4. Em corpora reais raramente
-é tão limpo — o cotovelo dá uma faixa (ex. K entre 5 e 8), e a escolha
+é tão limpo: o cotovelo dá uma faixa (ex. K entre 5 e 8), e a escolha
 final é uma combinação da métrica com
 <strong>interpretabilidade</strong> dos tópicos que saem.</p>
+<blockquote>
+<p><strong>Como interpretar:</strong> a curva quase sempre cai rápido
+nos primeiros valores de K e depois desacelera. O “cotovelo” é onde a
+queda passa de acentuada para suave, não necessariamente o ponto de
+menor perplexidade absoluta (esse costuma ficar no K mais alto testado,
+superajustando o modelo). Se a curva for monotonicamente decrescente sem
+um cotovelo claro, prefira o K mais baixo que ainda produzir tópicos
+interpretáveis na etapa 5.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="treinar-o-modelo-lda">4. Treinar o modelo LDA<a class="anchor" aria-label="anchor" href="#treinar-o-modelo-lda"></a>
 </h2>
 <p>Com K definido, ajustamos o modelo. <code>seed</code> é obrigatório
-para reprodutibilidade — LDA é estocástico (Variational EM ou Gibbs
+para reprodutibilidade: LDA é estocástico (Variational EM ou Gibbs
 sampling), rodadas diferentes com sementes diferentes retornam
 <strong>tópicos com IDs diferentes</strong> e pequenas variações nas
 distribuições.</p>
@@ -373,7 +382,7 @@ inspecionar o que cada tópico “significa”.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     1 sistema    0.017<span style="text-decoration: underline;">5</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1 tributária 0.087<span style="text-decoration: underline;">7</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     1 dados      0.017<span style="text-decoration: underline;">5</span></span></span></code></pre></div>
-<p>Visualização — os 10 termos com maior β por tópico:</p>
+<p>Visualização: os 10 termos com maior β por tópico:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span>, top_n <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
@@ -381,10 +390,38 @@ inspecionar o que cada tópico “significa”.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Beta = probabilidade do termo dado o tópico"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/plot-topics-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> leia cada painel de baixo para
+cima, do termo com maior β para o menor. O rótulo do tópico não vem do
+modelo, vem de <strong>você</strong>: olhe os termos dominantes e
+proponha um nome substantivo. Termos genéricos demais nos 2-3 primeiros
+lugares (ex. “governo”, “política”) em todos os tópicos sugerem que
+faltou remover alguma <em>stopword</em> específica do domínio na etapa
+2.</p>
+</blockquote>
 <p>O gráfico permite <strong>rotular</strong> os tópicos. Nomeamos com
-base nos termos dominantes — se um tópico é dominado por
+base nos termos dominantes: se um tópico é dominado por
 <em>reforma</em>, <em>tributária</em>, <em>iva</em>, <em>aliquotas</em>,
 chamamos de “Reforma Tributária”.</p>
+<p>Visualização alternativa: uma <em>word cloud</em> ponderada por β
+dentro de cada tópico, útil em apresentações onde o eixo numérico do
+gráfico de barras pesa menos que o impacto visual imediato das palavras
+maiores:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">topico_escolhido</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
+<span></span>
+<span><span class="va">beta</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">topic</span> <span class="op">==</span> <span class="va">topico_escolhido</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">beta</span>, n <span class="op">=</span> <span class="fl">25L</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">term</span>, size <span class="op">=</span> <span class="va">beta</span>, color <span class="op">=</span> <span class="va">beta</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggwordcloud</span><span class="fu">::</span><span class="fu"><a href="https://lepennec.github.io/ggwordcloud/reference/geom_text_wordcloud.html" class="external-link">geom_text_wordcloud</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html" class="external-link">scale_size_area</a></span><span class="op">(</span>max_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, high <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Nuvem de termos do tópico"</span>, <span class="va">topico_escolhido</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="lda_files/figure-html/plot-topics-alt-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="distribuição-de-tópicos-por-documento-matriz-γ">6. Distribuição de tópicos por documento (matriz γ)<a class="anchor" aria-label="anchor" href="#distribui%C3%A7%C3%A3o-de-t%C3%B3picos-por-documento-matriz-%CE%B3"></a>
@@ -392,7 +429,7 @@ chamamos de “Reforma Tributária”.</p>
 <p>Para cada documento, quais tópicos dominam? Um documento pode ser 90%
 tópico 1 (tema puro) ou distribuído entre vários tópicos (tema
 misto).</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gamma</span> <span class="op">&lt;-</span> <span class="va">modelo</span><span class="op">$</span><span class="va">documents</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gamma</span>, <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 3</span></span></span>
@@ -411,7 +448,7 @@ misto).</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_11     3 0.993  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_11     4 0.002<span style="text-decoration: underline;">39</span></span></span></code></pre></div>
 <p>Sumário: qual o tópico dominante de cada documento?</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dominante</span> <span class="op">&lt;-</span> <span class="va">gamma</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">gamma</span>, n <span class="op">=</span> <span class="fl">1L</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -437,7 +474,7 @@ misto).</p>
 <p>Comparando com o <strong>tema real</strong> de cada documento (o
 <code>meta$tema</code> que guardamos no corpus), conseguimos avaliar
 <strong>quão bem o LDA recuperou a estrutura conhecida</strong>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recuperar o metadado 'tema' e cruzar com o tópico dominante</span></span>
 <span><span class="va">tema_real</span> <span class="op">&lt;-</span> <span class="va">corpus</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"doc_id"</span>, <span class="st">"tema"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">comparacao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">dominante</span>, <span class="va">tema_real</span>, by <span class="op">=</span> <span class="st">"doc_id"</span><span class="op">)</span></span>
@@ -450,6 +487,16 @@ misto).</p>
 <span><span class="co">#&gt;   2        3         3          1          1</span></span>
 <span><span class="co">#&gt;   3        3         1          3          2</span></span>
 <span><span class="co">#&gt;   4        2         3          2          1</span></span></code></pre></div>
+<blockquote>
+<p><strong>Como interpretar:</strong> procure a estrutura diagonal. Se
+cada linha (tópico dominante) tiver a maior contagem concentrada numa
+única coluna (tema real), o modelo recuperou bem a estrutura, mesmo que
+os números de tópico não coincidam com a ordem dos temas (LDA não “sabe”
+que o tópico 3 é “educação”, apenas que ele é diferente dos demais).
+Contagens espalhadas por várias colunas numa mesma linha indicam que
+aquele tópico está misturando temas que deveriam ser distintos:
+considere aumentar K ou revisar a limpeza do corpus.</p>
+</blockquote>
 <p>Se a diagonal for dominante (cada tópico se alinha bem com um tema
 real), o modelo capturou a estrutura. Em corpora reais sem “rótulo
 verdadeiro”, essa validação vem da <strong>interpretação humana</strong>
@@ -463,7 +510,7 @@ al., 2013): apresente os top-N termos por tópico, proponha um
 <strong>rótulo substantivo</strong> e valide com pelo menos um segundo
 pesquisador. O <code>acR</code> facilita gerar essa tabela para incluir
 no artigo:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">top_terms_por_topico</span> <span class="op">&lt;-</span> <span class="va">beta</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">topic</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span><span class="va">beta</span>, n <span class="op">=</span> <span class="fl">7L</span>, with_ties <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -485,11 +532,11 @@ no artigo:</p>
 <h2 id="visualizando-as-misturas-γ-como-heatmap">8. Visualizando as misturas: γ como heatmap<a class="anchor" aria-label="anchor" href="#visualizando-as-misturas-%CE%B3-como-heatmap"></a>
 </h2>
 <p>Uma das forças didáticas do LDA é que γ <strong>não é</strong> uma
-etiqueta — é uma proporção. Documentos que “quase pertencem a um tema”
+etiqueta: é uma proporção. Documentos que “quase pertencem a um tema”
 aparecem como um gradiente, não como uma célula preenchida. Este heatmap
 mostra os documentos como linhas, os tópicos como colunas, e a cor como
 <code>gamma</code> (0 = nada; 1 = totalidade da massa).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gamma_ord</span> <span class="op">&lt;-</span> <span class="va">gamma</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -515,19 +562,30 @@ mostra os documentos como linhas, os tópicos como colunas, e a cor como
 <span>    axis.text.y <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/gamma-heatmap-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> cada linha (documento) soma 1 ao
+longo das colunas (tópicos), porque γ é uma distribuição de
+probabilidade. Linhas com uma única célula escura são documentos “puros”
+num tema; linhas com duas ou três células de cor intermediária são
+documentos de tema misto, o caso mais comum em discurso político real.
+Não existe um limiar universal para “documento pertence ao tópico X”: a
+prática usual é reportar o tópico de maior γ (ver <code>dominante</code>
+acima) e, quando γ do segundo tópico estiver próximo do primeiro,
+sinalizar o documento como ambíguo na análise.</p>
+</blockquote>
 <p>Compare mentalmente com o heatmap “hard clustering” da
 <code><a href="../articles/cluster.html">vignette("cluster")</a></code> §4.6: lá, cada linha tem
 <strong>uma</strong> célula acesa (pertence ao grupo A
 <strong>ou</strong> ao B). Aqui, muitas linhas têm massa espalhada entre
 dois ou três tópicos. É a mesma tipologia latente, descrita em duas
-resoluções diferentes — hard é uma projeção do soft.</p>
+resoluções diferentes: hard é uma projeção do soft.</p>
 </div>
 <div class="section level2">
 <h2 id="exportar">9. Exportar<a class="anchor" aria-label="anchor" href="#exportar"></a>
 </h2>
-<p>Salvamos as duas matrizes principais para reuso — em outros scripts,
+<p>Salvamos as duas matrizes principais para reuso: em outros scripts,
 no Excel, ou para colar em tabelas de artigo:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">beta</span>,  arquivo <span class="op">=</span> <span class="st">"lda_beta.csv"</span>,  formato <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_export.html">ac_export</a></span><span class="op">(</span><span class="va">gamma</span>, arquivo <span class="op">=</span> <span class="st">"lda_gamma.csv"</span>, formato <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span>
 <span></span>

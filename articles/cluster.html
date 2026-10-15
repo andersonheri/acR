@@ -98,7 +98,7 @@
 </h2>
 <p>Nem toda pesquisa começa com um livro de códigos pronto. Às vezes
 você tem centenas de discursos, proposições ou entrevistas e precisa
-<strong>descobrir tipologias latentes</strong> — antes de rotular, antes
+<strong>descobrir tipologias latentes</strong>, antes de rotular, antes
 de contar, antes de qualquer LLM. É aí que entra o <em>clustering</em>:
 um algoritmo lê a matriz de vocabulário e devolve <strong>uma etiqueta
 por documento</strong>, agrupando o que se parece por co-ocorrência de
@@ -273,16 +273,16 @@ texto.</p>
 <p>Os padrões cobrem 80% dos casos:</p>
 <ul>
 <li>
-<strong>hclust + Ward.D2</strong> — hierárquico, produz dendrograma
+<strong>hclust + Ward.D2</strong>: hierárquico, produz dendrograma
 interpretável.</li>
 <li>
-<strong>TF-IDF</strong> — palavras raras e discriminantes contam
+<strong>TF-IDF</strong>: palavras raras e discriminantes contam
 mais.</li>
 <li>
-<strong>Distância cosseno</strong> — o clássico em texto (invariante
+<strong>Distância cosseno</strong>: o clássico em texto (invariante
 a tamanho de documento).</li>
 <li>
-<strong><code>k</code> automático por silhueta</strong> — testa
+<strong><code>k</code> automático por silhueta</strong>: testa
 <code>k ∈ {2, …, 8}</code> e escolhe o melhor (requer pacote
 <code>cluster</code>).</li>
 </ul>
@@ -291,7 +291,7 @@ a tamanho de documento).</li>
 <h2 id="seis-formas-de-olhar-para-o-mesmo-cluster">4. Seis formas de olhar para o mesmo cluster<a class="anchor" aria-label="anchor" href="#seis-formas-de-olhar-para-o-mesmo-cluster"></a>
 </h2>
 <div class="section level3">
-<h3 id="dendrograma-a-árvore-das-fusões">4.1 Dendrograma — a árvore das fusões<a class="anchor" aria-label="anchor" href="#dendrograma-a-%C3%A1rvore-das-fus%C3%B5es"></a>
+<h3 id="dendrograma-a-árvore-das-fusões">4.1 Dendrograma: a árvore das fusões<a class="anchor" aria-label="anchor" href="#dendrograma-a-%C3%A1rvore-das-fus%C3%B5es"></a>
 </h3>
 <p>Mostra a ordem em que documentos foram unidos e a
 <strong>altura</strong> de cada fusão. Cortes altos separam grupos
@@ -301,7 +301,7 @@ sólidos; cortes baixos indicam agrupamentos frouxos.</p>
 <p><img src="cluster_files/figure-html/plot-dendrogram-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="projeção-pca-a-geometria-do-corpus">4.2 Projeção PCA — a geometria do corpus<a class="anchor" aria-label="anchor" href="#proje%C3%A7%C3%A3o-pca-a-geometria-do-corpus"></a>
+<h3 id="projeção-pca-a-geometria-do-corpus">4.2 Projeção PCA: a geometria do corpus<a class="anchor" aria-label="anchor" href="#proje%C3%A7%C3%A3o-pca-a-geometria-do-corpus"></a>
 </h3>
 <p>Cada documento vira um ponto no plano das duas componentes
 principais. Documentos com vocabulário parecido ficam próximos; a cor
@@ -311,7 +311,7 @@ mostra a divisão do algoritmo.</p>
 <p><img src="cluster_files/figure-html/plot-scatter-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="mapa-de-calor-a-assinatura-da-separação">4.3 Mapa de calor — a assinatura da separação<a class="anchor" aria-label="anchor" href="#mapa-de-calor-a-assinatura-da-separa%C3%A7%C3%A3o"></a>
+<h3 id="mapa-de-calor-a-assinatura-da-separação">4.3 Mapa de calor: a assinatura da separação<a class="anchor" aria-label="anchor" href="#mapa-de-calor-a-assinatura-da-separa%C3%A7%C3%A3o"></a>
 </h3>
 <p>Ordena os documentos pelo dendrograma e desenha a matriz de
 dissimilaridade inteira. <strong>Blocos escuros na diagonal</strong> são
@@ -360,7 +360,7 @@ fortes por grupo.</p>
 <p><img src="cluster_files/figure-html/plot-top-terms-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="curva-de-silhueta-escolhendo-k-visualmente">4.5 Curva de silhueta — escolhendo <code>k</code> visualmente<a class="anchor" aria-label="anchor" href="#curva-de-silhueta-escolhendo-k-visualmente"></a>
+<h3 id="curva-de-silhueta-escolhendo-k-visualmente">4.5 Curva de silhueta: escolhendo <code>k</code> visualmente<a class="anchor" aria-label="anchor" href="#curva-de-silhueta-escolhendo-k-visualmente"></a>
 </h3>
 <p>Quando o <code>k</code> automático parecer arbitrário, olhe para a
 curva. A silhueta média de cada <code>k</code> diz o quão <em>coeso</em>
@@ -395,13 +395,13 @@ indicam que a divisão seguinte é quase tão boa quanto.</p>
 <p><img src="cluster_files/figure-html/plot-silhouette-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="hard-vs--soft-comparando-com-lda">4.6 Hard vs. soft — comparando com LDA<a class="anchor" aria-label="anchor" href="#hard-vs--soft-comparando-com-lda"></a>
+<h3 id="hard-vs--soft-comparando-com-lda">4.6 Hard vs. soft: comparando com LDA<a class="anchor" aria-label="anchor" href="#hard-vs--soft-comparando-com-lda"></a>
 </h3>
 <p>Este é o gráfico mais <strong>didático</strong> da vignette: mostra
 lado a lado como hard clustering e LDA veem o mesmo corpus. À esquerda,
 cada linha do heatmap é um documento e cada coluna, o cluster ao qual
 ele pertence (binário: 0 ou 1). À direita, cada linha é o mesmo
-documento e cada coluna é a proporção γ do tópico LDA — <strong>um
+documento e cada coluna é a proporção γ do tópico LDA: <strong>um
 gradiente contínuo</strong>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lda_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">corpus</span>, k <span class="op">=</span> <span class="fl">2</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
@@ -435,7 +435,7 @@ gradiente contínuo</strong>.</p>
 <p><img src="cluster_files/figure-html/plot-lda-vs-cluster-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>Note como o hard clustering sempre pinta uma célula por linha (o
 documento é <em>do</em> grupo A ou <em>do</em> grupo B), enquanto o LDA
-distribui massa — a maior parte dos documentos é ~90% de um tópico, mas
+distribui massa: a maior parte dos documentos é ~90% de um tópico, mas
 alguns ficam repartidos. <strong>É a mesma tipologia latente, expressa
 em duas métricas diferentes.</strong></p>
 </div>
@@ -457,7 +457,7 @@ conferir a acurácia da partição:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> mercado          2     4</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> mercado          3     4</span></span></code></pre></div>
 <p>Se o algoritmo separou corretamente, cada <code>tema_real</code> deve
-concentrar-se num único cluster (permutação de rótulos é esperada — o
+concentrar-se num único cluster (permutação de rótulos é esperada: o
 clustering não sabe qual grupo é “democracia” ou “mercado”, só que são
 diferentes).</p>
 </div>
@@ -525,11 +525,11 @@ exemplares de cada tipologia latente.</p>
 </h2>
 <ul>
 <li>Blei, D. M., Ng, A. Y., &amp; Jordan, M. I. (2003). Latent Dirichlet
-Allocation. <em>JMLR</em>, 3, 993–1022. — o paper original do LDA.</li>
+Allocation. <em>JMLR</em>, 3, 993–1022 (o paper original do LDA).</li>
 <li>Bezdek, J. C. (1981). <em>Pattern Recognition with Fuzzy Objective
-Function Algorithms</em>. Plenum. — fuzzy c-means.</li>
+Function Algorithms</em>. Plenum (fuzzy c-means).</li>
 <li>Kaufman, L. &amp; Rousseeuw, P. J. (1990). <em>Finding Groups in
-Data</em>. Wiley. — PAM e silhueta.</li>
+Data</em>. Wiley (PAM e silhueta).</li>
 <li>Manning, C., Raghavan, P. &amp; Schütze, H. (2008). <em>Introduction
 to Information Retrieval</em>. Cambridge University Press. Cap.
 16–17.</li>
