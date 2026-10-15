@@ -82,7 +82,7 @@ print(corpus)
 
 O codebook define as cinco categorias de posicionamento com suas
 definições operacionais. A instrução orienta o modelo a usar `Populista`
-para textos com apelo emocional sem argumentação substantiva — uma
+para textos com apelo emocional sem argumentação substantiva: uma
 distinção importante para a análise de discursos parlamentares
 brasileiros.
 
@@ -271,7 +271,7 @@ ac_qual_save_codebook(
 
 O argumento `chat =` recebe qualquer objeto `Chat` do **ellmer**. Aqui
 usamos o Groq com `openai/gpt-oss-120b`, que oferece plano gratuito e
-latência baixa — ideal para corpora de tamanho médio como este.
+latência baixa: ideal para corpora de tamanho médio como este.
 
 ``` r
 
@@ -309,9 +309,17 @@ documentos:
     ## 9 pec32_contra    reform  contrario  contrario                 1.000
 
 O texto `pl2858_favor` (“Presos políticos: votar pela anistia é votar
-pela democracia”) recebeu `populista` com confiança 0.667 — caso
+pela democracia”) recebeu `populista` com confiança 0.667, caso
 limítrofe que ilustra a utilidade do self-consistency para identificar
 documentos ambíguos que merecem revisão humana prioritária.
+
+> **Como interpretar:** `confidence_score` mede o quanto as
+> `k_consistency` rodadas independentes concordaram entre si, não se a
+> categoria escolhida está “correta”. 1.000 significa que todas as
+> rodadas bateram na mesma categoria; 0.667 com `k_consistency = 3L`
+> significa que 2 das 3 rodadas concordaram e 1 discordou. Documentos
+> com confiança baixa são justamente os que a amostragem por
+> `strategy = "uncertainty"` (seção 5) prioriza para revisão humana.
 
 ------------------------------------------------------------------------
 
@@ -363,6 +371,13 @@ print(concordancia)
     ## Fleiss' Kappa                  1.000       Perfeita
     ## Krippendorff's Alpha (nominal) 1.000       Perfeita
 
+> **Como interpretar:** Percent Agreement ignora a chance de acerto
+> aleatório e por isso é sempre a métrica mais otimista da tabela; Kappa
+> e Alpha corrigem por essa chance e tendem a ser mais conservadoras,
+> especialmente quando uma categoria é muito mais frequente que as
+> outras. Reporte Kappa ou Alpha como medida principal no artigo, e
+> Percent Agreement apenas como complemento descritivo.
+
 Concordância perfeita é esperada para este corpus, dado que os textos
 foram construídos com posicionamentos inequívocos. Em corpora reais com
 textos ambíguos, valores de kappa entre 0.61 e 0.80 são considerados
@@ -393,7 +408,7 @@ resultado |>
     ## 3 pec32_ementa   reform  neutro_tecnico                1
 
 As três ementas foram corretamente classificadas como `neutro_tecnico`
-com confiança máxima — resultado consistente com a natureza jurídica
+com confiança máxima, resultado consistente com a natureza jurídica
 desses textos.
 
 ------------------------------------------------------------------------

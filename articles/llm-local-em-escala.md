@@ -5,7 +5,7 @@
 Esta vignette cobre o fluxo de
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
 quando o modelo roda **localmente** (LM Studio, llama.cpp, vLLM, Ollama
-em modo OpenAI) em vez de um provedor em nuvem — o cenário mais comum
+em modo OpenAI) em vez de um provedor em nuvem: o cenário mais comum
 quando os documentos não podem sair do ambiente do pesquisador (dados
 sensíveis, acordos de confidencialidade institucional) ou quando o
 volume de documentos tornaria o custo por token de um provedor pago
@@ -64,7 +64,7 @@ sum(tamanhos > 8000)
 ```
 
 [`ac_estimate_tokens()`](https://andersonheri.github.io/acR/reference/ac_estimate_tokens.md)
-é uma heurística (caracteres por token) — não faz nenhuma chamada de
+é uma heurística (caracteres por token): não faz nenhuma chamada de
 rede. Para uma estimativa calibrada contra o modelo e tokenizador real,
 rode
 [`ac_calibrate_tokens()`](https://andersonheri.github.io/acR/reference/ac_calibrate_tokens.md)
@@ -82,7 +82,7 @@ tamanhos_calibrados <- ac_estimate_tokens(corpus$text, chars_per_token = razao)
 ```
 
 Documentos que excedem a janela de contexto do servidor não devem ser
-enviados como estão — considere dividir manualmente em partes menores
+enviados como estão: considere dividir manualmente em partes menores
 antes de montar o
 [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
 ou reduzir `reasoning_length` para liberar espaço para a resposta.
@@ -109,13 +109,13 @@ Cada documento é salvo (gravação atômica) assim que classificado. Se a
 rodada for interrompida, rodar o mesmo comando de novo pula os
 documentos já concluídos e continua de onde parou. `live = "progress"`
 mostra uma barra enxuta (documento atual + status) em vez de ecoar
-categoria e raciocínio a cada uma das `k_consistency` rodadas —
+categoria e raciocínio a cada uma das `k_consistency` rodadas:
 importante para não poluir o console numa rodada de milhares de
 documentos.
 
 Se os parâmetros da rodada mudarem (codebook revisado, modelo diferente,
 `k_consistency` diferente), o `checkpoint_dir` é invalidado e recomeça
-do zero automaticamente — com aviso — para nunca misturar classificações
+do zero automaticamente (com aviso), para nunca misturar classificações
 de codebooks diferentes sem que o pesquisador perceba.
 
 ## 4. Lidando com falhas técnicas
@@ -136,17 +136,17 @@ table(coded$status)
 ```
 
 `max_retries` tenta de novo (com espera exponencial) para `timeout` e
-`erro_servidor`, mas não para `estouro_contexto` — repetir a mesma
+`erro_servidor`, mas não para `estouro_contexto`: repetir a mesma
 chamada com o mesmo texto não vai resolver um documento que simplesmente
 não cabe na janela do modelo. Se mais da metade dos últimos documentos
-falhar, a rodada é interrompida automaticamente — sinal de que o
-servidor está instável e insistir só desperdiçaria tempo.
+falhar, a rodada é interrompida automaticamente: sinal de que o servidor
+está instável e insistir só desperdiçaria tempo.
 
 ## 5. Validação humana por categoria (multilabel)
 
 Quando o codebook é `multilabel = TRUE`, a métrica agregada de
 \[ac_qual_reliability()\] mistura decisões binárias independentes num
-único número — uma concordância “boa” pode esconder uma categoria
+único número: uma concordância “boa” pode esconder uma categoria
 específica indo mal. Use `by_variable = TRUE`:
 
 ``` r
@@ -162,8 +162,8 @@ attr(rel, "by_variable")
 ```
 
 `exclude_status` remove da comparação documentos cuja rodada principal
-falhou — uma categoria vinda de uma resposta inválida ou um timeout não
-é um dado confiável sobre concordância, e misturá-la nas métricas por
+falhou: uma categoria vinda de uma resposta inválida ou um timeout não é
+um dado confiável sobre concordância, e misturá-la nas métricas por
 variável distorceria o diagnóstico.
 
 Para montar a amostra de validação humana de forma representativa da
@@ -199,8 +199,8 @@ Compare `params_efetivos$temperature` com `temperatura_pedida` antes de
 reportar `confidence_score` num artigo: se um `Chat` pré-configurado não
 confirmar a temperatura pedida,
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
-já emite um aviso explícito no momento da rodada — mas `run_info`
-permite auditar isso depois, inclusive em rodadas de terceiros.
+já emite um aviso explícito no momento da rodada, mas `run_info` permite
+auditar isso depois, inclusive em rodadas de terceiros.
 
 ## Referências
 

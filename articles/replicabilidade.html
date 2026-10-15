@@ -107,23 +107,23 @@ idênticos a uma rodada real.</p>
 </h2>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Coleta</strong> — corpus real ou fabricado</li>
+<strong>Coleta</strong>: corpus real ou fabricado</li>
 <li>
-<strong>Codebook</strong> — instrumento analítico
+<strong>Codebook</strong>: instrumento analítico
 (<code>ac_qual_codebook</code>)</li>
 <li>
-<strong>Classificação</strong> — LLM com <code>live view</code>
+<strong>Classificação</strong>: LLM com <code>live view</code>
 (<code>ac_qual_code(live = ...)</code>)</li>
 <li>
-<strong>Amostragem para revisão</strong> —
+<strong>Amostragem para revisão</strong>:
 <code><a href="../reference/ac_qual_sample.html">ac_qual_sample()</a></code>
 </li>
 <li>
-<strong>Confiabilidade inter-codificador</strong> —
+<strong>Confiabilidade inter-codificador</strong>:
 <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>
 </li>
 <li>
-<strong>Relatório de método</strong> —
+<strong>Relatório de método</strong>:
 <code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code>
 </li>
 </ol>
@@ -132,7 +132,7 @@ idênticos a uma rodada real.</p>
 <h2 id="corpus">1. Corpus<a class="anchor" aria-label="anchor" href="#corpus"></a>
 </h2>
 <p>Corpus fabricado de 12 pronunciamentos com posição declarada
-(favor/contra/neutro) — em uso real, este data.frame viria de
+(favor/contra/neutro). Em uso real, este data.frame viria de
 <code><a href="../reference/ac_fetch_camara.html">ac_fetch_camara()</a></code>, <code><a href="../reference/ac_fetch_senado.html">ac_fetch_senado()</a></code> ou de
 importação de PDFs.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -220,7 +220,7 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"favor"</span>, <span style="color: #0000BB;">"contra"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 14:28</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 14:33</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique a posicao do parlamentar sobre a reforma tributária com base no</span></span>
@@ -239,9 +239,9 @@ análise em outra sessão:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arquivo_cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo_cb</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/Rtmp08z059/file21fb445b8ac7.yaml</span></span></span>
+<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpTv8TnQ/file22e62bdb9513.yaml</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Codebook salvo em:"</span>, <span class="va">arquivo_cb</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Codebook salvo em: /tmp/Rtmp08z059/file21fb445b8ac7.yaml</span></span></code></pre></div>
+<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpTv8TnQ/file22e62bdb9513.yaml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classificação-com-live-view">3. Classificação com live view<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-live-view"></a>
@@ -334,7 +334,7 @@ humana):</p>
 <h2 id="amostra-para-revisão-humana">4. Amostra para revisão humana<a class="anchor" aria-label="anchor" href="#amostra-para-revis%C3%A3o-humana"></a>
 </h2>
 <p><code>ac_qual_sample(strategy = "uncertainty")</code> prioriza
-documentos com menor <code>confidence_score</code> — foca o esforço
+documentos com menor <code>confidence_score</code>: foca o esforço
 humano onde o LLM mais errou.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span></span>
@@ -364,8 +364,8 @@ o resultado seria reimportado:</p>
 <h2 id="confiabilidade-inter-codificador">5. Confiabilidade inter-codificador<a class="anchor" aria-label="anchor" href="#confiabilidade-inter-codificador"></a>
 </h2>
 <p>Simulamos a revisão humana (com 1 discordância em 12) e calculamos as
-métricas de concordância — no artigo, essas métricas aparecem na seção
-de método:</p>
+métricas de concordância: no artigo, essas métricas aparecem na seção de
+método:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  doc_id    <span class="op">=</span> <span class="va">resultado</span><span class="op">$</span><span class="va">doc_id</span>,</span>
@@ -591,13 +591,21 @@ de método:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> krippendorff_alpha    0.880    0.584        1 quase perfeita (Landis &amp; Koch, …</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gwet_ac1              0.875    0.629        1 quase perfeita (Landis &amp; Koch, …</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> f1_macro              0.915    0.625        1 quase perfeita (Landis &amp; Koch, …</span></span></code></pre></div>
+<blockquote>
+<p><strong>Como interpretar:</strong> com 1 discordância em 12
+documentos, espera-se <em>percent agreement</em> alto (~92%) mas Kappa e
+Alpha mais conservadores, já que corrigem pela concordância esperada ao
+acaso dado o desbalanço entre categorias. O intervalo de confiança via
+<em>bootstrap</em> importa mais em amostras pequenas como esta:
+reporte-o junto da estimativa pontual, não apenas o valor central.</p>
+</blockquote>
 </div>
 <div class="section level2">
-<h2 id="relatório-de-método-replicabilidade-automática">6. Relatório de método — replicabilidade automática<a class="anchor" aria-label="anchor" href="#relat%C3%B3rio-de-m%C3%A9todo-replicabilidade-autom%C3%A1tica"></a>
+<h2 id="relatório-de-método-replicabilidade-automática">6. Relatório de método: replicabilidade automática<a class="anchor" aria-label="anchor" href="#relat%C3%B3rio-de-m%C3%A9todo-replicabilidade-autom%C3%A1tica"></a>
 </h2>
 <p>Aqui está o <strong>coração desta vignette</strong>:
-<code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code> empacota tudo — codebook, config LLM,
-distribuição de resultados, métricas de IRR — em um documento único,
+<code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code> empacota tudo (codebook, config LLM,
+distribuição de resultados, métricas de IRR) em um documento único,
 pronto para anexar como material suplementar de um artigo.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arquivo_md</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"relatório-"</span>, fileext <span class="op">=</span> <span class="st">".md"</span><span class="op">)</span></span>
@@ -616,13 +624,13 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Unknown or uninitialised column: `metrics`.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Relatorio salvo em</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/Rtmp08z059/relatório-21fb5d181fa4.md</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpTv8TnQ/relatório-22e67fc253d9.md</span></span></span></code></pre></div>
 <p>Primeiras 40 linhas do relatório gerado:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">arquivo_md</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Classificação de posicionamento na reforma tributária</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 14:28:16 UTC</span></span>
+<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 14:33:19 UTC</span></span>
 <span><span class="co">#&gt; - **Versao do acR:** 0.6.0</span></span>
 <span><span class="co">#&gt; - **Autor(es):** Silva, A.; Souza, B.</span></span>
 <span><span class="co">#&gt; - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).</span></span>
@@ -638,7 +646,7 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="co">#&gt; | Idioma        | `pt` |</span></span>
 <span><span class="co">#&gt; | Modo        | `manual` |</span></span>
 <span><span class="co">#&gt; | Multilabel  | `FALSE` |</span></span>
-<span><span class="co">#&gt; | Criado em     | 2026-10-15 14:28:15 |</span></span>
+<span><span class="co">#&gt; | Criado em     | 2026-10-15 14:33:17 |</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; **Instrucoes ao codificador:**</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -689,7 +697,7 @@ publicação web):</p>
 <span><span class="va">irr</span>       <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span>llm <span class="op">=</span> <span class="va">resultado</span>, human <span class="op">=</span> <span class="va">revisado</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_report.html">ac_qual_report</a></span><span class="op">(</span><span class="va">resultado</span>, <span class="va">cb</span>, reliability <span class="op">=</span> <span class="va">irr</span>, path <span class="op">=</span> <span class="st">"metodo.md"</span><span class="op">)</span></span></code></pre></div>
 <p>Seis funções principais, um pipeline reproduzível, um relatório
-automático — do texto bruto ao apêndice metodológico do artigo.</p>
+automático: do texto bruto ao apêndice metodológico do artigo.</p>
 </div>
 <div class="section level2">
 <h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>

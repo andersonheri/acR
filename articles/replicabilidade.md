@@ -14,20 +14,20 @@ idênticos a uma rodada real.
 
 ## O pipeline em 6 etapas
 
-1.  **Coleta** — corpus real ou fabricado
-2.  **Codebook** — instrumento analítico (`ac_qual_codebook`)
-3.  **Classificação** — LLM com `live view` (`ac_qual_code(live = ...)`)
-4.  **Amostragem para revisão** —
+1.  **Coleta**: corpus real ou fabricado
+2.  **Codebook**: instrumento analítico (`ac_qual_codebook`)
+3.  **Classificação**: LLM com `live view` (`ac_qual_code(live = ...)`)
+4.  **Amostragem para revisão**:
     [`ac_qual_sample()`](https://andersonheri.github.io/acR/reference/ac_qual_sample.md)
-5.  **Confiabilidade inter-codificador** —
+5.  **Confiabilidade inter-codificador**:
     [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
-6.  **Relatório de método** —
+6.  **Relatório de método**:
     [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
 
 ## 1. Corpus
 
 Corpus fabricado de 12 pronunciamentos com posição declarada
-(favor/contra/neutro) — em uso real, este data.frame viria de
+(favor/contra/neutro). Em uso real, este data.frame viria de
 [`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md),
 [`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md)
 ou de importação de PDFs.
@@ -120,7 +120,7 @@ cb
 #> • Categorias (3): "favor", "contra", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 14:28
+#> • Criado em: 15/10/2026 14:33
 #> 
 #> Instrução geral:
 #> Classifique a posicao do parlamentar sobre a reforma tributária com base no
@@ -143,9 +143,9 @@ análise em outra sessão:
 
 arquivo_cb <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo_cb)
-#> ✅ Codebook salvo em /tmp/Rtmp08z059/file21fb445b8ac7.yaml
+#> ✅ Codebook salvo em /tmp/RtmpTv8TnQ/file22e62bdb9513.yaml
 cat("Codebook salvo em:", arquivo_cb, "\n")
-#> Codebook salvo em: /tmp/Rtmp08z059/file21fb445b8ac7.yaml
+#> Codebook salvo em: /tmp/RtmpTv8TnQ/file22e62bdb9513.yaml
 ```
 
 ## 3. Classificação com live view
@@ -252,7 +252,7 @@ resultado |>
 ## 4. Amostra para revisão humana
 
 `ac_qual_sample(strategy = "uncertainty")` prioriza documentos com menor
-`confidence_score` — foca o esforço humano onde o LLM mais errou.
+`confidence_score`: foca o esforço humano onde o LLM mais errou.
 
 ``` r
 
@@ -287,8 +287,8 @@ revisado <- ac_qual_import_human("revisao.xlsx")
 ## 5. Confiabilidade inter-codificador
 
 Simulamos a revisão humana (com 1 discordância em 12) e calculamos as
-métricas de concordância — no artigo, essas métricas aparecem na seção
-de método:
+métricas de concordância: no artigo, essas métricas aparecem na seção de
+método:
 
 ``` r
 
@@ -518,13 +518,20 @@ irr
 #> 4 f1_macro              0.915    0.625        1 quase perfeita (Landis & Koch, …
 ```
 
-## 6. Relatório de método — replicabilidade automática
+> **Como interpretar:** com 1 discordância em 12 documentos, espera-se
+> *percent agreement* alto (~92%) mas Kappa e Alpha mais conservadores,
+> já que corrigem pela concordância esperada ao acaso dado o desbalanço
+> entre categorias. O intervalo de confiança via *bootstrap* importa
+> mais em amostras pequenas como esta: reporte-o junto da estimativa
+> pontual, não apenas o valor central.
+
+## 6. Relatório de método: replicabilidade automática
 
 Aqui está o **coração desta vignette**:
 [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
-empacota tudo — codebook, config LLM, distribuição de resultados,
-métricas de IRR — em um documento único, pronto para anexar como
-material suplementar de um artigo.
+empacota tudo (codebook, config LLM, distribuição de resultados,
+métricas de IRR) em um documento único, pronto para anexar como material
+suplementar de um artigo.
 
 ``` r
 
@@ -544,7 +551,7 @@ ac_qual_report(
 )
 #> Warning: Unknown or uninitialised column: `metrics`.
 #> ✔ Relatorio salvo em
-#> /tmp/Rtmp08z059/relatório-21fb5d181fa4.md
+#> /tmp/RtmpTv8TnQ/relatório-22e67fc253d9.md
 ```
 
 Primeiras 40 linhas do relatório gerado:
@@ -554,7 +561,7 @@ Primeiras 40 linhas do relatório gerado:
 cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> # Classificação de posicionamento na reforma tributária
 #> 
-#> - **Gerado em:** 2026-10-15 14:28:16 UTC
+#> - **Gerado em:** 2026-10-15 14:33:19 UTC
 #> - **Versao do acR:** 0.6.0
 #> - **Autor(es):** Silva, A.; Souza, B.
 #> - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).
@@ -570,7 +577,7 @@ cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> | Idioma        | `pt` |
 #> | Modo        | `manual` |
 #> | Multilabel  | `FALSE` |
-#> | Criado em     | 2026-10-15 14:28:15 |
+#> | Criado em     | 2026-10-15 14:33:17 |
 #> 
 #> **Instrucoes ao codificador:**
 #> 
@@ -630,7 +637,7 @@ ac_qual_report(resultado, cb, reliability = irr, path = "metodo.md")
 ```
 
 Seis funções principais, um pipeline reproduzível, um relatório
-automático — do texto bruto ao apêndice metodológico do artigo.
+automático: do texto bruto ao apêndice metodológico do artigo.
 
 ## Referências
 

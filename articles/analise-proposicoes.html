@@ -170,7 +170,7 @@ técnica, um discurso favorável e um discurso contrário.</p>
 <p>O codebook define as cinco categorias de posicionamento com suas
 definições operacionais. A instrução orienta o modelo a usar
 <code>Populista</code> para textos com apelo emocional sem argumentação
-substantiva — uma distinção importante para a análise de discursos
+substantiva: uma distinção importante para a análise de discursos
 parlamentares brasileiros.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
@@ -347,7 +347,7 @@ posicionamento:</p>
 <p>O argumento <code>chat =</code> recebe qualquer objeto
 <code>Chat</code> do <strong>ellmer</strong>. Aqui usamos o Groq com
 <code>openai/gpt-oss-120b</code>, que oferece plano gratuito e latência
-baixa — ideal para corpora de tamanho médio como este.</p>
+baixa: ideal para corpora de tamanho médio como este.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="st">"openai/gpt-oss-120b"</span>,</span>
@@ -380,9 +380,19 @@ documentos:</p>
 <span><span class="co">## 9 pec32_contra    reform  contrario  contrario                 1.000</span></span></code></pre>
 <p>O texto <code>pl2858_favor</code> (“Presos políticos: votar pela
 anistia é votar pela democracia”) recebeu <code>populista</code> com
-confiança 0.667 — caso limítrofe que ilustra a utilidade do
+confiança 0.667, caso limítrofe que ilustra a utilidade do
 self-consistency para identificar documentos ambíguos que merecem
 revisão humana prioritária.</p>
+<blockquote>
+<p><strong>Como interpretar:</strong> <code>confidence_score</code> mede
+o quanto as <code>k_consistency</code> rodadas independentes concordaram
+entre si, não se a categoria escolhida está “correta”. 1.000 significa
+que todas as rodadas bateram na mesma categoria; 0.667 com
+<code>k_consistency = 3L</code> significa que 2 das 3 rodadas
+concordaram e 1 discordou. Documentos com confiança baixa são justamente
+os que a amostragem por <code>strategy = "uncertainty"</code> (seção 5)
+prioriza para revisão humana.</p>
+</blockquote>
 <hr>
 </div>
 <div class="section level2">
@@ -430,6 +440,14 @@ humano.</p>
 <span><span class="co">## Cohen's Kappa (unweighted)     1.000       Perfeita</span></span>
 <span><span class="co">## Fleiss' Kappa                  1.000       Perfeita</span></span>
 <span><span class="co">## Krippendorff's Alpha (nominal) 1.000       Perfeita</span></span></code></pre>
+<blockquote>
+<p><strong>Como interpretar:</strong> Percent Agreement ignora a chance
+de acerto aleatório e por isso é sempre a métrica mais otimista da
+tabela; Kappa e Alpha corrigem por essa chance e tendem a ser mais
+conservadoras, especialmente quando uma categoria é muito mais frequente
+que as outras. Reporte Kappa ou Alpha como medida principal no artigo, e
+Percent Agreement apenas como complemento descritivo.</p>
+</blockquote>
 <p>Concordância perfeita é esperada para este corpus, dado que os textos
 foram construídos com posicionamentos inequívocos. Em corpora reais com
 textos ambíguos, valores de kappa entre 0.61 e 0.80 são considerados
@@ -456,7 +474,7 @@ adequados para publicação (Landis &amp; Koch, 1977).</p>
 <span><span class="co">## 2 pl2858_ementa  anistia neutro_tecnico                1</span></span>
 <span><span class="co">## 3 pec32_ementa   reform  neutro_tecnico                1</span></span></code></pre>
 <p>As três ementas foram corretamente classificadas como
-<code>neutro_tecnico</code> com confiança máxima — resultado consistente
+<code>neutro_tecnico</code> com confiança máxima, resultado consistente
 com a natureza jurídica desses textos.</p>
 <hr>
 </div>

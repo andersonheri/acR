@@ -98,7 +98,7 @@
 </h2>
 <p>Esta vignette cobre o fluxo de <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> quando o
 modelo roda <strong>localmente</strong> (LM Studio, llama.cpp, vLLM,
-Ollama em modo OpenAI) em vez de um provedor em nuvem — o cenário mais
+Ollama em modo OpenAI) em vez de um provedor em nuvem: o cenário mais
 comum quando os documentos não podem sair do ambiente do pesquisador
 (dados sensíveis, acordos de confidencialidade institucional) ou quando
 o volume de documentos tornaria o custo por token de um provedor pago
@@ -147,7 +147,7 @@ documento vai consumir:</p>
 <span><span class="co"># Quantos documentos provavelmente excedem uma janela de 8k tokens?</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">tamanhos</span> <span class="op">&gt;</span> <span class="fl">8000</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="../reference/ac_estimate_tokens.html">ac_estimate_tokens()</a></code> é uma heurística (caracteres por
-token) — não faz nenhuma chamada de rede. Para uma estimativa calibrada
+token): não faz nenhuma chamada de rede. Para uma estimativa calibrada
 contra o modelo e tokenizador real, rode
 <code><a href="../reference/ac_calibrate_tokens.html">ac_calibrate_tokens()</a></code> numa amostra pequena antes da rodada
 completa:</p>
@@ -160,7 +160,7 @@ completa:</p>
 <span><span class="va">razao</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_calibrate_tokens.html">ac_calibrate_tokens</a></span><span class="op">(</span><span class="va">chat_factory</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">$</span><span class="va">text</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">tamanhos_calibrados</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_estimate_tokens.html">ac_estimate_tokens</a></span><span class="op">(</span><span class="va">corpus</span><span class="op">$</span><span class="va">text</span>, chars_per_token <span class="op">=</span> <span class="va">razao</span><span class="op">)</span></span></code></pre></div>
 <p>Documentos que excedem a janela de contexto do servidor não devem ser
-enviados como estão — considere dividir manualmente em partes menores
+enviados como estão: considere dividir manualmente em partes menores
 antes de montar o <code><a href="../reference/ac_corpus.html">ac_corpus()</a></code>, ou reduzir
 <code>reasoning_length</code> para liberar espaço para a resposta.</p>
 </div>
@@ -184,12 +184,12 @@ a rodada for interrompida, rodar o mesmo comando de novo pula os
 documentos já concluídos e continua de onde parou.
 <code>live = "progress"</code> mostra uma barra enxuta (documento atual
 + status) em vez de ecoar categoria e raciocínio a cada uma das
-<code>k_consistency</code> rodadas — importante para não poluir o
-console numa rodada de milhares de documentos.</p>
+<code>k_consistency</code> rodadas: importante para não poluir o console
+numa rodada de milhares de documentos.</p>
 <p>Se os parâmetros da rodada mudarem (codebook revisado, modelo
 diferente, <code>k_consistency</code> diferente), o
 <code>checkpoint_dir</code> é invalidado e recomeça do zero
-automaticamente — com aviso — para nunca misturar classificações de
+automaticamente (com aviso), para nunca misturar classificações de
 codebooks diferentes sem que o pesquisador perceba.</p>
 </div>
 <div class="section level2">
@@ -209,10 +209,10 @@ diferencia os tipos de falha:</p>
 <span><span class="co"># erro_servidor      -- outro erro de rede/servidor</span></span></code></pre></div>
 <p><code>max_retries</code> tenta de novo (com espera exponencial) para
 <code>timeout</code> e <code>erro_servidor</code>, mas não para
-<code>estouro_contexto</code> — repetir a mesma chamada com o mesmo
-texto não vai resolver um documento que simplesmente não cabe na janela
-do modelo. Se mais da metade dos últimos documentos falhar, a rodada é
-interrompida automaticamente — sinal de que o servidor está instável e
+<code>estouro_contexto</code>: repetir a mesma chamada com o mesmo texto
+não vai resolver um documento que simplesmente não cabe na janela do
+modelo. Se mais da metade dos últimos documentos falhar, a rodada é
+interrompida automaticamente: sinal de que o servidor está instável e
 insistir só desperdiçaria tempo.</p>
 </div>
 <div class="section level2">
@@ -220,9 +220,8 @@ insistir só desperdiçaria tempo.</p>
 </h2>
 <p>Quando o codebook é <code>multilabel = TRUE</code>, a métrica
 agregada de [ac_qual_reliability()] mistura decisões binárias
-independentes num único número — uma concordância “boa” pode esconder
-uma categoria específica indo mal. Use
-<code>by_variable = TRUE</code>:</p>
+independentes num único número: uma concordância “boa” pode esconder uma
+categoria específica indo mal. Use <code>by_variable = TRUE</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span></span>
 <span>  llm    <span class="op">=</span> <span class="va">coded</span>,</span>
@@ -233,9 +232,9 @@ uma categoria específica indo mal. Use
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">rel</span>, <span class="st">"by_variable"</span><span class="op">)</span></span></code></pre></div>
 <p><code>exclude_status</code> remove da comparação documentos cuja
-rodada principal falhou — uma categoria vinda de uma resposta inválida
-ou um timeout não é um dado confiável sobre concordância, e misturá-la
-nas métricas por variável distorceria o diagnóstico.</p>
+rodada principal falhou: uma categoria vinda de uma resposta inválida ou
+um timeout não é um dado confiável sobre concordância, e misturá-la nas
+métricas por variável distorceria o diagnóstico.</p>
 <p>Para montar a amostra de validação humana de forma representativa da
 população (não só de cada categoria igualmente, como
 <code>strategy = "stratified"</code> faz), use
@@ -265,8 +264,8 @@ rodada:</p>
 <code>confidence_score</code> num artigo: se um <code>Chat</code>
 pré-configurado não confirmar a temperatura pedida,
 <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> já emite um aviso explícito no momento da
-rodada — mas <code>run_info</code> permite auditar isso depois,
-inclusive em rodadas de terceiros.</p>
+rodada, mas <code>run_info</code> permite auditar isso depois, inclusive
+em rodadas de terceiros.</p>
 </div>
 <div class="section level2">
 <h2 id="referências">Referências<a class="anchor" aria-label="anchor" href="#refer%C3%AAncias"></a>
