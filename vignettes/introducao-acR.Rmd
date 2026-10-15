@@ -30,6 +30,25 @@ com só o essencial, veja o **[Quickstart](quickstart.html)**.
 library(acR)
 ```
 
+```{r lexico, include=FALSE}
+# ac_sentiment() baixa o OpLexicon (GitHub) na primeira execução e guarda
+# em cache. Sem acesso a ele, os trechos que dependem do léxico não rodam,
+# em vez de interromper a vignette com erro.
+tem_lexico <- tryCatch({
+  suppressMessages(ac_sentiment(ac_corpus(data.frame(text = "bom"))))
+  TRUE
+}, error = function(e) FALSE)
+```
+
+```{r aviso-lexico, echo=FALSE, results="asis", eval=!tem_lexico}
+cat(
+  "> **Aviso:** o léxico OpLexicon não pôde ser baixado ao gerar esta",
+  "> página (sem acesso à internet), então os trechos que dependem dele",
+  "> não foram executados. Rode a vignette com internet para ver as saídas.",
+  sep = "\n"
+)
+```
+
 ## O objeto central: `ac_corpus`
 
 Tudo no `acR` gira em torno do `ac_corpus`, um `tibble` com colunas
@@ -129,14 +148,14 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 Escore agregado de polaridade de cada documento, usando o léxico
 OpLexicon (Souza e Vieira, 2012):
 
-```{r sentimento}
+```{r sentimento, eval=tem_lexico}
 sent <- ac_sentiment(corpus)
 sent
 ```
 
 Visualizando por documento:
 
-```{r plot-sentimento}
+```{r plot-sentimento, eval=tem_lexico}
 if (requireNamespace("ggplot2", quietly = TRUE)) {
   ac_plot_sentiment(sent)
 }

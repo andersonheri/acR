@@ -57,6 +57,13 @@ ausentes dele);
 pontuações por documento e, opcionalmente, por grupo ou janela temporal.
 }
 \details{
+\strong{Download e cache.} O OpLexicon não vem dentro do pacote: na
+primeira execução ele é baixado do repositório público do léxico no
+GitHub e salvo em \code{tools::R_user_dir("acR", "data")}; as execuções
+seguintes usam esse arquivo e funcionam sem internet. Se o download
+falhar (sem conexão, por exemplo), a função para com uma mensagem
+explicando o motivo.
+
 \strong{Como o léxico é aplicado.} O texto é limpo (minúsculas, sem
 pontuação), tokenizado em palavras e cada palavra recebe a polaridade
 do OpLexicon (-1, 0, +1); palavras fora do léxico valem 0. Alguns
@@ -73,6 +80,9 @@ amostra codificada por humano (ver \code{\link[=ac_dictionary_validate]{ac_dicti
 de interpretar os escores.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Requer internet na primeira execucao: ac_sentiment() baixa o OpLexicon
+# do GitHub e o guarda em cache (tools::R_user_dir("acR", "data")).
 # Discursos com valência afetiva variada
 df <- data.frame(
   id = paste0("d", 1:6),
@@ -97,7 +107,7 @@ ac_sentiment(corpus, by = "partido")
 
 # Metodo alternativo: razao positivos/negativos
 ac_sentiment(corpus, method = "ratio")
-
+\dontshow{\}) # examplesIf}
 }
 \references{
 Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter Data for

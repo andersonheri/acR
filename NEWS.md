@@ -117,6 +117,16 @@ produzidos pelas funcoes afetadas mudam em relacao a 0.5.0.
   inventadas; grafico de barras do Wordscores com alerta de eixo sem
   zero significativo (Cleveland, 1985).
 
+## Recursos da internet
+
+* `ac_sentiment()` baixa o OpLexicon do GitHub na primeira execucao. Os
+  exemplos de `ac_sentiment()` e `ac_plot_sentiment()` passam a usar
+  `@examplesIf interactive()`, e as vignettes `sentimento`,
+  `introducao-acR` e `quickstart` testam o acesso ao lexico antes:
+  sem internet, pulam so os trechos que dependem dele e mostram um
+  aviso, em vez de falhar. A documentacao de `ac_sentiment()` explica
+  o download e o cache em `tools::R_user_dir("acR", "data")`.
+
 ## Correcao de comportamento
 
 * `ac_qual_codebook_translate()`: exigia o pacote `ellmer` instalado
@@ -158,11 +168,11 @@ produzidos pelas funcoes afetadas mudam em relacao a 0.5.0.
 
 ## Manutencao de infraestrutura
 
-* Corrigidas referencias ao dominio pessoal do mantenedor
-  (`ahenriquecp.com`) que estavam, por engano, apontadas como site do
-  pacote em `_pkgdown.yml`, README, `DESCRIPTION` e
-  `cran-comments.md`; agora todas apontam para a URL real do pkgdown
-  (`https://andersonheri.github.io/acR/`).
+* URLs do site do pacote unificadas em `https://ahenriquecp.com/acR/`
+  (`_pkgdown.yml`, README, `DESCRIPTION`, `man/acR-package.Rd`): o
+  endereco `andersonheri.github.io/acR` redireciona (301) para ele, e
+  o CRAN aponta URLs que redirecionam. Corrigido tambem o link do
+  repositorio da ENAP no README, cujo endereco antigo nao resolvia.
 * Removida do controle de versao a pasta `docs/` que vinha sendo
   comitada por engano em `main` desde uma configuracao antiga de
   publicacao (hoje o site e publicado via GitHub Actions na branch
