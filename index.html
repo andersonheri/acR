@@ -92,30 +92,30 @@
 <!-- badges: start -->
 
 <blockquote>
-<p><strong>Análise de Conteúdo em R</strong> — pipeline integrado qualitativo (LLMs) e quantitativo, com foco em corpora brasileiros e dados parlamentares.</p>
+<p><strong>Análise de Conteúdo em R</strong>: pipeline integrado qualitativo (LLMs) e quantitativo, com foco em corpora brasileiros e dados parlamentares.</p>
 </blockquote>
 <p align="center">
 <img src="reference/figures/pipeline.svg" alt="Pipeline do acR: coleta, corpus, análise quantitativa/qualitativa em paralelo, validação e exportação" width="100%"></p>
 <div class="section level2">
 <h2 id="em-uma-linha">Em uma linha<a class="anchor" aria-label="anchor" href="#em-uma-linha"></a>
 </h2>
-<p>Do texto bruto ao resultado publicável — codebook, LLM, <em>keyness</em>, LDA, sentimento e concordância inter-codificador, num único fluxo reprodutível.</p>
+<p>Do texto bruto ao resultado publicável: codebook, LLM, <em>keyness</em>, LDA, sentimento e concordância inter-codificador, num único fluxo reprodutível.</p>
 </div>
 <div class="section level2">
 <h2 id="novidades">Novidades<a class="anchor" aria-label="anchor" href="#novidades"></a>
 </h2>
-<p>Última leva traz 12 técnicas novas de diagnóstico, escalonamento e dicionários para o módulo quantitativo — veja a seção <a href="https://andersonheri.github.io/acR/articles/quantitativo.html">“Novidades: diagnóstico de corpus, escalas e dicionários”</a> da vignette quantitativa para exemplos completos:</p>
+<p>Última leva traz 12 técnicas novas de diagnóstico, escalonamento e dicionários para o módulo quantitativo. Veja a seção <a href="https://andersonheri.github.io/acR/articles/quantitativo.html">“Novidades: diagnóstico de corpus, escalas e dicionários”</a> da vignette quantitativa para exemplos completos:</p>
 <ul>
 <li>
 <strong>Diagnóstico de corpus</strong>: legibilidade (<code><a href="reference/ac_readability.html">ac_readability()</a></code>, Flesch adaptado ao português), diversidade lexical (<code><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity()</a></code>: TTR, Herdan’s C, MTLD) e Lei de Zipf (<code><a href="reference/ac_plot_zipf.html">ac_plot_zipf()</a></code>).</li>
 <li>
-<strong>Leitura de contexto</strong>: concordância/KWIC (<code><a href="reference/ac_kwic.html">ac_kwic()</a></code>) e colocações com medidas de associação — PMI, log-likelihood, qui-quadrado (<code><a href="reference/ac_collocations.html">ac_collocations()</a></code>).</li>
+<strong>Leitura de contexto</strong>: concordância/KWIC (<code><a href="reference/ac_kwic.html">ac_kwic()</a></code>) e colocações com medidas de associação (PMI, log-likelihood, qui-quadrado) (<code><a href="reference/ac_collocations.html">ac_collocations()</a></code>).</li>
 <li>
 <strong>Série temporal</strong>: agregação diacrônica de qualquer métrica por dia, semana, mês ou ano (<code><a href="reference/ac_temporal.html">ac_temporal()</a></code>).</li>
 <li>
-<strong>Escalas e mapas</strong>: escalonamento ideológico via Wordscores (<code><a href="reference/ac_wordscores.html">ac_wordscores()</a></code>) e análise de correspondência — biplot de documentos/grupos × termos (<code><a href="reference/ac_ca.html">ac_ca()</a></code>).</li>
+<strong>Escalas e mapas</strong>: escalonamento ideológico via Wordscores (<code><a href="reference/ac_wordscores.html">ac_wordscores()</a></code>) e análise de correspondência, biplot de documentos/grupos × termos (<code><a href="reference/ac_ca.html">ac_ca()</a></code>).</li>
 <li>
-<strong>Dicionários customizados</strong>: dicionário multi-categoria genérico (<code><a href="reference/ac_dictionary.html">ac_dictionary()</a></code>), léxicos de emoção (<code><a href="reference/ac_emotion.html">ac_emotion()</a></code>), construção e importação de dicionários via YAML/CSV (<code><a href="reference/ac_build_dictionary.html">ac_build_dictionary()</a></code>, <code><a href="reference/ac_dictionary_save.html">ac_dictionary_save()</a></code>/<code><a href="reference/ac_dictionary_save.html">ac_dictionary_load()</a></code>, <code><a href="reference/ac_dictionary_import.html">ac_dictionary_import()</a></code>) e validação contra codificação humana (<code><a href="reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>) — o mesmo rigor de <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>, agora para o método de dicionário.</li>
+<strong>Dicionários customizados</strong>: dicionário multi-categoria genérico (<code><a href="reference/ac_dictionary.html">ac_dictionary()</a></code>), léxicos de emoção (<code><a href="reference/ac_emotion.html">ac_emotion()</a></code>), construção e importação de dicionários via YAML/CSV (<code><a href="reference/ac_build_dictionary.html">ac_build_dictionary()</a></code>, <code><a href="reference/ac_dictionary_save.html">ac_dictionary_save()</a></code>/<code><a href="reference/ac_dictionary_save.html">ac_dictionary_load()</a></code>, <code><a href="reference/ac_dictionary_import.html">ac_dictionary_import()</a></code>) e validação contra codificação humana (<code><a href="reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>): o mesmo rigor de <code><a href="reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>, agora para o método de dicionário.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -168,7 +168,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="fundamentação-metodológica">Fundamentação metodológica<a class="anchor" aria-label="anchor" href="#fundamenta%C3%A7%C3%A3o-metodol%C3%B3gica"></a>
 </h2>
-<p>O pipeline segue Sampaio e Lycarião (2021) — referência atual para análise de conteúdo categorial no Brasil — e Krippendorff (2018). Bardin (2011) é reconhecida como pioneira, mas o pacote privilegia abordagens metodologicamente atualizadas. A camada de LLM é inspirada no <code>quallmer</code> (Maerz e Benoit, 2025) e comunica com múltiplos provedores via <code>ellmer</code> (Wickham et al., 2025).</p>
+<p>O pipeline segue Sampaio e Lycarião (2021), referência atual para análise de conteúdo categorial no Brasil, e Krippendorff (2018). Bardin (2011) é reconhecida como pioneira, mas o pacote privilegia abordagens metodologicamente atualizadas. A camada de LLM é inspirada no <code>quallmer</code> (Maerz e Benoit, 2025) e comunica com múltiplos provedores via <code>ellmer</code> (Wickham et al., 2025).</p>
 <blockquote>
 <p><strong>Status:</strong> <code>acR</code> está <strong>na CRAN</strong> desde agosto/2026 e em desenvolvimento ativo no <code>main</code>. Contribuições e feedback via <a href="https://github.com/andersonheri/acR/issues" class="external-link">issues</a>.</p>
 </blockquote>
@@ -193,7 +193,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <h2 id="pipeline-qualitativo-do-texto-à-classificação">Pipeline qualitativo: do texto à classificação<a class="anchor" aria-label="anchor" href="#pipeline-qualitativo-do-texto-%C3%A0-classifica%C3%A7%C3%A3o"></a>
 </h2>
 <div class="section level3">
-<h3 id="passo-1--coletar-discursos-parlamentares">Passo 1 — Coletar discursos parlamentares<a class="anchor" aria-label="anchor" href="#passo-1--coletar-discursos-parlamentares"></a>
+<h3 id="passo-1-coletar-discursos-parlamentares">Passo 1: Coletar discursos parlamentares<a class="anchor" aria-label="anchor" href="#passo-1-coletar-discursos-parlamentares"></a>
 </h3>
 <p>O <code>acR</code> tem funções nativas para coletar dados das APIs abertas da Câmara dos Deputados e do Senado Federal. A coleta da Câmara é feita por período, partido, UF e tipo de discurso, com paginação automática e tratamento de erros de conexão. A coleta do Senado é viabilizada pelo pacote <a href="https://github.com/vsntos/senatebR" class="external-link">senatebR</a>, de Vinicius Santos (UERJ), cujas funções o <code>acR</code> estende com uma interface padronizada ao restante do pipeline.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -201,7 +201,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Coletar discursos plenários da Câmara — março de 2024</span></span>
+<span><span class="co"># Coletar discursos plenários da Câmara em março de 2024</span></span>
 <span><span class="va">corpus_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_fetch_camara.html">ac_fetch_camara</a></span><span class="op">(</span></span>
 <span>  data_inicio   <span class="op">=</span> <span class="st">"2024-03-11"</span>,</span>
 <span>  data_fim      <span class="op">=</span> <span class="st">"2024-03-15"</span>,</span>
@@ -210,7 +210,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="passo-2--estruturar-e-limpar-o-corpus">Passo 2 — Estruturar e limpar o corpus<a class="anchor" aria-label="anchor" href="#passo-2--estruturar-e-limpar-o-corpus"></a>
+<h3 id="passo-2-estruturar-e-limpar-o-corpus">Passo 2: Estruturar e limpar o corpus<a class="anchor" aria-label="anchor" href="#passo-2-estruturar-e-limpar-o-corpus"></a>
 </h3>
 <p>O objeto <code>ac_corpus</code> é a unidade central do pacote, carregando o texto, os metadados e o idioma do corpus, aceito por todas as funções de análise.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -250,10 +250,10 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span>  handle_na           <span class="op">=</span> <span class="st">"remove"</span>,   <span class="co"># novo: remove documentos com texto NA</span></span>
 <span>  verbose             <span class="op">=</span> <span class="cn">TRUE</span>        <span class="co"># novo: exibe resumo da limpeza</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>O argumento <code>verbose = TRUE</code> exibe um resumo com tokens antes e depois, quantos foram removidos por etapa e quantos documentos ficaram vazios após a limpeza — útil para calibrar os parâmetros antes de rodar o pipeline completo.</p>
+<p>O argumento <code>verbose = TRUE</code> exibe um resumo com tokens antes e depois, quantos foram removidos por etapa e quantos documentos ficaram vazios após a limpeza: útil para calibrar os parâmetros antes de rodar o pipeline completo.</p>
 </div>
 <div class="section level3">
-<h3 id="passo-3--definir-o-codebook">Passo 3 — Definir o codebook<a class="anchor" aria-label="anchor" href="#passo-3--definir-o-codebook"></a>
+<h3 id="passo-3-definir-o-codebook">Passo 3: Definir o codebook<a class="anchor" aria-label="anchor" href="#passo-3-definir-o-codebook"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
@@ -280,7 +280,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="passo-4--classificar-com-llm">Passo 4 — Classificar com LLM<a class="anchor" aria-label="anchor" href="#passo-4--classificar-com-llm"></a>
+<h3 id="passo-4-classificar-com-llm">Passo 4: Classificar com LLM<a class="anchor" aria-label="anchor" href="#passo-4-classificar-com-llm"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">chat_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/chat_groq.html" class="external-link">chat_groq</a></span><span class="op">(</span></span>
@@ -299,7 +299,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="passo-5--validar-com-codificadores-humanos">Passo 5 — Validar com codificadores humanos<a class="anchor" aria-label="anchor" href="#passo-5--validar-com-codificadores-humanos"></a>
+<h3 id="passo-5-validar-com-codificadores-humanos">Passo 5: Validar com codificadores humanos<a class="anchor" aria-label="anchor" href="#passo-5-validar-com-codificadores-humanos"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">amostra</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_qual_sample.html">ac_qual_sample</a></span><span class="op">(</span><span class="va">resultado</span>, n <span class="op">=</span> <span class="fl">15</span>, strategy <span class="op">=</span> <span class="st">"uncertainty"</span><span class="op">)</span></span>
@@ -399,7 +399,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="qual-função-eu-preciso">Qual função eu preciso?<a class="anchor" aria-label="anchor" href="#qual-fun%C3%A7%C3%A3o-eu-preciso"></a>
 </h2>
-<p>Um guia rápido do objetivo ao código. Cada linha aponta a função principal e a vignette com o exemplo completo. As demais funções são variações ou utilitários — veja <strong><a href="https://andersonheri.github.io/acR/reference/">Funções disponíveis (completo)</a></strong>.</p>
+<p>Um guia rápido do objetivo ao código. Cada linha aponta a função principal e a vignette com o exemplo completo. As demais funções são variações ou utilitários. Veja <strong><a href="https://andersonheri.github.io/acR/reference/">Funções disponíveis (completo)</a></strong>.</p>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -427,7 +427,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <td>
 <code><a href="reference/ac_fetch_camara.html">ac_fetch_camara()</a></code> · <code><a href="reference/ac_fetch_senado.html">ac_fetch_senado()</a></code>
 </td>
-<td><a href="https://andersonheri.github.io/acR/articles/an%C3%A1lise-proposicoes.html">Estudo de caso</a></td>
+<td><a href="https://andersonheri.github.io/acR/articles/analise-proposicoes.html">Estudo de caso</a></td>
 </tr>
 <tr>
 <td>Limpar texto (stopwords, URLs, acentos, NAs)</td>
@@ -632,23 +632,23 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <div class="section level2">
 <h2 id="cobertura-de-testes">Cobertura de testes<a class="anchor" aria-label="anchor" href="#cobertura-de-testes"></a>
 </h2>
-<p>Suite de <strong>561 blocos <code>test_that</code></strong>, cobrindo boa parte do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade — não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
+<p>Suite de <strong>561 blocos <code>test_that</code></strong>, cobrindo boa parte do código (medido com <code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code>). Testes de integração com APIs externas (Câmara, Senado, LLM) usam <code>skip_on_cran()</code> e verificação prévia de disponibilidade: não bloqueiam CI offline nem o <code>R CMD check</code> da CRAN.</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="documentação">Documentação<a class="anchor" aria-label="anchor" href="#documenta%C3%A7%C3%A3o"></a>
 </h2>
-<p>Site completo: <strong><a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></strong> — vignettes navegáveis, referência de todas as funções e changelog.</p>
+<p>Site completo: <strong><a href="https://andersonheri.github.io/acR/" class="uri">https://andersonheri.github.io/acR/</a></strong>, com vignettes navegáveis, referência de todas as funções e changelog.</p>
 <div class="section level3">
 <h3 id="comece-por-aqui">Comece por aqui<a class="anchor" aria-label="anchor" href="#comece-por-aqui"></a>
 </h3>
 <ul>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/quickstart.html">Quickstart (5 min)</a> — do zero ao primeiro gráfico.</li>
+<a href="https://andersonheri.github.io/acR/articles/quickstart.html">Quickstart (5 min)</a>: do zero ao primeiro gráfico.</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/introducao-acR.html">Visão geral do pacote</a> — pipeline em uma hora.</li>
+<a href="https://andersonheri.github.io/acR/articles/introducao-acR.html">Visão geral do pacote</a>: pipeline em uma hora.</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a> — do dado bruto ao relatório reprodutível.</li>
+<a href="https://andersonheri.github.io/acR/articles/replicabilidade.html">Replicabilidade ponta-a-ponta</a>: do dado bruto ao relatório reprodutível.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -656,9 +656,9 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h3>
 <ul>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Codificação com LLMs — guia completo</a> — codebook, self-consistency, revisão humana e concordância.</li>
+<a href="https://andersonheri.github.io/acR/articles/qualitativo-llm.html">Codificação com LLMs: guia completo</a>: codebook, self-consistency, revisão humana e concordância.</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/an%C3%A1lise-proposicoes.html">Estudo de caso: proposições legislativas</a> — aplicação real com dados da Câmara.</li>
+<a href="https://andersonheri.github.io/acR/articles/analise-proposicoes.html">Estudo de caso: proposições legislativas</a>: aplicação real com dados da Câmara.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -666,13 +666,13 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h3>
 <ul>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Frequências, keyness e coocorrência</a> — inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.</li>
+<a href="https://andersonheri.github.io/acR/articles/quantitativo.html">Frequências, keyness e coocorrência</a>: inclui nuvens de palavras (ggwordcloud), comparativa entre grupos, TF-IDF por tema, coocorrência com PMI/heatmap.</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/cluster.html">Agrupamento não supervisionado de documentos</a> — hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.</li>
+<a href="https://andersonheri.github.io/acR/articles/cluster.html">Agrupamento não supervisionado de documentos</a>: hclust, k-means, PAM; 6 visualizações e comparação lado-a-lado com LDA.</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/sentimento.html">Análise de sentimento (OpLexicon)</a> — polaridade e sentimento agregado por documento.</li>
+<a href="https://andersonheri.github.io/acR/articles/sentimento.html">Análise de sentimento (OpLexicon)</a>: polaridade e sentimento agregado por documento.</li>
 <li>
-<a href="https://andersonheri.github.io/acR/articles/lda.html">Modelagem de tópicos (LDA)</a> — escolha de <code>k</code>, interpretação de tópicos e visualização.</li>
+<a href="https://andersonheri.github.io/acR/articles/lda.html">Modelagem de tópicos (LDA)</a>: escolha de <code>k</code>, interpretação de tópicos e visualização.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -680,9 +680,9 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 </h3>
 <ul>
 <li>
-<a href="https://andersonheri.github.io/acR/reference/">Índice completo por área</a> — Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.</li>
+<a href="https://andersonheri.github.io/acR/reference/">Índice completo por área</a>: Coleta, Corpus, Análise qualitativa (LLM), Análise quantitativa, Validação e confiabilidade, Visualização, Replicabilidade, Exportação.</li>
 <li>
-<a href="https://andersonheri.github.io/acR/news/">Notícias / changelog</a> — histórico de versões (atual: <strong>0.6.0</strong>).</li>
+<a href="https://andersonheri.github.io/acR/news/">Notícias / changelog</a>: histórico de versões (atual: <strong>0.6.0</strong>).</li>
 </ul>
 <hr>
 </div>
@@ -694,14 +694,14 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"acR"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Henrique, A. (2026). acR: Análise de Conteúdo em R.
 R package version 0.6.0. ORCID: 0000-0002-1842-2725.
-Centro de Estudos da Metrópole (CEM-Cepid) — Universidade de São Paulo.
+Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.
 https://andersonheri.github.io/acR/</code></pre>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="uso-de-inteligência-artificial">Uso de Inteligência Artificial<a class="anchor" aria-label="anchor" href="#uso-de-intelig%C3%AAncia-artificial"></a>
 </h2>
-<p>O autor utilizou o modelo de linguagem Claude (Sonnet 5 e Opus 4.8 da Anthropic), operado por meio do ambiente <strong>Claude Code / Cowork</strong>, como ferramenta de apoio à depuração e à estruturação do código do pacote <code>acR</code> — incluindo a identificação e correção de bugs, a refatoração de funções, a escrita de testes automatizados e a redação da documentação (vignettes e roxygen). O autor assume integral responsabilidade pela correção técnica e científica do material publicado.</p>
+<p>O autor utilizou o modelo de linguagem Claude (Sonnet 5 e Opus 4.8 da Anthropic), operado por meio do ambiente <strong>Claude Code / Cowork</strong>, como ferramenta de apoio à depuração e à estruturação do código do pacote <code>acR</code>, incluindo a identificação e correção de bugs, a refatoração de funções, a escrita de testes automatizados e a redação da documentação (vignettes e roxygen). O autor assume integral responsabilidade pela correção técnica e científica do material publicado.</p>
 <hr>
 </div>
 <div class="section level2">
@@ -724,7 +724,7 @@ https://andersonheri.github.io/acR/</code></pre>
 <div class="section level2">
 <h2 id="licença">Licença<a class="anchor" aria-label="anchor" href="#licen%C3%A7a"></a>
 </h2>
-<p>MIT © Anderson Henrique (<a href="https://orcid.org/0000-0002-1842-2725" class="external-link">ORCID: 0000-0002-1842-2725</a>) — Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.</p>
+<p>MIT © Anderson Henrique (<a href="https://orcid.org/0000-0002-1842-2725" class="external-link">ORCID: 0000-0002-1842-2725</a>). Centro de Estudos da Metrópole (CEM-Cepid), Universidade de São Paulo.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

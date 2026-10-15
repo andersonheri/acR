@@ -383,7 +383,7 @@ Koch (1977) e Gwet (2014).
   LLMs](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)**
   — codebook completo, `ellmer`, *self-consistency*, tradução, fusão.
 - **[Análise de
-  proposições](https://andersonheri.github.io/acR/articles/an%C3%A1lise-proposicoes.md)**
+  proposições](https://andersonheri.github.io/acR/articles/analise-proposicoes.md)**
   — pipeline real de ponta-a-ponta em texto legislativo brasileiro.
 - **[LDA](https://andersonheri.github.io/acR/articles/lda.md)** —
   modelagem de tópicos.
