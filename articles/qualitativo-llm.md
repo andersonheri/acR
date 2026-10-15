@@ -7,7 +7,7 @@ análise de conteúdo assistida por modelos de linguagem (LLMs), seguindo
 as diretrizes metodológicas de Krippendorff (2018) e as recomendações
 empíricas de Gilardi, Alizadeh e Kubli (2023), que mostraram que LLMs
 modernas superam trabalhadores de plataformas em várias tarefas de
-anotação de textos políticos — **desde que guiadas por um codebook bem
+anotação de textos políticos, **desde que guiadas por um codebook bem
 construído e validadas por revisão humana**.
 
 O pipeline tem sete etapas encadeadas:
@@ -29,9 +29,9 @@ O pipeline tem sete etapas encadeadas:
 A função
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
 aceita o argumento `chat =`, que recebe qualquer objeto `Chat` do pacote
-**ellmer** (Wickham et al., 2025). Isso permite usar qualquer provedor —
-Groq, OpenAI, Anthropic, Google Gemini, Ollama, Mistral, DeepSeek,
-OpenRouter — sem alterar a lógica de análise. Também suporta modelos
+**ellmer** (Wickham et al., 2025). Isso permite usar qualquer provedor
+(Groq, OpenAI, Anthropic, Google Gemini, Ollama, Mistral, DeepSeek,
+OpenRouter) sem alterar a lógica de análise. Também suporta modelos
 locais via Ollama para pesquisas com dados sensíveis.
 
 > **Por que um codebook explícito?** A alternativa naïve seria pedir
@@ -41,27 +41,48 @@ locais via Ollama para pesquisas com dados sensíveis.
 > **operacionalização reproduzível**: outro pesquisador (humano ou LLM)
 > chega aos mesmos rótulos aplicando as mesmas definições e exemplos.
 
+### Por que essa ordem, e o que reportar em cada etapa
+
+O diagrama acima mostra a ordem de **execução**. A tabela abaixo explica
+a ordem de **reporte**: o que cada etapa produz que precisa aparecer na
+seção de método do seu estudo, e por que pular uma etapa compromete a
+defensabilidade do resultado.
+
+| Ordem | Etapa | O que reportar | Por que importa |
+|:--:|----|----|----|
+| 1 | Codebook (Etapa 1-3) | Categorias, definições, exemplos positivos/negativos | Sem definição operacional explícita, o leitor não sabe o que o rótulo significa, nem consegue replicar a classificação (Krippendorff, 2018). |
+| 2 | Classificação (Etapa 5) | Modelo, provedor, temperatura, `k_consistency`, se usou `reasoning` | Modelos diferentes (ou o mesmo modelo em versões diferentes) produzem classificações diferentes; sem registrar isso, o estudo não é replicável mesmo com o codebook em mãos. |
+| 3 | Confiança (saída de Etapa 5) | Distribuição de `confidence_score`, quantos documentos ficaram abaixo de 0.80 | Mostra a incerteza interna do modelo *antes* de qualquer comparação com humano: uma confiança baixa generalizada é sinal de codebook ambíguo, não só de limitação do modelo. |
+| 4 | Validação humana (Etapa 7) | Tamanho e estratégia da amostra, métricas de concordância com IC 95% | É o único jeito de saber se a classificação automática é válida, não só consistente internamente. Pular essa etapa é o motivo mais comum de rejeição em revisão por pares de estudos com LLM. |
+| 5 | Replicabilidade (Etapa 8) | Relatório consolidado ([`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)) com todas as decisões acima | Reúne as etapas 1-4 num documento único, anexável como material suplementar: a transparência mínima esperada hoje para análise assistida por LLM em ciências sociais. |
+
+Pular a etapa 4 é a falha mais comum e mais grave: uma classificação
+pode ter `confidence_score` alto (o modelo “tem certeza”) e ainda assim
+estar sistematicamente errada, porque o problema não é a estocasticidade
+do modelo, mas uma categoria do codebook mal definida. Só a comparação
+com codificação humana revela isso.
+
 ## Quando usar LLM (e quando **não** usar)
 
 Antes de acender API, vale escolher a técnica certa para a pergunta. LLM
-não é o melhor caminho para todo problema de análise de conteúdo — é
+não é o melhor caminho para todo problema de análise de conteúdo: é
 caro, tem variabilidade estocástica e depende de um provedor externo. A
 tabela abaixo resume quando **cada** abordagem do `acR` faz sentido:
 
 | Você quer… | Use |
 |----|----|
-| Rotular textos com **categorias teóricas pré-definidas** (populismo, framing) | LLM + codebook — esta vignette |
-| Medir **valência afetiva** (positivo/negativo/neutro) em português | [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md) (léxico OpLexicon) — mais rápido, determinístico, sem chave de API |
-| Descobrir **tópicos emergentes** sem categorias a priori | [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md) — modelo probabilístico não supervisionado |
-| Detectar **tipologias latentes** para amostragem estratificada | [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md) — hard clustering; veja a [`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md) |
-| **Comparar** vocabulário entre dois ou mais grupos | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) — teste estatístico, sem LLM |
+| Rotular textos com **categorias teóricas pré-definidas** (populismo, framing) | LLM + codebook: esta vignette |
+| Medir **valência afetiva** (positivo/negativo/neutro) em português | [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md) (léxico OpLexicon): mais rápido, determinístico, sem chave de API |
+| Descobrir **tópicos emergentes** sem categorias a priori | [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md): modelo probabilístico não supervisionado |
+| Detectar **tipologias latentes** para amostragem estratificada | [`ac_cluster_documents()`](https://andersonheri.github.io/acR/reference/ac_cluster_documents.md): hard clustering; veja a [`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md) |
+| **Comparar** vocabulário entre dois ou mais grupos | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md): teste estatístico, sem LLM |
 | **Explorar** vocabulário distintivo dentro de cada documento | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) |
 
 Regra prática: **se a categoria pode ser detectada por palavras-chave,
-use léxico ou keyness — é mais barato, reprodutível e defensável.** LLM
+use léxico ou keyness: é mais barato, reprodutível e defensável.** LLM
 brilha quando a categoria depende de **contexto, ironia, referência
-implícita ou raciocínio sobre argumento** — populismo, framing,
-posicionamento, tom, estilo retórico.
+implícita ou raciocínio sobre argumento** (populismo, framing,
+posicionamento, tom, estilo retórico).
 
 ### Custo real de um estudo com LLM
 
@@ -86,8 +107,8 @@ dificuldade da sua tarefa.
 ## Instalação e configuração
 
 Antes de começar, garanta que o `ellmer` está instalado e que a chave da
-API do seu provedor está no ambiente (`.Renviron` é o local usual —
-nunca no código versionado):
+API do seu provedor está no ambiente (`.Renviron` é o local usual; nunca
+no código versionado):
 
 ``` r
 
@@ -102,13 +123,13 @@ Sys.setenv(ANTHROPIC_API_KEY = "sk-ant-...")
 ```
 
 Se você não sabe qual provedor escolher, use
-[`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md)
-— a função consulta um banco interno com custo, contexto e qualidade
+[`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md):
+a função consulta um banco interno com custo, contexto e qualidade
 estimada por tipo de tarefa, sem precisar de rede.
 
 ------------------------------------------------------------------------
 
-## Etapa 1 — Criar o codebook
+## Etapa 1: Criar o codebook
 
 O codebook é o instrumento central da análise de conteúdo. Ele define as
 **categorias analíticas**, suas **definições operacionais**,
@@ -117,8 +138,8 @@ para desambiguar categorias vizinhas), e **pesos** relativos que
 orientam a LLM em fronteiras difíceis.
 
 > **Dica metodológica:** exemplos negativos são frequentemente
-> subestimados. Um exemplo negativo para “populista” — como “Apresento
-> esta emenda técnica” — ajuda muito mais que dois positivos adicionais.
+> subestimados. Um exemplo negativo para “populista” (como “Apresento
+> esta emenda técnica”) ajuda muito mais que dois positivos adicionais.
 > Eles servem de contraste, reduzindo confusões entre categorias
 > similares.
 
@@ -163,7 +184,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 14:10
+#> • Criado em: 15/10/2026 14:14
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
@@ -183,7 +204,7 @@ Codebooks quase nunca ficam corretos na primeira tentativa. As funções
 [`ac_qual_codebook_add()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.md)
 e
 [`ac_qual_codebook_remove()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_remove.md)
-permitem **refinamento iterativo** — comum quando você roda o codebook
+permitem **refinamento iterativo**: comum quando você roda o codebook
 numa amostra piloto e percebe que faltou uma categoria (“tecnico”) ou
 que duas se sobrepõem.
 
@@ -207,7 +228,7 @@ cb <- ac_qual_codebook_remove(cb, "tecnico")
 
 ------------------------------------------------------------------------
 
-## Etapa 2 — Enriquecer o codebook com literatura
+## Etapa 2: Enriquecer o codebook com literatura
 
 Definir categorias apenas com base no conhecimento do pesquisador
 funciona, mas ancorar as definições em literatura publicada aumenta a
@@ -267,7 +288,7 @@ cb_lit <- ac_qual_codebook(
 
 ------------------------------------------------------------------------
 
-## Etapa 3 — Fundir e traduzir codebooks
+## Etapa 3: Fundir e traduzir codebooks
 
 Análises multidimensionais frequentemente combinam duas ou mais
 tipologias (tom + estilo, posicionamento + tema, etc.).
@@ -318,10 +339,10 @@ cb_en <- ac_qual_codebook_translate(
 
 ------------------------------------------------------------------------
 
-## Etapa 4 — Inspecionar histórico e gerar system prompt
+## Etapa 4: Inspecionar histórico e gerar system prompt
 
-Todo codebook mantém um `history` das modificações — quem alterou,
-quando e o quê. Isso é essencial para publicação: o revisor pode auditar
+Todo codebook mantém um `history` das modificações: quem alterou, quando
+e o quê. Isso é essencial para publicação: o revisor pode auditar
 exatamente como o instrumento foi construído.
 
 O
@@ -358,7 +379,7 @@ prompt <- as_prompt(
 
 ------------------------------------------------------------------------
 
-## Etapa 5 — Classificar o corpus
+## Etapa 5: Classificar o corpus
 
 Com codebook pronto e corpus estruturado,
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
@@ -367,16 +388,16 @@ faz a classificação em lotes. Três parâmetros são chave:
 - `k_consistency`: número de repetições de *self-consistency* (Wang et
   al., 2022). O mesmo texto é classificado k× (padrão 3) com pequena
   variação de temperatura, e a categoria final é a moda. O
-  `confidence_score` sai daí — 1.0 = todas as k rodadas concordaram;
-  0.67 = 2 de 3.
+  `confidence_score` sai daí: 1.0 = todas as k rodadas concordaram; 0.67
+  = 2 de 3.
 - `temperature`: **variação estocástica** entre as rodadas de
   self-consistency (padrão `0.3`). A rodada principal usa
   `temperature = 0` (determinística); as `k - 1` rodadas de consistência
   usam este valor para diversificar as saídas. Desde a v0.3.3 é de fato
   repassado ao provedor via
   [`ellmer::params()`](https://ellmer.tidyverse.org/reference/params.html)
-  — versões anteriores aceitavam o parâmetro mas não o aplicavam,
-  inflando `confidence_score` espuriamente.
+  (versões anteriores aceitavam o parâmetro mas não o aplicavam,
+  inflando `confidence_score` espuriamente).
 - `reasoning`: pede raciocínio estruturado em JSON.
 - `live`: **visualização em tempo real** da classificação, tirando o
   processo do “caixa-preta”. Ver blockquote abaixo.
@@ -414,17 +435,26 @@ O tibble de saída traz: `doc_id`, `categoria`, `confidence_score` (via
 *self-consistency*), `reasoning` (raciocínio do modelo, se pedido) e os
 metadados originais do corpus.
 
+> **Como interpretar:** `confidence_score` mede *consistência interna*
+> do modelo, não *acerto*. Um documento com `confidence_score = 1.0`
+> pode ainda assim estar classificado errado, se o codebook for ambíguo
+> o suficiente para o modelo “errar com confiança” de forma sistemática.
+> Use `confidence_score` para priorizar a amostra de revisão humana
+> (`ac_qual_sample(strategy = "uncertainty")`), não como substituto
+> dela. Na prática, documentos abaixo de 0.67 (menos da maioria das
+> rodadas concordando) quase sempre merecem segunda leitura.
+
 ### Live view: tirando o LLM do caixa-preta
 
 O argumento `live` de
 [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
 mostra a máquina classificando em tempo real. Três modos:
 
-- `live = "off"` (padrão) — sem visualização.
-- `live = "terminal"` — barra de progresso `cli` com doc atual,
+- `live = "off"` (padrão): sem visualização.
+- `live = "terminal"`: barra de progresso `cli` com doc atual,
   categoria, confiança e início do raciocínio. Zero dependências, roda
   em qualquer setup (batch, CI, servidor sem interface gráfica).
-- `live = "shiny"` — janela Shiny em background com tabela atualizando a
+- `live = "shiny"`: janela Shiny em background com tabela atualizando a
   cada 500 ms, destaque para casos de baixa confiança. Requer `shiny` e
   `callr`. Ideal para apresentações e demonstrações.
 
@@ -440,14 +470,14 @@ resultado <- ac_qual_code(
 
 > **Por que isso importa?** Numa rodada de 500 documentos, sem `live`
 > você não sabe se o modelo travou, se está devolvendo lixo, ou se está
-> indo bem — só descobre no fim, depois de gastar todo o orçamento de
+> indo bem: só descobre no fim, depois de gastar todo o orçamento de
 > tokens. Com `live = "terminal"`, você vê nos primeiros 10 docs se o
 > raciocínio faz sentido e a distribuição de categorias está plausível.
 > Se algo estiver errado, `Ctrl+C` e ajusta.
 
 ------------------------------------------------------------------------
 
-## Etapa 6 — Salvar e carregar
+## Etapa 6: Salvar e carregar
 
 Codebook e resultados devem ser **serializados** para replicabilidade.
 YAML foi escolhido por ser legível por humanos e versionável em Git.
@@ -463,7 +493,7 @@ cb_recarregado <- ac_qual_load_codebook("codebook_discurso.yaml")
 
 ------------------------------------------------------------------------
 
-## Etapa 7 — Validação e confiabilidade
+## Etapa 7: Validação e confiabilidade
 
 **Sem validação humana, não há análise de conteúdo publicável.** LLM é
 uma ferramenta poderosa, mas nenhuma referência metodológica aceita hoje
@@ -521,10 +551,10 @@ divergentes na seção de método.
 > [`vignette("quantitativo")`](https://andersonheri.github.io/acR/articles/quantitativo.md)):
 > um dicionário é determinístico e transparente, mas insensível a
 > contexto, negação e ironia. Use
-> [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md)
-> — o equivalente de
+> [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md),
+> o equivalente de
 > [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
-> para esse método — antes de reportar qualquer classificação por
+> para esse método, antes de reportar qualquer classificação por
 > dicionário como válida (Grimmer & Stewart, 2013).
 
 ------------------------------------------------------------------------
@@ -532,7 +562,7 @@ divergentes na seção de método.
 ## Diagnosticando problemas comuns
 
 Antes de partir para o relatório final, vale conhecer os quatro modos de
-falha mais frequentes de uma rodada com LLM — e o que cada um pede.
+falha mais frequentes de uma rodada com LLM, e o que cada um pede.
 
 ### 1. Categorias com concordância baixa entre `k_consistency`
 
@@ -559,7 +589,7 @@ insuficiente.
 **Fix:** ou você acrescenta a categoria emergente (via
 [`ac_qual_codebook_add()`](https://andersonheri.github.io/acR/reference/ac_qual_codebook_add.md)),
 ou reforça no prompt que **só as categorias listadas** são válidas. A
-segunda geralmente é preferível — categorias emergentes indicam
+segunda geralmente é preferível: categorias emergentes indicam
 refinamento metodológico, não desvio da LLM.
 
 ### 3. Distribuição colapsada em uma categoria
@@ -584,13 +614,13 @@ retorna α \< 0,60.
 está claro nem para humanos (peça a **outro** humano codificar; se dois
 humanos discordam, a LLM não vai salvar), (ii) modelo escolhido é
 pequeno demais para a tarefa (troque para um tier acima), (iii) o
-próprio conceito teórico é contestado — reformule a pergunta.
+próprio conceito teórico é contestado, reformule a pergunta.
 
 > **Regra de ouro:** se a IRR entre dois humanos está abaixo de 0,70, o
 > problema é do codebook, não da LLM. Nenhum modelo vai ter mais
 > concordância consigo mesmo do que humanos treinados têm entre si.
 
-## Etapa 8 — Replicabilidade e transparência
+## Etapa 8: Replicabilidade e transparência
 
 Análises com LLM têm um risco de comunicação: **o revisor ou leitor não
 consegue reproduzir a rodada** sem saber exatamente que modelo, que
@@ -602,19 +632,18 @@ metodológico.
 
 O relatório cobre oito seções:
 
-1.  **Metadados** — data, versão do `acR`, autor(es), método
-2.  **Codebook completo** — categorias, definições, exemplos ± e pesos
-3.  **Histórico de modificações** — auditoria das alterações no codebook
-4.  **Configuração da LLM** — provedor, modelo, temperatura, k,
-    reasoning
-5.  **Resultados** — distribuição por categoria, quartis de
+1.  **Metadados**: data, versão do `acR`, autor(es), método
+2.  **Codebook completo**: categorias, definições, exemplos ± e pesos
+3.  **Histórico de modificações**: auditoria das alterações no codebook
+4.  **Configuração da LLM**: provedor, modelo, temperatura, k, reasoning
+5.  **Resultados**: distribuição por categoria, quartis de
     `confidence_score`, contagem de casos com confiança \< 0.80
-6.  **Confiabilidade inter-codificador** — se
+6.  **Confiabilidade inter-codificador**: se
     [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
     foi rodado, tabela completa com IC 95%
-7.  **Referências metodológicas** — Krippendorff, Landis-Koch, Gilardi,
+7.  **Referências metodológicas**: Krippendorff, Landis-Koch, Gilardi,
     Wang, Gwet
-8.  **Sugestão de citação** — formatada em ABNT (PT) ou APA (EN)
+8.  **Sugestão de citação**: formatada em ABNT (PT) ou APA (EN)
 
 Uso mínimo:
 
@@ -660,7 +689,7 @@ e a saída bruta da LLM.
 > **Nota metodológica.** A prática de publicar codebook + rodada da
 > LLM + métricas IRR num único documento é a **transparência mínima**
 > para análise assistida por LLM em ciências sociais. Sem isso, o leitor
-> tem que confiar no autor — algo que a tradição de análise de conteúdo
+> tem que confiar no autor, algo que a tradição de análise de conteúdo
 > (Krippendorff, 2018) sempre rejeitou. O
 > [`ac_qual_report()`](https://andersonheri.github.io/acR/reference/ac_qual_report.md)
 > empacota essa transparência num único comando.

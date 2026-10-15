@@ -101,7 +101,7 @@ completo de análise de conteúdo assistida por modelos de linguagem
 (LLMs), seguindo as diretrizes metodológicas de Krippendorff (2018) e as
 recomendações empíricas de Gilardi, Alizadeh e Kubli (2023), que
 mostraram que LLMs modernas superam trabalhadores de plataformas em
-várias tarefas de anotação de textos políticos — <strong>desde que
+várias tarefas de anotação de textos políticos, <strong>desde que
 guiadas por um codebook bem construído e validadas por revisão
 humana</strong>.</p>
 <p>O pipeline tem sete etapas encadeadas:</p>
@@ -121,8 +121,8 @@ ac_qual_report()                             ← relatório reprodutível</code>
 <p>A função <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code> aceita o argumento
 <code>chat =</code>, que recebe qualquer objeto <code>Chat</code> do
 pacote <strong>ellmer</strong> (Wickham et al., 2025). Isso permite usar
-qualquer provedor — Groq, OpenAI, Anthropic, Google Gemini, Ollama,
-Mistral, DeepSeek, OpenRouter — sem alterar a lógica de análise. Também
+qualquer provedor (Groq, OpenAI, Anthropic, Google Gemini, Ollama,
+Mistral, DeepSeek, OpenRouter) sem alterar a lógica de análise. Também
 suporta modelos locais via Ollama para pesquisas com dados
 sensíveis.</p>
 <blockquote>
@@ -134,12 +134,86 @@ que essas palavras significam. Um codebook transforma a classificação em
 (humano ou LLM) chega aos mesmos rótulos aplicando as mesmas definições
 e exemplos.</p>
 </blockquote>
+<div class="section level3">
+<h3 id="por-que-essa-ordem-e-o-que-reportar-em-cada-etapa">Por que essa ordem, e o que reportar em cada etapa<a class="anchor" aria-label="anchor" href="#por-que-essa-ordem-e-o-que-reportar-em-cada-etapa"></a>
+</h3>
+<p>O diagrama acima mostra a ordem de <strong>execução</strong>. A
+tabela abaixo explica a ordem de <strong>reporte</strong>: o que cada
+etapa produz que precisa aparecer na seção de método do seu estudo, e
+por que pular uma etapa compromete a defensabilidade do resultado.</p>
+<table class="table">
+<colgroup>
+<col width="3%">
+<col width="18%">
+<col width="32%">
+<col width="45%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">Ordem</th>
+<th>Etapa</th>
+<th>O que reportar</th>
+<th>Por que importa</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td>Codebook (Etapa 1-3)</td>
+<td>Categorias, definições, exemplos positivos/negativos</td>
+<td>Sem definição operacional explícita, o leitor não sabe o que o
+rótulo significa, nem consegue replicar a classificação (Krippendorff,
+2018).</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td>Classificação (Etapa 5)</td>
+<td>Modelo, provedor, temperatura, <code>k_consistency</code>, se usou
+<code>reasoning</code>
+</td>
+<td>Modelos diferentes (ou o mesmo modelo em versões diferentes)
+produzem classificações diferentes; sem registrar isso, o estudo não é
+replicável mesmo com o codebook em mãos.</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td>Confiança (saída de Etapa 5)</td>
+<td>Distribuição de <code>confidence_score</code>, quantos documentos
+ficaram abaixo de 0.80</td>
+<td>Mostra a incerteza interna do modelo <em>antes</em> de qualquer
+comparação com humano: uma confiança baixa generalizada é sinal de
+codebook ambíguo, não só de limitação do modelo.</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td>Validação humana (Etapa 7)</td>
+<td>Tamanho e estratégia da amostra, métricas de concordância com IC
+95%</td>
+<td>É o único jeito de saber se a classificação automática é válida, não
+só consistente internamente. Pular essa etapa é o motivo mais comum de
+rejeição em revisão por pares de estudos com LLM.</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td>Replicabilidade (Etapa 8)</td>
+<td>Relatório consolidado (<code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code>) com todas as
+decisões acima</td>
+<td>Reúne as etapas 1-4 num documento único, anexável como material
+suplementar: a transparência mínima esperada hoje para análise assistida
+por LLM em ciências sociais.</td>
+</tr>
+</tbody>
+</table>
+<p>Pular a etapa 4 é a falha mais comum e mais grave: uma classificação
+pode ter <code>confidence_score</code> alto (o modelo “tem certeza”) e
+ainda assim estar sistematicamente errada, porque o problema não é a
+estocasticidade do modelo, mas uma categoria do codebook mal definida.
+Só a comparação com codificação humana revela isso.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="quando-usar-llm-e-quando-não-usar">Quando usar LLM (e quando <strong>não</strong> usar)<a class="anchor" aria-label="anchor" href="#quando-usar-llm-e-quando-n%C3%A3o-usar"></a>
 </h2>
 <p>Antes de acender API, vale escolher a técnica certa para a pergunta.
-LLM não é o melhor caminho para todo problema de análise de conteúdo — é
+LLM não é o melhor caminho para todo problema de análise de conteúdo: é
 caro, tem variabilidade estocástica e depende de um provedor externo. A
 tabela abaixo resume quando <strong>cada</strong> abordagem do
 <code>acR</code> faz sentido:</p>
@@ -156,27 +230,26 @@ tabela abaixo resume quando <strong>cada</strong> abordagem do
 <tr class="odd">
 <td>Rotular textos com <strong>categorias teóricas
 pré-definidas</strong> (populismo, framing)</td>
-<td>LLM + codebook — esta vignette</td>
+<td>LLM + codebook: esta vignette</td>
 </tr>
 <tr class="even">
 <td>Medir <strong>valência afetiva</strong> (positivo/negativo/neutro)
 em português</td>
 <td>
-<code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code> (léxico OpLexicon) — mais rápido,
+<code><a href="../reference/ac_sentiment.html">ac_sentiment()</a></code> (léxico OpLexicon): mais rápido,
 determinístico, sem chave de API</td>
 </tr>
 <tr class="odd">
 <td>Descobrir <strong>tópicos emergentes</strong> sem categorias a
 priori</td>
 <td>
-<code><a href="../reference/ac_lda.html">ac_lda()</a></code> — modelo probabilístico não
-supervisionado</td>
+<code><a href="../reference/ac_lda.html">ac_lda()</a></code>: modelo probabilístico não supervisionado</td>
 </tr>
 <tr class="even">
 <td>Detectar <strong>tipologias latentes</strong> para amostragem
 estratificada</td>
 <td>
-<code><a href="../reference/ac_cluster_documents.html">ac_cluster_documents()</a></code> — hard clustering; veja a
+<code><a href="../reference/ac_cluster_documents.html">ac_cluster_documents()</a></code>: hard clustering; veja a
 <code><a href="../articles/cluster.html">vignette("cluster")</a></code>
 </td>
 </tr>
@@ -184,7 +257,7 @@ estratificada</td>
 <td>
 <strong>Comparar</strong> vocabulário entre dois ou mais grupos</td>
 <td>
-<code><a href="../reference/ac_keyness.html">ac_keyness()</a></code> — teste estatístico, sem LLM</td>
+<code><a href="../reference/ac_keyness.html">ac_keyness()</a></code>: teste estatístico, sem LLM</td>
 </tr>
 <tr class="even">
 <td>
@@ -195,11 +268,11 @@ documento</td>
 </tbody>
 </table>
 <p>Regra prática: <strong>se a categoria pode ser detectada por
-palavras-chave, use léxico ou keyness — é mais barato, reprodutível e
+palavras-chave, use léxico ou keyness: é mais barato, reprodutível e
 defensável.</strong> LLM brilha quando a categoria depende de
 <strong>contexto, ironia, referência implícita ou raciocínio sobre
-argumento</strong> — populismo, framing, posicionamento, tom, estilo
-retórico.</p>
+argumento</strong> (populismo, framing, posicionamento, tom, estilo
+retórico).</p>
 <div class="section level3">
 <h3 id="custo-real-de-um-estudo-com-llm">Custo real de um estudo com LLM<a class="anchor" aria-label="anchor" href="#custo-real-de-um-estudo-com-llm"></a>
 </h3>
@@ -253,7 +326,7 @@ tarefa.</p>
 </h2>
 <p>Antes de começar, garanta que o <code>ellmer</code> está instalado e
 que a chave da API do seu provedor está no ambiente
-(<code>.Renviron</code> é o local usual — nunca no código
+(<code>.Renviron</code> é o local usual; nunca no código
 versionado):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Instalar acR</span></span>
@@ -265,13 +338,13 @@ versionado):</p>
 <span><span class="co"># Configurar chave de API (exemplo: Anthropic)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"sk-ant-..."</span><span class="op">)</span></span></code></pre></div>
 <p>Se você não sabe qual provedor escolher, use
-<code><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code> — a função consulta um banco
+<code><a href="../reference/ac_qual_recommend_model.html">ac_qual_recommend_model()</a></code>: a função consulta um banco
 interno com custo, contexto e qualidade estimada por tipo de tarefa, sem
 precisar de rede.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="etapa-1-criar-o-codebook">Etapa 1 — Criar o codebook<a class="anchor" aria-label="anchor" href="#etapa-1-criar-o-codebook"></a>
+<h2 id="etapa-1-criar-o-codebook">Etapa 1: Criar o codebook<a class="anchor" aria-label="anchor" href="#etapa-1-criar-o-codebook"></a>
 </h2>
 <p>O codebook é o instrumento central da análise de conteúdo. Ele define
 as <strong>categorias analíticas</strong>, suas <strong>definições
@@ -281,8 +354,8 @@ vizinhas), e <strong>pesos</strong> relativos que orientam a LLM em
 fronteiras difíceis.</p>
 <blockquote>
 <p><strong>Dica metodológica:</strong> exemplos negativos são
-frequentemente subestimados. Um exemplo negativo para “populista” — como
-“Apresento esta emenda técnica” — ajuda muito mais que dois positivos
+frequentemente subestimados. Um exemplo negativo para “populista” (como
+“Apresento esta emenda técnica”) ajuda muito mais que dois positivos
 adicionais. Eles servem de contraste, reduzindo confusões entre
 categorias similares.</p>
 </blockquote>
@@ -326,7 +399,7 @@ categorias similares.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"positivo"</span>, <span style="color: #0000BB;">"negativo"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 14:10</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 14:14</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique o tom geral do discurso parlamentar.</span></span>
@@ -344,7 +417,7 @@ categorias similares.</p>
 <p>Codebooks quase nunca ficam corretos na primeira tentativa. As
 funções <code><a href="../reference/ac_qual_codebook_add.html">ac_qual_codebook_add()</a></code> e
 <code><a href="../reference/ac_qual_codebook_remove.html">ac_qual_codebook_remove()</a></code> permitem <strong>refinamento
-iterativo</strong> — comum quando você roda o codebook numa amostra
+iterativo</strong>: comum quando você roda o codebook numa amostra
 piloto e percebe que faltou uma categoria (“tecnico”) ou que duas se
 sobrepõem.</p>
 <p>Todas as modificações ficam registradas em
@@ -365,7 +438,7 @@ sobrepõem.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="etapa-2-enriquecer-o-codebook-com-literatura">Etapa 2 — Enriquecer o codebook com literatura<a class="anchor" aria-label="anchor" href="#etapa-2-enriquecer-o-codebook-com-literatura"></a>
+<h2 id="etapa-2-enriquecer-o-codebook-com-literatura">Etapa 2: Enriquecer o codebook com literatura<a class="anchor" aria-label="anchor" href="#etapa-2-enriquecer-o-codebook-com-literatura"></a>
 </h2>
 <p>Definir categorias apenas com base no conhecimento do pesquisador
 funciona, mas ancorar as definições em literatura publicada aumenta a
@@ -426,7 +499,7 @@ definição e exemplos.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="etapa-3-fundir-e-traduzir-codebooks">Etapa 3 — Fundir e traduzir codebooks<a class="anchor" aria-label="anchor" href="#etapa-3-fundir-e-traduzir-codebooks"></a>
+<h2 id="etapa-3-fundir-e-traduzir-codebooks">Etapa 3: Fundir e traduzir codebooks<a class="anchor" aria-label="anchor" href="#etapa-3-fundir-e-traduzir-codebooks"></a>
 </h2>
 <p>Análises multidimensionais frequentemente combinam duas ou mais
 tipologias (tom + estilo, posicionamento + tema, etc.).
@@ -473,9 +546,9 @@ definições sobrevivem sem ambiguidade em outra língua.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="etapa-4-inspecionar-histórico-e-gerar-system-prompt">Etapa 4 — Inspecionar histórico e gerar system prompt<a class="anchor" aria-label="anchor" href="#etapa-4-inspecionar-hist%C3%B3rico-e-gerar-system-prompt"></a>
+<h2 id="etapa-4-inspecionar-histórico-e-gerar-system-prompt">Etapa 4: Inspecionar histórico e gerar system prompt<a class="anchor" aria-label="anchor" href="#etapa-4-inspecionar-hist%C3%B3rico-e-gerar-system-prompt"></a>
 </h2>
-<p>Todo codebook mantém um <code>history</code> das modificações — quem
+<p>Todo codebook mantém um <code>history</code> das modificações: quem
 alterou, quando e o quê. Isso é essencial para publicação: o revisor
 pode auditar exatamente como o instrumento foi construído.</p>
 <p>O <code><a href="../reference/as_prompt.html">as_prompt()</a></code> converte o objeto <code>ac_codebook</code>
@@ -507,7 +580,7 @@ individualmente.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="etapa-5-classificar-o-corpus">Etapa 5 — Classificar o corpus<a class="anchor" aria-label="anchor" href="#etapa-5-classificar-o-corpus"></a>
+<h2 id="etapa-5-classificar-o-corpus">Etapa 5: Classificar o corpus<a class="anchor" aria-label="anchor" href="#etapa-5-classificar-o-corpus"></a>
 </h2>
 <p>Com codebook pronto e corpus estruturado, <code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>
 faz a classificação em lotes. Três parâmetros são chave:</p>
@@ -516,17 +589,17 @@ faz a classificação em lotes. Três parâmetros são chave:</p>
 <code>k_consistency</code>: número de repetições de
 <em>self-consistency</em> (Wang et al., 2022). O mesmo texto é
 classificado k× (padrão 3) com pequena variação de temperatura, e a
-categoria final é a moda. O <code>confidence_score</code> sai daí — 1.0
-= todas as k rodadas concordaram; 0.67 = 2 de 3.</li>
+categoria final é a moda. O <code>confidence_score</code> sai daí: 1.0 =
+todas as k rodadas concordaram; 0.67 = 2 de 3.</li>
 <li>
 <code>temperature</code>: <strong>variação estocástica</strong>
 entre as rodadas de self-consistency (padrão <code>0.3</code>). A rodada
 principal usa <code>temperature = 0</code> (determinística); as
 <code>k - 1</code> rodadas de consistência usam este valor para
 diversificar as saídas. Desde a v0.3.3 é de fato repassado ao provedor
-via <code><a href="https://ellmer.tidyverse.org/reference/params.html" class="external-link">ellmer::params()</a></code> — versões anteriores aceitavam o
+via <code><a href="https://ellmer.tidyverse.org/reference/params.html" class="external-link">ellmer::params()</a></code> (versões anteriores aceitavam o
 parâmetro mas não o aplicavam, inflando <code>confidence_score</code>
-espuriamente.</li>
+espuriamente).</li>
 <li>
 <code>reasoning</code>: pede raciocínio estruturado em JSON.</li>
 <li>
@@ -561,6 +634,17 @@ abaixo.</li>
 <code>confidence_score</code> (via <em>self-consistency</em>),
 <code>reasoning</code> (raciocínio do modelo, se pedido) e os metadados
 originais do corpus.</p>
+<blockquote>
+<p><strong>Como interpretar:</strong> <code>confidence_score</code> mede
+<em>consistência interna</em> do modelo, não <em>acerto</em>. Um
+documento com <code>confidence_score = 1.0</code> pode ainda assim estar
+classificado errado, se o codebook for ambíguo o suficiente para o
+modelo “errar com confiança” de forma sistemática. Use
+<code>confidence_score</code> para priorizar a amostra de revisão humana
+(<code>ac_qual_sample(strategy = "uncertainty")</code>), não como
+substituto dela. Na prática, documentos abaixo de 0.67 (menos da maioria
+das rodadas concordando) quase sempre merecem segunda leitura.</p>
+</blockquote>
 <div class="section level3">
 <h3 id="live-view-tirando-o-llm-do-caixa-preta">Live view: tirando o LLM do caixa-preta<a class="anchor" aria-label="anchor" href="#live-view-tirando-o-llm-do-caixa-preta"></a>
 </h3>
@@ -568,14 +652,14 @@ originais do corpus.</p>
 máquina classificando em tempo real. Três modos:</p>
 <ul>
 <li>
-<code>live = "off"</code> (padrão) — sem visualização.</li>
+<code>live = "off"</code> (padrão): sem visualização.</li>
 <li>
-<code>live = "terminal"</code> — barra de progresso <code>cli</code>
+<code>live = "terminal"</code>: barra de progresso <code>cli</code>
 com doc atual, categoria, confiança e início do raciocínio. Zero
 dependências, roda em qualquer setup (batch, CI, servidor sem interface
 gráfica).</li>
 <li>
-<code>live = "shiny"</code> — janela Shiny em background com tabela
+<code>live = "shiny"</code>: janela Shiny em background com tabela
 atualizando a cada 500 ms, destaque para casos de baixa confiança.
 Requer <code>shiny</code> e <code>callr</code>. Ideal para apresentações
 e demonstrações.</li>
@@ -590,7 +674,7 @@ e demonstrações.</li>
 <blockquote>
 <p><strong>Por que isso importa?</strong> Numa rodada de 500 documentos,
 sem <code>live</code> você não sabe se o modelo travou, se está
-devolvendo lixo, ou se está indo bem — só descobre no fim, depois de
+devolvendo lixo, ou se está indo bem: só descobre no fim, depois de
 gastar todo o orçamento de tokens. Com <code>live = "terminal"</code>,
 você vê nos primeiros 10 docs se o raciocínio faz sentido e a
 distribuição de categorias está plausível. Se algo estiver errado,
@@ -600,7 +684,7 @@ distribuição de categorias está plausível. Se algo estiver errado,
 </div>
 </div>
 <div class="section level2">
-<h2 id="etapa-6-salvar-e-carregar">Etapa 6 — Salvar e carregar<a class="anchor" aria-label="anchor" href="#etapa-6-salvar-e-carregar"></a>
+<h2 id="etapa-6-salvar-e-carregar">Etapa 6: Salvar e carregar<a class="anchor" aria-label="anchor" href="#etapa-6-salvar-e-carregar"></a>
 </h2>
 <p>Codebook e resultados devem ser <strong>serializados</strong> para
 replicabilidade. YAML foi escolhido por ser legível por humanos e
@@ -614,7 +698,7 @@ versionável em Git.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="etapa-7-validação-e-confiabilidade">Etapa 7 — Validação e confiabilidade<a class="anchor" aria-label="anchor" href="#etapa-7-valida%C3%A7%C3%A3o-e-confiabilidade"></a>
+<h2 id="etapa-7-validação-e-confiabilidade">Etapa 7: Validação e confiabilidade<a class="anchor" aria-label="anchor" href="#etapa-7-valida%C3%A7%C3%A3o-e-confiabilidade"></a>
 </h2>
 <p><strong>Sem validação humana, não há análise de conteúdo
 publicável.</strong> LLM é uma ferramenta poderosa, mas nenhuma
@@ -692,8 +776,8 @@ exigência de validação vale para classificação por dicionário
 (<code><a href="../reference/ac_dictionary.html">ac_dictionary()</a></code>/<code><a href="../reference/ac_emotion.html">ac_emotion()</a></code>, ver
 <code><a href="../articles/quantitativo.html">vignette("quantitativo")</a></code>): um dicionário é determinístico e
 transparente, mas insensível a contexto, negação e ironia. Use
-<code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code> — o equivalente de
-<code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> para esse método — antes de reportar
+<code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>, o equivalente de
+<code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> para esse método, antes de reportar
 qualquer classificação por dicionário como válida (Grimmer &amp;
 Stewart, 2013).</p>
 </blockquote>
@@ -703,7 +787,7 @@ Stewart, 2013).</p>
 <h2 id="diagnosticando-problemas-comuns">Diagnosticando problemas comuns<a class="anchor" aria-label="anchor" href="#diagnosticando-problemas-comuns"></a>
 </h2>
 <p>Antes de partir para o relatório final, vale conhecer os quatro modos
-de falha mais frequentes de uma rodada com LLM — e o que cada um
+de falha mais frequentes de uma rodada com LLM, e o que cada um
 pede.</p>
 <div class="section level3">
 <h3 id="categorias-com-concordância-baixa-entre-k_consistency">1. Categorias com concordância baixa entre
@@ -733,7 +817,7 @@ categoria correta insuficiente.</p>
 <p><strong>Fix:</strong> ou você acrescenta a categoria emergente (via
 <code><a href="../reference/ac_qual_codebook_add.html">ac_qual_codebook_add()</a></code>), ou reforça no prompt que
 <strong>só as categorias listadas</strong> são válidas. A segunda
-geralmente é preferível — categorias emergentes indicam refinamento
+geralmente é preferível: categorias emergentes indicam refinamento
 metodológico, não desvio da LLM.</p>
 </div>
 <div class="section level3">
@@ -758,7 +842,7 @@ documentos genuinamente cobrem mais de um tema.</p>
 <strong>outro</strong> humano codificar; se dois humanos discordam, a
 LLM não vai salvar), (ii) modelo escolhido é pequeno demais para a
 tarefa (troque para um tier acima), (iii) o próprio conceito teórico é
-contestado — reformule a pergunta.</p>
+contestado, reformule a pergunta.</p>
 <blockquote>
 <p><strong>Regra de ouro:</strong> se a IRR entre dois humanos está
 abaixo de 0,70, o problema é do codebook, não da LLM. Nenhum modelo vai
@@ -768,7 +852,7 @@ si.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="etapa-8-replicabilidade-e-transparência">Etapa 8 — Replicabilidade e transparência<a class="anchor" aria-label="anchor" href="#etapa-8-replicabilidade-e-transpar%C3%AAncia"></a>
+<h2 id="etapa-8-replicabilidade-e-transparência">Etapa 8: Replicabilidade e transparência<a class="anchor" aria-label="anchor" href="#etapa-8-replicabilidade-e-transpar%C3%AAncia"></a>
 </h2>
 <p>Análises com LLM têm um risco de comunicação: <strong>o revisor ou
 leitor não consegue reproduzir a rodada</strong> sem saber exatamente
@@ -779,30 +863,30 @@ suplementar de um artigo ou como apêndice metodológico.</p>
 <p>O relatório cobre oito seções:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Metadados</strong> — data, versão do <code>acR</code>,
+<strong>Metadados</strong>: data, versão do <code>acR</code>,
 autor(es), método</li>
 <li>
-<strong>Codebook completo</strong> — categorias, definições,
-exemplos ± e pesos</li>
+<strong>Codebook completo</strong>: categorias, definições, exemplos
+± e pesos</li>
 <li>
-<strong>Histórico de modificações</strong> — auditoria das
-alterações no codebook</li>
+<strong>Histórico de modificações</strong>: auditoria das alterações
+no codebook</li>
 <li>
-<strong>Configuração da LLM</strong> — provedor, modelo,
-temperatura, k, reasoning</li>
+<strong>Configuração da LLM</strong>: provedor, modelo, temperatura,
+k, reasoning</li>
 <li>
-<strong>Resultados</strong> — distribuição por categoria, quartis de
+<strong>Resultados</strong>: distribuição por categoria, quartis de
 <code>confidence_score</code>, contagem de casos com confiança &lt;
 0.80</li>
 <li>
-<strong>Confiabilidade inter-codificador</strong> — se
+<strong>Confiabilidade inter-codificador</strong>: se
 <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code> foi rodado, tabela completa com IC
 95%</li>
 <li>
-<strong>Referências metodológicas</strong> — Krippendorff,
+<strong>Referências metodológicas</strong>: Krippendorff,
 Landis-Koch, Gilardi, Wang, Gwet</li>
 <li>
-<strong>Sugestão de citação</strong> — formatada em ABNT (PT) ou APA
+<strong>Sugestão de citação</strong>: formatada em ABNT (PT) ou APA
 (EN)</li>
 </ol>
 <p>Uso mínimo:</p>
@@ -840,7 +924,7 @@ repositório de dados junto com o codebook em YAML
 <p><strong>Nota metodológica.</strong> A prática de publicar codebook +
 rodada da LLM + métricas IRR num único documento é a
 <strong>transparência mínima</strong> para análise assistida por LLM em
-ciências sociais. Sem isso, o leitor tem que confiar no autor — algo que
+ciências sociais. Sem isso, o leitor tem que confiar no autor, algo que
 a tradição de análise de conteúdo (Krippendorff, 2018) sempre rejeitou.
 O <code><a href="../reference/ac_qual_report.html">ac_qual_report()</a></code> empacota essa transparência num único
 comando.</p>

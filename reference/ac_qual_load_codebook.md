@@ -47,7 +47,7 @@ cb <- ac_qual_codebook(
 #> ℹ Exemplos negativos reduzem confusão entre categorias similares.
 arquivo <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo)
-#> ✅ Codebook salvo em /tmp/RtmpSTd9zk/file1acf4b131f51.yaml
+#> ✅ Codebook salvo em /tmp/RtmpBGFC9X/file1aac638333f8.yaml
 
 # Recarregar em outra sessao
 cb_novo <- ac_qual_load_codebook(arquivo)
