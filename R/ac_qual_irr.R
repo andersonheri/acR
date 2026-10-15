@@ -16,11 +16,11 @@
 #' `id` e `categoria`, representando anotador 1 e anotador 2; ou (b) um único
 #' data.frame em formato largo com uma coluna por anotador.
 #'
-#' @param gold `data.frame`. Anotacoes de referencia (anotador humano ou
+#' @param gold `data.frame`. Anotacoes de referência (anotador humano ou
 #'   gold standard). Deve conter colunas `id_discurso` (ou `id`) e `categoria`.
 #' @param predicted `data.frame`. Anotacoes a comparar (ex.: saida do LLM via
 #'   [ac_qual_code()]). Mesmas colunas exigidas.
-#' @param method `character`. Metrica(s) a calcular. Opcoes: `"all"` (padrao),
+#' @param method `character`. Métrica(s) a calcular. Opcoes: `"all"` (padrao),
 #'   `"cohen_kappa"`, `"fleiss_kappa"`, `"krippendorff"`, `"percent_agreement"`.
 #'   Aceita vetor de multiplas opcoes.
 #' @param id_col `character`. Nome da coluna de identificador nos data.frames.
@@ -39,15 +39,15 @@
 #'     \item{`metrics`}{`data.frame` com colunas `metric`, `estimate`,
 #'       `ci_lower`, `ci_upper`, `interpretation`.}
 #'     \item{`confusion`}{`table`. Matriz de confusao entre os anotadores.}
-#'     \item{`n_docs`}{`integer`. Numero de documentos comparados.}
-#'     \item{`n_annotators`}{`integer`. Numero de anotadores.}
+#'     \item{`n_docs`}{`integer`. Número de documentos comparados.}
+#'     \item{`n_annotators`}{`integer`. Número de anotadores.}
 #'     \item{`categories`}{`character`. Categorias encontradas.}
-#'     \item{`method`}{`character`. Metrica(s) calculadas.}
+#'     \item{`method`}{`character`. Métrica(s) calculadas.}
 #'   }
 #'
 #' @details
-#' ## Interpretacao do Kappa (Landis & Koch, 1977)
-#' | Kappa       | Concordancia        |
+#' ## Interpretação do Kappa (Landis & Koch, 1977)
+#' | Kappa       | Concordância        |
 #' |-------------|---------------------|
 #' | < 0.00      | Pobre               |
 #' | 0.00 - 0.20 | Leve                |
@@ -62,7 +62,7 @@
 #' passados como lista via `...`.
 #'
 #' ## Krippendorff's Alpha
-#' Metrica mais geral: funciona com qualquer numero de anotadores, lida com
+#' Métrica mais geral: funciona com qualquer número de anotadores, lida com
 #' dados faltantes e suporta escalas nominais, ordinais e de intervalo
 #' (KRIPPENDORFF, 2018).
 #'
@@ -319,7 +319,7 @@ print.ac_irr <- function(x, ...) {
   c(kappa - z * se, kappa + z * se)
 }
 
-#' Interpretacao do Kappa (Landis & Koch, 1977)
+#' Interpretação do Kappa (Landis & Koch, 1977)
 #' @noRd
 .irr_interpret_kappa <- function(k) {
   if (is.na(k))    return("N/A")
@@ -331,7 +331,7 @@ print.ac_irr <- function(x, ...) {
   return("Quase perfeita")
 }
 
-#' Interpretacao do percentual de concordancia
+#' Interpretação do percentual de concordância
 #' @noRd
 .irr_interpret_pa <- function(p) {
   if (is.na(p))  return("N/A")

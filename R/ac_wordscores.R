@@ -43,7 +43,7 @@
 #'   - `"mv"`: reescalona linearmente para o intervalo
 #'     `[min, max]` dos escores de referência conhecidos (Martin &
 #'     Vanberg, 2007).
-#' @param drop_punct Logico, encaminhado para [ac_count()]. Padrão:
+#' @param drop_punct Lógico, encaminhado para [ac_count()]. Padrão:
 #'   `TRUE`.
 #'
 #' @return Tibble com colunas `doc_id`, `score` (escore estimado, já
@@ -60,16 +60,16 @@
 #' for Interpreting Political Text. *Political Analysis*, 16(1), 93-100.
 #'
 #' @examples
-#' # Avaliacoes de produto com nota conhecida (referencia) e sem nota
+#' # Avaliações de produto com nota conhecida (referência) e sem nota
 #' # (a estimar), usadas como escala continua de satisfacao
 #' df <- data.frame(
 #'   id = paste0("r", 1:6),
 #'   texto = c(
 #'     "produto excelente, superou expectativas, recomendo muito",
-#'     "muito bom, chegou rapido e funciona perfeitamente",
-#'     "produto regular, cumpre o basico",
-#'     "nao funcionou bem, qualidade ruim, nao recomendo",
-#'     "pessimo, quebrado e com defeito, decepcao total",
+#'     "muito bom, chegou rápido e funciona perfeitamente",
+#'     "produto regular, cumpre o básico",
+#'     "não funcionou bem, qualidade ruim, não recomendo",
+#'     "péssimo, quebrado e com defeito, decepcao total",
 #'     "produto ok, nada de especial mas atende"
 #'   ),
 #'   stringsAsFactors = FALSE
@@ -211,11 +211,11 @@ ac_wordscores <- function(corpus,
 #'
 #' @description
 #' `ac_plot_wordscores()` plota os escores estimados por
-#' [ac_wordscores()] num eixo unico, destacando quais documentos foram
+#' [ac_wordscores()] num eixo único, destacando quais documentos foram
 #' usados como referência.
 #'
 #' @param wordscores_tbl Tibble retornado por [ac_wordscores()].
-#' @param title Titulo do grafico. Padrao: `NULL` (titulo automatico).
+#' @param title Título do grafico. Padrao: `NULL` (título automático).
 #'
 #' @return Objeto `ggplot`.
 #'
@@ -225,8 +225,8 @@ ac_wordscores <- function(corpus,
 #'   texto = c(
 #'     "excelente, recomendo muito",
 #'     "bom, atende bem",
-#'     "ruim, nao gostei",
-#'     "pessimo, decepcao"
+#'     "ruim, não gostei",
+#'     "péssimo, decepcao"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )

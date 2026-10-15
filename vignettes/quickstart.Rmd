@@ -29,10 +29,10 @@ library(acR)
 df <- data.frame(
   id       = paste0("d", 1:6),
   texto    = c(
-    "Sou favoravel a reforma tributaria que simplifica os impostos.",
+    "Sou favoravel a reforma tributária que simplifica os impostos.",
     "Voto contra a proposta, ela vai destruir o setor produtivo.",
-    "Apoio integralmente a reforma, ha ganhos claros de eficiencia.",
-    "Esta reforma e um retrocesso, vamos rejeitar em plenario.",
+    "Apoio integralmente a reforma, ha ganhos claros de eficiência.",
+    "Esta reforma e um retrocesso, vamos rejeitar em plenário.",
     "Defendo a proposta que corrige distorcoes historicas do sistema.",
     "Somos contra, o texto beneficia apenas grandes corporacoes."
   ),
@@ -49,7 +49,7 @@ corpus
 Removemos *stopwords* antes de contar — sem isso, "de", "a", "o" dominariam
 qualquer contagem em português.
 
-```{r frequencia}
+```{r frequência}
 corpus <- ac_clean(corpus, remove_stopwords = "pt")
 freq_por_grupo <- ac_count(corpus, by = "posicao")
 ac_top_terms(freq_por_grupo, n = 5, by = "posicao")

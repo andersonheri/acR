@@ -1,15 +1,15 @@
 #' Busca discursos de deputados federais via API da Camara dos Deputados
 #'
 #' @description
-#' Coleta discursos parlamentares diretamente da API publica da Camara dos
+#' Coleta discursos parlamentares diretamente da API pública da Camara dos
 #' Deputados (v2), retornando um `data.frame` padronizado e pronto para uso
-#' nas funcoes do `acR`. A coleta e feita em duas etapas: (1) lista deputados
+#' nas funções do `acR`. A coleta e feita em duas etapas: (1) lista deputados
 #' conforme os filtros informados; (2) para cada deputado, busca os discursos
-#' no periodo solicitado, com paginacao automatica.
+#' no periodo solicitado, com paginacao automática.
 #'
 #' @param data_inicio `character`. Data de inicio no formato `"YYYY-MM-DD"`.
 #' @param data_fim `character`. Data de fim no formato `"YYYY-MM-DD"`.
-#' @param legislatura `integer` ou `NULL`. Numero da legislatura (ex.: `57`
+#' @param legislatura `integer` ou `NULL`. Número da legislatura (ex.: `57`
 #'   para 2023-2027). Se `NULL`, usa o periodo definido por `data_inicio` e
 #'   `data_fim` sem filtrar por legislatura.
 #' @param partido `character` ou `NULL`. Sigla do partido para filtrar
@@ -17,17 +17,17 @@
 #'   Se `NULL`, inclui todos os partidos.
 #' @param uf `character` ou `NULL`. Sigla da UF para filtrar deputados
 #'   (ex.: `"SP"`, `"MG"`). Aceita vetor de UFs. Se `NULL`, inclui todas.
-#' @param n_max `integer`. Numero maximo de discursos a retornar.
+#' @param n_max `integer`. Número máximo de discursos a retornar.
 #'   Padrao: `100`. Use `Inf` para coletar todos (atencao: pode ser lento).
 #' @param tipo_discurso `character`. Tipo de evento parlamentar. Opcoes
-#'   principais: `"plenario"` (padrao), `"comissao"`, `"todos"`.
+#'   principais: `"plenário"` (padrao), `"comissao"`, `"todos"`.
 #' @param verbose `logical`. Se `TRUE` (padrao), exibe mensagens de progresso.
 #' @param sleep `numeric`. Tempo de espera (em segundos) entre chamadas a API
 #'   para respeitar o rate limit. Padrao: `0.5`.
 #'
 #' @return Um `data.frame` com as colunas:
 #'   \describe{
-#'     \item{`id_discurso`}{`character`. Identificador unico do discurso.}
+#'     \item{`id_discurso`}{`character`. Identificador único do discurso.}
 #'     \item{`id_deputado`}{`integer`. ID do deputado na API da Camara.}
 #'     \item{`nome_deputado`}{`character`. Nome civil do parlamentar.}
 #'     \item{`partido`}{`character`. Sigla do partido na data do discurso.}
@@ -35,13 +35,13 @@
 #'     \item{`data`}{`Date`. Data do discurso.}
 #'     \item{`hora_inicio`}{`character`. Hora de inicio (HH:MM).}
 #'     \item{`tipo_discurso`}{`character`. Tipo de fase do evento.}
-#'     \item{`sumario`}{`character`. Sumario do discurso (quando disponivel).}
+#'     \item{`sumário`}{`character`. Sumário do discurso (quando disponivel).}
 #'     \item{`texto`}{`character`. Texto integral do discurso (quando disponivel).}
 #'     \item{`uri_discurso`}{`character`. URI do recurso na API.}
 #'   }
 #'
 #' @details
-#' A API Dados Abertos da Camara (v2) nao dispoe de endpoint unico para
+#' A API Dados Abertos da Camara (v2) não dispoe de endpoint único para
 #' discursos por periodo. O fluxo de coleta e:
 #'
 #' 1. `GET /api/v2/deputados` - lista deputados com filtros de partido/UF.
@@ -50,11 +50,11 @@
 #'
 #' O filtro `tipo_discurso` atua sobre o campo `tipoDiscurso` retornado pela
 #' API. Valores observados: `"DISCURSO"`, `"DISCURSO ENCAMINHADO"`,
-#' `"BREVE COMUNICACAO"`, `"PELA ORDEM"`, `"COMUNICACAO PARLAMENTAR"`.
+#' `"BREVE COMUNICAÇÃO"`, `"PELA ORDEM"`, `"COMUNICAÇÃO PARLAMENTAR"`.
 #'
 #' @examples
 #' \dontrun{
-#' # Discursos do plenario, marco de 2024
+#' # Discursos do plenário, marco de 2024
 #' disc <- ac_fetch_camara(
 #'   data_inicio = "2024-03-11",
 #'   data_fim    = "2024-03-15",

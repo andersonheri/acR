@@ -17,16 +17,16 @@
 #'   `.xlsx`, `.xls`, `.csv`, `.txt`, `.json`, `.png`, `.jpg`, `.jpeg`,
 #'   `.tiff`.
 #' @param text_field Nome da coluna que contem o texto, para arquivos
-#'   tabulares (`.xlsx`, `.xls`, `.csv`). Obrigatorio nesses formatos.
+#'   tabulares (`.xlsx`, `.xls`, `.csv`). Obrigatório nesses formatos.
 #' @param lang_ocr Lingua para OCR em imagens e PDFs escaneados.
-#'   Padrao: `'por'` (portugues). Use `tesseract::tesseract_info()` para
+#'   Padrao: `'por'` (português). Use `tesseract::tesseract_info()` para
 #'   ver linguas instaladas.
 #' @param id_from Como gerar os IDs dos documentos. `'filename'` (padrao)
-#'   usa o nome do arquivo sem extensao. `'rownum'` usa numeros sequenciais.
+#'   usa o nome do arquivo sem extensao. `'rownum'` usa números sequenciais.
 #'   Ou um vetor de strings com os IDs desejados.
 #' @param ... Argumentos adicionais passados para `readtext::readtext()`.
 #'
-#' @return Um objeto `ac_corpus` pronto para uso com todas as funcoes do acR.
+#' @return Um objeto `ac_corpus` pronto para uso com todas as funções do acR.
 #'
 #' @details
 #' O `ac_import()` detecta automaticamente o formato pelo extension e
@@ -46,14 +46,14 @@
 #' mesmo `basename`) sao desambiguados automaticamente com um sufixo `_2`,
 #' `_3`, ... e um aviso e emitido.
 #'
-#' **Dependencias opcionais**: `readtext` e `tesseract` nao sao importados
+#' **Dependências opcionais**: `readtext` e `tesseract` não sao importados
 #' automaticamente -- o `ac_import()` verifica se estao instalados e
-#' orienta a instalacao caso necessario.
+#' orienta a instalacao caso necessário.
 #'
 #' @examples
 #' \dontrun{
 #' # PDF com texto selecionavel
-#' corpus <- ac_import('relatorio.pdf')
+#' corpus <- ac_import('relatório.pdf')
 #'
 #' # Pasta inteira de Word
 #' corpus <- ac_import('proposicoes/*.docx')
@@ -61,7 +61,7 @@
 #' # Excel -- indicar a coluna de texto
 #' corpus <- ac_import('respostas.xlsx', text_field = 'resposta')
 #'
-#' # PDF escaneado (OCR em portugues)
+#' # PDF escaneado (OCR em português)
 #' corpus <- ac_import('ata_manuscrita.pdf', lang_ocr = 'por')
 #'
 #' # Imagem (OCR)

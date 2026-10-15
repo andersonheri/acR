@@ -28,7 +28,7 @@
 #'   `0` (qualquer palavra da categoria presente já conta).
 #'
 #' @return Tibble com uma linha por categoria do dicionário e colunas
-#'   `categoria`, `n`, `vp`, `fp`, `fn`, `vn`, `concordancia`,
+#'   `categoria`, `n`, `vp`, `fp`, `fn`, `vn`, `concordância`,
 #'   `precisao`, `recall`, `f1`, `gwet_ac1`, `krippendorff_alfa` — as
 #'   mesmas colunas de `attr(ac_qual_reliability(...), "by_variable")`.
 #'   Denominadores indefinidos (ex.: uma categoria que nenhum dos dois
@@ -46,18 +46,18 @@
 #'     "a entrega atrasou muito",
 #'     "o produto chegou com defeito",
 #'     "cobraram duas vezes no cartao",
-#'     "entrega rapida e produto perfeito"
+#'     "entrega rápida e produto perfeito"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
 #' dict <- ac_build_dictionary(
-#'   entrega = c("entrega", "atrasou", "rapida"),
+#'   entrega = c("entrega", "atrasou", "rápida"),
 #'   produto = c("defeito", "perfeito")
 #' )
 #' scored <- ac_dictionary(corpus, dict)
 #'
-#' # Codificacao humana de referencia (simulada para o exemplo)
+#' # Codificacao humana de referência (simulada para o exemplo)
 #' human <- tibble::tibble(
 #'   doc_id    = paste0("d", 1:4),
 #'   categoria = c("entrega", "produto", NA, "entrega|produto")

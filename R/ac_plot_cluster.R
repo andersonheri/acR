@@ -13,7 +13,7 @@
 #' @param x Objeto `ac_cluster` (saida de [ac_cluster_documents()]).
 #' @param kind Tipo de grafico. `"auto"` (padrao) escolhe conforme o metodo
 #'   (dendrograma para `hclust`, scatter para `kmeans`/`pam`).
-#' @param title Titulo do grafico.
+#' @param title Título do grafico.
 #' @param palette Vetor de cores para os clusters. Padrao: [ac_palette()].
 #'
 #' @return Objeto `ggplot`.
@@ -25,10 +25,10 @@
 #'             "cidadania direitos participacao",
 #'             "voto direitos liberdade",
 #'             "democracia voto participacao",
-#'             "mercado economia eficiencia",
+#'             "mercado economia eficiência",
 #'             "privatizacao mercado livre",
 #'             "economia crescimento mercado",
-#'             "eficiencia mercado livre")
+#'             "eficiência mercado livre")
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
 #' clust  <- ac_cluster_documents(corpus, k = 2)

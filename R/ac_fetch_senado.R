@@ -16,11 +16,11 @@
 #' @param data_fim \code{character} ou \code{NULL}. Data de fim no formato
 #'   \code{"YYYY-MM-DD"}. Se \code{NULL}, usa o fim da
 #'   \code{legislatura_fim}.
-#' @param legislatura_inicio \code{integer} ou \code{NULL}. Numero da
+#' @param legislatura_inicio \code{integer} ou \code{NULL}. Número da
 #'   legislatura de inicio (ex.: \code{56} para 2019-2023,
 #'   \code{57} para 2023-2027). Ignorado se \code{data_inicio} for
 #'   fornecido.
-#' @param legislatura_fim \code{integer} ou \code{NULL}. Numero da
+#' @param legislatura_fim \code{integer} ou \code{NULL}. Número da
 #'   legislatura de fim. Se \code{NULL}, usa o mesmo valor de
 #'   \code{legislatura_inicio}.
 #' @param partido \code{character} ou \code{NULL}. Sigla(s) do partido para
@@ -32,7 +32,7 @@
 #' @param nome_senador \code{character} ou \code{NULL}. Padrao de texto para
 #'   filtrar pelo nome do senador (busca parcial, case-insensitive). Ex.:
 #'   \code{"Lula"}, \code{"Pacheco"}. Se \code{NULL}, inclui todos.
-#' @param n_max \code{integer}. Numero maximo de discursos a retornar.
+#' @param n_max \code{integer}. Número máximo de discursos a retornar.
 #'   Padrao: \code{100}. Use \code{Inf} para coletar todos.
 #' @param verbose \code{logical}. Se \code{TRUE} (padrao), exibe mensagens
 #'   de progresso.
@@ -42,15 +42,15 @@
 #' @return Um \code{data.frame} com as mesmas colunas de
 #'   \code{\link{ac_fetch_camara}()}:
 #'   \describe{
-#'     \item{\code{id_discurso}}{\code{character}. Identificador unico.}
-#'     \item{\code{id_deputado}}{\code{character}. Codigo do senador na API.}
+#'     \item{\code{id_discurso}}{\code{character}. Identificador único.}
+#'     \item{\code{id_deputado}}{\code{character}. Código do senador na API.}
 #'     \item{\code{nome_deputado}}{\code{character}. Nome do senador.}
 #'     \item{\code{partido}}{\code{character}. Sigla do partido.}
 #'     \item{\code{uf}}{\code{character}. UF da representacao.}
 #'     \item{\code{data}}{\code{Date}. Data do discurso.}
 #'     \item{\code{hora_inicio}}{\code{character}. Hora de inicio (HH:MM).}
 #'     \item{\code{tipo_discurso}}{\code{character}. Tipo/fase do discurso.}
-#'     \item{\code{sumario}}{\code{character}. Resumo do discurso.}
+#'     \item{\code{sumário}}{\code{character}. Resumo do discurso.}
 #'     \item{\code{texto}}{\code{character}. Texto integral (quando disponivel).}
 #'     \item{\code{uri_discurso}}{\code{character}. URL do recurso.}
 #'     \item{\code{casa}}{\code{character}. Sempre \code{"senado"}.}
@@ -71,7 +71,7 @@
 #' \code{rbind()} ou \code{dplyr::bind_rows()}.
 #'
 #' ## Backend
-#' Esta funcao usa \pkg{senatebR} (Santos, 2026) como backend para acesso
+#' Esta função usa \pkg{senatebR} (Santos, 2026) como backend para acesso
 #' a API do Senado Federal. O \pkg{senatebR} deve estar instalado:
 #' \code{install.packages("senatebR")}.
 #'

@@ -21,14 +21,14 @@
 #' em português ou inglês (para submissões internacionais).
 #'
 #' @param coded Tibble com resultado de [ac_qual_code()].
-#' @param codebook Objeto `ac_codebook` usado na classificacao.
+#' @param codebook Objeto `ac_codebook` usado na classificação.
 #' @param reliability Opcional. Saida de [ac_qual_reliability()]; se
 #'   fornecido, adiciona secao de confiabilidade inter-codificador.
 #' @param chat Opcional. Objeto `Chat` do `ellmer` (ou string de modelo);
-#'   se fornecido, extrai provedor/modelo/parametros para o relatorio.
-#' @param title Titulo do relatorio. Padrao: gerado a partir do nome do codebook.
+#'   se fornecido, extrai provedor/modelo/parametros para o relatório.
+#' @param title Título do relatório. Padrao: gerado a partir do nome do codebook.
 #' @param author Autor(es) do estudo (opcional).
-#' @param method Descricao livre do metodo de coleta do corpus (opcional).
+#' @param method Descrição livre do metodo de coleta do corpus (opcional).
 #' @param format Formato de saida: `"md"` (padrao) ou `"html"`.
 #' @param path Caminho do arquivo destino. Se `NULL`, usa `tempfile()`.
 #' @param lang Idioma: `"pt"` (padrao) ou `"en"`.
@@ -53,7 +53,7 @@
 #'   reasoning        = rep("...", 5)
 #' )
 #'
-#' # Gerar relatorio em markdown temporario
+#' # Gerar relatório em markdown temporário
 #' arquivo <- tempfile(fileext = ".md")
 #' ac_qual_report(coded, cb, path = arquivo, author = "Fulano de Tal")
 #' # readLines(arquivo, n = 20)
@@ -592,7 +592,7 @@ ac_qual_report <- function(coded,
 #' @return Invisível: caminho do arquivo gerado.
 #'
 #' @examples
-#' # Duas variaveis de conteudo, cada uma com seu codebook
+#' # Duas variáveis de conteúdo, cada uma com seu codebook
 #' cb_tom <- ac_qual_codebook(
 #'   name = "tom",
 #'   instructions = "Classifique o tom.",

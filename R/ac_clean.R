@@ -15,7 +15,7 @@
 #' @param remove_symbols Se `TRUE`, remove símbolos e emojis (@, #, \*, etc.).
 #'   Padrão: `FALSE`. Cuidado: hashtags e menções podem ser informativas.
 #' @param remove_hashtags Se `TRUE`, remove hashtags (#termo). Padrão: `FALSE`.
-#' @param remove_mentions Se `TRUE`, remove menções (\@usuario). Padrão: `FALSE`.
+#' @param remove_mentions Se `TRUE`, remove menções (\@usuário). Padrão: `FALSE`.
 #' @param remove_stopwords Pode ser:
 #'   * `NULL` (padrão): não remove stopwords;
 #'   * uma string com nome de preset (`"pt"`, `"pt-br-extended"`,

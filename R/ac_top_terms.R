@@ -2,22 +2,22 @@
 #'
 #' @description
 #' `ac_top_terms()` seleciona os `n` termos mais frequentes a partir de uma
-#' tabela de frequencias (tipicamente o resultado de [`ac_count()`]).
+#' tabela de frequências (tipicamente o resultado de [`ac_count()`]).
 #'
 #' Pode operar em dois modos:
 #' - sem grupos (`by = NULL`): retorna os `n` termos mais frequentes no geral;
 #' - com grupos (`by = c("partido", ...)`): retorna os `n` termos mais
 #'   frequentes em cada combinacao de metadados.
 #'
-#' @param x Um `data.frame` ou [`tibble::tibble()`] contendo, no minimo,
+#' @param x Um `data.frame` ou [`tibble::tibble()`] contendo, no mínimo,
 #'   as colunas `token` e `n`. Em geral, o resultado de [`ac_count()`].
-#' @param n Numero de termos a selecionar. Valor inteiro >= 1.
+#' @param n Número de termos a selecionar. Valor inteiro >= 1.
 #' @param by Vetor de nomes de colunas em `x` a serem usados como grupos
 #'   de agregacao. Se `NULL` (padrao), a selecao e feita no conjunto total.
-#'   Se nao for `NULL`, os `n` termos mais frequentes sao selecionados
+#'   Se não for `NULL`, os `n` termos mais frequentes sao selecionados
 #'   dentro de cada combinacao de `by`.
-#' @param sort Logico. Se `TRUE` (padrao), ordena a saida em ordem
-#'   decrescente de frequencia (`n`). Se `FALSE`, preserva a ordem
+#' @param sort Lógico. Se `TRUE` (padrao), ordena a saida em ordem
+#'   decrescente de frequência (`n`). Se `FALSE`, preserva a ordem
 #'   retornada pela operacao interna de selecao, apenas garantindo que
 #'   os grupos (quando houver) venham juntos.
 #'

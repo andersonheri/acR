@@ -33,15 +33,15 @@
 #' *STIL/SBC*.
 #'
 #' @examples
-#' # Discursos com valencia afetiva variada
+#' # Discursos com valência afetiva variada
 #' df <- data.frame(
 #'   id = paste0("d", 1:6),
 #'   texto = c(
-#'     "A reforma tributaria e um passo excelente para o pais",
+#'     "A reforma tributária e um passo excelente para o pais",
 #'     "Esta proposta e um desastre, um retrocesso terrivel",
-#'     "O relator apresentou o parecer na sessao ordinaria",
-#'     "Comemoramos essa vitoria historica com muita alegria",
-#'     "Rejeitamos com veemencia essa medida injusta e ilegal",
+#'     "O relator apresentou o parecer na sessao ordinária",
+#'     "Comemoramos essa vitória histórica com muita alegria",
+#'     "Rejeitamos com veemência essa medida injusta e ilegal",
 #'     "A comissao encerra os trabalhos as 18h"
 #'   ),
 #'   partido = rep(c("A", "B"), 3),
@@ -197,14 +197,14 @@ ac_sentiment <- function(corpus,
 #' @return Objeto `ggplot`.
 #'
 #' @examples
-#' # Corpus com quatro documentos de valencias distintas
+#' # Corpus com quatro documentos de valências distintas
 #' df <- data.frame(
 #'   id = c("a", "b", "c", "d"),
 #'   texto = c(
-#'     "excelente otimo positivo bom",
-#'     "pessimo terrivel negativo ruim",
+#'     "excelente ótimo positivo bom",
+#'     "péssimo terrivel negativo ruim",
 #'     "aprovada proposta reuniao",
-#'     "bom resultado positivo otimo"
+#'     "bom resultado positivo ótimo"
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)

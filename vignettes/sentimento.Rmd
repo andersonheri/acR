@@ -133,13 +133,13 @@ sent_sum   <- ac_sentiment(corpus, method = "sum")
 sent_mean  <- ac_sentiment(corpus, method = "mean")
 sent_ratio <- ac_sentiment(corpus, method = "ratio")
 
-comparacao <- data.frame(
+comparação <- data.frame(
   doc_id = sent_sum$doc_id,
   sum    = round(sent_sum$score,   2),
   mean   = round(sent_mean$score,  2),
   ratio  = round(sent_ratio$score, 2)
 )
-head(comparacao, 10)
+head(comparação, 10)
 ```
 
 ## 4. Visualização: barras por documento
@@ -268,7 +268,7 @@ casos_limitrofes <- sent |> dplyr::filter(abs(score) <= 1)
 
 * Souza, M.; Vieira, R. (2012). Sentiment Analysis on Twitter with
   Portuguese Language. *4th Workshop on Computational Approaches to
-  Subjectivity, Sentiment and Social Media Analysis*, PUCRS.
+  Subjectivity, Sentiment and Social Média Analysis*, PUCRS.
 * Pang, B.; Lee, L. (2008). Opinion Mining and Sentiment Analysis.
   *Foundations and Trends in Information Retrieval*, 2(1-2), 1-135.
 * Silge, J.; Robinson, D. (2017). *Text Mining with R*. O'Reilly.

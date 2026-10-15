@@ -21,14 +21,14 @@
 #' @param n Tamanho do n-grama. Deve ser um inteiro maior ou igual
 #'   a 1. Para `n = 1`, o resultado sao tokens individuais; para
 #'   `n = 2`, bigramas (`"A B"`), para `n = 3`, trigramas etc.
-#' @param keep_empty Logico. Se `FALSE` (padrao), documentos que
-#'   resultarem em texto vazio apos a limpeza nao geram linhas na
+#' @param keep_empty Lógico. Se `FALSE` (padrao), documentos que
+#'   resultarem em texto vazio após a limpeza não geram linhas na
 #'   saida. Se `TRUE`, cada documento vazio gera uma linha com
 #'   `token = NA` quando `n = 1`.
-#' @param drop_punct Logico. Se `TRUE`, remove da sequencia tokens
-#'   que consistem apenas de pontuacao (por exemplo `"!"`, `"..."`)
+#' @param drop_punct Lógico. Se `TRUE`, remove da sequência tokens
+#'   que consistem apenas de pontuação (por exemplo `"!"`, `"..."`)
 #'   antes de construir n-gramas. Tokens que misturam letras e
-#'   pontuacao (por exemplo `"ola,"`) sao mantidos.
+#'   pontuação (por exemplo `"ola,"`) sao mantidos.
 #' @param ... Ignorado, reservado para argumentos futuros.
 #'
 #' @return Um [`tibble::tibble()`] com colunas:
@@ -53,7 +53,7 @@
 #' tokens <- ac_tokenize(corp)
 #' tokens
 #'
-#' # Removendo tokens que sao apenas pontuacao
+#' # Removendo tokens que sao apenas pontuação
 #' df2 <- data.frame(
 #'   id    = "d1",
 #'   texto = "Ola, mundo ! ..."

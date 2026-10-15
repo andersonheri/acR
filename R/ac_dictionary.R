@@ -49,17 +49,17 @@
 #' df <- data.frame(
 #'   id = paste0("c", 1:4),
 #'   texto = c(
-#'     "a entrega atrasou muito e o rastreio nao funcionava",
+#'     "a entrega atrasou muito e o rastreio não funcionava",
 #'     "o produto chegou com defeito e quebrado na caixa",
 #'     "cobraram duas vezes no cartao e o reembolso demorou",
-#'     "entrega rapida mas o produto tinha um defeito de fabrica"
+#'     "entrega rápida mas o produto tinha um defeito de fabrica"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
 #'
 #' dict <- ac_build_dictionary(
-#'   entrega    = c("entrega", "atrasou", "rastreio", "rapida"),
+#'   entrega    = c("entrega", "atrasou", "rastreio", "rápida"),
 #'   produto    = c("defeito", "quebrado", "fabrica"),
 #'   financeiro = c("cobraram", "cartao", "reembolso")
 #' )
@@ -158,8 +158,8 @@ ac_dictionary <- function(corpus, dictionary, by = NULL, case_insensitive = TRUE
 #'
 #' @examples
 #' dict <- ac_build_dictionary(
-#'   positivo = c("bom", "otimo", "excelente"),
-#'   negativo = c("mau", "pessimo", "horrivel")
+#'   positivo = c("bom", "ótimo", "excelente"),
+#'   negativo = c("mau", "péssimo", "horrivel")
 #' )
 #' dict
 #'
@@ -192,8 +192,8 @@ ac_build_dictionary <- function(...) {
 #'
 #' @examples
 #' dict <- ac_build_dictionary(
-#'   positivo = c("bom", "otimo"),
-#'   negativo = c("mau", "pessimo")
+#'   positivo = c("bom", "ótimo"),
+#'   negativo = c("mau", "péssimo")
 #' )
 #' arquivo <- tempfile(fileext = ".yaml")
 #' ac_dictionary_save(dict, arquivo)
@@ -240,7 +240,7 @@ ac_dictionary_load <- function(path) {
 #' de palavras construídas fora do R, ou léxicos de terceiros já
 #' traduzidos/adaptados para português (o pacote não distribui nenhum
 #' léxico de categorias além do OpLexicon usado em [ac_sentiment()] —
-#' veja `vignette("dicionarios")` para onde encontrar léxicos de
+#' veja `vignette("dicionários")` para onde encontrar léxicos de
 #' terceiros e como adaptá-los a este formato).
 #'
 #' @param data Um `data.frame`/tibble em formato longo, ou o caminho de
@@ -256,7 +256,7 @@ ac_dictionary_load <- function(path) {
 #'
 #' @examples
 #' lexico <- data.frame(
-#'   termo     = c("bom", "otimo", "mau", "pessimo"),
+#'   termo     = c("bom", "ótimo", "mau", "péssimo"),
 #'   categoria = c("positivo", "positivo", "negativo", "negativo"),
 #'   stringsAsFactors = FALSE
 #' )

@@ -54,11 +54,11 @@
 #'   id = paste0("d", 1:6),
 #'   texto = c(
 #'     "entrega atrasada rastreio sumiu",
-#'     "pedido atrasou muito, rastreio nao atualiza",
+#'     "pedido atrasou muito, rastreio não atualiza",
 #'     "produto com defeito, chegou quebrado",
-#'     "veio quebrado, qualidade pessima",
-#'     "atendimento excelente, resolveram rapido",
-#'     "suporte educado e rapido, resolveu tudo"
+#'     "veio quebrado, qualidade péssima",
+#'     "atendimento excelente, resolveram rápido",
+#'     "suporte educado e rápido, resolveu tudo"
 #'   ),
 #'   categoria = c("entrega", "entrega", "produto", "produto",
 #'                  "atendimento", "atendimento"),
@@ -216,11 +216,11 @@ ac_ca <- function(corpus,
 #'   id = paste0("d", 1:6),
 #'   texto = c(
 #'     "entrega atrasada rastreio sumiu",
-#'     "pedido atrasou muito, rastreio nao atualiza",
+#'     "pedido atrasou muito, rastreio não atualiza",
 #'     "produto com defeito, chegou quebrado",
-#'     "veio quebrado, qualidade pessima",
-#'     "atendimento excelente, resolveram rapido",
-#'     "suporte educado e rapido, resolveu tudo"
+#'     "veio quebrado, qualidade péssima",
+#'     "atendimento excelente, resolveram rápido",
+#'     "suporte educado e rápido, resolveu tudo"
 #'   ),
 #'   categoria = c("entrega", "entrega", "produto", "produto",
 #'                  "atendimento", "atendimento"),

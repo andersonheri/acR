@@ -38,7 +38,7 @@
 #'
 #' @examples
 #' # Reclamacoes de clientes ao longo de alguns meses, com score de
-#' # sentimento ja calculado por documento (ex.: saida de ac_sentiment())
+#' # sentimento já calculado por documento (ex.: saida de ac_sentiment())
 #' df <- data.frame(
 #'   doc_id = paste0("d", 1:6),
 #'   data   = as.Date(c("2024-01-05", "2024-01-20", "2024-02-02",
@@ -115,7 +115,7 @@ ac_temporal <- function(data,
 #'   score  = c(-2, -1, 0, 1, 2, 1)
 #' )
 #' temporal <- ac_temporal(df, date_col = "data", value_col = "score")
-#' ac_plot_temporal(temporal, ylab = "Sentimento medio")
+#' ac_plot_temporal(temporal, ylab = "Sentimento médio")
 #'
 #' @seealso [ac_temporal()]
 #' @concept visualization

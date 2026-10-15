@@ -30,7 +30,7 @@
 #'   * `cost_input`: custo por 1M tokens de entrada (USD), `NA` se gratuito/local;
 #'   * `cost_output`: custo por 1M tokens de saída (USD);
 #'   * `tier`: categoria (`"frontier"`, `"balanced"`, `"fast"`, `"free"`, `"local"`);
-#'   * `pt_support`: suporte estimado ao português (`"alto"`, `"medio"`, `"baixo"`);
+#'   * `pt_support`: suporte estimado ao português (`"alto"`, `"médio"`, `"baixo"`);
 #'   * `acr_string`: string pronta para uso em `model = ...` no `acR`.
 #'
 #' @examples
@@ -138,7 +138,7 @@ ac_qual_list_models <- function(provider = "all",
 #' *arXiv*, 2307.02179.
 #'
 #' @examples
-#' # Recomendação padrão para classificacao em PT com orcamento medio
+#' # Recomendação padrão para classificação em PT com orcamento médio
 #' ac_qual_recommend_model()
 #'
 #' # Opcao gratuita para explorar

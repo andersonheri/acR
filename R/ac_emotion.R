@@ -41,7 +41,7 @@
 #' Association Lexicon. *Computational Intelligence*, 29(3), 436-465.
 #'
 #' @examples
-#' # Lexico de emocao minimo, construido a mao para este exemplo
+#' # Lexico de emocao mínimo, construido a mao para este exemplo
 #' # (em uso real, substitua por um lexico de emocoes licenciado em PT)
 #' lexico <- data.frame(
 #'   termo  = c("alegria", "feliz", "medo", "assustado", "raiva", "furioso"),
@@ -53,8 +53,8 @@
 #'   id = paste0("d", 1:3),
 #'   texto = c(
 #'     "fiquei muito feliz com a alegria do momento",
-#'     "fiquei assustado, senti muito medo da situacao",
-#'     "fiquei furioso, aquela raiva nao passava"
+#'     "fiquei assustado, senti muito medo da situação",
+#'     "fiquei furioso, aquela raiva não passava"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )

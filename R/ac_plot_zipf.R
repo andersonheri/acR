@@ -30,15 +30,15 @@
 #' Effort*. Addison-Wesley.
 #'
 #' @examples
-#' # Avaliacoes de produtos de duas categorias
+#' # Avaliações de produtos de duas categorias
 #' df <- data.frame(
 #'   id = paste0("r", 1:6),
 #'   texto = c(
 #'     "bom produto bom preco bom atendimento",
 #'     "produto bom mas entrega lenta",
 #'     "preco justo produto funcional",
-#'     "pessimo atendimento produto com defeito",
-#'     "excelente produto rapido e eficiente",
+#'     "péssimo atendimento produto com defeito",
+#'     "excelente produto rápido e eficiente",
 #'     "produto ok nada de especial"
 #'   ),
 #'   categoria = rep(c("eletronico", "casa"), 3),

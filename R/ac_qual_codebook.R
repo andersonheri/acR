@@ -75,7 +75,7 @@
 #'
 #' @examples
 #' # Codebook manual com duas categorias, cada uma com exemplos positivos
-#' # (o que E) e negativos (o que NAO e, para desambiguar categorias vizinhas)
+#' # (o que E) e negativos (o que NÃO e, para desambiguar categorias vizinhas)
 #' cb <- ac_qual_codebook(
 #'   name         = "tom_discurso",
 #'   instructions = "Classifique o tom geral do discurso.",
@@ -87,7 +87,7 @@
 #'       weight       = 1  # peso relativo no prompt; use >1 para priorizar
 #'     ),
 #'     negativo = list(
-#'       definition   = "Discurso com tom critico ou confrontacional.",
+#'       definition   = "Discurso com tom crítico ou confrontacional.",
 #'       examples_pos = c("Esta proposta vai arruinar o pais."),
 #'       examples_neg = c("Apresento esta emenda para melhorar o texto."),
 #'       weight       = 1
@@ -215,7 +215,7 @@ ac_qual_codebook <- function(name,
 #'   instructions = "Classifique o tom.",
 #'   categories   = list(
 #'     positivo = list(definition = "Tom propositivo."),
-#'     negativo = list(definition = "Tom critico.")
+#'     negativo = list(definition = "Tom crítico.")
 #'   )
 #' )
 #'
@@ -279,12 +279,12 @@ ac_qual_codebook_add <- function(codebook, ...) {
 #'   instructions = "Classifique o tom.",
 #'   categories   = list(
 #'     positivo = list(definition = "Tom propositivo."),
-#'     negativo = list(definition = "Tom critico."),
+#'     negativo = list(definition = "Tom crítico."),
 #'     neutro   = list(definition = "Tom neutro.")
 #'   )
 #' )
 #'
-#' # Remover a categoria "neutro" (aceita tambem um vetor de nomes)
+#' # Remover a categoria "neutro" (aceita também um vetor de nomes)
 #' cb <- ac_qual_codebook_remove(cb, "neutro")
 #' names(cb$categories)  # "positivo" "negativo"
 #'
@@ -380,7 +380,7 @@ summary.ac_codebook <- function(object, ...) {
 #' Salvar codebook em arquivo YAML
 #'
 #' Serializa um objeto `ac_codebook` em disco no formato YAML, preservando
-#' instrucoes, categorias, exemplos, referencias e historico de modificacoes.
+#' instrucoes, categorias, exemplos, referências e histórico de modificacoes.
 #' YAML foi escolhido por ser legivel por humanos e versionavel em Git.
 #'
 #' @param codebook Objeto `ac_codebook`.
@@ -396,11 +396,11 @@ summary.ac_codebook <- function(object, ...) {
 #'   instructions = "Classifique o tom do discurso.",
 #'   categories   = list(
 #'     positivo = list(definition = "Tom propositivo e colaborativo."),
-#'     negativo = list(definition = "Tom critico e confrontacional.")
+#'     negativo = list(definition = "Tom crítico e confrontacional.")
 #'   )
 #' )
 #'
-#' # Salvar em arquivo temporario (usar caminho real fora de exemplos)
+#' # Salvar em arquivo temporário (usar caminho real fora de exemplos)
 #' arquivo <- tempfile(fileext = ".yaml")
 #' ac_qual_save_codebook(cb, path = arquivo)
 #'
@@ -460,7 +460,7 @@ ac_qual_save_codebook <- function(codebook, path = NULL, ...) {
 #' @return Objeto `ac_codebook`.
 #'
 #' @examples
-#' # Preparar um codebook e salvar em arquivo temporario
+#' # Preparar um codebook e salvar em arquivo temporário
 #' cb <- ac_qual_codebook(
 #'   name         = "polaridade",
 #'   instructions = "Classifique a polaridade do texto.",
@@ -986,7 +986,7 @@ ac_qual_load_codebook <- function(path, ...) {
 #'   instructions = "Identifique tom populista no discurso.",
 #'   categories   = list(
 #'     populista     = list(definition = "Apela ao povo contra a elite."),
-#'     nao_populista = list(definition = "Discurso tecnico ou institucional.")
+#'     nao_populista = list(definition = "Discurso técnico ou institucional.")
 #'   )
 #' )
 #'
@@ -998,7 +998,7 @@ ac_qual_load_codebook <- function(path, ...) {
 #'   lang     = "pt"
 #' )
 #'
-#' # 3. Inspecionar as referencias anexadas a cada categoria
+#' # 3. Inspecionar as referências anexadas a cada categoria
 #' cb_ancorado$categories$populista$references
 #' }
 #'
@@ -1043,11 +1043,11 @@ ac_qual_codebook_hybrid <- function(codebook, chat=NULL, model='anthropic/claude
 #'   )
 #' )
 #' cb <- ac_qual_codebook_add(cb,
-#'   neutro = list(definition = "Sem valencia clara.")
+#'   neutro = list(definition = "Sem valência clara.")
 #' )
 #' cb <- ac_qual_codebook_remove(cb, "neutro")
 #'
-#' # Ver historico completo de acoes registradas
+#' # Ver histórico completo de acoes registradas
 #' ac_qual_codebook_history(cb)
 #'
 #' @concept qualitative
@@ -1081,7 +1081,7 @@ ac_qual_codebook_history <- function(codebook, n=Inf) {
 #'   name         = "tom",
 #'   instructions = "Classifique o tom do texto.",
 #'   categories   = list(
-#'     formal   = list(definition = "Linguagem tecnica e impessoal."),
+#'     formal   = list(definition = "Linguagem técnica e impessoal."),
 #'     informal = list(definition = "Linguagem coloquial ou emotiva.")
 #'   )
 #' )
@@ -1147,7 +1147,7 @@ as_prompt.ac_codebook <- function(x, reasoning=TRUE, reasoning_length=c('short',
 #'   )
 #' )
 #'
-#' # Fundir em um unico codebook com 4 categorias
+#' # Fundir em um único codebook com 4 categorias
 #' cb <- ac_qual_codebook_merge(cb_tom, cb_estilo, name = "tom_estilo")
 #' names(cb$categories)  # "positivo" "negativo" "pathos" "logos"
 #'

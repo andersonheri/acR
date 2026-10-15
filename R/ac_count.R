@@ -19,21 +19,21 @@
 #' @param corpus Objeto de classe [`ac_corpus()`].
 #' @param n Tamanho do n-grama a ser tokenizado. Encaminhado para
 #'   [`ac_tokenize()`]. Veja `?ac_tokenize` para detalhes.
-#' @param drop_punct Logico. Se `TRUE`, remove tokens compostos apenas
-#'   por pontuacao antes de calcular as frequencias (via
+#' @param drop_punct Lógico. Se `TRUE`, remove tokens compostos apenas
+#'   por pontuação antes de calcular as frequências (via
 #'   `drop_punct = TRUE` em [`ac_tokenize()`]).
 #' @param by Vetor de nomes de colunas de metadados em `corpus` a serem
 #'   usados como grupos de agregacao. Se `NULL` (padrao), as contagens
-#'   sao feitas por documento (`doc_id`). Se nao for `NULL`, as colunas
-#'   indicadas sao usadas como grupos e `doc_id` nao entra no resultado.
-#' @param sort Logico. Se `TRUE` (padrao), ordena a saida em ordem
-#'   decrescente de frequencia (`n`).
+#'   sao feitas por documento (`doc_id`). Se não for `NULL`, as colunas
+#'   indicadas sao usadas como grupos e `doc_id` não entra no resultado.
+#' @param sort Lógico. Se `TRUE` (padrao), ordena a saida em ordem
+#'   decrescente de frequência (`n`).
 #' @param ... Argumentos adicionais encaminhados para
 #'   [`ac_tokenize()`] (por exemplo, `keep_empty`).
 #'
 #' @return Um [`tibble::tibble()`]:
 #' - Se `by = NULL`: colunas `doc_id`, `token`, `n`;
-#' - Se `by` nao nulo: colunas `by`, `token`, `n`.
+#' - Se `by` não nulo: colunas `by`, `token`, `n`.
 #'
 #' @examples
 #' df <- data.frame(
@@ -49,13 +49,13 @@
 #'
 #' corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
 #'
-#' # Frequencia de palavras (unigramas) por documento
+#' # Frequência de palavras (unigramas) por documento
 #' ac_count(corp)
 #'
-#' # Frequencia de palavras por partido
+#' # Frequência de palavras por partido
 #' ac_count(corp, by = "partido")
 #'
-#' # Frequencia de bigramas por partido, removendo apenas pontuacao
+#' # Frequência de bigramas por partido, removendo apenas pontuação
 #' ac_count(corp, n = 2, drop_punct = TRUE, by = "partido")
 #'
 #' @seealso [ac_corpus()], [ac_clean()], [ac_tokenize()]

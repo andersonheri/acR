@@ -27,7 +27,7 @@
 #'
 #' @examples
 #' \donttest{
-#' # 1. Corpus sintetico com 3 temas nitidos (democracia, economia, saude, educacao)
+#' # 1. Corpus sintético com 3 temas nitidos (democracia, economia, saude, educacao)
 #' df <- data.frame(
 #'   id = paste0("d", 1:10),
 #'   texto = c(
@@ -38,14 +38,14 @@
 #'     "democracia eleicao voto politica partido",
 #'     "economia inflacao juros fiscal orcamento",
 #'     "saude sus medico hospital remedio",
-#'     "educacao universidade pesquisa ciencia",
+#'     "educacao universidade pesquisa ciência",
 #'     "participacao social cidadania direitos igualdade",
-#'     "mercado trabalho emprego salario industria"
+#'     "mercado trabalho emprego salário industria"
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
 #'
-#' # 2. Ajustar LDA com k=3 topicos (o corpus tem ~4 temas; k=3 for a experimentacao)
+#' # 2. Ajustar LDA com k=3 tópicos (o corpus tem ~4 temas; k=3 for a experimentacao)
 #' lda <- ac_lda(corpus, k = 3)
 #' lda  # imprime resumo do modelo
 #' }
@@ -161,7 +161,7 @@ print.ac_lda <- function(x, ...) {
 #'
 #' @examples
 #' \donttest{
-#' # 1. Corpus sintetico (mesmos temas de ac_lda(), palavras diferentes)
+#' # 1. Corpus sintético (mesmos temas de ac_lda(), palavras diferentes)
 #' df <- data.frame(
 #'   id = paste0("d", 1:10),
 #'   texto = c(
@@ -172,9 +172,9 @@ print.ac_lda <- function(x, ...) {
 #'     "democracia cidadania direitos igualdade",
 #'     "economia inflacao juros orcamento",
 #'     "saude medico remedio tratamento",
-#'     "educacao pesquisa ciencia tecnologia",
+#'     "educacao pesquisa ciência tecnologia",
 #'     "participacao social democracia cidadania",
-#'     "mercado trabalho emprego salario"
+#'     "mercado trabalho emprego salário"
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
@@ -242,7 +242,7 @@ ac_lda_tune <- function(corpus,
 #'
 #' @examples
 #' \donttest{
-#' # Corpus sintetico com dois blocos tematicos
+#' # Corpus sintético com dois blocos tematicos
 #' df <- data.frame(
 #'   id = paste0("d", 1:8),
 #'   texto = c(
@@ -250,17 +250,17 @@ ac_lda_tune <- function(corpus,
 #'     "cidadania direitos participacao democracia",
 #'     "voto direitos liberdade cidadania",
 #'     "democracia voto participacao popular",
-#'     "mercado economia eficiencia privatizacao",
-#'     "privatizacao mercado livre eficiencia",
+#'     "mercado economia eficiência privatizacao",
+#'     "privatizacao mercado livre eficiência",
 #'     "economia crescimento investimento mercado",
-#'     "eficiencia mercado economia livre"
+#'     "eficiência mercado economia livre"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)
 #' lda    <- ac_lda(corpus, k = 2)
 #'
-#' # Grafico com os 5 termos mais probabilisticos por topico
+#' # Grafico com os 5 termos mais probabilisticos por tópico
 #' ac_plot_lda_topics(lda, top_n = 5)
 #' }
 #'
@@ -330,7 +330,7 @@ ac_plot_lda_topics <- function(lda_result,
 #'
 #' @examples
 #' \donttest{
-#' # Corpus sintetico com dois blocos tematicos
+#' # Corpus sintético com dois blocos tematicos
 #' df <- data.frame(
 #'   id = paste0("d", 1:8),
 #'   texto = c(
@@ -338,10 +338,10 @@ ac_plot_lda_topics <- function(lda_result,
 #'     "cidadania direitos participacao democracia",
 #'     "voto direitos liberdade cidadania",
 #'     "democracia voto participacao popular",
-#'     "mercado economia eficiencia privatizacao",
-#'     "privatizacao mercado livre eficiencia",
+#'     "mercado economia eficiência privatizacao",
+#'     "privatizacao mercado livre eficiência",
 #'     "economia crescimento investimento mercado",
-#'     "eficiencia mercado economia livre"
+#'     "eficiência mercado economia livre"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )

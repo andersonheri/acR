@@ -38,14 +38,14 @@
 #' University Press.
 #'
 #' @examples
-#' # Avaliacoes de atendimento ao cliente
+#' # Avaliações de atendimento ao cliente
 #' df <- data.frame(
 #'   id = paste0("a", 1:4),
 #'   texto = c(
-#'     "o atendimento foi rapido e a atendente foi muito educada comigo",
+#'     "o atendimento foi rápido e a atendente foi muito educada comigo",
 #'     "fiquei esperando muito tempo e o atendimento foi frio e distante",
 #'     "atendimento excelente, resolveram meu problema na hora",
-#'     "o atendimento automatico nao entendeu minha solicitacao"
+#'     "o atendimento automático não entendeu minha solicitacao"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )

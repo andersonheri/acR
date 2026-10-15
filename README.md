@@ -176,7 +176,7 @@ library(dplyr)
 corpus_raw <- ac_fetch_camara(
   data_inicio   = "2024-03-11",
   data_fim      = "2024-03-15",
-  tipo_discurso = "plenario",
+  tipo_discurso = "plenário",
   n_max         = 30L
 )
 ```
@@ -214,7 +214,7 @@ corpus_limpo <- ac_clean(
   remove_url          = TRUE,
   remove_email        = TRUE,
   remove_hashtags     = TRUE,       # novo: remove #termos separado de símbolos
-  remove_mentions     = TRUE,       # novo: remove @usuario separado de símbolos
+  remove_mentions     = TRUE,       # novo: remove @usuário separado de símbolos
   remove_stopwords    = "pt-legislativo",
   extra_stopwords     = sw,         # novo: stopwords adicionais ao preset
   protect             = c("PT", "PL", "CCJ"),  # siglas preservadas
@@ -222,7 +222,7 @@ corpus_limpo <- ac_clean(
   custom_replacements = list(       # novo: substituições livres antes da limpeza
     "pres\\."  = "presidente",
     "dep\\."   = "deputado",
-    "v\\.exa" = "vossa excelencia"
+    "v\\.exa" = "vossa excelência"
   ),
   min_char            = 3L,         # novo: descarta tokens com menos de 3 chars
   handle_na           = "remove",   # novo: remove documentos com texto NA
@@ -381,17 +381,17 @@ ac_plot_cooccurrence(cooc, top_n = 30)
 lda  <- ac_lda(tokens, k = 5)
 ac_plot_lda_topics(lda)
 
-# Novidades: diagnostico, escalas e dicionarios
+# Novidades: diagnóstico, escalas e dicionários
 ac_readability(corpus_limpo)
 ac_lexical_diversity(corpus_limpo)
 ac_kwic(corpus_limpo, pattern = "reforma", window = 5)
 ac_collocations(corpus_limpo, measure = "pmi")
 
-dicionario <- ac_build_dictionary(
+dicionário <- ac_build_dictionary(
   economia = c("imposto", "orcamento", "deficit"),
   saude    = c("saude", "vacina", "hospital")
 )
-ac_dictionary(corpus_limpo, dicionario)
+ac_dictionary(corpus_limpo, dicionário)
 
 ca <- ac_ca(corpus_limpo, by = "partido")
 ac_plot_ca(ca)
@@ -538,7 +538,7 @@ system. *arXiv*, 2205.01833.
 
 Sampaio, R. C., & Lycarião, D. (2021). *Análise de conteúdo categorial:
 manual de aplicação*. Brasília: ENAP.
-<https://repositorio.enap.gov.br/handle/1/6542>
+<https://repositório.enap.gov.br/handle/1/6542>
 
 Santos, V. (2024). *senatebR: Functions to collect data from the Brazilian
 Senate*. R package version 0.1.0. <https://github.com/vsntos/senatebR>

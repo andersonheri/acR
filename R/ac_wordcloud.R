@@ -31,14 +31,14 @@
 #' df <- data.frame(
 #'   id    = paste0("d", 1:8),
 #'   texto = c(
-#'     "reforma tributaria simplifica sistema empresas",
+#'     "reforma tributária simplifica sistema empresas",
 #'     "reforma reduz distorcoes fiscais brasileiras",
-#'     "sistema tributario complexo prejudica empresas",
+#'     "sistema tributário complexo prejudica empresas",
 #'     "reforma modernizacao arrecadacao federal",
 #'     "IVA substitui impostos indiretos federais",
-#'     "reforma tributaria arrecadacao IVA aliquotas",
+#'     "reforma tributária arrecadacao IVA aliquotas",
 #'     "simplificacao impostos aliquotas empresas",
-#'     "reforma federal moderniza sistema tributario"
+#'     "reforma federal moderniza sistema tributário"
 #'   ),
 #'   stringsAsFactors = FALSE
 #' )

@@ -61,7 +61,7 @@
 #'   `interpretation`. Quando `by_variable = TRUE`, o resultado carrega
 #'   também um atributo `by_variable`: um tibble com uma linha por
 #'   categoria do codebook e colunas `categoria`, `n`, `vp`, `fp`, `fn`,
-#'   `vn`, `concordancia`, `precisao`, `recall`, `f1`, `gwet_ac1`,
+#'   `vn`, `concordância`, `precisao`, `recall`, `f1`, `gwet_ac1`,
 #'   `krippendorff_alfa`.
 #'
 #' @references
@@ -86,7 +86,7 @@
 #'   categoria = c("favor", "contra", "contra", "contra", "favor")
 #' )
 #'
-#' # Calcular metricas de confiabilidade (bootstrap curto so para demonstrar;
+#' # Calcular métricas de confiabilidade (bootstrap curto so para demonstrar;
 #' # em uso real, deixe o padrao de 1000 replicas)
 #' rel <- ac_qual_reliability(
 #'   llm       = coded,
@@ -286,7 +286,7 @@ ac_qual_reliability <- function(llm,
 #'   ponderadas.
 #'
 #' @examples
-#' # Simular saida de ac_qual_code() com 20 documentos ja classificados
+#' # Simular saida de ac_qual_code() com 20 documentos já classificados
 #' set.seed(1)
 #' coded <- tibble::tibble(
 #'   doc_id           = paste0("doc_", 1:20),
@@ -426,7 +426,7 @@ ac_qual_sample <- function(coded,
 #'
 #' @examples
 #' if (requireNamespace("openxlsx", quietly = TRUE)) {
-#'   # Amostra de documentos ja classificados pela LLM
+#'   # Amostra de documentos já classificados pela LLM
 #'   coded <- tibble::tibble(
 #'     doc_id           = paste0("doc_", 1:5),
 #'     categoria        = c("favor", "contra", "favor", "contra", "favor"),
@@ -434,7 +434,7 @@ ac_qual_sample <- function(coded,
 #'   )
 #'   amostra <- ac_qual_sample(coded, n = 3, strategy = "uncertainty")
 #'
-#'   # Exportar para revisao humana em arquivo temporario
+#'   # Exportar para revisao humana em arquivo temporário
 #'   arquivo <- tempfile(fileext = ".xlsx")
 #'   ac_qual_export_for_review(amostra, path = arquivo)
 #'   file.exists(arquivo)
@@ -521,7 +521,7 @@ ac_qual_export_for_review <- function(sample,
 #'
 #' @examples
 #' if (requireNamespace("openxlsx", quietly = TRUE)) {
-#'   # Simular uma planilha ja preenchida pelo codificador humano
+#'   # Simular uma planilha já preenchida pelo codificador humano
 #'   arquivo <- tempfile(fileext = ".xlsx")
 #'   openxlsx::write.xlsx(
 #'     data.frame(

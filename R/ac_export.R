@@ -1,20 +1,20 @@
-#' Exporta resultados de analise de conteudo em multiplos formatos
+#' Exporta resultados de analise de conteúdo em multiplos formatos
 #'
 #' @description
-#' Exporta data.frames de resultados (corpus codificado, tabelas de frequencia,
-#' metricas de confiabilidade) para CSV, LaTeX, Excel (.xlsx) ou RDS.
+#' Exporta data.frames de resultados (corpus codificado, tabelas de frequência,
+#' métricas de confiabilidade) para CSV, LaTeX, Excel (.xlsx) ou RDS.
 #' Pensada para facilitar a transicao entre o pipeline `acR` e a escrita
-#' academica (tabelas em artigos) ou o compartilhamento de dados replicaveis.
+#' acadêmica (tabelas em artigos) ou o compartilhamento de dados replicaveis.
 #'
 #' @param x `data.frame` ou objeto `ac_irr`. Dados a exportar.
 #' @param path `character`. Caminho do arquivo de saida, incluindo extensao
 #'   (ex.: `"resultados.csv"`, `"tabela1.tex"`, `"dados.xlsx"`). Se `NULL`,
 #'   o formato e inferido pelo argumento `format` e o arquivo e salvo no
-#'   diretorio de trabalho com nome `"acR_export"`.
+#'   diretório de trabalho com nome `"acR_export"`.
 #' @param format `character`. Formato de saida: `"csv"`, `"latex"`, `"xlsx"`,
 #'   `"rds"`. Se `NULL` (padrao), inferido pela extensao de `path`.
 #' @param overwrite `logical`. Se `TRUE` (padrao), sobrescreve arquivo
-#'   existente. Se `FALSE`, lanca erro se o arquivo ja existir.
+#'   existente. Se `FALSE`, lanca erro se o arquivo já existir.
 #' @param latex_caption `character` ou `NULL`. Legenda da tabela LaTeX.
 #' @param latex_label `character` ou `NULL`. Label para `\\ref{}` no LaTeX.
 #'   Ex.: `"tab:resultados"`.
@@ -32,12 +32,12 @@
 #' Separador: virgula. Adequado para importacao em Stata, SPSS, Python e R.
 #'
 #' ## LaTeX
-#' Gera codigo LaTeX via [knitr::kable()] com `format = "latex"`, empacotado
+#' Gera código LaTeX via [knitr::kable()] com `format = "latex"`, empacotado
 #' em ambiente `table` com `\\centering`, `\\caption` e `\\label`. Adicione
 #' `\\usepackage{booktabs}` no preambulo do documento para melhor tipografia.
 #'
 #' ## Excel
-#' Usa [writexl::write_xlsx()] — sem dependencia de Java ou LibreOffice.
+#' Usa [writexl::write_xlsx()] — sem dependência de Java ou LibreOffice.
 #' Cria arquivo `.xlsx` compativel com Excel 2007+, Google Sheets e
 #' LibreOffice Calc.
 #'
@@ -54,7 +54,7 @@
 #'   confianca     = c(0.94, 0.91, 0.87)
 #' )
 #'
-#' # Escrevemos em tempdir() para nao poluir o filesystem do usuario
+#' # Escrevemos em tempdir() para não poluir o filesystem do usuário
 #' out_csv <- file.path(tempdir(), "resultados.csv")
 #' out_tex <- file.path(tempdir(), "resultados.tex")
 #' out_rds <- file.path(tempdir(), "resultados.rds")
@@ -66,7 +66,7 @@
 #' ac_export(
 #'   resultados,
 #'   out_tex,
-#'   latex_caption = "Classificacao do tom dos discursos por LLM",
+#'   latex_caption = "Classificação do tom dos discursos por LLM",
 #'   latex_label   = "tab:tom_discursos"
 #' )
 #'
@@ -77,7 +77,7 @@
 #' if (requireNamespace("writexl", quietly = TRUE) ||
 #'     requireNamespace("openxlsx", quietly = TRUE)) {
 #'   out_xlsx <- file.path(tempdir(), "resultados.xlsx")
-#'   ac_export(resultados, out_xlsx, excel_sheet = "Classificacao")
+#'   ac_export(resultados, out_xlsx, excel_sheet = "Classificação")
 #' }
 #'
 #' # Objeto ac_irr (comparar codificacao humana vs. LLM)

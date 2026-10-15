@@ -1,13 +1,13 @@
-#' Agrupamento nao supervisionado de documentos
+#' Agrupamento não supervisionado de documentos
 #'
 #' @description
 #' `ac_cluster_documents()` particiona os documentos de um corpus em grupos
-#' "duros" (hard clustering) com base na similaridade de vocabulario. Serve
+#' "duros" (hard clustering) com base na similaridade de vocabulário. Serve
 #' para descobrir tipologias latentes, montar amostras estratificadas de
-#' revisao humana ou produzir dendrogramas para relatorios metodologicos.
+#' revisao humana ou produzir dendrogramas para relatórios metodologicos.
 #'
-#' Nao substitui [ac_lda()]: LDA e clustering *soft* (cada documento vira
-#' uma mistura de topicos), enquanto esta funcao devolve **uma etiqueta
+#' Não substitui [ac_lda()]: LDA e clustering *soft* (cada documento vira
+#' uma mistura de tópicos), enquanto esta função devolve **uma etiqueta
 #' por documento**.
 #'
 #' @param corpus Objeto `ac_corpus`.
@@ -17,23 +17,23 @@
 #'   `Suggests`).
 #' @param features Como representar cada documento. `"tfidf"` (padrao) pesa
 #'   por TF-IDF; `"count"` usa contagens brutas.
-#' @param k Numero de grupos. Se `NULL` (padrao) e `method %in%
+#' @param k Número de grupos. Se `NULL` (padrao) e `method %in%
 #'   c("hclust","kmeans")`, tenta escolher automaticamente por silhouette
-#'   entre 2 e 8; requer `cluster`. Se `cluster` nao estiver instalado,
+#'   entre 2 e 8; requer `cluster`. Se `cluster` não estiver instalado,
 #'   `k = 3` e o fallback.
-#' @param distance Metrica de dissimilaridade. `"cosine"` (padrao) e o
+#' @param distance Métrica de dissimilaridade. `"cosine"` (padrao) e o
 #'   classico em textos; `"euclidean"` funciona melhor com vetores
 #'   normalizados.
-#' @param min_docs Minimo de documentos para nao emitir warning de corpus
+#' @param min_docs Mínimo de documentos para não emitir warning de corpus
 #'   pequeno. Padrao: `15L`.
 #'
 #' @return Objeto de classe `ac_cluster` com:
 #'   \describe{
 #'     \item{`assignments`}{`tibble` com `doc_id` e `cluster` (integer).}
 #'     \item{`fit`}{Objeto bruto do algoritmo (`hclust`, `kmeans` ou `pam`).}
-#'     \item{`k`}{Numero final de grupos.}
+#'     \item{`k`}{Número final de grupos.}
 #'     \item{`method`, `features`, `distance`}{Parametros usados.}
-#'     \item{`silhouette`}{Silhueta media (NA se `cluster` nao instalado).}
+#'     \item{`silhouette`}{Silhueta média (NA se `cluster` não instalado).}
 #'     \item{`dtm`}{Matriz documento-termo usada (para plotagem).}
 #'   }
 #'
@@ -45,10 +45,10 @@
 #'             "cidadania direitos participacao democracia",
 #'             "voto direitos liberdade cidadania",
 #'             "democracia voto participacao popular",
-#'             "mercado economia eficiencia privatizacao",
-#'             "privatizacao mercado livre eficiencia",
+#'             "mercado economia eficiência privatizacao",
+#'             "privatizacao mercado livre eficiência",
 #'             "economia crescimento investimento mercado",
-#'             "eficiencia mercado economia livre"),
+#'             "eficiência mercado economia livre"),
 #'   stringsAsFactors = FALSE
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)

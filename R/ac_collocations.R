@@ -57,8 +57,8 @@
 #'     "atendimento ao cliente impecavel, super recomendo o lugar",
 #'     "o atendimento ao cliente deixou a desejar dessa vez",
 #'     "comida boa mas atendimento ao cliente lento",
-#'     "nao recomendo, atendimento ao cliente horrivel",
-#'     "ambiente agradavel e atendimento ao cliente rapido",
+#'     "não recomendo, atendimento ao cliente horrivel",
+#'     "ambiente agradavel e atendimento ao cliente rápido",
 #'     "preco justo, atendimento ao cliente cordial sempre"
 #'   ),
 #'   stringsAsFactors = FALSE

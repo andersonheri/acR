@@ -45,7 +45,7 @@
 #' assessment. *Behavior Research Methods*, 42(2), 381-392.
 #'
 #' @examples
-#' # Transcricoes de dois narradores com estilos de vocabulario distintos
+#' # Transcricoes de dois narradores com estilos de vocabulário distintos
 #' df <- data.frame(
 #'   id = paste0("t", 1:4),
 #'   texto = c(
@@ -54,7 +54,7 @@
 #'       "o felino ascendeu ao parapeito, permaneceu imovel por instantes,",
 #'       "descendeu com cautela e retornou ao ponto de partida original"
 #'     ),
-#'     "ela correu muito rapido e muito rapido e muito rapido ainda",
+#'     "ela correu muito rápido e muito rápido e muito rápido ainda",
 #'     paste(
 #'       "a atleta acelerou vertiginosamente, superando marcas anteriores",
 #'       "com uma performance notavel e consistente ao longo do percurso"
@@ -67,7 +67,7 @@
 #'
 #' ac_lexical_diversity(corpus)
 #'
-#' # Comparar riqueza de vocabulario entre os dois estilos narrativos
+#' # Comparar riqueza de vocabulário entre os dois estilos narrativos
 #' ac_lexical_diversity(corpus, by = "narrador")
 #'
 #' @seealso [ac_readability()]
@@ -193,7 +193,7 @@ ac_lexical_diversity <- function(corpus, by = NULL, case_sensitive = FALSE) {
 #'   texto = c(
 #'     "o gato subiu no muro e desceu depois correu e subiu de novo",
 #'     "o felino ascendeu ao parapeito e descendeu com cautela depois",
-#'     "ela correu muito rapido e muito rapido e muito rapido ainda",
+#'     "ela correu muito rápido e muito rápido e muito rápido ainda",
 #'     "a atleta acelerou vertiginosamente superando marcas anteriores"
 #'   ),
 #'   narrador = c("simples", "rebuscado", "simples", "rebuscado"),

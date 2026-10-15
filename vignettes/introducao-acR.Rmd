@@ -40,14 +40,14 @@ As demais funções aceitam esse objeto diretamente.
 df <- data.frame(
   id      = paste0("d", 1:8),
   texto   = c(
-    "Sou favoravel a reforma tributaria: simplifica o sistema e reduz distorcoes.",
+    "Sou favoravel a reforma tributária: simplifica o sistema e reduz distorcoes.",
     "Voto contra: essa reforma vai destruir o setor produtivo brasileiro.",
-    "Apoio a proposta com forte adesao, ha ganhos claros de eficiencia arrecadatoria.",
+    "Apoio a proposta com forte adesao, ha ganhos claros de eficiência arrecadatória.",
     "Rejeito o texto: transfere renda das familias para grandes corporacoes.",
     "Defendo a reforma que corrige as distorcoes historicas do nosso sistema.",
-    "Somos contrarios: o projeto beneficia apenas os mais ricos do pais.",
-    "Voto sim, precisamos modernizar urgentemente a estrutura tributaria.",
-    "Voto nao, os pequenos empresarios serao os grandes prejudicados."
+    "Somos contrários: o projeto beneficia apenas os mais ricos do pais.",
+    "Voto sim, precisamos modernizar urgentemente a estrutura tributária.",
+    "Voto não, os pequenos empresários serao os grandes prejudicados."
   ),
   partido = c("PT","PL","PT","PL","PT","PL","PT","PL"),
   posicao = c("favor","contra","favor","contra","favor","contra","favor","contra"),
@@ -134,7 +134,7 @@ por isso não roda na construção da vignette. Estrutura mínima:
 ```{r coding, eval = FALSE}
 codebook <- ac_qual_codebook(
   name         = "posicionamento",
-  instructions = "Classifique o posicionamento sobre a reforma tributaria.",
+  instructions = "Classifique o posicionamento sobre a reforma tributária.",
   categories   = list(
     favor  = list(
       definition   = "Manifestação favorável à reforma.",

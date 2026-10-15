@@ -16,7 +16,7 @@
 #' @param max_words Número máximo de palavras por grupo. Padrão: `50`.
 #' @param colors Vetor de cores (uma por grupo, na ordem alfabética dos
 #'   grupos). Padrão: as primeiras N cores de [ac_palette()] (Okabe-Ito).
-#' @param seed Semente para o posicionamento aleatorio dos termos. Padrao
+#' @param seed Semente para o posicionamento aleatório dos termos. Padrao
 #'   `42L` (garante layout reproduzivel entre chamadas).
 #' @param backend Motor de renderizacao: `"auto"` (padrao, prefere
 #'   `ggwordcloud` com facets), `"ggwordcloud"` ou `"ggplot"` (facets
@@ -27,15 +27,15 @@
 #' @return Objeto `ggplot`.
 #'
 #' @examples
-#' # Corpus dividido em dois grupos com vocabulario contrastante
+#' # Corpus dividido em dois grupos com vocabulário contrastante
 #' df <- data.frame(
 #'   id     = paste0("d", 1:6),
 #'   texto  = c(
 #'     "democracia participacao popular voto",
 #'     "direitos cidadania liberdade democracia",
 #'     "participacao popular igualdade direitos",
-#'     "mercado economia privatizacao eficiencia",
-#'     "privatizacao mercado livre eficiencia",
+#'     "mercado economia privatizacao eficiência",
+#'     "privatizacao mercado livre eficiência",
 #'     "economia crescimento mercado investimento"
 #'   ),
 #'   grupo = c("A","A","A","B","B","B")
@@ -247,7 +247,7 @@ ac_plot_wordcloud_comparative <- function(corpus,
 #'   id = c("d1", "d2"),
 #'   texto = c(
 #'     "democracia liberdade igualdade democracia direitos democracia",
-#'     "mercado liberdade privatizacao mercado eficiencia mercado"
+#'     "mercado liberdade privatizacao mercado eficiência mercado"
 #'   )
 #' )
 #' corpus <- ac_corpus(df, text = texto, docid = id)

@@ -1,30 +1,30 @@
-#' Buscar referencias bibliograficas sobre um conceito via OpenAlex e LLM
+#' Buscar referências bibliograficas sobre um conceito via OpenAlex e LLM
 #'
 #' @description
-#' `ac_qual_search_literature()` busca referencias academicas reais na API do
+#' `ac_qual_search_literature()` busca referências acadêmicas reais na API do
 #' OpenAlex e usa um modelo de linguagem via `ellmer` para sintetizar os
-#' abstracts em portugues. Retorna um tibble com metadados bibliograficos
+#' abstracts em português. Retorna um tibble com metadados bibliograficos
 #' verificados e definicoes sintetizadas pela LLM.
 #'
 #' A arquitetura e: OpenAlex recupera registros reais (autor, ano, DOI,
-#' abstract, revista, numero de citacoes); a LLM sintetiza o abstract em
-#' portugues e extrai o trecho mais relevante. Isso evita alucinacoes
+#' abstract, revista, número de citacoes); a LLM sintetiza o abstract em
+#' português e extrai o trecho mais relevante. Isso evita alucinacoes
 #' bibliograficas comuns quando a LLM opera sem fonte externa.
 #'
-#' @param concept String. Conceito ou termo teorico a buscar
+#' @param concept String. Conceito ou termo teórico a buscar
 #'   (ex: `"democratic backsliding"`, `"state capacity"`).
 #' @param chat Objeto `Chat` do pacote `ellmer` (ex: `chat_google_gemini()`,
 #'   `chat_openai()`, `chat_ollama()`). Quando fornecido, tem prioridade sobre
 #'   `model`.
 #' @param model String no formato `"provedor/modelo"`. Ignorado quando `chat`
 #'   e fornecido.
-#' @param n_refs Inteiro. Numero de referencias a retornar. Padrao: `5`.
+#' @param n_refs Inteiro. Número de referências a retornar. Padrao: `5`.
 #' @param journals Periodicos a considerar. Opcoes:
-#'   * `"default"`: lista curada de periodicos de referencia em CP/CS/AP;
+#'   * `"default"`: lista curada de periodicos de referência em CP/CS/AP;
 #'   * `"all"`: sem restricao de periodico;
 #'   * Vetor de strings: lista customizada (ex: `c("default", "RBCS")`).
 #' @param lang Idioma das definicoes sintetizadas. Padrao: `"pt"`.
-#' @param min_citations Inteiro. Numero minimo de citacoes. Padrao: `0`.
+#' @param min_citations Inteiro. Número mínimo de citacoes. Padrao: `0`.
 #' @param ... Argumentos adicionais passados a `ellmer::chat()`.
 #'
 #' @return Tibble com colunas: `conceito`, `autor`, `ano`, `revista`,
@@ -45,7 +45,7 @@
 #' # Chat via Groq (plano gratuito com gpt-oss-120b)
 #' chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 #'
-#' # Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma
+#' # Buscar 5 referências mais citadas sobre o conceito e sintetizar cada uma
 #' lit <- ac_qual_search_literature(
 #'   concept       = "democratic backsliding",
 #'   n_refs        = 5,
