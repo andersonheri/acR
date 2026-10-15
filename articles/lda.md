@@ -30,8 +30,8 @@ distinção importa mais que a sintaxe:
 | Técnica | Saída | Você fornece |
 |----|----|----|
 | **LDA** (esta vignette) | Mistura probabilística de tópicos | Só o corpus + `k` |
-| **Hard clustering** ([`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)) | Uma etiqueta por documento | Só o corpus + `k` |
-| **LLM** ([`vignette("qualitativo-llm")`](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)) | Categoria pré-definida | Codebook com categorias |
+| **Hard clustering** ([`vignette("cluster")`](https://ahenriquecp.com/acR/articles/cluster.md)) | Uma etiqueta por documento | Só o corpus + `k` |
+| **LLM** ([`vignette("qualitativo-llm")`](https://ahenriquecp.com/acR/articles/qualitativo-llm.md)) | Categoria pré-definida | Codebook com categorias |
 
 Regra prática: use **LDA** quando temas se **misturam** dentro do mesmo
 texto (discurso parlamentar, notícia, artigo científico); **clustering**
@@ -39,11 +39,11 @@ quando você quer uma partição limpa para amostrar; **LLM** quando as
 categorias vêm da teoria e não da distribuição empírica de palavras.
 
 O `acR` empacota o pipeline em três chamadas:
-[`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
+[`ac_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_lda_tune.md)
 para escolher **K** (número de tópicos),
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md)
-para ajustar o modelo,
-[`ac_plot_lda_topics()`](https://andersonheri.github.io/acR/reference/ac_plot_lda_topics.md)
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md) para
+ajustar o modelo,
+[`ac_plot_lda_topics()`](https://ahenriquecp.com/acR/reference/ac_plot_lda_topics.md)
 para visualizar. Todo o restante é `dplyr` puro.
 
 ## 1. Corpus: agenda legislativa
@@ -181,7 +181,7 @@ mais tópicos = mais parâmetros para memorizar o corpus. Por isso Blei,
 Ng & Jordan (2003) e Wallach et al. (2009) a medem em documentos **não
 vistos**, e Zhao et al. (2015) usam validação cruzada em 5 partes, que é
 o que
-[`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
+[`ac_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_lda_tune.md)
 faz: ajusta em 4/5 dos documentos, mede no 1/5 restante, e repete 5
 vezes. A coluna `perplexity_train` mostra a versão de treino, só para
 comparação.
@@ -598,7 +598,7 @@ poucos tópicos, e com textos escritos, cada um, sobre um único tema. Em
 discursos longos reais, espere mais linhas com massa espalhada.
 
 Compare com o heatmap “hard clustering” da
-[`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)
+[`vignette("cluster")`](https://ahenriquecp.com/acR/articles/cluster.md)
 §4.6: lá, cada linha tem **uma** célula acesa (pertence ao grupo A
 **ou** ao B), mesmo para documentos como `doc_5`, cuja ambiguidade a γ
 revela e a etiqueta única esconde. Tomar o tópico de maior γ de cada

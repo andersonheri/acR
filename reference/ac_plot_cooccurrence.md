@@ -2,7 +2,7 @@
 
 `ac_plot_cooccurrence()` gera um gráfico de rede a partir de um tibble
 de co-ocorrências (saída de
-[`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md)),
+[`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md)),
 usando `ggplot2` e `ggraph`.
 
 ## Usage
@@ -25,7 +25,7 @@ ac_plot_cooccurrence(
 - cooc:
 
   Tibble com co-ocorrências, saída de
-  [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md).
+  [`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md).
 
 - top_n:
 
@@ -64,7 +64,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md)
+[`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md)
 
 ## Examples
 

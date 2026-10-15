@@ -89,7 +89,7 @@ Portuguese. *ICMSC Technical Report*, 28.
 
 ## See also
 
-[`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md)
+[`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md)
 
 ## Examples
 

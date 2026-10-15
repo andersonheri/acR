@@ -74,7 +74,7 @@ ac_qual_codebook(
     (chave da lista). Exemplo:
     `label = "Gestão fiscal-administrativa geral"` para uma categoria de
     nome interno `"gestao_fiscal_administrativa_geral"`. A saída de
-    [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+    [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
     ganha uma coluna `categoria_label` traduzida.
 
   - `examples_pos`: vetor de exemplos positivos (recomendado).
@@ -178,7 +178,7 @@ cb  # imprime resumo do codebook
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 17:55
+#> • Criado em: 15/10/2026 19:38
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.

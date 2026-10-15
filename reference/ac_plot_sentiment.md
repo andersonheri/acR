@@ -21,7 +21,7 @@ ac_plot_sentiment(
 - sentiment_tbl:
 
   Tibble retornado por
-  [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md).
+  [`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md).
 
 - type:
 
@@ -50,11 +50,14 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 
 ## Examples
 
 ``` r
+if (FALSE) { # interactive()
+# Requer internet na primeira execucao: ac_sentiment() baixa o OpLexicon
+# do GitHub e o guarda em cache (tools::R_user_dir("acR", "data")).
 # Corpus com quatro documentos de valências distintas
 df <- data.frame(
   id = c("a", "b", "c", "d"),
@@ -69,7 +72,6 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 
 # Calcular scores e visualizar em barras (positivo/neutro/negativo por doc)
 sent <- ac_sentiment(corpus)
-#> Baixando OpLexicon (primeira execução — será cacheado)...
 ac_plot_sentiment(sent)
-
+}
 ```

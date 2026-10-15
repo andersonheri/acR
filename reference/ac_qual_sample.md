@@ -6,7 +6,7 @@ pela LLM para validação por um codificador humano.
 **Duas finalidades diferentes, duas estratégias diferentes.**
 
 1.  *Estimar a confiabilidade* que vai para o artigo
-    ([`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)):
+    ([`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)):
     a amostra precisa ser **representativa** do corpus. Krippendorff
     (2018, cap. 12) exige que os dados de confiabilidade sejam
     amostrados da mesma população que os dados analisados; uma amostra
@@ -46,7 +46,7 @@ ac_qual_sample(
 - coded:
 
   Tibble com classificação LLM, saída de
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md).
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md).
 
 - n:
 
@@ -75,7 +75,7 @@ ac_qual_sample(
     igualmente entre categorias), preserva a distribuição original de
     `strata` na amostra: a escolha correta quando a amostra alimenta uma
     estimativa populacional (ex.:
-    [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+    [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
     ponderada), não só uma checagem qualitativa de cada categoria.
 
 - strata:

@@ -15,7 +15,7 @@ ac_plot_lda_tune(tune_result, title = NULL, ...)
 - tune_result:
 
   Tibble retornado por
-  [`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md).
+  [`ac_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_lda_tune.md).
 
 - title:
 
@@ -31,7 +31,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_lda_tune()`](https://andersonheri.github.io/acR/reference/ac_lda_tune.md)
+[`ac_lda_tune()`](https://ahenriquecp.com/acR/reference/ac_lda_tune.md)
 
 ## Examples
 

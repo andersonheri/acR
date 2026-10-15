@@ -2,7 +2,7 @@
 
 `ac_top_terms()` seleciona os `n` termos mais frequentes a partir de uma
 tabela de frequências (tipicamente o resultado de
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)).
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md)).
 
 Pode operar em dois modos:
 
@@ -25,8 +25,7 @@ ac_top_terms(x, n = 20L, by = NULL, sort = TRUE)
   Um `data.frame` ou
   [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
   contendo, no mínimo, as colunas `token` e `n`. Em geral, o resultado
-  de
-  [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
+  de [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md).
 
 - n:
 
@@ -54,14 +53,14 @@ exatamente `n` termos (ou menos, se o vocabulário for menor) no geral ou
 por grupo. A frequência de cada termo é **somada** sobre os documentos
 (ou dentro de cada grupo), de modo que uma tabela por documento, saída
 padrão de
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-dá o total do corpus. Empates na última posição são desfeitos em ordem
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md), dá o
+total do corpus. Empates na última posição são desfeitos em ordem
 alfabética.
 
 ## See also
 
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
+[`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
 
 ## Examples
 

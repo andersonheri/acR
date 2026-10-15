@@ -12,7 +12,7 @@ a"), que são frequentes mas não informativas. As medidas de associação
 penalizam esse efeito, destacando combinações que ocorrem juntas mais do
 que a frequência individual de cada palavra sugeriria: o uso típico é
 alimentar um dicionário customizado (ver
-[`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md))
+[`ac_build_dictionary()`](https://ahenriquecp.com/acR/reference/ac_build_dictionary.md))
 ou simplesmente explorar expressões compostas específicas de um domínio
 (jurídico, médico, técnico) antes de uma análise de frequência ou nuvem
 de palavras.
@@ -58,7 +58,7 @@ ac_collocations(
     o lambda de Blaheta & Johnson (2001) e seu escore z.
 
   - `"chi2"`: qui-quadrado de associação, mesma lógica de
-    [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md)
+    [`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md)
     aplicada a pares de palavras adjacentes em vez de grupos de
     documentos.
 
@@ -99,8 +99,8 @@ verbs. *Proceedings of the ACL Workshop on Collocations*, 54-60.
 
 ## See also
 
-[`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md),
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
+[`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md),
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md)
 
 ## Examples
 

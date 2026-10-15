@@ -6,10 +6,9 @@ para descobrir tipologias latentes, montar amostras estratificadas de
 revisao humana ou produzir dendrogramas para relatórios metodologicos.
 
 Não substitui
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md): o
-LDA é um modelo de pertencimento misto (cada documento vira uma mistura
-de tópicos), enquanto esta função devolve **uma etiqueta por
-documento**.
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md): o LDA é
+um modelo de pertencimento misto (cada documento vira uma mistura de
+tópicos), enquanto esta função devolve **uma etiqueta por documento**.
 
 ## Usage
 
@@ -112,8 +111,8 @@ Retrieval*. McGraw-Hill.
 
 ## See also
 
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md),
-[`ac_plot_cluster()`](https://andersonheri.github.io/acR/reference/ac_plot_cluster.md)
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md),
+[`ac_plot_cluster()`](https://ahenriquecp.com/acR/reference/ac_plot_cluster.md)
 
 ## Examples
 

@@ -2,7 +2,7 @@
 
 `ac_qual_list_models()` retorna um tibble com os modelos LLM disponíveis
 para uso com
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md),
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md),
 incluindo informações de custo, janela de contexto e compatibilidade com
 análise de conteúdo qualitativa em Ciências Sociais.
 
@@ -60,7 +60,7 @@ Tibble com colunas:
 - `provider`: nome do provedor;
 
 - `model_id`: identificador do modelo para uso em
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md);
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md);
 
 - `name`: nome legível;
 
@@ -81,8 +81,8 @@ Tibble com colunas:
 
 ## See also
 
-[`ac_qual_recommend_model()`](https://andersonheri.github.io/acR/reference/ac_qual_recommend_model.md),
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md)
+[`ac_qual_recommend_model()`](https://ahenriquecp.com/acR/reference/ac_qual_recommend_model.md),
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md)
 
 ## Examples
 

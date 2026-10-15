@@ -9,11 +9,11 @@ evolução do tom de comunicados de uma empresa, posts de redes sociais
 durante uma crise.
 
 A função é deliberadamente genérica: não importa se o valor vem de
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md),
-[`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md),
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md),
+[`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md),
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md)
 filtrado para um termo específico, ou da saída de
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md):
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md):
 qualquer tibble com uma coluna de data e uma coluna numérica serve de
 entrada.
 
@@ -38,7 +38,7 @@ ac_temporal(
   de análise do pacote, unido aos metadados do corpus (ex.:
   [`dplyr::left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html)
   de
-  [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+  [`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
   com a data de cada documento).
 
 - date_col:
@@ -73,8 +73,8 @@ Welbers, K.; Van Atteveldt, W.; Benoit, K. (2017). Text Analysis in R.
 
 ## See also
 
-[`ac_plot_temporal()`](https://andersonheri.github.io/acR/reference/ac_plot_temporal.md),
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_plot_temporal()`](https://ahenriquecp.com/acR/reference/ac_plot_temporal.md),
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 
 ## Examples
 

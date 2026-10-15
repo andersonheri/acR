@@ -6,9 +6,9 @@ geométrico (Greenacre, 2007). Unidades próximas entre si têm perfis de
 vocabulário parecidos; termos próximos entre si são usados de forma
 parecida pelos grupos. É uma alternativa simples e determinística à
 Alocação de Dirichlet Latente (LDA, já disponível em
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md))
-para visualizar associações entre vocabulário e grupos em duas
-dimensões: sem assumir um número de tópicos latentes.
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md)) para
+visualizar associações entre vocabulário e grupos em duas dimensões: sem
+assumir um número de tópicos latentes.
 
 **Como ler o mapa.** As coordenadas de unidades e termos são principais
 (mapa "simétrico"). Nesse mapa, distâncias **entre unidades** (e entre
@@ -73,7 +73,7 @@ ac_ca(
 - drop_punct:
 
   Lógico, encaminhado para
-  [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
+  [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md).
   Padrão: `TRUE`.
 
 ## Value
@@ -97,9 +97,9 @@ Chapman and Hall/CRC.
 
 ## See also
 
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md),
-[`ac_plot_ca()`](https://andersonheri.github.io/acR/reference/ac_plot_ca.md)
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md),
+[`ac_plot_ca()`](https://ahenriquecp.com/acR/reference/ac_plot_ca.md)
 
 ## Examples
 

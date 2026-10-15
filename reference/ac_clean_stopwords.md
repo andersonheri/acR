@@ -2,8 +2,8 @@
 
 `ac_clean_stopwords()` retorna (e opcionalmente modifica) o vetor de
 stopwords adicionais que o pesquisador pode passar a
-[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
-via `extra_stopwords`. Funciona como um ponto de partida editável: o
+[`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md) via
+`extra_stopwords`. Funciona como um ponto de partida editável: o
 pesquisador inspeciona o vetor, adiciona ou remove termos conforme o
 corpus, e passa o resultado para `extra_stopwords`.
 
@@ -39,7 +39,7 @@ Vetor `character` de stopwords pronto para passar a
 
 ## See also
 
-[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+[`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md)
 
 ## Examples
 

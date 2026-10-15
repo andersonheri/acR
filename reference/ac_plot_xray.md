@@ -50,7 +50,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md)
 
 ## Examples
 

@@ -2,13 +2,12 @@
 
 `ac_dictionary_validate()` compara a classificação por dicionário (saída
 de
-[`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md),
-[`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md)
-ou
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md),
+[`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md) ou
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 com categorias binarizadas) contra uma codificação de referência humana,
 categoria por categoria: a mesma lógica de validação que
-[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+[`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
 aplica à classificação por LLM (com `by_variable = TRUE`), agora para o
 método de dicionário.
 
@@ -29,16 +28,16 @@ ac_dictionary_validate(scored, human, cat_col = "categoria", threshold = 0)
 - scored:
 
   Tibble retornado por
-  [`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md)
+  [`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md)
   ou
-  [`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md)
+  [`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md)
   (com colunas `doc_id` e `<categoria>_n` por categoria).
 
 - human:
 
   Tibble com colunas `doc_id` e uma coluna de categoria (ver `cat_col`):
   a codificação humana de referência, no mesmo formato aceito por
-  [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+  [`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
   (multilabel como string separada por `"|"`).
 
 - cat_col:
@@ -68,8 +67,8 @@ Pitfalls of Automatic Content Analysis Methods for Political Texts.
 
 ## See also
 
-[`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md),
-[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md),
+[`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
 
 ## Examples
 

@@ -87,12 +87,12 @@ ac_qual_reliability(
 - llm:
 
   Tibble com classificação LLM, saída de
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md).
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md).
 
 - human:
 
   Tibble com classificação humana, saída de
-  [`ac_qual_import_human()`](https://andersonheri.github.io/acR/reference/ac_qual_import_human.md).
+  [`ac_qual_import_human()`](https://ahenriquecp.com/acR/reference/ac_qual_import_human.md).
 
 - cat_col:
 
@@ -126,7 +126,7 @@ ac_qual_reliability(
 - exclude_status:
 
   Vetor de valores da coluna `status` (ver
-  [`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md))
+  [`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md))
   a excluir da comparação antes de calcular as métricas por variável:
   documentos que falharam na classificação não têm uma categoria
   confiável para comparar. Ignorado se `llm` não tiver coluna `status`.

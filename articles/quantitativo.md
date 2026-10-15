@@ -18,43 +18,43 @@ pergunta de pesquisa escolhe a técnica, não o contrário.
 
 | Pergunta | Técnica | Função |
 |----|----|----|
-| Que palavras dominam o corpus como um todo? | Frequência bruta | [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md) → [`ac_top_terms()`](https://andersonheri.github.io/acR/reference/ac_top_terms.md) |
-| Que palavras são **distintivas** de cada documento vs. o resto? | TF-IDF | [`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_plot_tf_idf.md) |
-| Que palavras separam **um grupo** do outro estatisticamente? | *Keyness* | [`ac_keyness()`](https://andersonheri.github.io/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://andersonheri.github.io/acR/reference/ac_plot_keyness.md) |
-| Que palavras **andam juntas** (associação sintagmática)? | Coocorrência | [`ac_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://andersonheri.github.io/acR/reference/ac_plot_cooccurrence.md) |
-| Que bigramas/trigramas aparecem juntos mais do que o esperado pelo acaso? | Colocações | [`ac_collocations()`](https://andersonheri.github.io/acR/reference/ac_collocations.md) |
-| **Onde no texto** um termo aparece com mais frequência? | X-ray plot | [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md) |
-| Em que contexto exato um termo aparece a cada ocorrência? | Concordância/KWIC | [`ac_kwic()`](https://andersonheri.github.io/acR/reference/ac_kwic.md) |
-| Panorama visual rápido para relatório ou apresentação | Nuvem de palavras | [`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md) (`ggwordcloud`) |
+| Que palavras dominam o corpus como um todo? | Frequência bruta | [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) → [`ac_top_terms()`](https://ahenriquecp.com/acR/reference/ac_top_terms.md) |
+| Que palavras são **distintivas** de cada documento vs. o resto? | TF-IDF | [`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md) → [`ac_plot_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_plot_tf_idf.md) |
+| Que palavras separam **um grupo** do outro estatisticamente? | *Keyness* | [`ac_keyness()`](https://ahenriquecp.com/acR/reference/ac_keyness.md) → [`ac_plot_keyness()`](https://ahenriquecp.com/acR/reference/ac_plot_keyness.md) |
+| Que palavras **andam juntas** (associação sintagmática)? | Coocorrência | [`ac_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_cooccurrence.md) → [`ac_plot_cooccurrence()`](https://ahenriquecp.com/acR/reference/ac_plot_cooccurrence.md) |
+| Que bigramas/trigramas aparecem juntos mais do que o esperado pelo acaso? | Colocações | [`ac_collocations()`](https://ahenriquecp.com/acR/reference/ac_collocations.md) |
+| **Onde no texto** um termo aparece com mais frequência? | X-ray plot | [`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md) |
+| Em que contexto exato um termo aparece a cada ocorrência? | Concordância/KWIC | [`ac_kwic()`](https://ahenriquecp.com/acR/reference/ac_kwic.md) |
+| Panorama visual rápido para relatório ou apresentação | Nuvem de palavras | [`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md) (`ggwordcloud`) |
 
 **Diagnóstico do corpus**
 
 | Pergunta | Técnica | Função |
 |----|----|----|
-| O texto é fácil ou difícil de ler? | Legibilidade | [`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md) |
-| O vocabulário é rico ou repetitivo? | Diversidade lexical | [`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md) |
-| O corpus se comporta como linguagem natural (não dominado por ruído)? | Lei de Zipf | [`ac_plot_zipf()`](https://andersonheri.github.io/acR/reference/ac_plot_zipf.md) |
+| O texto é fácil ou difícil de ler? | Legibilidade | [`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md) |
+| O vocabulário é rico ou repetitivo? | Diversidade lexical | [`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md) |
+| O corpus se comporta como linguagem natural (não dominado por ruído)? | Lei de Zipf | [`ac_plot_zipf()`](https://ahenriquecp.com/acR/reference/ac_plot_zipf.md) |
 
 **Série temporal**
 
 | Pergunta | Técnica | Função |
 |----|----|----|
-| Um termo, sentimento ou qualquer métrica muda ao longo do tempo? | Série temporal | [`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md) → [`ac_plot_temporal()`](https://andersonheri.github.io/acR/reference/ac_plot_temporal.md) |
+| Um termo, sentimento ou qualquer métrica muda ao longo do tempo? | Série temporal | [`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md) → [`ac_plot_temporal()`](https://ahenriquecp.com/acR/reference/ac_plot_temporal.md) |
 
 **Escalas e mapas**
 
 | Pergunta | Técnica | Função |
 |----|----|----|
-| Onde cada documento se posiciona num espectro contínuo (favorável↔︎desfavorável)? | Wordscores | [`ac_wordscores()`](https://andersonheri.github.io/acR/reference/ac_wordscores.md) |
-| Como grupos e termos se relacionam num mapa 2D, sem assumir tópicos latentes? | Análise de correspondência | [`ac_ca()`](https://andersonheri.github.io/acR/reference/ac_ca.md) |
+| Onde cada documento se posiciona num espectro contínuo (favorável↔︎desfavorável)? | Wordscores | [`ac_wordscores()`](https://ahenriquecp.com/acR/reference/ac_wordscores.md) |
+| Como grupos e termos se relacionam num mapa 2D, sem assumir tópicos latentes? | Análise de correspondência | [`ac_ca()`](https://ahenriquecp.com/acR/reference/ac_ca.md) |
 
 **Dicionários e léxicos**
 
 | Pergunta | Técnica | Função |
 |----|----|----|
-| Quanto do texto pertence a cada categoria temática que eu defino? | Dicionário multi-categoria | [`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md) |
-| Que emoções (não só positivo/negativo) o texto expressa? | Léxico de emoção | [`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md) |
-| Meu dicionário classifica bem, comparado a uma codificação humana? | Validação de dicionário | [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md) |
+| Quanto do texto pertence a cada categoria temática que eu defino? | Dicionário multi-categoria | [`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md) |
+| Que emoções (não só positivo/negativo) o texto expressa? | Léxico de emoção | [`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md) |
+| Meu dicionário classifica bem, comparado a uma codificação humana? | Validação de dicionário | [`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md) |
 
 **Não é redundância.** As três métricas de frequência respondem
 perguntas diferentes:
@@ -68,11 +68,10 @@ perguntas diferentes:
   log-likelihood). Precisa de uma variável categórica no corpus.
 
 Para descobrir tipologias emergentes sem categoria a priori, veja
-[`vignette("cluster")`](https://andersonheri.github.io/acR/articles/cluster.md)
-e
-[`vignette("lda")`](https://andersonheri.github.io/acR/articles/lda.md)
-(não supervisionado). Para rotular com categorias teóricas, veja
-[`vignette("qualitativo-llm")`](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)
+[`vignette("cluster")`](https://ahenriquecp.com/acR/articles/cluster.md)
+e [`vignette("lda")`](https://ahenriquecp.com/acR/articles/lda.md) (não
+supervisionado). Para rotular com categorias teóricas, veja
+[`vignette("qualitativo-llm")`](https://ahenriquecp.com/acR/articles/qualitativo-llm.md)
 (assistido).
 
 ## Sequência sugerida para reportar resultados
@@ -91,7 +90,7 @@ conteúdo, e só então compara grupos ou constrói escalas.
 | 4 | Comparação entre grupos (§8, §13) | *Keyness* e série temporal respondem à pergunta comparativa central da maioria dos estudos: o que muda entre grupos ou ao longo do tempo. Só faz sentido depois que o vocabulário geral já foi descrito. |
 | 5 | Associação e contexto (§9, §12) | Coocorrência, colocações e KWIC aprofundam *por que* um termo é relevante, qualificando os achados das etapas 3-4 com evidência de uso em contexto. |
 | 6 | Escalas e classificação (§14-16) | Wordscores, análise de correspondência e dicionários produzem medidas derivadas (posição num espectro, categoria temática). Por dependerem do vocabulário já mapeado nas etapas anteriores, vêm depois, não antes. |
-| 7 | Validação | Toda classificação por dicionário (§15) precisa de [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md) contra uma amostra humana antes de ir para o relatório final: é o que transforma uma heurística em achado defensável (Grimmer & Stewart, 2013). |
+| 7 | Validação | Toda classificação por dicionário (§15) precisa de [`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md) contra uma amostra humana antes de ir para o relatório final: é o que transforma uma heurística em achado defensável (Grimmer & Stewart, 2013). |
 
 Essa ordem é um ponto de partida, não uma regra rígida: um estudo focado
 só em descrever o corpus pode parar na etapa 2; um estudo que já tem uma
@@ -106,8 +105,7 @@ library(acR)
 
 ## 1. Construir o corpus
 
-O
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+O [`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md)
 padroniza qualquer `data.frame` em um objeto com colunas fixas `doc_id`
 e `text`, mantendo os metadados que você quiser preservar para
 comparações posteriores.
@@ -166,8 +164,7 @@ qualquer padrão real de vocabulário. A regra prática em análise de
 conteúdo (Sampaio & Lycarião, 2021) é sempre remover *stopwords* antes
 de contar frequências ou calcular distintividade.
 
-O
-[`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md)
+O [`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md)
 aceita o parâmetro `remove_stopwords = "pt"` para aplicar uma lista de
 *stopwords* portuguesas curada. Você pode adicionar seu próprio
 glossário via `extra_stopwords`.
@@ -200,7 +197,7 @@ corpus_limpo
 
 ## 3. Tokenização
 
-[`ac_tokenize()`](https://andersonheri.github.io/acR/reference/ac_tokenize.md)
+[`ac_tokenize()`](https://ahenriquecp.com/acR/reference/ac_tokenize.md)
 quebra cada documento em unidades de análise. Com `n = 1L` são unigramas
 (palavras); com `n = 2L`, bigramas (“reforma tributária”). Bigramas são
 úteis quando você quer capturar **expressões compostas** que perdem
@@ -230,9 +227,8 @@ head(tokens, 12)
 ## 4. Frequência
 
 Contagem de ocorrências por documento e depois agregação.
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)
-já retorna no formato *tidy* pronto para pipeline com `dplyr` e
-`ggplot2`.
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md) já
+retorna no formato *tidy* pronto para pipeline com `dplyr` e `ggplot2`.
 
 ``` r
 
@@ -303,7 +299,7 @@ e apresentações. Não substitui análise numérica: o tamanho da palavra é
 proporcional à frequência, mas a posição no plot é aleatória.
 
 Desde a versão 0.3.1 o
-[`ac_wordcloud()`](https://andersonheri.github.io/acR/reference/ac_wordcloud.md)
+[`ac_wordcloud()`](https://ahenriquecp.com/acR/reference/ac_wordcloud.md)
 prefere automaticamente o motor `ggwordcloud` (retorna um `ggplot`, com
 tipografia mais legível e layout consistente com o tema do pacote); se
 ele não estiver instalado, cai para o `wordcloud` clássico. Você pode
@@ -352,7 +348,7 @@ O layout usa `ggwordcloud` com facets quando disponível
 (`backend = "auto"`), e cai em `geom_text` com jitter reproduzível
 quando não. A semente do posicionamento é controlada por `seed = 42L`.
 Cores vêm de
-[`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+[`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
 por padrão: uma por grupo.
 
 ## 7. TF-IDF: o que é *distintivo* em cada documento?
@@ -575,13 +571,13 @@ Duas perguntas distintas sobre a *forma* do texto, independente do
 conteúdo:
 
 - **Legibilidade**
-  ([`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md)):
+  ([`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md)):
   o texto é fácil de ler? Adapta o índice de Flesch para português
   (Martins et al., 1996), combinando palavras por frase e sílabas por
   palavra. Útil para comparar, por exemplo, a complexidade de um manual
   técnico com a de um texto de divulgação para o público geral.
 - **Diversidade lexical**
-  ([`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md)):
+  ([`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md)):
   o vocabulário é rico ou repetitivo? A TTR cai mecanicamente quando o
   texto cresce, porque palavras começam a se repetir. O C de Herdan
   (Herdan, 1960) atenua esse efeito, mas não o elimina (Tweedie &
@@ -752,7 +748,7 @@ ac_plot_zipf(freq_aval)
 >     curtos, só a parte inicial da curva é comparável. Note também que
 >     as palavras mais frequentes são *do* e *a*: este exemplo não
 >     passou por
->     [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md),
+>     [`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md),
 >     então as *stopwords* estão lá.
 
 Quando o corpus tem grupos, `ac_plot_zipf(freq_tbl, by = "grupo")`
@@ -813,7 +809,7 @@ ac_plot_zipf(freq_zipf_grupo, by = "fonte")
 > 4.  **Cuidado.** Com 6 textos curtos por grupo, compare os grupos
 >     **entre si**, não cada um com a linha (Piantadosi, 2014). E repare
 >     em *A* maiúsculo entre as mais frequentes de `noticias`: sem
->     [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md),
+>     [`ac_clean()`](https://ahenriquecp.com/acR/reference/ac_clean.md),
 >     “A” e “a” contam como palavras diferentes.
 
 ### 12. Concordância (KWIC) e colocações
@@ -887,7 +883,7 @@ ac_kwic(corpus_atend, pattern = "defeito", window = 4)
 #### 12.2 Colocações: associação estatística entre palavras
 
 Enquanto o KWIC mostra ocorrências individuais, **colocações**
-([`ac_collocations()`](https://andersonheri.github.io/acR/reference/ac_collocations.md))
+([`ac_collocations()`](https://ahenriquecp.com/acR/reference/ac_collocations.md))
 respondem a uma pergunta agregada: quais bigramas/trigramas aparecem
 juntos mais do que o esperado pelo acaso, medido por PMI (Church &
 Hanks, 1990), log-likelihood (Dunning, 1993) ou qui-quadrado. Vai além
@@ -965,14 +961,14 @@ mais?). É essencial para cobertura jornalística, séries de atendimento
 ao cliente, ou qualquer corpus com carimbo de data (Welbers, Van
 Atteveldt & Benoit, 2017).
 
-[`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md)
+[`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md)
 é deliberadamente genérica: a coluna numérica agregada (`value_col`)
 pode ser a saída de qualquer outra função do pacote (score de
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md),
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md),
 índice de
-[`ac_readability()`](https://andersonheri.github.io/acR/reference/ac_readability.md),
+[`ac_readability()`](https://ahenriquecp.com/acR/reference/ac_readability.md),
 contagem de um termo de
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md)…),
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md)…),
 desde que exista uma coluna de data no mesmo `data.frame`. Dois
 parâmetros controlam a agregação:
 
@@ -982,7 +978,7 @@ parâmetros controlam a agregação:
   (padrão), `"sum"` ou `"n"` (conta documentos, ignorando `value_col`).
 
 No exemplo abaixo, `sentimento` já é o score de
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 pré-calculado para 8 notícias fictícias, cada uma com sua data de
 publicação:
 
@@ -1231,9 +1227,9 @@ ggplot2::ggplot(wordscores, ggplot2::aes(x = score, y = doc_id, fill = is_refere
 ### 15. Dicionários multi-categoria, emoções e validação
 
 Nem toda análise baseada em dicionário é positivo/negativo.
-[`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md)
+[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md)
 generaliza a lógica de
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 para **qualquer** conjunto de categorias (temas, enquadramentos,
 emoções), no espírito do General Inquirer (Stone et al., 1966) e de
 “Text as Data” (Grimmer & Stewart, 2013): você define as categorias e as
@@ -1353,8 +1349,8 @@ ggplot2::ggplot(long_dict, ggplot2::aes(x = doc_id, y = prop, fill = categoria))
 
 #### 15.2 Léxico de emoções
 
-[`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md)
-é uma camada especializada do mesmo mecanismo para léxicos de emoção
+[`ac_emotion()`](https://ahenriquecp.com/acR/reference/ac_emotion.md) é
+uma camada especializada do mesmo mecanismo para léxicos de emoção
 (inspirada no NRC Emotion Lexicon; Mohammad & Turney, 2013), indo além
 de só positivo/negativo:
 
@@ -1397,7 +1393,7 @@ ac_emotion(corpus_atend2, lexicon = lexico_emocao)
 >     & Turney, 2013). O pacote não traz um léxico de emoções pronto,
 >     por isso o exemplo define um à mão; para português, use léxicos
 >     adaptados do NRC ou construa o seu com
->     [`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md)
+>     [`ac_build_dictionary()`](https://ahenriquecp.com/acR/reference/ac_build_dictionary.md)
 >     a partir de categorias da literatura da sua área, e valide.
 
 #### 15.3 Validação contra codificação humana
@@ -1405,7 +1401,7 @@ ac_emotion(corpus_atend2, lexicon = lexico_emocao)
 Nenhum dicionário deveria ser usado numa análise publicável sem comparar
 sua classificação a uma amostra codificada por humano: é a mesma lógica
 de
-[`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
+[`ac_qual_reliability()`](https://ahenriquecp.com/acR/reference/ac_qual_reliability.md)
 (para codificação por LLM), aplicada aqui ao método de dicionário. Para
 ilustrar os dois tipos de erro que a validação revela, o `humano` abaixo
 discorda do dicionário em um ponto: em `call1` (“a entrega atrasou
@@ -1460,7 +1456,7 @@ ac_dictionary_validate(resultado_dict, humano)
 
 Quando queremos visualizar em 2D como o vocabulário difere entre grupos,
 sem assumir um número de tópicos latentes (como em
-[`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md)), a
+[`ac_lda()`](https://ahenriquecp.com/acR/reference/ac_lda.md)), a
 Análise de Correspondência (Greenacre, 2007) posiciona grupos e termos
 no mesmo espaço geométrico. A distância até a origem indica quão
 distintivo (vs. genérico) é um termo ou grupo; grupos próximos entre si

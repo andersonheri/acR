@@ -43,7 +43,7 @@ ac_plot_wordcloud_comparative(
 
   Vetor de cores (uma por grupo, na ordem alfabética dos grupos).
   Padrão: as primeiras N cores de
-  [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
+  [`ac_palette()`](https://ahenriquecp.com/acR/reference/ac_palette.md)
   (Okabe-Ito).
 
 - title:
@@ -71,7 +71,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_tf_idf()`](https://andersonheri.github.io/acR/reference/ac_tf_idf.md)
+[`ac_tf_idf()`](https://ahenriquecp.com/acR/reference/ac_tf_idf.md)
 
 ## Examples
 

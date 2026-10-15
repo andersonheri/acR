@@ -23,7 +23,7 @@ usado para português brasileiro, com cerca de 30 mil palavras rotuladas.
 
 Regra prática: use léxico para **panorama rápido** e **filtragem de
 casos extremos**, depois use codificação qualitativa (via
-[`ac_qual_code()`](https://andersonheri.github.io/acR/reference/ac_qual_code.md))
+[`ac_qual_code()`](https://ahenriquecp.com/acR/reference/ac_qual_code.md))
 na amostra que interessa.
 
 ``` r
@@ -45,9 +45,9 @@ library(dplyr)
 Corpus fabricado de 14 pronunciamentos, com metadados de partido e
 posição declarada. Serve para exercitar visualizações; em corpora reais,
 substitua pela coleta via
-[`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md)
+[`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md)
 ou
-[`ac_fetch_senado()`](https://andersonheri.github.io/acR/reference/ac_fetch_senado.md).
+[`ac_fetch_senado()`](https://ahenriquecp.com/acR/reference/ac_fetch_senado.md).
 
 ``` r
 
@@ -101,7 +101,7 @@ corpus
 
 ## 2. Sentimento por documento
 
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 retorna um tibble com contagens de palavras positivas (`n_pos`),
 negativas (`n_neg`) e neutras (`n_neu`), o `score` (n_pos − n_neg pelo
 método padrão `sum`) e o rótulo categórico `sentiment`.
@@ -179,7 +179,7 @@ sent |>
 >     de usar o léxico num corpus legislativo, liste os termos dele mais
 >     frequentes no seu corpus, corrija os que têm outro sentido e
 >     valide numa amostra humana
->     ([`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md)).
+>     ([`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md)).
 
 ## 3. Comparar métodos de agregação
 
@@ -380,7 +380,7 @@ ac_plot_sentiment(sent_ordenado, type = "line") +
 >
 > 4.  **Cuidado.** Uma linha só mostra evolução se o eixo for de fato
 >     tempo. Numa análise real, ordene pela data de publicação (ou use
->     [`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md),
+>     [`ac_temporal()`](https://ahenriquecp.com/acR/reference/ac_temporal.md),
 >     que agrega por período) e desconfie de oscilações ponto a ponto em
 >     amostras pequenas: costumam ser ruído.
 
@@ -478,7 +478,7 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ## 8. Termos-chave dentro do texto (X-ray)
 
-[`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)
+[`ac_plot_xray()`](https://ahenriquecp.com/acR/reference/ac_plot_xray.md)
 mostra **onde** termos-alvo aparecem dentro de cada documento. Útil para
 ver se palavras negativas se concentram no começo, meio ou fim, sinal de
 estrutura retórica.
@@ -518,7 +518,7 @@ ac_plot_xray(corpus, terms = c("reforma", "trabalhadores", "proposta")) +
 >     posição reflete a ordem das palavras na frase, não a estrutura
 >     retórica. Use o gráfico para ver **onde** um termo aparece; a
 >     interpretação de por que aparece ali pede leitura dos trechos
->     ([`ac_kwic()`](https://andersonheri.github.io/acR/reference/ac_kwic.md)).
+>     ([`ac_kwic()`](https://ahenriquecp.com/acR/reference/ac_kwic.md)).
 
 ## 9. Exportar para artigo/relatório
 

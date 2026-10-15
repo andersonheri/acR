@@ -1,7 +1,7 @@
 # Salvar ou carregar um dicionário em YAML
 
 `ac_dictionary_save()` grava um dicionário (ver
-[`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md))
+[`ac_build_dictionary()`](https://ahenriquecp.com/acR/reference/ac_build_dictionary.md))
 em um arquivo YAML legível por humanos, para versionar, compartilhar
 entre pesquisadores ou editar fora do R. `ac_dictionary_load()` faz o
 caminho inverso.
@@ -32,8 +32,8 @@ caracteres).
 
 ## See also
 
-[`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md),
-[`ac_dictionary_import()`](https://andersonheri.github.io/acR/reference/ac_dictionary_import.md)
+[`ac_build_dictionary()`](https://ahenriquecp.com/acR/reference/ac_build_dictionary.md),
+[`ac_dictionary_import()`](https://ahenriquecp.com/acR/reference/ac_dictionary_import.md)
 
 ## Examples
 

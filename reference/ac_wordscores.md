@@ -80,7 +80,7 @@ ac_wordscores(
 - drop_punct:
 
   Lógico, encaminhado para
-  [`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md).
+  [`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md).
   Padrão: `TRUE`.
 
 ## Value
@@ -101,8 +101,8 @@ Interpreting Political Text. *Political Analysis*, 16(1), 93-100.
 
 ## See also
 
-[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
-[`ac_ca()`](https://andersonheri.github.io/acR/reference/ac_ca.md)
+[`ac_count()`](https://ahenriquecp.com/acR/reference/ac_count.md),
+[`ac_ca()`](https://ahenriquecp.com/acR/reference/ac_ca.md)
 
 ## Examples
 

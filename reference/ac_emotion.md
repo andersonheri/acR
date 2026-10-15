@@ -3,7 +3,7 @@
 `ac_emotion()` conta, por documento, quantas palavras caem em cada
 categoria de emoção de um léxico fornecido pelo usuário: indo além da
 polaridade binária de
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 para distinguir, por exemplo, se um texto negativo expressa raiva, medo
 ou tristeza (Mohammad & Turney, 2013, propuseram essa distinção no NRC
 Emotion Lexicon, hoje o léxico de emoções mais usado em inglês).
@@ -19,7 +19,7 @@ uma lista construída à mão para um domínio específico (ex.: emoções em
 avaliações de atendimento ao cliente).
 
 Internamente, é uma camada sobre
-[`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md):
+[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md):
 converte o léxico em formato longo (uma linha por palavra-emoção) para o
 formato de dicionário multi-categoria e aplica a mesma contagem.
 
@@ -62,7 +62,7 @@ ac_emotion(
 ## Value
 
 Tibble no mesmo formato de
-[`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md):
+[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md):
 `total_tokens` e, para cada emoção presente em `lexicon`, colunas
 `<emocao>_n` e `<emocao>_prop`.
 
@@ -73,8 +73,8 @@ Association Lexicon. *Computational Intelligence*, 29(3), 436-465.
 
 ## See also
 
-[`ac_dictionary()`](https://andersonheri.github.io/acR/reference/ac_dictionary.md),
-[`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
+[`ac_dictionary()`](https://ahenriquecp.com/acR/reference/ac_dictionary.md),
+[`ac_sentiment()`](https://ahenriquecp.com/acR/reference/ac_sentiment.md)
 
 ## Examples
 

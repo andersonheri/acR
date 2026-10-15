@@ -3,7 +3,7 @@
 ac_corpus usando o OpLexicon (Souza &amp;amp; Vieira, 2012), retornando
 pontuações por documento e, opcionalmente, por grupo ou janela temporal."><meta property="og:description" content="ac_sentiment() calcula a polaridade de sentimento dos documentos de um
 ac_corpus usando o OpLexicon (Souza &amp;amp; Vieira, 2012), retornando
-pontuações por documento e, opcionalmente, por grupo ou janela temporal."><meta property="og:image" content="https://andersonheri.github.io/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
+pontuações por documento e, opcionalmente, por grupo ou janela temporal."><meta property="og:image" content="https://ahenriquecp.com/acR/logo.png"><meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros."><meta property="og:title" content="acR — Analise de Conteudo em R"><meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -125,7 +125,13 @@ ausentes dele);</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><strong>Como o léxico é aplicado.</strong> O texto é limpo (minúsculas, sem
+    <p><strong>Download e cache.</strong> O OpLexicon não vem dentro do pacote: na
+primeira execução ele é baixado do repositório público do léxico no
+GitHub e salvo em <code>tools::R_user_dir("acR", "data")</code>; as execuções
+seguintes usam esse arquivo e funcionam sem internet. Se o download
+falhar (sem conexão, por exemplo), a função para com uma mensagem
+explicando o motivo.</p>
+<p><strong>Como o léxico é aplicado.</strong> O texto é limpo (minúsculas, sem
 pontuação), tokenizado em palavras e cada palavra recebe a polaridade
 do OpLexicon (-1, 0, +1); palavras fora do léxico valem 0. Alguns
 termos aparecem no OpLexicon mais de uma vez (uma por classe
@@ -163,7 +169,10 @@ Linguistics</em>, 37(2), 267-307.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Discursos com valência afetiva variada</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># interactive()</span></span></span>
+<span class="r-in"><span><span class="co"># Requer internet na primeira execucao: ac_sentiment() baixa o OpLexicon</span></span></span>
+<span class="r-in"><span><span class="co"># do GitHub e o guarda em cache (tools::R_user_dir("acR", "data")).</span></span></span>
+<span class="r-in"><span><span class="co"># Discursos com valência afetiva variada</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
@@ -181,36 +190,13 @@ Linguistics</em>, 37(2), 267-307.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Polaridade agregada por documento (soma de scores OpLexicon)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_sentiment</span><span class="op">(</span><span class="va">corpus</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   doc_id n_pos n_neg n_neu score sentiment</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> d1         2     1     7     1 positivo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> d2         0     1     7    -<span style="color: #BB0000;">1</span> negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> d3         0     1     7    -<span style="color: #BB0000;">1</span> negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d4         0     0     7     0 neutro   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> d5         0     2     6    -<span style="color: #BB0000;">2</span> negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> d6         0     0     7     0 neutro   </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Agregado por grupo (aqui, por partido)</span></span></span>
 <span class="r-in"><span><span class="fu">ac_sentiment</span><span class="op">(</span><span class="va">corpus</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   partido n_pos n_neg n_neu score sentiment</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> A           2     4    20    -<span style="color: #BB0000;">2</span> negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> B           0     1    21    -<span style="color: #BB0000;">1</span> negativo </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Metodo alternativo: razao positivos/negativos</span></span></span>
 <span class="r-in"><span><span class="fu">ac_sentiment</span><span class="op">(</span><span class="va">corpus</span>, method <span class="op">=</span> <span class="st">"ratio"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   doc_id n_pos n_neg n_neu  score sentiment</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> d1         2     1     7  0.333 positivo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> d2         0     1     7 -<span style="color: #BB0000;">1</span>     negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> d3         0     1     7 -<span style="color: #BB0000;">1</span>     negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> d4         0     0     7  0     neutro   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> d5         0     2     6 -<span style="color: #BB0000;">1</span>     negativo </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> d6         0     0     7  0     neutro   </span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

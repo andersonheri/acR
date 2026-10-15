@@ -37,7 +37,7 @@ ac_clean(
 - corpus:
 
   Objeto de classe `ac_corpus`, criado por
-  [`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md).
+  [`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md).
 
 - lower:
 
@@ -102,7 +102,7 @@ ac_clean(
 
   Vetor `character` com stopwords adicionais a remover antes de qualquer
   análise, combinado ao preset de `remove_stopwords`. Use
-  [`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md)
+  [`ac_clean_stopwords()`](https://ahenriquecp.com/acR/reference/ac_clean_stopwords.md)
   para inspecionar e editar o objeto padrão. Padrão: `NULL`.
 
 - min_char:
@@ -183,8 +183,8 @@ etapa e documentos que ficaram vazios após limpeza.
 
 ## See also
 
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md),
-[`ac_clean_stopwords()`](https://andersonheri.github.io/acR/reference/ac_clean_stopwords.md)
+[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md),
+[`ac_clean_stopwords()`](https://ahenriquecp.com/acR/reference/ac_clean_stopwords.md)
 
 ## Examples
 

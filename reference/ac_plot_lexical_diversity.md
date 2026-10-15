@@ -1,7 +1,7 @@
 # Visualizar diversidade lexical por grupo
 
 `ac_plot_lexical_diversity()` compara MTLD (ou outra métrica de
-[`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md))
+[`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md))
 entre grupos.
 
 ## Usage
@@ -46,7 +46,7 @@ Objeto `ggplot`.
 
 ## See also
 
-[`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md)
+[`ac_lexical_diversity()`](https://ahenriquecp.com/acR/reference/ac_lexical_diversity.md)
 
 ## Examples
 

@@ -3,7 +3,7 @@
 Coleta discursos parlamentares do Senado Federal usando o pacote
 senatebR como backend, retornando um `data.frame` no mesmo formato
 padronizado de
-[`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md).
+[`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md).
 Isso permite combinar corpora das duas casas legislativas sem atrito.
 
 O periodo pode ser especificado por legislatura (atalho conveniente) ou
@@ -84,7 +84,7 @@ ac_fetch_senado(
 ## Value
 
 Um `data.frame` com as mesmas colunas de
-[`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md):
+[`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md):
 
 - `id_discurso`:
 
@@ -148,7 +148,7 @@ Um `data.frame` com as mesmas colunas de
 ### Compatibilidade com ac_fetch_camara()
 
 O `data.frame` retornado tem as mesmas colunas de
-[`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md),
+[`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md),
 com a adicao da coluna `casa` (`"senado"`). Isso permite combinar os
 dois corpora com [`rbind()`](https://rdrr.io/r/base/cbind.html) ou
 [`dplyr::bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html).
@@ -167,8 +167,8 @@ Open Data API. CRAN, 2026. Disponivel em:
 
 ## See also
 
-[`ac_fetch_camara()`](https://andersonheri.github.io/acR/reference/ac_fetch_camara.md),
-[`ac_corpus()`](https://andersonheri.github.io/acR/reference/ac_corpus.md)
+[`ac_fetch_camara()`](https://ahenriquecp.com/acR/reference/ac_fetch_camara.md),
+[`ac_corpus()`](https://ahenriquecp.com/acR/reference/ac_corpus.md)
 
 ## Examples
 

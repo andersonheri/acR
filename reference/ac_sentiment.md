@@ -75,6 +75,13 @@ Tibble com colunas:
 
 ## Details
 
+**Download e cache.** O OpLexicon não vem dentro do pacote: na primeira
+execução ele é baixado do repositório público do léxico no GitHub e
+salvo em `tools::R_user_dir("acR", "data")`; as execuções seguintes usam
+esse arquivo e funcionam sem internet. Se o download falhar (sem
+conexão, por exemplo), a função para com uma mensagem explicando o
+motivo.
+
 **Como o léxico é aplicado.** O texto é limpo (minúsculas, sem
 pontuação), tokenizado em palavras e cada palavra recebe a polaridade do
 OpLexicon (-1, 0, +1); palavras fora do léxico valem 0. Alguns termos
@@ -88,7 +95,7 @@ trata negação ("não é bom" soma +1), intensificadores ("muito ruim") nem
 ironia, e a polaridade de uma palavra depende do domínio (Taboada et
 al., 2011; Grimmer & Stewart, 2013). Por isso valide numa amostra
 codificada por humano (ver
-[`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md))
+[`ac_dictionary_validate()`](https://ahenriquecp.com/acR/reference/ac_dictionary_validate.md))
 antes de interpretar os escores.
 
 ## References
@@ -114,11 +121,14 @@ Linguistics*, 37(2), 267-307.
 
 ## See also
 
-[`ac_plot_sentiment()`](https://andersonheri.github.io/acR/reference/ac_plot_sentiment.md)
+[`ac_plot_sentiment()`](https://ahenriquecp.com/acR/reference/ac_plot_sentiment.md)
 
 ## Examples
 
 ``` r
+if (FALSE) { # interactive()
+# Requer internet na primeira execucao: ac_sentiment() baixa o OpLexicon
+# do GitHub e o guarda em cache (tools::R_user_dir("acR", "data")).
 # Discursos com valência afetiva variada
 df <- data.frame(
   id = paste0("d", 1:6),
@@ -137,33 +147,11 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 
 # Polaridade agregada por documento (soma de scores OpLexicon)
 ac_sentiment(corpus)
-#> # A tibble: 6 × 6
-#>   doc_id n_pos n_neg n_neu score sentiment
-#>   <chr>  <int> <int> <int> <int> <chr>    
-#> 1 d1         2     1     7     1 positivo 
-#> 2 d2         0     1     7    -1 negativo 
-#> 3 d3         0     1     7    -1 negativo 
-#> 4 d4         0     0     7     0 neutro   
-#> 5 d5         0     2     6    -2 negativo 
-#> 6 d6         0     0     7     0 neutro   
 
 # Agregado por grupo (aqui, por partido)
 ac_sentiment(corpus, by = "partido")
-#> # A tibble: 2 × 6
-#>   partido n_pos n_neg n_neu score sentiment
-#>   <chr>   <int> <int> <int> <int> <chr>    
-#> 1 A           2     4    20    -2 negativo 
-#> 2 B           0     1    21    -1 negativo 
 
 # Metodo alternativo: razao positivos/negativos
 ac_sentiment(corpus, method = "ratio")
-#> # A tibble: 6 × 6
-#>   doc_id n_pos n_neg n_neu  score sentiment
-#>   <chr>  <int> <int> <int>  <dbl> <chr>    
-#> 1 d1         2     1     7  0.333 positivo 
-#> 2 d2         0     1     7 -1     negativo 
-#> 3 d3         0     1     7 -1     negativo 
-#> 4 d4         0     0     7  0     neutro   
-#> 5 d5         0     2     6 -1     negativo 
-#> 6 d6         0     0     7  0     neutro   
+}
 ```
