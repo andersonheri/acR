@@ -2,7 +2,7 @@
 
 Esta vignette percorre o **módulo quantitativo** do `acR` em cima de um
 corpus de discursos parlamentares fabricado para o exemplo. Cada etapa é
-apresentada com uma pergunta metodológica — *por que faço isso?* — antes
+apresentada com uma pergunta metodológica (*por que faço isso?*) antes
 do código e do gráfico.
 
 O caminho é o clássico da análise de conteúdo estatística: **corpus →
@@ -75,6 +75,31 @@ e
 [`vignette("qualitativo-llm")`](https://andersonheri.github.io/acR/articles/qualitativo-llm.md)
 (assistido).
 
+## Sequência sugerida para reportar resultados
+
+Um erro comum em análise de conteúdo computacional é aplicar uma técnica
+isoladamente, sem o diagnóstico que justifica o resultado. A ordem
+abaixo segue a lógica de qualquer método reportável: primeiro você
+mostra que o corpus é adequado para a análise, depois descreve seu
+conteúdo, e só então compara grupos ou constrói escalas. Pular etapas é
+o motivo mais comum de revisores pedirem reanálise.
+
+| Ordem | Etapa | Por que vem nessa posição |
+|:--:|----|----|
+| 1 | Limpeza e tokenização (§2-3) | Sem isso, qualquer contagem é dominada por artigos e preposições, mascarando o sinal. |
+| 2 | Diagnóstico do corpus (§10-11) | Legibilidade e diversidade lexical descrevem *o material em si*: um corpus muito homogêneo ou pouco diverso limita o que qualquer análise posterior pode revelar. A Lei de Zipf confirma que o corpus se comporta como linguagem natural, não como ruído ou dados malformados. |
+| 3 | Frequência e distintividade (§5, §7) | Primeiro você descreve o vocabulário geral (frequência), depois o que é próprio de cada documento (TF-IDF). Isso ancora a leitura qualitativa dos resultados seguintes. |
+| 4 | Comparação entre grupos (§8, §13) | *Keyness* e série temporal respondem à pergunta comparativa central da maioria dos estudos: o que muda entre grupos ou ao longo do tempo. Só faz sentido depois que o vocabulário geral já foi descrito. |
+| 5 | Associação e contexto (§9, §12) | Coocorrência, colocações e KWIC aprofundam *por que* um termo é relevante, qualificando os achados das etapas 3-4 com evidência de uso em contexto. |
+| 6 | Escalas e classificação (§14-16) | Wordscores, análise de correspondência e dicionários produzem medidas derivadas (posição num espectro, categoria temática). Por dependerem do vocabulário já mapeado nas etapas anteriores, vêm depois, não antes. |
+| 7 | Validação | Toda classificação por dicionário (§15) precisa de [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md) contra uma amostra humana antes de ir para o relatório final: é o que transforma uma heurística em achado defensável (Grimmer & Stewart, 2013). |
+
+Essa ordem é um ponto de partida, não uma regra rígida: um estudo focado
+só em descrever o corpus pode parar na etapa 2; um estudo que já tem uma
+variável de grupo definida a priori pode ir direto da etapa 1 à 4. O que
+não muda é a lógica: descreva antes de comparar, e valide antes de
+publicar.
+
 ``` r
 
 library(acR)
@@ -92,7 +117,7 @@ comparações posteriores.
 
 textos <- c(
   "O governo anunciou nova politica fiscal para reduzir o deficit público.",
-  "A oposicao crítica o aumento dos gastos e da divida pública no orcamento.",
+  "A oposicao critica o aumento dos gastos e da divida pública no orcamento.",
   "Parlamentares debatem a reforma tributária e o imposto de renda das familias.",
   "O presidente vetou o projeto que ampliava beneficios sociais para os pobres.",
   "O Senado aprovou o marco legal para investimentos em infraestrutura logistica.",
@@ -125,7 +150,7 @@ corpus
 #>   doc_id text                                                              tema 
 #>   <chr>  <chr>                                                             <chr>
 #> 1 doc_1  O governo anunciou nova politica fiscal para reduzir o deficit p… fisc…
-#> 2 doc_2  A oposicao crítica o aumento dos gastos e da divida pública no o… fisc…
+#> 2 doc_2  A oposicao critica o aumento dos gastos e da divida pública no o… fisc…
 #> 3 doc_3  Parlamentares debatem a reforma tributária e o imposto de renda … trib…
 #> 4 doc_4  O presidente vetou o projeto que ampliava beneficios sociais par… soci…
 #> 5 doc_5  O Senado aprovou o marco legal para investimentos em infraestrut… infr…
@@ -166,7 +191,7 @@ corpus_limpo
 #>   doc_id text                                                              tema 
 #>   <chr>  <chr>                                                             <chr>
 #> 1 doc_1  governo anunciou nova politica fiscal reduzir deficit público     fisc…
-#> 2 doc_2  oposicao crítica aumento gastos divida pública orcamento          fisc…
+#> 2 doc_2  oposicao critica aumento gastos divida pública orcamento          fisc…
 #> 3 doc_3  parlamentares debatem reforma tributária imposto renda familias   trib…
 #> 4 doc_4  presidente vetou projeto ampliava beneficios sociais pobres       soci…
 #> 5 doc_5  senado aprovou marco legal investimentos infraestrutura logistica infr…
@@ -198,7 +223,7 @@ head(tokens, 12)
 #>  7 doc_1         7 deficit 
 #>  8 doc_1         8 público 
 #>  9 doc_2         1 oposicao
-#> 10 doc_2         2 crítica 
+#> 10 doc_2         2 critica 
 #> 11 doc_2         3 aumento 
 #> 12 doc_2         4 gastos
 ```
@@ -232,7 +257,7 @@ contagem
 
 ## 5. Top termos: o vocabulário do corpus
 
-O gráfico abaixo mostra as **15 palavras mais frequentes** — agora, com
+O gráfico abaixo mostra as **15 palavras mais frequentes**. Agora, com
 *stopwords* removidas, é possível ler os *temas* dominantes: reforma,
 projeto, tributária, orçamento, etc.
 
@@ -248,6 +273,13 @@ ac_plot_top_terms(top) +
 ```
 
 ![](quantitativo_files/figure-html/top-termos-1.png)
+
+> **Como interpretar:** o comprimento da barra é contagem bruta de
+> ocorrências, não relevância temática. Frequência alta identifica
+> candidatos a tema dominante, mas não confirma: um termo pode ser
+> frequente só porque é comum na língua em geral (mesmo após remover
+> *stopwords*). Compare sempre com o TF-IDF (§7) antes de afirmar que um
+> termo frequente é também *distintivo* do corpus.
 
 ## 6. Nuvem de palavras
 
@@ -275,12 +307,12 @@ ac_wordcloud(contagem, max_words = 40, title = "Panorama do corpus")
 
 Quando o corpus tem uma variável de agrupamento (partido, período, tema,
 etc.), a nuvem comparativa mostra lado a lado os termos mais
-**distintivos** de cada grupo — pontuados por TF-IDF calculado tratando
+**distintivos** de cada grupo, pontuados por TF-IDF calculado tratando
 cada grupo como um “documento”. Aceita 2, 3 ou mais grupos.
 
 ``` r
 
-# Nosso corpus tem 5 temas distintos — todos entram na comparativa:
+# Nosso corpus tem 5 temas distintos: todos entram na comparativa.
 ac_plot_wordcloud_comparative(
   corpus,
   group     = tema,
@@ -306,14 +338,14 @@ O layout usa `ggwordcloud` com facets quando disponível
 quando não. A semente do posicionamento é controlada por `seed = 42L`.
 Cores vêm de
 [`ac_palette()`](https://andersonheri.github.io/acR/reference/ac_palette.md)
-por padrão — uma por grupo.
+por padrão: uma por grupo.
 
 ## 7. TF-IDF: o que é *distintivo* em cada documento?
 
 Frequência bruta favorece palavras que aparecem em quase todos os
 documentos (mesmo depois de *stopwords*). O **TF-IDF** (*term frequency
 × inverse document frequency*) penaliza termos comuns e destaca
-vocabulário próprio de cada grupo — útil quando o corpus é composto por
+vocabulário próprio de cada grupo, útil quando o corpus é composto por
 textos com propostas ou temas distintos.
 
 Com **12 discursos curtos** e cada palavra aparecendo em 1–2 documentos,
@@ -339,13 +371,13 @@ ac_plot_tf_idf(tfidf_tema, by = "tema", n = 6) +
 ## 8. *Keyness*: o que é distintivo entre **grupos**?
 
 Enquanto TF-IDF compara documento vs. corpus, ***keyness*** compara
-**grupos** — e o critério que define o grupo é seu, não do pacote. Pode
-ser partido, período histórico, tema, região, autor, condição
-experimental, faixa etária, qualquer variável categórica no seu corpus.
-É a métrica clássica para a pergunta comparativa: *“o que um grupo diz
-que o outro não diz?”*.
+**grupos**: o critério que define o grupo é seu, não do pacote. Pode ser
+partido, período histórico, tema, região, autor, condição experimental,
+faixa etária, qualquer variável categórica no seu corpus. É a métrica
+clássica para a pergunta comparativa: *“o que um grupo diz que o outro
+não diz?”*.
 
-Aqui comparamos os temas **fiscal** e **tributário** — quais palavras
+Aqui comparamos os temas **fiscal** e **tributário**: quais palavras
 marcam cada lado?
 
 ``` r
@@ -366,7 +398,7 @@ ac_plot_keyness(kn, n = 10) +
 
 Interpretação: chi-quadrado alto indica **sobre-representação
 estatística**. Termos como *deficit* e *orçamento* marcam o eixo fiscal;
-*carga* e *renda* o tributário — resultado consistente com o corpus de
+*carga* e *renda* o tributário, resultado consistente com o corpus de
 exemplo.
 
 ## 9. Rede de co-ocorrência
@@ -394,12 +426,19 @@ if (requireNamespace("ggraph", quietly = TRUE)) {
 
 ![](quantitativo_files/figure-html/coocorr%C3%AAncia-1.png)
 
+> **Como interpretar:** o tamanho/cor do nó costuma refletir seu grau
+> (quantas conexões ele tem): nós maiores são mais centrais na rede,
+> conectando-se a mais termos diferentes. A espessura da aresta reflete
+> a força da coocorrência entre aquele par específico. Agrupamentos
+> visuais (*clusters* de nós bem conectados entre si, mas pouco
+> conectados ao resto) costumam corresponder a sub-temas do corpus.
+
 ### 9.1 Trocando o peso: PMI em vez de contagem
 
-A rede padrão pondera arestas pela **contagem** de coocorrências —
-termos frequentes tendem a dominar. O **PMI** (*pointwise mutual
-information*) mede o quanto duas palavras aparecem juntas *acima do
-esperado por acaso*; revela pares surpreendentes, mesmo que raros.
+A rede padrão pondera arestas pela **contagem** de coocorrências: termos
+frequentes tendem a dominar. O **PMI** (*pointwise mutual information*)
+mede o quanto duas palavras aparecem juntas *acima do esperado por
+acaso*; revela pares surpreendentes, mesmo que raros.
 
 ``` r
 
@@ -418,15 +457,15 @@ if (requireNamespace("ggraph", quietly = TRUE)) {
 
 O layout controla como os nós são posicionados no plano. O padrão `"fr"`
 (Fruchterman-Reingold) minimiza cruzamentos; `"kk"` (Kamada-Kawai)
-respeita distâncias de grafo; `"circle"` alinha tudo num anel — útil
-para corpora pequenos onde a topologia importa menos que a legibilidade.
+respeita distâncias de grafo; `"circle"` alinha tudo num anel: útil para
+corpora pequenos onde a topologia importa menos que a legibilidade.
 
 ``` r
 
 if (requireNamespace("ggraph", quietly = TRUE)) {
   ac_plot_cooccurrence(cooc, top_n = 25, layout = "circle") +
     ggplot2::labs(
-      title    = "Rede de coocorrência — layout circular",
+      title    = "Rede de coocorrência: layout circular",
       subtitle = "Todas as palavras num anel; arestas mostram o grafo cru"
     )
 }
@@ -464,7 +503,7 @@ ggplot2::ggplot(cooc_mat,
 
 ## Novidades: diagnóstico de corpus, escalas e dicionários
 
-As seções anteriores giram em torno de discursos parlamentares — um
+As seções anteriores giram em torno de discursos parlamentares: um
 domínio comum na ciência política, mas o módulo quantitativo não é
 específico a ele. As técnicas a seguir são novas no pacote e são
 apresentadas com exemplos de **outros domínios** (avaliações de produto,
@@ -486,7 +525,7 @@ conteúdo:
   ([`ac_lexical_diversity()`](https://andersonheri.github.io/acR/reference/ac_lexical_diversity.md)):
   o vocabulário é rico ou repetitivo? TTR é sensível ao tamanho do
   texto; Herdan’s C (Herdan,
-  1960. e o MTLD (McCarthy & Jarvis, 2010) corrigem isso — o MTLD é a
+  1960. e o MTLD (McCarthy & Jarvis, 2010) corrigem isso: o MTLD é a
         métrica recomendada para comparar textos de tamanhos diferentes.
 
 ``` r
@@ -495,7 +534,7 @@ avaliacoes <- data.frame(
   id = paste0("rev", 1:4),
   texto = c(
     "Este produto é incrível. Funciona perfeitamente bem e chegou rápido.",
-    "O manual técnico específica que a calibração requer ajuste periódico do sensor piezoelétrico conforme a norma vigente, o que demanda qualificação especializada do operador responsável pela manutenção preventiva do equipamento.",
+    "O manual técnico especifica que a calibração requer ajuste periódico do sensor piezoelétrico conforme a norma vigente, o que demanda qualificação especializada do operador responsável pela manutenção preventiva do equipamento.",
     "Bom. Chegou. Funciona. Recomendo.",
     "A experiência de uso revelou inconsistências na usabilidade da interface, comprometendo a jornada do consumidor e gerando fricção considerável ao longo do processo de integração do dispositivo ao ecossistema existente."
   ),
@@ -516,6 +555,14 @@ ac_readability(corpus_aval)
 #> 4 rev4           30        1        81  -10.0 muito dificil
 ```
 
+> **Como interpretar:** a coluna `flesch` vai de 0 a 100. Valores acima
+> de 75 indicam texto de fácil leitura (frases curtas, palavras com
+> poucas sílabas); valores abaixo de 25 indicam texto difícil (frases
+> longas, vocabulário técnico). No exemplo, a avaliação “Bom. Chegou.
+> Funciona.” deve pontuar bem mais alto que o manual técnico, mesmo os
+> dois sendo avaliações do mesmo produto: a métrica mede *forma*, não
+> qualidade do conteúdo.
+
 ``` r
 
 ac_lexical_diversity(corpus_aval)
@@ -528,6 +575,12 @@ ac_lexical_diversity(corpus_aval)
 #> 4 rev4         30      25 0.833    0.946  50.4
 ```
 
+> **Como interpretar:** o MTLD não tem um limite teórico fixo, mas na
+> prática valores abaixo de 40-50 indicam vocabulário repetitivo (poucas
+> palavras diferentes sustentando o texto); valores acima de 80-100
+> indicam vocabulário variado. Compare sempre o MTLD entre textos, não
+> em isolado: ele só tem sentido como medida relativa.
+
 ``` r
 
 ac_plot_lexical_diversity(ac_lexical_diversity(corpus_aval), group_col = "doc_id",
@@ -536,12 +589,40 @@ ac_plot_lexical_diversity(ac_lexical_diversity(corpus_aval), group_col = "doc_id
 
 ![](quantitativo_files/figure-html/lexical-diversity-plot-1.png)
 
+Uma visão alternativa, útil quando há muitos documentos: um *scatter
+plot* de legibilidade por diversidade lexical, cruzando as duas métricas
+da seção num só gráfico, para ver se textos difíceis de ler também
+tendem a ser lexicalmente mais ricos (ou se as duas dimensões são
+independentes).
+
+``` r
+
+leg  <- ac_readability(corpus_aval)
+div  <- ac_lexical_diversity(corpus_aval)
+cruz <- merge(leg, div, by = "doc_id")
+
+ggplot2::ggplot(cruz, ggplot2::aes(x = flesch, y = mtld, label = doc_id)) +
+  ggplot2::geom_point(color = ac_palette(1), size = 3) +
+  ggplot2::geom_text(vjust = -1, size = 3.2) +
+  ggplot2::labs(
+    title = "Legibilidade vs. diversidade lexical",
+    subtitle = "Cada ponto é um documento; eixos sem relação necessária entre si",
+    x = "Flesch (legibilidade)", y = "MTLD (diversidade lexical)"
+  ) +
+  theme_ac()
+```
+
+![](quantitativo_files/figure-html/readability-scatter-1.png)
+
 ### 11. Lei de Zipf: o corpus se comporta como linguagem natural?
 
 A Lei de Zipf (Zipf, 1949) prevê que a frequência de uma palavra é
-inversamente proporcional ao seu ranking — um diagnóstico clássico para
-saber se um corpus é “normal” (ex.: não dominado por um único termo
-repetido artificialmente, como aconteceria em dados mal limpos).
+inversamente proporcional ao seu ranking: a palavra mais comum aparece
+aproximadamente duas vezes mais que a segunda mais comum, três vezes
+mais que a terceira, e assim por diante. É um diagnóstico clássico para
+saber se um corpus é “normal” (não dominado por um único termo repetido
+artificialmente, como aconteceria em dados malformados ou com erro de
+coleta).
 
 ``` r
 
@@ -551,20 +632,38 @@ ac_plot_zipf(freq_aval)
 
 ![](quantitativo_files/figure-html/zipf-1.png)
 
+> **Como interpretar:** o gráfico é log-log (ambos os eixos em escala
+> logarítmica). Se os pontos seguem de perto a linha pontilhada de
+> referência (inclinação igual a -1), o corpus se comporta como texto
+> natural. Pontos muito acima da linha no início (um ou dois termos
+> dominando desproporcionalmente) costumam indicar *stopwords* não
+> removidas ou um termo repetido por erro de coleta; corpora muito
+> pequenos (como este exemplo de 4 documentos) naturalmente se desviam
+> mais da linha teórica do que corpora de milhares de documentos.
+
+Quando o corpus tem grupos, `ac_plot_zipf(freq_tbl, by = "grupo")`
+faceta um painel por grupo, útil para comparar se todos os subcorpora
+têm comportamento igualmente “natural” ou se algum se destoa (por
+exemplo, por ter sido coletado de uma fonte com vocabulário mais técnico
+ou repetitivo).
+
 ### 12. Concordância (KWIC) e colocações
 
 Frequência bruta não mostra *como* uma palavra é usada. Duas ferramentas
-complementares:
+complementares respondem a essa lacuna:
 
 - **KWIC** (*keyword-in-context*, Sinclair, 1991): lista cada ocorrência
-  de um termo com o contexto antes/depois — o primeiro passo de qualquer
-  análise de discurso de corpus (*corpus-based discourse analysis*).
+  de um termo com o contexto antes/depois. É o primeiro passo de
+  qualquer análise de discurso baseada em corpus (*corpus-based
+  discourse analysis*): antes de interpretar por que um termo é
+  frequente, leia como ele é usado.
 - **Colocações**
   ([`ac_collocations()`](https://andersonheri.github.io/acR/reference/ac_collocations.md)):
   quais bigramas/trigramas aparecem juntos mais do que o esperado pelo
   acaso, medido por PMI (Church & Hanks, 1990), log-likelihood
-  (Dunning, 1993) ou qui-quadrado — não apenas frequência bruta de
-  n-gramas.
+  (Dunning, 1993) ou qui-quadrado. Vai além da frequência bruta de
+  n-gramas: um bigrama pode ser raro e ainda assim estatisticamente
+  muito associado.
 
 ``` r
 
@@ -588,6 +687,13 @@ ac_kwic(corpus_atend, pattern = "defeito", window = 4)
 #> 3 call3         4 o produto sem         defeito foi elogiado pelo cliente
 ```
 
+> **Como interpretar:** leia a coluna `before`, depois `keyword`, depois
+> `after`, como uma frase só. No exemplo, “defeito” aparece tanto
+> associado a reclamação (“chegou com defeito”) quanto a elogio negado
+> (“sem defeito foi elogiado”): uma contagem de frequência trataria as
+> três ocorrências como idênticas, mas o contexto mostra que a terceira
+> é, na verdade, uma menção à *ausência* do problema.
+
 ``` r
 
 ac_collocations(corpus_atend, n = 2, measure = "pmi", min_count = 1)
@@ -607,13 +713,43 @@ ac_collocations(corpus_atend, n = 2, measure = "pmi", min_count = 1)
 #> # ℹ 21 more rows
 ```
 
+> **Como interpretar:** PMI mede o quanto duas palavras aparecem juntas
+> *além* do esperado pelo acaso, dadas suas frequências individuais.
+> Valores mais altos indicam associação mais forte; PMI próximo de zero
+> indica que as palavras aparecem juntas tanto quanto o esperado só pela
+> frequência de cada uma. Com corpora pequenos (poucos documentos), PMI
+> tende a inflar colocações raras: sempre acompanhe `measure = "pmi"` da
+> coluna `count`, e desconsidere pares com contagem muito baixa.
+
+Para visualizar as colocações mais fortes em vez de ler a tabela, um
+gráfico de barras ordenado funciona bem com poucos pares:
+
+``` r
+
+colocacoes <- ac_collocations(corpus_atend, n = 2, measure = "pmi", min_count = 1)
+colocacoes_top <- utils::head(colocacoes, 8)
+
+ggplot2::ggplot(colocacoes_top,
+                ggplot2::aes(x = association, y = reorder(collocation, association))) +
+  ggplot2::geom_col(fill = ac_palette(1)) +
+  ggplot2::labs(
+    title = "Colocações mais associadas (PMI)",
+    x = "PMI", y = NULL
+  ) +
+  theme_ac()
+```
+
+![](quantitativo_files/figure-html/collocations-plot-1.png)
+
 ### 13. Análise temporal/diacrônica
 
 Quando o corpus tem datas, perguntas que antes eram estáticas (quanto um
 termo aparece?) passam a ter uma dimensão temporal (quando ele aparece
-mais?) — essencial para cobertura jornalística, séries de atendimento ao
-cliente, ou qualquer corpus com carimbo de data (Welbers, Van Atteveldt
-& Benoit, 2017).
+mais?). É essencial para cobertura jornalística, séries de atendimento
+ao cliente, ou qualquer corpus com carimbo de data (Welbers, Van
+Atteveldt & Benoit, 2017): a métrica agregada pode ser frequência de um
+termo, sentimento médio, ou qualquer saída numérica de outra função do
+pacote.
 
 ``` r
 
@@ -638,13 +774,40 @@ ac_plot_temporal(serie, ylab = "Sentimento médio")
 
 ![](quantitativo_files/figure-html/temporal-1.png)
 
+> **Como interpretar:** a linha de tendência (LOESS, ativada por padrão)
+> suaviza flutuações de curto prazo para destacar a direção geral: aqui,
+> queda até o meio do período seguida de recuperação. Com poucos pontos
+> (como neste exemplo de 4 meses), a suavização é menos confiável;
+> prefira olhar os pontos brutos quando a série for curta, e use a linha
+> de tendência só com séries de 8-10 períodos ou mais.
+
+Uma visão alternativa, mais direta para comparar poucos períodos entre
+si, é o gráfico de barras:
+
+``` r
+
+ggplot2::ggplot(serie, ggplot2::aes(x = period, y = value)) +
+  ggplot2::geom_col(fill = ac_palette(1)) +
+  ggplot2::geom_hline(yintercept = 0, color = "grey40", linetype = "dashed") +
+  ggplot2::labs(
+    title = "Sentimento médio por mês",
+    subtitle = "Barras tornam mais fácil comparar período a período",
+    x = NULL, y = "Sentimento médio"
+  ) +
+  theme_ac()
+```
+
+![](quantitativo_files/figure-html/temporal-bar-1.png)
+
 ### 14. Escalonamento Wordscores: posicionar documentos numa escala
 
 Às vezes queremos posicionar documentos num espectro contínuo
 (favorável↔︎ desfavorável, satisfeito↔︎insatisfeito) sem codificar
 manualmente todos eles. O método Wordscores (Laver, Benoit & Garry,
-2003) estima a posição de documentos “virgens” a partir de um pequeno
-conjunto de referência com posição conhecida — aqui, avaliações de
+2003) resolve isso em duas etapas: primeiro aprende quais palavras são
+típicas de cada extremo a partir de um pequeno conjunto de referência
+com posição conhecida, depois usa esse vocabulário aprendido para
+estimar a posição dos demais documentos (“virgens”). Aqui, avaliações de
 produto com nota conhecida servem de referência para estimar a
 satisfação implícita em avaliações sem nota.
 
@@ -686,6 +849,34 @@ ac_plot_wordscores(wordscores)
 
 ![](quantitativo_files/figure-html/wordscores-plot-1.png)
 
+> **Como interpretar:** a escala é relativa, não absoluta: um escore de
+> 4.2 só tem sentido comparado aos escores de referência (aqui, de 1 a
+> 5). Os pontos verdes (referência) ancoram a escala; os pontos cinzas
+> (estimados) são a real saída do método. Documentos estimados muito
+> próximos de uma única referência tendem a compartilhar bastante
+> vocabulário com ela; documentos no meio da escala costumam ser
+> ambíguos ou neutros, não necessariamente mal classificados.
+
+Uma visão complementar, útil para apresentar a escala completa num
+relatório, é ordenar os documentos num eixo horizontal:
+
+``` r
+
+wordscores$doc_id <- factor(wordscores$doc_id, levels = wordscores$doc_id[order(wordscores$score)])
+
+ggplot2::ggplot(wordscores, ggplot2::aes(x = score, y = doc_id, fill = is_reference)) +
+  ggplot2::geom_col() +
+  ggplot2::scale_fill_manual(
+    values = c(`TRUE` = "#1b7837", `FALSE` = "#737373"),
+    labels = c(`TRUE` = "Referência", `FALSE` = "Estimado"),
+    name = NULL
+  ) +
+  ggplot2::labs(title = "Escores Wordscores (barras)", x = "Escore", y = NULL) +
+  theme_ac()
+```
+
+![](quantitativo_files/figure-html/wordscores-bar-1.png)
+
 ### 15. Dicionários multi-categoria, emoções e validação
 
 Nem toda análise baseada em dicionário é positivo/negativo.
@@ -694,10 +885,8 @@ generaliza a lógica de
 [`ac_sentiment()`](https://andersonheri.github.io/acR/reference/ac_sentiment.md)
 para **qualquer** conjunto de categorias (temas, enquadramentos,
 emoções), no espírito do General Inquirer (Stone et al., 1966) e de
-“Text as Data” (Grimmer & Stewart, 2013).
-[`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md)
-é uma camada especializada para léxicos de emoção (inspirada no NRC
-Emotion Lexicon; Mohammad & Turney, 2013).
+“Text as Data” (Grimmer & Stewart, 2013): você define as categorias e as
+palavras de cada uma, e o pacote conta.
 
 ``` r
 
@@ -714,11 +903,66 @@ ac_dictionary(corpus_atend, dict)
 #> 3 call3            12         0         1            0       0.0833
 ```
 
+> **Como interpretar:** a coluna `<categoria>_prop` é a proporção de
+> tokens do documento pertencentes àquela categoria, não a proporção de
+> sentenças ou de “sentimento”. Um `produto_prop` alto não significa que
+> o documento fala *bem* ou *mal* do produto, só que usa vocabulário da
+> categoria “produto” com frequência: dicionários contam palavras, não
+> interpretam contexto, negação ou ironia (por isso a validação abaixo é
+> indispensável).
+
+Para visualizar a composição temática de vários documentos de uma vez,
+um gráfico de barras empilhadas às proporções funciona melhor que a
+tabela:
+
+``` r
+
+resultado_dict <- ac_dictionary(corpus_atend, dict)
+long_dict <- data.frame(
+  doc_id   = rep(resultado_dict$doc_id, 2),
+  categoria = rep(c("entrega", "produto"), each = nrow(resultado_dict)),
+  prop      = c(resultado_dict$entrega_prop, resultado_dict$produto_prop)
+)
+
+ggplot2::ggplot(long_dict, ggplot2::aes(x = doc_id, y = prop, fill = categoria)) +
+  ggplot2::geom_col(position = "stack") +
+  ggplot2::scale_fill_manual(values = ac_palette(2)) +
+  ggplot2::labs(
+    title = "Composição temática por documento",
+    x = NULL, y = "Proporção de tokens", fill = "Categoria"
+  ) +
+  theme_ac()
+```
+
+![](quantitativo_files/figure-html/dictionary-plot-1.png)
+
+[`ac_emotion()`](https://andersonheri.github.io/acR/reference/ac_emotion.md)
+é uma camada especializada do mesmo mecanismo para léxicos de emoção
+(inspirada no NRC Emotion Lexicon; Mohammad & Turney, 2013), indo além
+de só positivo/negativo:
+
+``` r
+
+lexico_emocao <- data.frame(
+  termo  = c("elogiado", "reclamou", "defeito", "excelente"),
+  emocao = c("alegria",  "raiva",    "tristeza", "alegria"),
+  stringsAsFactors = FALSE
+)
+ac_emotion(corpus_atend, lexicon = lexico_emocao)
+#> # A tibble: 3 × 8
+#>   doc_id total_tokens alegria_n raiva_n tristeza_n alegria_prop raiva_prop
+#>   <chr>         <int>     <int>   <int>      <int>        <dbl>      <dbl>
+#> 1 call1            11         0       1          1       0          0.0909
+#> 2 call2            12         0       0          1       0          0     
+#> 3 call3            12         1       0          1       0.0833     0     
+#> # ℹ 1 more variable: tristeza_prop <dbl>
+```
+
 Nenhum dicionário deveria ser usado numa análise publicável sem comparar
-sua classificação a uma amostra codificada por humano — a mesma lógica
+sua classificação a uma amostra codificada por humano: é a mesma lógica
 de
 [`ac_qual_reliability()`](https://andersonheri.github.io/acR/reference/ac_qual_reliability.md)
-(para codificação por LLM), aplicada aqui ao método de dicionário:
+(para codificação por LLM), aplicada aqui ao método de dicionário.
 
 ``` r
 
@@ -736,14 +980,25 @@ ac_dictionary_validate(scored, humano)
 #> # ℹ 2 more variables: gwet_ac1 <dbl>, krippendorff_alfa <dbl>
 ```
 
+> **Como interpretar:** leia `precisao` e `recall` por categoria, não só
+> a `concordancia` geral. Precisão baixa numa categoria significa que o
+> dicionário marca falsos positivos nela (palavras da lista aparecem em
+> documentos que um humano não classificaria assim); recall baixo
+> significa que o dicionário deixa passar casos verdadeiros (faltam
+> palavras na lista). Krippendorff (2018) considera `krippendorff_alfa`
+> acima de 0.80 adequado para publicação sem reservas, e entre 0.67 e
+> 0.80 aceitável com discussão dos casos divergentes no texto.
+
 ### 16. Análise de correspondência (CA): um mapa de grupos e termos
 
 Quando queremos visualizar em 2D como o vocabulário difere entre grupos,
 sem assumir um número de tópicos latentes (como em
 [`ac_lda()`](https://andersonheri.github.io/acR/reference/ac_lda.md)), a
 Análise de Correspondência (Greenacre, 2007) posiciona grupos e termos
-no mesmo espaço geométrico — pontos próximos tendem a co-ocorrer mais do
-que o esperado pelo acaso.
+no mesmo espaço geométrico. A lógica geométrica é simples: pontos
+próximos tendem a co-ocorrer mais do que o esperado pelo acaso, e a
+distância até a origem indica quão distintivo (vs. genérico) é um termo
+ou grupo.
 
 ``` r
 
@@ -767,6 +1022,36 @@ ac_plot_ca(ca)
 ```
 
 ![](quantitativo_files/figure-html/ca-1.png)
+
+> **Como interpretar:** os pontos verdes são grupos (aqui, categorias de
+> atendimento); os triângulos roxos são termos. Um termo próximo de um
+> grupo é característico dele; um termo perto da origem (o cruzamento
+> dos eixos) é genérico, usado de forma parecida por todos os grupos. As
+> porcentagens nos títulos dos eixos (`Dim 1`, `Dim 2`) indicam quanto
+> da variação total cada dimensão explica: se a Dim 1 já explica a maior
+> parte, o mapa 2D captura bem a estrutura; se as duas dimensões
+> dividirem a variação de forma mais equilibrada, interpretar só a Dim 1
+> perde informação relevante.
+
+Quando o mapa fica poluído de termos, uma alternativa é olhar só as
+coordenadas dos grupos, sem os termos: útil quando a pergunta é apenas
+“quão diferentes os grupos são entre si”:
+
+``` r
+
+ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
+  ggplot2::geom_hline(yintercept = 0, color = "grey80") +
+  ggplot2::geom_vline(xintercept = 0, color = "grey80") +
+  ggplot2::geom_point(color = ac_palette(1), size = 4) +
+  ggplot2::geom_text(vjust = -1, fontface = "bold") +
+  ggplot2::labs(
+    title = "Análise de correspondência: só grupos",
+    subtitle = "Distância entre pontos reflete dissimilaridade de vocabulário"
+  ) +
+  theme_ac()
+```
+
+![](quantitativo_files/figure-html/ca-groups-only-1.png)
 
 ## Referências
 
