@@ -150,7 +150,7 @@ cb <- ac_qual_codebook(
   ),
   multilabel = FALSE,   # cada doc recebe UMA categoria; se TRUE, a coluna
                         # `categoria` na saida vira uma string pipe-separada
-                        # ("tecnica|politica") quando mais de uma se aplicar.
+                        # ("técnica|politica") quando mais de uma se aplicar.
   lang       = "pt"
 )
 #> ! Categoria "neutro": sem exemplos negativos (examples_neg).
@@ -163,7 +163,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 14/10/2026 23:35
+#> • Criado em: 15/10/2026 13:56
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
@@ -194,7 +194,7 @@ reprodutibilidade metodológica.
 
 # Adicionar categoria iterativamente
 cb <- ac_qual_codebook_add(cb,
-  tecnico = list(
+  técnico = list(
     definition   = "Discurso com linguagem técnica e referências normativas.",
     examples_pos = c("Conforme o art. 37 da CF, a administração pública..."),
     weight       = 1
@@ -202,7 +202,7 @@ cb <- ac_qual_codebook_add(cb,
 )
 
 # Remover se necessário
-cb <- ac_qual_codebook_remove(cb, "tecnico")
+cb <- ac_qual_codebook_remove(cb, "técnico")
 ```
 
 ------------------------------------------------------------------------
@@ -620,7 +620,7 @@ Uso mínimo:
 
 ``` r
 
-# Apos ter o resultado da classificacao
+# Após ter o resultado da classificação
 ac_qual_report(
   coded     = resultado,
   codebook  = cb_completo,

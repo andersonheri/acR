@@ -231,14 +231,14 @@ clustering deve, sem supervisão, reencontrar essa divisão.</p>
 <span>    <span class="st">"cidadania voto democracia representacao plural minorias"</span>,</span>
 <span>    <span class="st">"liberdade participacao politica assembleia popular deliberacao"</span>,</span>
 <span>    <span class="st">"democracia direta cidadania voto plebiscito referendo"</span>,</span>
-<span>    <span class="st">"mercado economia eficiencia privatizacao competicao livre"</span>,</span>
-<span>    <span class="st">"privatizacao mercado livre eficiencia produtividade lucro"</span>,</span>
+<span>    <span class="st">"mercado economia eficiência privatizacao competicao livre"</span>,</span>
+<span>    <span class="st">"privatizacao mercado livre eficiência produtividade lucro"</span>,</span>
 <span>    <span class="st">"economia crescimento investimento mercado capital juros"</span>,</span>
-<span>    <span class="st">"eficiencia mercado economia livre concorrencia produtividade"</span>,</span>
+<span>    <span class="st">"eficiência mercado economia livre concorrência produtividade"</span>,</span>
 <span>    <span class="st">"mercado privado investimento economia lucro capital risco"</span>,</span>
-<span>    <span class="st">"economia livre mercado eficiencia produtividade escala"</span>,</span>
+<span>    <span class="st">"economia livre mercado eficiência produtividade escala"</span>,</span>
 <span>    <span class="st">"crescimento economico mercado investimento privatizacao abertura"</span>,</span>
-<span>    <span class="st">"mercado competicao eficiencia lucro capital privado"</span></span>
+<span>    <span class="st">"mercado competicao eficiência lucro capital privado"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
@@ -386,9 +386,9 @@ indicam que a divisão seguinte é quase tão boa quanto.</p>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">scale_x_continuous</span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">ks</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">labs</span><span class="op">(</span></span>
-<span>      title    <span class="op">=</span> <span class="st">"Silhueta media por numero de grupos"</span>,</span>
+<span>      title    <span class="op">=</span> <span class="st">"Silhueta média por número de grupos"</span>,</span>
 <span>      subtitle <span class="op">=</span> <span class="st">"Circulo vazado = k escolhido automaticamente"</span>,</span>
-<span>      x <span class="op">=</span> <span class="st">"k (numero de clusters)"</span>, y <span class="op">=</span> <span class="st">"Silhueta media"</span></span>
+<span>      x <span class="op">=</span> <span class="st">"k (número de clusters)"</span>, y <span class="op">=</span> <span class="st">"Silhueta média"</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="../reference/theme_ac.html">theme_ac</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -411,12 +411,12 @@ gradiente contínuo</strong>.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">doc_id</span>, <span class="va">tipo</span>, <span class="va">valor</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">soft</span> <span class="op">&lt;-</span> <span class="va">lda_fit</span><span class="op">$</span><span class="va">documents</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>tipo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Topico "</span>, <span class="va">topic</span><span class="op">)</span>, valor <span class="op">=</span> <span class="va">gamma</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>tipo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Tópico "</span>, <span class="va">topic</span><span class="op">)</span>, valor <span class="op">=</span> <span class="va">gamma</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">doc_id</span>, <span class="va">tipo</span>, <span class="va">valor</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plot_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="va">hard</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>painel <span class="op">=</span> <span class="st">"Hard clustering\n(1 = pertence)"</span><span class="op">)</span>,</span>
-<span>  <span class="va">soft</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>painel <span class="op">=</span> <span class="st">"LDA (soft)\n(gamma = proporcao)"</span><span class="op">)</span></span>
+<span>  <span class="va">soft</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>painel <span class="op">=</span> <span class="st">"LDA (soft)\n(gamma = proporção)"</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -426,7 +426,7 @@ gradiente contínuo</strong>.</p>
 <span>  <span class="fu">scale_fill_gradient</span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#F1F5F9"</span>, high <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"Valor"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Hard vs. soft: a mesma pergunta, duas respostas"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Cluster da uma etiqueta; LDA da proporcoes por documento"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Cluster da uma etiqueta; LDA da proporções por documento"</span>,</span>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    caption <span class="op">=</span> <span class="st">"acR • ac_cluster_documents vs. ac_lda"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>

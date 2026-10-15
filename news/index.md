@@ -76,6 +76,8 @@ dicionarios, todas documentadas na vignette
 
 ## acR 0.4.0
 
+CRAN release: 2026-10-14
+
 Pacote de ajustes derivados de uso em producao (872 atos normativos do
 SIGEPE, `ellmer` + LM Studio com dois modelos locais, validacao humana,
 documentos de ate 1,4M de caracteres).

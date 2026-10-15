@@ -32,5 +32,5 @@ Análises estatísticas clássicas de conteúdo textual.
   documentos](https://andersonheri.github.io/acR/articles/cluster.md):
 - [Analise de
   sentimento](https://andersonheri.github.io/acR/articles/sentimento.md):
-- [Modelagem de topicos com
+- [Modelagem de tópicos com
   LDA](https://andersonheri.github.io/acR/articles/lda.md):

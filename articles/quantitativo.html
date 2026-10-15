@@ -197,25 +197,25 @@ mantendo os metadados que você quiser preservar para comparações
 posteriores.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"O governo anunciou nova politica fiscal para reduzir o deficit publico."</span>,</span>
-<span>  <span class="st">"A oposicao critica o aumento dos gastos e da divida publica no orcamento."</span>,</span>
-<span>  <span class="st">"Parlamentares debatem a reforma tributaria e o imposto de renda das familias."</span>,</span>
+<span>  <span class="st">"O governo anunciou nova politica fiscal para reduzir o deficit público."</span>,</span>
+<span>  <span class="st">"A oposicao crítica o aumento dos gastos e da divida pública no orcamento."</span>,</span>
+<span>  <span class="st">"Parlamentares debatem a reforma tributária e o imposto de renda das familias."</span>,</span>
 <span>  <span class="st">"O presidente vetou o projeto que ampliava beneficios sociais para os pobres."</span>,</span>
 <span>  <span class="st">"O Senado aprovou o marco legal para investimentos em infraestrutura logistica."</span>,</span>
-<span>  <span class="st">"Deputados votam pela reducao da carga tributaria para pequenas empresas."</span>,</span>
-<span>  <span class="st">"A politica monetaria do Banco Central eleva a taxa de juros para conter inflacao."</span>,</span>
+<span>  <span class="st">"Deputados votam pela reducao da carga tributária para pequenas empresas."</span>,</span>
+<span>  <span class="st">"A politica monetária do Banco Central eleva a taxa de juros para conter inflacao."</span>,</span>
 <span>  <span class="st">"A inflacao acima da meta preocupa economistas e o mercado financeiro."</span>,</span>
 <span>  <span class="st">"O relator defendeu emendas ao texto do orcamento com foco em saude e educacao."</span>,</span>
 <span>  <span class="st">"A comissao aprovou o projeto que amplia beneficios sociais no interior."</span>,</span>
-<span>  <span class="st">"O ministro afirmou que a reforma tributaria simplifica o sistema para empresas."</span>,</span>
+<span>  <span class="st">"O ministro afirmou que a reforma tributária simplifica o sistema para empresas."</span>,</span>
 <span>  <span class="st">"Lideres da oposicao pediram vistas ao projeto na comissao de constituicao."</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  text <span class="op">=</span> <span class="va">textos</span>,</span>
-<span>  tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>,<span class="st">"fiscal"</span>,<span class="st">"tributario"</span>,<span class="st">"social"</span>,<span class="st">"infraestrutura"</span>,</span>
-<span>           <span class="st">"tributario"</span>,<span class="st">"monetario"</span>,<span class="st">"monetario"</span>,<span class="st">"fiscal"</span>,<span class="st">"social"</span>,</span>
-<span>           <span class="st">"tributario"</span>,<span class="st">"fiscal"</span><span class="op">)</span>,</span>
+<span>  tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>,<span class="st">"fiscal"</span>,<span class="st">"tributário"</span>,<span class="st">"social"</span>,<span class="st">"infraestrutura"</span>,</span>
+<span>           <span class="st">"tributário"</span>,<span class="st">"monetário"</span>,<span class="st">"monetário"</span>,<span class="st">"fiscal"</span>,<span class="st">"social"</span>,</span>
+<span>           <span class="st">"tributário"</span>,<span class="st">"fiscal"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -231,11 +231,11 @@ posteriores.</p>
 <span><span class="co">#&gt;   doc_id text                                                              tema </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  O governo anunciou nova politica fiscal para reduzir o deficit p… fisc…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  A oposicao critica o aumento dos gastos e da divida publica no o… fisc…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  Parlamentares debatem a reforma tributaria e o imposto de renda … trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  A oposicao crítica o aumento dos gastos e da divida pública no o… fisc…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  Parlamentares debatem a reforma tributária e o imposto de renda … trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  O presidente vetou o projeto que ampliava beneficios sociais par… soci…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  O Senado aprovou o marco legal para investimentos em infraestrut… infr…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  Deputados votam pela reducao da carga tributaria para pequenas e… trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  Deputados votam pela reducao da carga tributária para pequenas e… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -269,12 +269,12 @@ glossário via <code>extra_stopwords</code>.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 3</span></span></span>
 <span><span class="co">#&gt;   doc_id text                                                              tema </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  governo anunciou nova politica fiscal reduzir deficit publico     fisc…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  oposicao critica aumento gastos divida publica orcamento          fisc…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  parlamentares debatem reforma tributaria imposto renda familias   trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  governo anunciou nova politica fiscal reduzir deficit público     fisc…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  oposicao crítica aumento gastos divida pública orcamento          fisc…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  parlamentares debatem reforma tributária imposto renda familias   trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  presidente vetou projeto ampliava beneficios sociais pobres       soci…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  senado aprovou marco legal investimentos infraestrutura logistica infr…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  deputados votam reducao carga tributaria pequenas empresas        trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  deputados votam reducao carga tributária pequenas empresas        trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -298,9 +298,9 @@ perdem sentido tokenizadas separadamente.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_1         5 fiscal  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_1         6 reduzir </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_1         7 deficit </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_1         8 publico </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_1         8 público </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_2         1 oposicao</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_2         2 critica </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_2         2 crítica </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> doc_2         3 aumento </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_2         4 gastos</span></span></code></pre></div>
 </div>
@@ -322,7 +322,7 @@ pipeline com <code>dplyr</code> e <code>ggplot2</code>.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> doc_1  governo      1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> doc_1  nova         1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> doc_1  politica     1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_1  publico      1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> doc_1  público      1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> doc_1  reduzir      1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> doc_10 amplia       1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> doc_10 aprovou      1</span></span>
@@ -439,13 +439,13 @@ diz?”</em>.</p>
 <strong>tributário</strong> — quais palavras marcam cada lado?</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freq_tema</span>     <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"tema"</span><span class="op">)</span></span>
-<span><span class="va">freq_2grupos</span>  <span class="op">&lt;-</span> <span class="va">freq_tema</span><span class="op">[</span><span class="va">freq_tema</span><span class="op">$</span><span class="va">tema</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>, <span class="st">"tributario"</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">freq_2grupos</span>  <span class="op">&lt;-</span> <span class="va">freq_tema</span><span class="op">[</span><span class="va">freq_tema</span><span class="op">$</span><span class="va">tema</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fiscal"</span>, <span class="st">"tributário"</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="va">kn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_keyness.html">ac_keyness</a></span><span class="op">(</span><span class="va">freq_2grupos</span>, group <span class="op">=</span> <span class="st">"tema"</span>, target <span class="op">=</span> <span class="st">"fiscal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/ac_plot_keyness.html">ac_plot_keyness</a></span><span class="op">(</span><span class="va">kn</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Palavras distintivas: 'fiscal' vs. 'tributario'"</span>,</span>
+<span>    title    <span class="op">=</span> <span class="st">"Palavras distintivas: 'fiscal' vs. 'tributário'"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Barras positivas = distintivas do tema 'fiscal'"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="quantitativo_files/figure-html/keyness-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
@@ -470,11 +470,11 @@ corpus.</p>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrencia (janela = 5, freq minima = 2)"</span>,</span>
+<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrência (janela = 5, freq mínima = 2)"</span>,</span>
 <span>      subtitle <span class="op">=</span> <span class="st">"Arestas conectam termos que co-ocorrem no mesmo contexto"</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="quantitativo_files/figure-html/coocorrencia-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="quantitativo_files/figure-html/coocorr%C3%AAncia-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="trocando-o-peso-pmi-em-vez-de-contagem">9.1 Trocando o peso: PMI em vez de contagem<a class="anchor" aria-label="anchor" href="#trocando-o-peso-pmi-em-vez-de-contagem"></a>
 </h3>
@@ -487,11 +487,11 @@ acaso</em>; revela pares surpreendentes, mesmo que raros.</p>
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span>, weight <span class="op">=</span> <span class="st">"pmi"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrencia ponderada por PMI"</span>,</span>
-<span>      subtitle <span class="op">=</span> <span class="st">"Destaca pares associados alem do esperado por acaso"</span></span>
+<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrência ponderada por PMI"</span>,</span>
+<span>      subtitle <span class="op">=</span> <span class="st">"Destaca pares associados além do esperado por acaso"</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="quantitativo_files/figure-html/coocorrencia-pmi-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="quantitativo_files/figure-html/coocorr%C3%AAncia-pmi-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="trocando-o-layout">9.2 Trocando o layout<a class="anchor" aria-label="anchor" href="#trocando-o-layout"></a>
@@ -505,11 +505,11 @@ onde a topologia importa menos que a legibilidade.</p>
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ggraph"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/ac_plot_cooccurrence.html">ac_plot_cooccurrence</a></span><span class="op">(</span><span class="va">cooc</span>, top_n <span class="op">=</span> <span class="fl">25</span>, layout <span class="op">=</span> <span class="st">"circle"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrencia — layout circular"</span>,</span>
+<span>      title    <span class="op">=</span> <span class="st">"Rede de coocorrência — layout circular"</span>,</span>
 <span>      subtitle <span class="op">=</span> <span class="st">"Todas as palavras num anel; arestas mostram o grafo cru"</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p><img src="quantitativo_files/figure-html/coocorrencia-circle-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="quantitativo_files/figure-html/coocorr%C3%AAncia-circle-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="coocorrência-como-matriz-heatmap">9.3 Coocorrência como matriz (heatmap)<a class="anchor" aria-label="anchor" href="#coocorr%C3%AAncia-como-matriz-heatmap"></a>
@@ -527,7 +527,7 @@ a intensidade da célula é a coocorrência. Não requer
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span>low <span class="op">=</span> <span class="st">"#F1F5F9"</span>, high <span class="op">=</span> <span class="fu"><a href="../reference/ac_palette.html">ac_palette</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Matriz de coocorrencia (top 12 termos)"</span>,</span>
+<span>    title    <span class="op">=</span> <span class="st">"Matriz de coocorrência (top 12 termos)"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Alternativa ao grafo quando a rede fica densa"</span>,</span>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="st">"cooc."</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
@@ -535,7 +535,7 @@ a intensidade da célula é a coocorrência. Não requer
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
 <span>    axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="quantitativo_files/figure-html/coocorrencia-heatmap-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<p><img src="quantitativo_files/figure-html/coocorr%C3%AAncia-heatmap-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -570,17 +570,17 @@ métrica recomendada para comparar textos de tamanhos diferentes.</li>
 </li>
 </ul>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">avaliacoes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">avaliações</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"rev"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Este produto é incrível. Funciona perfeitamente bem e chegou rápido."</span>,</span>
-<span>    <span class="st">"O manual técnico especifica que a calibração requer ajuste periódico do sensor piezoelétrico conforme a norma vigente, o que demanda qualificação especializada do operador responsável pela manutenção preventiva do equipamento."</span>,</span>
+<span>    <span class="st">"O manual técnico específica que a calibração requer ajuste periódico do sensor piezoelétrico conforme a norma vigente, o que demanda qualificação especializada do operador responsável pela manutenção preventiva do equipamento."</span>,</span>
 <span>    <span class="st">"Bom. Chegou. Funciona. Recomendo."</span>,</span>
 <span>    <span class="st">"A experiência de uso revelou inconsistências na usabilidade da interface, comprometendo a jornada do consumidor e gerando fricção considerável ao longo do processo de integração do dispositivo ao ecossistema existente."</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">corpus_aval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">avaliacoes</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">corpus_aval</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span><span class="va">avaliações</span>, text <span class="op">=</span> <span class="va">texto</span>, docid <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_readability.html">ac_readability</a></span><span class="op">(</span><span class="va">corpus_aval</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
@@ -684,7 +684,7 @@ Van Atteveldt &amp; Benoit, 2017).</p>
 <span><span class="op">)</span></span>
 <span><span class="va">serie</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_temporal.html">ac_temporal</a></span><span class="op">(</span><span class="va">noticias</span>, date_col <span class="op">=</span> <span class="st">"data"</span>, value_col <span class="op">=</span> <span class="st">"sentimento"</span>,</span>
 <span>                      unit <span class="op">=</span> <span class="st">"month"</span>, stat <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ac_plot_temporal.html">ac_plot_temporal</a></span><span class="op">(</span><span class="va">serie</span>, ylab <span class="op">=</span> <span class="st">"Sentimento medio"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/ac_plot_temporal.html">ac_plot_temporal</a></span><span class="op">(</span><span class="va">serie</span>, ylab <span class="op">=</span> <span class="st">"Sentimento médio"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
 <span><span class="co">#&gt; : span too small.  fewer data values than degrees of freedom.</span></span>
 <span><span class="co">#&gt; Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,</span></span>
@@ -712,10 +712,10 @@ satisfação implícita em avaliações sem nota.</p>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"r"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"produto excelente, superou expectativas, recomendo muito"</span>,</span>
-<span>    <span class="st">"muito bom, chegou rapido e funciona perfeitamente"</span>,</span>
-<span>    <span class="st">"produto regular, cumpre o basico"</span>,</span>
-<span>    <span class="st">"nao funcionou bem, qualidade ruim, nao recomendo"</span>,</span>
-<span>    <span class="st">"pessimo, quebrado e com defeito, decepcao total"</span>,</span>
+<span>    <span class="st">"muito bom, chegou rápido e funciona perfeitamente"</span>,</span>
+<span>    <span class="st">"produto regular, cumpre o básico"</span>,</span>
+<span>    <span class="st">"não funcionou bem, qualidade ruim, não recomendo"</span>,</span>
+<span>    <span class="st">"péssimo, quebrado e com defeito, decepcao total"</span>,</span>
 <span>    <span class="st">"produto ok, nada de especial mas atende"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -752,7 +752,7 @@ para léxicos de emoção (inspirada no NRC Emotion Lexicon; Mohammad &amp;
 Turney, 2013).</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dict</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
-<span>  entrega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"atrasou"</span>, <span class="st">"atrasada"</span>, <span class="st">"rapida"</span>, <span class="st">"rastreio"</span><span class="op">)</span>,</span>
+<span>  entrega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"atrasou"</span>, <span class="st">"atrasada"</span>, <span class="st">"rápida"</span>, <span class="st">"rastreio"</span><span class="op">)</span>,</span>
 <span>  produto <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"defeito"</span>, <span class="st">"quebrado"</span>, <span class="st">"perfeito"</span>, <span class="st">"excelente"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_atend</span>, <span class="va">dict</span><span class="op">)</span></span>
@@ -795,9 +795,9 @@ tendem a co-ocorrer mais do que o esperado pelo acaso.</p>
 <span>    <span class="st">"entrega atrasada rastreio sumiu"</span>,</span>
 <span>    <span class="st">"pedido atrasou rastreio sumiu"</span>,</span>
 <span>    <span class="st">"produto defeito quebrado chegou"</span>,</span>
-<span>    <span class="st">"veio quebrado produto pessimo"</span>,</span>
-<span>    <span class="st">"atendimento excelente resolveram rapido"</span>,</span>
-<span>    <span class="st">"suporte educado resolveu rapido"</span></span>
+<span>    <span class="st">"veio quebrado produto péssimo"</span>,</span>
+<span>    <span class="st">"atendimento excelente resolveram rápido"</span>,</span>
+<span>    <span class="st">"suporte educado resolveu rápido"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"entrega"</span>, <span class="st">"entrega"</span>, <span class="st">"produto"</span>, <span class="st">"produto"</span>,</span>
 <span>                <span class="st">"atendimento"</span>, <span class="st">"atendimento"</span><span class="op">)</span>,</span>

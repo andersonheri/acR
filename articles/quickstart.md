@@ -16,10 +16,10 @@ library(acR)
 df <- data.frame(
   id       = paste0("d", 1:6),
   texto    = c(
-    "Sou favoravel a reforma tributaria que simplifica os impostos.",
+    "Sou favoravel a reforma tributária que simplifica os impostos.",
     "Voto contra a proposta, ela vai destruir o setor produtivo.",
-    "Apoio integralmente a reforma, ha ganhos claros de eficiencia.",
-    "Esta reforma e um retrocesso, vamos rejeitar em plenario.",
+    "Apoio integralmente a reforma, ha ganhos claros de eficiência.",
+    "Esta reforma e um retrocesso, vamos rejeitar em plenário.",
     "Defendo a proposta que corrige distorcoes historicas do sistema.",
     "Somos contra, o texto beneficia apenas grandes corporacoes."
   ),
@@ -38,10 +38,10 @@ corpus
 #> # A tibble: 6 × 3
 #>   doc_id text                                                            posicao
 #>   <chr>  <chr>                                                           <chr>  
-#> 1 d1     Sou favoravel a reforma tributaria que simplifica os impostos.  favor  
+#> 1 d1     Sou favoravel a reforma tributária que simplifica os impostos.  favor  
 #> 2 d2     Voto contra a proposta, ela vai destruir o setor produtivo.     contra 
-#> 3 d3     Apoio integralmente a reforma, ha ganhos claros de eficiencia.  favor  
-#> 4 d4     Esta reforma e um retrocesso, vamos rejeitar em plenario.       contra 
+#> 3 d3     Apoio integralmente a reforma, ha ganhos claros de eficiência.  favor  
+#> 4 d4     Esta reforma e um retrocesso, vamos rejeitar em plenário.       contra 
 #> 5 d5     Defendo a proposta que corrige distorcoes historicas do sistem… favor  
 #> 6 d6     Somos contra, o texto beneficia apenas grandes corporacoes.     contra
 ```
@@ -65,7 +65,7 @@ ac_top_terms(freq_por_grupo, n = 5, by = "posicao")
 #>  4 contra  corporacoes     1
 #>  5 contra  destruir        1
 #>  6 contra  grandes         1
-#>  7 contra  plenario        1
+#>  7 contra  plenário        1
 #>  8 contra  produtivo       1
 #>  9 contra  proposta        1
 #> 10 contra  reforma         1
@@ -97,7 +97,7 @@ ac_sentiment(corpus)
 #> # A tibble: 6 × 6
 #>   doc_id n_pos n_neg n_neu score sentiment
 #>   <chr>  <int> <int> <int> <int> <chr>    
-#> 1 d1         0     1     4    -1 negativo 
+#> 1 d1         1     1     3     0 neutro   
 #> 2 d2         1     0     6     1 positivo 
 #> 3 d3         1     0     6     1 positivo 
 #> 4 d4         0     0     5     0 neutro   

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Modelagem de topicos com LDA • acR</title>
+<title>Modelagem de tópicos com LDA • acR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -18,7 +18,7 @@
 <link href="../deps/Inter_Tight-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Modelagem de topicos com LDA">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Modelagem de tópicos com LDA">
 <meta name="description" content="acR: pacote R para analise de conteudo integrada (qualitativa via LLMs + quantitativa classica), com foco em corpora brasileiros.">
 <meta property="og:title" content="acR — Analise de Conteudo em R">
 <meta property="og:description" content="Pipeline reproduzivel para pesquisa em ciencias sociais: codebooks, LLMs, keyness, LDA, sentimento.">
@@ -84,7 +84,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Modelagem de topicos com LDA</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Modelagem de tópicos com LDA</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/andersonheri/acR/blob/main/vignettes/lda.Rmd" class="external-link"><code>vignettes/lda.Rmd</code></a></small>
@@ -183,47 +183,47 @@ desemaranhar).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">textos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="co"># Tema 1: reforma tributária (8 documentos)</span></span>
-<span>  <span class="st">"A reforma tributaria simplifica o sistema de impostos e reduz a carga fiscal para empresas."</span>,</span>
+<span>  <span class="st">"A reforma tributária simplifica o sistema de impostos e reduz a carga fiscal para empresas."</span>,</span>
 <span>  <span class="st">"O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arrecadacao federal."</span>,</span>
-<span>  <span class="st">"Deputados debatem aliquotas e excecoes tributarias para setores economicos."</span>,</span>
-<span>  <span class="st">"A reforma tributaria unifica impostos indiretos e simplifica obrigacoes das empresas."</span>,</span>
-<span>  <span class="st">"Empresarios criticam a alta carga tributaria brasileira sobre o consumo popular."</span>,</span>
+<span>  <span class="st">"Deputados debatem aliquotas e excecoes tributárias para setores economicos."</span>,</span>
+<span>  <span class="st">"A reforma tributária unifica impostos indiretos e simplifica obrigacoes das empresas."</span>,</span>
+<span>  <span class="st">"Empresários criticam a alta carga tributária brasileira sobre o consumo popular."</span>,</span>
 <span>  <span class="st">"O relator propoe aliquotas diferenciadas para produtos essenciais no novo IVA."</span>,</span>
-<span>  <span class="st">"A reforma tributaria promete reduzir litigios fiscais e aumentar a arrecadacao."</span>,</span>
-<span>  <span class="st">"Congresso avalia impacto da reforma tributaria sobre pequenas empresas e servicos."</span>,</span>
+<span>  <span class="st">"A reforma tributária promete reduzir litigios fiscais e aumentar a arrecadacao."</span>,</span>
+<span>  <span class="st">"Congresso avalia impacto da reforma tributária sobre pequenas empresas e servicos."</span>,</span>
 <span>  <span class="co"># Tema 2: IA e proteção de dados (8 documentos)</span></span>
-<span>  <span class="st">"O marco legal da inteligencia artificial regulamenta o uso de algoritmos e dados."</span>,</span>
+<span>  <span class="st">"O marco legal da inteligência artificial regulamenta o uso de algoritmos e dados."</span>,</span>
 <span>  <span class="st">"Privacidade e seguranca de dados pessoais sao prioridades da nova lei de IA."</span>,</span>
-<span>  <span class="st">"Algoritmos de inteligencia artificial precisam de transparencia e auditoria publica."</span>,</span>
+<span>  <span class="st">"Algoritmos de inteligência artificial precisam de transparência e auditoria pública."</span>,</span>
 <span>  <span class="st">"A LGPD estabelece regras para tratamento de dados pessoais por empresas e governo."</span>,</span>
 <span>  <span class="st">"Modelos de IA generativa levantam questoes eticas sobre direitos autorais e dados."</span>,</span>
 <span>  <span class="st">"A ANPD fiscaliza o cumprimento das regras de protecao de dados no Brasil."</span>,</span>
 <span>  <span class="st">"Especialistas defendem regulamentacao de algoritmos preditivos usados por bancos."</span>,</span>
-<span>  <span class="st">"Inteligencia artificial na saude requer protocolos de seguranca e privacidade."</span>,</span>
+<span>  <span class="st">"Inteligência artificial na saude requer protocolos de seguranca e privacidade."</span>,</span>
 <span>  <span class="co"># Tema 3: habitação e cidade (8 documentos)</span></span>
 <span>  <span class="st">"O programa habitacional amplia recursos federais para moradia popular urbana."</span>,</span>
 <span>  <span class="st">"O deficit habitacional afeta milhoes de familias de baixa renda nas cidades."</span>,</span>
-<span>  <span class="st">"Urbanizacao de favelas e regularizacao fundiaria avancam em municipios brasileiros."</span>,</span>
+<span>  <span class="st">"Urbanizacao de favelas e regularizacao fundiária avancam em municipios brasileiros."</span>,</span>
 <span>  <span class="st">"Moradia digna e direito social garantido pela Constituicao federal de 1988."</span>,</span>
-<span>  <span class="st">"Assentamentos precarios crescem nas periferias metropolitanas do pais."</span>,</span>
+<span>  <span class="st">"Assentamentos precários crescem nas periferias metropolitanas do pais."</span>,</span>
 <span>  <span class="st">"O programa Minha Casa Minha Vida entrega novas unidades habitacionais populares."</span>,</span>
 <span>  <span class="st">"Especialistas em urbanismo debatem alugueis abusivos nas grandes cidades."</span>,</span>
-<span>  <span class="st">"Politicas de habitacao popular incluem regularizacao fundiaria e infraestrutura urbana."</span>,</span>
+<span>  <span class="st">"Politicas de habitacao popular incluem regularizacao fundiária e infraestrutura urbana."</span>,</span>
 <span>  <span class="co"># Tema 4: educação (8 documentos)</span></span>
-<span>  <span class="st">"A educacao basica recebe novos recursos do Fundeb ampliado pelo Congresso."</span>,</span>
+<span>  <span class="st">"A educacao básica recebe novos recursos do Fundeb ampliado pelo Congresso."</span>,</span>
 <span>  <span class="st">"Alfabetizacao na idade certa e meta central do novo Plano Nacional de Educacao."</span>,</span>
-<span>  <span class="st">"Professores debatem remuneracao e condicoes de trabalho nas escolas publicas."</span>,</span>
-<span>  <span class="st">"O ensino medio integrado ao tecnico expande vagas em institutos federais."</span>,</span>
-<span>  <span class="st">"A avaliacao Prova Brasil mede aprendizagem em portugues e matematica."</span>,</span>
-<span>  <span class="st">"Politicas de permanencia estudantil ampliam bolsas para universitarios pobres."</span>,</span>
+<span>  <span class="st">"Professores debatem remuneracao e condicoes de trabalho nas escolas públicas."</span>,</span>
+<span>  <span class="st">"O ensino médio integrado ao técnico expande vagas em institutos federais."</span>,</span>
+<span>  <span class="st">"A avaliação Prova Brasil mede aprendizagem em português e matemática."</span>,</span>
+<span>  <span class="st">"Politicas de permanência estudantil ampliam bolsas para universitários pobres."</span>,</span>
 <span>  <span class="st">"O piso salarial nacional dos professores e reajustado pelo governo federal."</span>,</span>
-<span>  <span class="st">"A formacao continuada de professores e desafio permanente da educacao basica."</span></span>
+<span>  <span class="st">"A formacao continuada de professores e desafio permanente da educacao básica."</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">corpus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_corpus.html">ac_corpus</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    text <span class="op">=</span> <span class="va">textos</span>,</span>
-<span>    tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tributario"</span>,<span class="st">"tecnologia"</span>,<span class="st">"habitacao"</span>,<span class="st">"educacao"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8L</span><span class="op">)</span>,</span>
+<span>    tema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tributário"</span>,<span class="st">"tecnologia"</span>,<span class="st">"habitacao"</span>,<span class="st">"educacao"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8L</span><span class="op">)</span>,</span>
 <span>    stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -237,11 +237,11 @@ desemaranhar).</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 3</span></span></span>
 <span><span class="co">#&gt;   doc_id text                                                              tema </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  A reforma tributaria simplifica o sistema de impostos e reduz a … trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  A reforma tributária simplifica o sistema de impostos e reduz a … trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arreca… trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  Deputados debatem aliquotas e excecoes tributarias para setores … trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  A reforma tributaria unifica impostos indiretos e simplifica obr… trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  Empresarios criticam a alta carga tributaria brasileira sobre o … trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  Deputados debatem aliquotas e excecoes tributárias para setores … trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  A reforma tributária unifica impostos indiretos e simplifica obr… trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  Empresários criticam a alta carga tributária brasileira sobre o … trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  O relator propoe aliquotas diferenciadas para produtos essenciai… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 26 more rows</span></span></span></code></pre></div>
 </div>
@@ -270,11 +270,11 @@ temas.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 3</span></span></span>
 <span><span class="co">#&gt;   doc_id text                                                              tema </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  reforma tributaria simplifica sistema impostos reduz carga fisca… trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1  reforma tributária simplifica sistema impostos reduz carga fisca… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2  iva dual substitui pis cofins icms modelo arrecadacao federal     trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  deputados debatem aliquotas excecoes tributarias setores economi… trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  reforma tributaria unifica impostos indiretos simplifica obrigac… trib…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  empresarios criticam alta carga tributaria brasileira consumo po… trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3  deputados debatem aliquotas excecoes tributárias setores economi… trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4  reforma tributária unifica impostos indiretos simplifica obrigac… trib…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5  empresários criticam alta carga tributária brasileira consumo po… trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6  relator propoe aliquotas diferenciadas produtos essenciais iva    trib…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 26 more rows</span></span></span></code></pre></div>
 </div>
@@ -316,8 +316,8 @@ onde perplexidade para de cair rápido e começa a estabilizar.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_tune.html">ac_plot_lda_tune</a></span><span class="op">(</span><span class="va">tune</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Perplexidade por numero de topicos (K)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Menor = melhor ajuste. Procure o cotovelo, nao o minimo global."</span>,</span>
+<span>    title    <span class="op">=</span> <span class="st">"Perplexidade por número de tópicos (K)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Menor = melhor ajuste. Procure o cotovelo, não o mínimo global."</span>,</span>
 <span>    caption  <span class="op">=</span> <span class="st">"acR - ac_lda_tune()"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/plot-tune-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
@@ -371,19 +371,19 @@ inspecionar o que cada tópico “significa”.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     1 reforma    0.070<span style="text-decoration: underline;">2</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     1 simplifica 0.035<span style="text-decoration: underline;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     1 sistema    0.017<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1 tributaria 0.087<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1 tributária 0.087<span style="text-decoration: underline;">7</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     1 dados      0.017<span style="text-decoration: underline;">5</span></span></span></code></pre></div>
 <p>Visualização — os 10 termos com maior β por tópico:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">modelo</span>, top_n <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title    <span class="op">=</span> <span class="st">"Top 10 termos por topico (LDA, K=4)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Beta = probabilidade do termo dado o topico"</span></span>
+<span>    title    <span class="op">=</span> <span class="st">"Top 10 termos por tópico (LDA, K=4)"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Beta = probabilidade do termo dado o tópico"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/plot-topics-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <p>O gráfico permite <strong>rotular</strong> os tópicos. Nomeamos com
 base nos termos dominantes — se um tópico é dominado por
-<em>reforma</em>, <em>tributaria</em>, <em>iva</em>, <em>aliquotas</em>,
+<em>reforma</em>, <em>tributária</em>, <em>iva</em>, <em>aliquotas</em>,
 chamamos de “Reforma Tributária”.</p>
 </div>
 <div class="section level2">
@@ -438,14 +438,14 @@ misto).</p>
 <code>meta$tema</code> que guardamos no corpus), conseguimos avaliar
 <strong>quão bem o LDA recuperou a estrutura conhecida</strong>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Recuperar o metadado 'tema' e cruzar com o topico dominante</span></span>
+<code class="sourceCode R"><span><span class="co"># Recuperar o metadado 'tema' e cruzar com o tópico dominante</span></span>
 <span><span class="va">tema_real</span> <span class="op">&lt;-</span> <span class="va">corpus</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"doc_id"</span>, <span class="st">"tema"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">comparacao</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">dominante</span>, <span class="va">tema_real</span>, by <span class="op">=</span> <span class="st">"doc_id"</span><span class="op">)</span></span>
+<span><span class="va">comparação</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">dominante</span>, <span class="va">tema_real</span>, by <span class="op">=</span> <span class="st">"doc_id"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Tabela de contingencia: topico dominante x tema real</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">comparacao</span><span class="op">$</span><span class="va">topico_dominante</span>, <span class="va">comparacao</span><span class="op">$</span><span class="va">tema</span><span class="op">)</span></span>
+<span><span class="co"># Tabela de contingência: tópico dominante x tema real</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">comparação</span><span class="op">$</span><span class="va">topico_dominante</span>, <span class="va">comparação</span><span class="op">$</span><span class="va">tema</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;     educacao habitacao tecnologia tributario</span></span>
+<span><span class="co">#&gt;     educacao habitacao tecnologia tributário</span></span>
 <span><span class="co">#&gt;   1        0         1          2          4</span></span>
 <span><span class="co">#&gt;   2        3         3          1          1</span></span>
 <span><span class="co">#&gt;   3        3         1          3          2</span></span>
@@ -476,9 +476,9 @@ no artigo:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
 <span><span class="co">#&gt;   topic top_termos                                                              </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                                   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 tributaria, reforma, empresas, carga, impostos, simplifica, fiscal      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 tributária, reforma, empresas, carga, impostos, simplifica, fiscal      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     2 popular, programa, urbana, politicas, empresas, dados, pessoais         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3 artificial, inteligencia, debatem, algoritmos, federal, nacional, profe…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     3 artificial, inteligência, debatem, algoritmos, federal, nacional, profe…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>     4 dados, ia, congresso, lei, pessoais, prioridades, privacidade</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -505,8 +505,8 @@ mostra os documentos como linhas, os tópicos como colunas, e a cor como
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Composicao tematica de cada documento (matriz gamma)"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Cores mais fortes = maior peso do topico no documento"</span>,</span>
-<span>    x        <span class="op">=</span> <span class="st">"Topico"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Cores mais fortes = maior peso do tópico no documento"</span>,</span>
+<span>    x        <span class="op">=</span> <span class="st">"Tópico"</span>,</span>
 <span>    y        <span class="op">=</span> <span class="st">"Documento"</span>,</span>
 <span>    caption  <span class="op">=</span> <span class="st">"acR - LDA soft assignment"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>

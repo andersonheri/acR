@@ -111,14 +111,14 @@ funções aceitam esse objeto diretamente.</p>
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>,</span>
 <span>  texto   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Sou favoravel a reforma tributaria: simplifica o sistema e reduz distorcoes."</span>,</span>
+<span>    <span class="st">"Sou favoravel a reforma tributária: simplifica o sistema e reduz distorcoes."</span>,</span>
 <span>    <span class="st">"Voto contra: essa reforma vai destruir o setor produtivo brasileiro."</span>,</span>
-<span>    <span class="st">"Apoio a proposta com forte adesao, ha ganhos claros de eficiencia arrecadatoria."</span>,</span>
+<span>    <span class="st">"Apoio a proposta com forte adesao, ha ganhos claros de eficiência arrecadatória."</span>,</span>
 <span>    <span class="st">"Rejeito o texto: transfere renda das familias para grandes corporacoes."</span>,</span>
 <span>    <span class="st">"Defendo a reforma que corrige as distorcoes historicas do nosso sistema."</span>,</span>
-<span>    <span class="st">"Somos contrarios: o projeto beneficia apenas os mais ricos do pais."</span>,</span>
-<span>    <span class="st">"Voto sim, precisamos modernizar urgentemente a estrutura tributaria."</span>,</span>
-<span>    <span class="st">"Voto nao, os pequenos empresarios serao os grandes prejudicados."</span></span>
+<span>    <span class="st">"Somos contrários: o projeto beneficia apenas os mais ricos do pais."</span>,</span>
+<span>    <span class="st">"Voto sim, precisamos modernizar urgentemente a estrutura tributária."</span>,</span>
+<span>    <span class="st">"Voto não, os pequenos empresários serao os grandes prejudicados."</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>,<span class="st">"PL"</span>,<span class="st">"PT"</span>,<span class="st">"PL"</span>,<span class="st">"PT"</span>,<span class="st">"PL"</span>,<span class="st">"PT"</span>,<span class="st">"PL"</span><span class="op">)</span>,</span>
 <span>  posicao <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span>,<span class="st">"favor"</span>,<span class="st">"contra"</span><span class="op">)</span>,</span>
@@ -136,12 +136,12 @@ funções aceitam esse objeto diretamente.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 4</span></span></span>
 <span><span class="co">#&gt;   doc_id text                                                    partido posicao</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1     Sou favoravel a reforma tributaria: simplifica o siste… PT      favor  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1     Sou favoravel a reforma tributária: simplifica o siste… PT      favor  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d2     Voto contra: essa reforma vai destruir o setor produti… PL      contra </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3     Apoio a proposta com forte adesao, ha ganhos claros de… PT      favor  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4     Rejeito o texto: transfere renda das familias para gra… PL      contra </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> d5     Defendo a reforma que corrige as distorcoes historicas… PT      favor  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> d6     Somos contrarios: o projeto beneficia apenas os mais r… PL      contra </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> d6     Somos contrários: o projeto beneficia apenas os mais r… PL      contra </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -157,26 +157,26 @@ informação temática e mascaram os padrões reais do corpus.</p>
 <span><span class="co"># Frequência global</span></span>
 <span><span class="va">freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">freq</span>, n <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 57 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 3</span></span></span>
 <span><span class="co">#&gt;    doc_id token             n</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> d3     adesao            1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> d6     apenas            1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> d3     apoio             1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> d3     arrecadatoria     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> d3     arrecadatória     1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> d6     beneficia         1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> d2     brasileiro        1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> d3     claros            1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> d2     contra            1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> d6     contrarios        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> d6     contrários        1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> d4     corporacoes       1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 47 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 46 more rows</span></span></span></code></pre></div>
 <p>Agora quebrando por lado (<code>favor</code> vs
 <code>contra</code>):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freq_lado</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_count.html">ac_count</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"posicao"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_top_terms.html">ac_top_terms</a></span><span class="op">(</span><span class="va">freq_lado</span>, n <span class="op">=</span> <span class="fl">5</span>, by <span class="op">=</span> <span class="st">"posicao"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 51 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 50 × 3</span></span></span>
 <span><span class="co">#&gt;    posicao token           n</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> contra  grandes         2</span></span>
@@ -185,11 +185,11 @@ informação temática e mascaram os padrões reais do corpus.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> contra  beneficia       1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> contra  brasileiro      1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> contra  contra          1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> contra  contrarios      1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> contra  contrários      1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> contra  corporacoes     1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> contra  destruir        1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> contra  empresarios     1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 41 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> contra  empresários     1</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 40 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="termos-distintivos-com-keyness">2. Termos distintivos com <em>keyness</em><a class="anchor" aria-label="anchor" href="#termos-distintivos-com-keyness"></a>
@@ -203,12 +203,12 @@ distintividade.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 10</span></span></span>
 <span><span class="co">#&gt;   token group target reference n_target n_reference total_target total_reference</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> dist… posi… favor  contra           2           0           29              28</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> sist… posi… favor  contra           2           0           29              28</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> trib… posi… favor  contra           2           0           29              28</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> ades… posi… favor  contra           1           0           29              28</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> apoio posi… favor  contra           1           0           29              28</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> arre… posi… favor  contra           1           0           29              28</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> dist… posi… favor  contra           2           0           29              27</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> sist… posi… favor  contra           2           0           29              27</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> trib… posi… favor  contra           2           0           29              27</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> ades… posi… favor  contra           1           0           29              27</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> apoio posi… favor  contra           1           0           29              27</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> arre… posi… favor  contra           1           0           29              27</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: keyness &lt;dbl&gt;, direction &lt;chr&gt;</span></span></span></code></pre></div>
 <p>Visualização compacta dos termos mais distintivos:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -228,13 +228,13 @@ OpLexicon (Souza e Vieira, 2012):</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 6</span></span></span>
 <span><span class="co">#&gt;   doc_id n_pos n_neg n_neu score sentiment</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1         0     0    11     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1         1     0    10     1 positivo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d2         1     0     9     1 positivo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3         2     0    10     2 positivo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4         0     0    10     0 neutro   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> d5         0     0    11     0 neutro   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> d6         1     0    10     1 positivo </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> d7         0     0     8     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> d6         1     1     9     0 neutro   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> d7         1     0     7     1 positivo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> d8         0     1     8    -<span style="color: #BB0000;">1</span> negativo</span></span></code></pre></div>
 <p>Visualizando por documento:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -274,7 +274,7 @@ vignette. Estrutura mínima:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">codebook</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
 <span>  name         <span class="op">=</span> <span class="st">"posicionamento"</span>,</span>
-<span>  instructions <span class="op">=</span> <span class="st">"Classifique o posicionamento sobre a reforma tributaria."</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="st">"Classifique o posicionamento sobre a reforma tributária."</span>,</span>
 <span>  categories   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    favor  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      definition   <span class="op">=</span> <span class="st">"Manifestação favorável à reforma."</span>,</span>

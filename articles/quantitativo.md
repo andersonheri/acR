@@ -57,25 +57,25 @@ comparações posteriores.
 ``` r
 
 textos <- c(
-  "O governo anunciou nova politica fiscal para reduzir o deficit publico.",
-  "A oposicao critica o aumento dos gastos e da divida publica no orcamento.",
-  "Parlamentares debatem a reforma tributaria e o imposto de renda das familias.",
+  "O governo anunciou nova politica fiscal para reduzir o deficit público.",
+  "A oposicao crítica o aumento dos gastos e da divida pública no orcamento.",
+  "Parlamentares debatem a reforma tributária e o imposto de renda das familias.",
   "O presidente vetou o projeto que ampliava beneficios sociais para os pobres.",
   "O Senado aprovou o marco legal para investimentos em infraestrutura logistica.",
-  "Deputados votam pela reducao da carga tributaria para pequenas empresas.",
-  "A politica monetaria do Banco Central eleva a taxa de juros para conter inflacao.",
+  "Deputados votam pela reducao da carga tributária para pequenas empresas.",
+  "A politica monetária do Banco Central eleva a taxa de juros para conter inflacao.",
   "A inflacao acima da meta preocupa economistas e o mercado financeiro.",
   "O relator defendeu emendas ao texto do orcamento com foco em saude e educacao.",
   "A comissao aprovou o projeto que amplia beneficios sociais no interior.",
-  "O ministro afirmou que a reforma tributaria simplifica o sistema para empresas.",
+  "O ministro afirmou que a reforma tributária simplifica o sistema para empresas.",
   "Lideres da oposicao pediram vistas ao projeto na comissao de constituicao."
 )
 
 meta <- data.frame(
   text = textos,
-  tema = c("fiscal","fiscal","tributario","social","infraestrutura",
-           "tributario","monetario","monetario","fiscal","social",
-           "tributario","fiscal"),
+  tema = c("fiscal","fiscal","tributário","social","infraestrutura",
+           "tributário","monetário","monetário","fiscal","social",
+           "tributário","fiscal"),
   stringsAsFactors = FALSE
 )
 
@@ -91,11 +91,11 @@ corpus
 #>   doc_id text                                                              tema 
 #>   <chr>  <chr>                                                             <chr>
 #> 1 doc_1  O governo anunciou nova politica fiscal para reduzir o deficit p… fisc…
-#> 2 doc_2  A oposicao critica o aumento dos gastos e da divida publica no o… fisc…
-#> 3 doc_3  Parlamentares debatem a reforma tributaria e o imposto de renda … trib…
+#> 2 doc_2  A oposicao crítica o aumento dos gastos e da divida pública no o… fisc…
+#> 3 doc_3  Parlamentares debatem a reforma tributária e o imposto de renda … trib…
 #> 4 doc_4  O presidente vetou o projeto que ampliava beneficios sociais par… soci…
 #> 5 doc_5  O Senado aprovou o marco legal para investimentos em infraestrut… infr…
-#> 6 doc_6  Deputados votam pela reducao da carga tributaria para pequenas e… trib…
+#> 6 doc_6  Deputados votam pela reducao da carga tributária para pequenas e… trib…
 #> # ℹ 6 more rows
 ```
 
@@ -131,12 +131,12 @@ corpus_limpo
 #> # A tibble: 12 × 3
 #>   doc_id text                                                              tema 
 #>   <chr>  <chr>                                                             <chr>
-#> 1 doc_1  governo anunciou nova politica fiscal reduzir deficit publico     fisc…
-#> 2 doc_2  oposicao critica aumento gastos divida publica orcamento          fisc…
-#> 3 doc_3  parlamentares debatem reforma tributaria imposto renda familias   trib…
+#> 1 doc_1  governo anunciou nova politica fiscal reduzir deficit público     fisc…
+#> 2 doc_2  oposicao crítica aumento gastos divida pública orcamento          fisc…
+#> 3 doc_3  parlamentares debatem reforma tributária imposto renda familias   trib…
 #> 4 doc_4  presidente vetou projeto ampliava beneficios sociais pobres       soci…
 #> 5 doc_5  senado aprovou marco legal investimentos infraestrutura logistica infr…
-#> 6 doc_6  deputados votam reducao carga tributaria pequenas empresas        trib…
+#> 6 doc_6  deputados votam reducao carga tributária pequenas empresas        trib…
 #> # ℹ 6 more rows
 ```
 
@@ -162,9 +162,9 @@ head(tokens, 12)
 #>  5 doc_1         5 fiscal  
 #>  6 doc_1         6 reduzir 
 #>  7 doc_1         7 deficit 
-#>  8 doc_1         8 publico 
+#>  8 doc_1         8 público 
 #>  9 doc_2         1 oposicao
-#> 10 doc_2         2 critica 
+#> 10 doc_2         2 crítica 
 #> 11 doc_2         3 aumento 
 #> 12 doc_2         4 gastos
 ```
@@ -189,7 +189,7 @@ contagem
 #>  4 doc_1  governo      1
 #>  5 doc_1  nova         1
 #>  6 doc_1  politica     1
-#>  7 doc_1  publico      1
+#>  7 doc_1  público      1
 #>  8 doc_1  reduzir      1
 #>  9 doc_10 amplia       1
 #> 10 doc_10 aprovou      1
@@ -317,13 +317,13 @@ marcam cada lado?
 ``` r
 
 freq_tema     <- ac_count(corpus_limpo, by = "tema")
-freq_2grupos  <- freq_tema[freq_tema$tema %in% c("fiscal", "tributario"), ]
+freq_2grupos  <- freq_tema[freq_tema$tema %in% c("fiscal", "tributário"), ]
 
 kn <- ac_keyness(freq_2grupos, group = "tema", target = "fiscal")
 
 ac_plot_keyness(kn, n = 10) +
   ggplot2::labs(
-    title    = "Palavras distintivas: 'fiscal' vs. 'tributario'",
+    title    = "Palavras distintivas: 'fiscal' vs. 'tributário'",
     subtitle = "Barras positivas = distintivas do tema 'fiscal'"
   )
 ```
@@ -352,13 +352,13 @@ cooc <- ac_cooccurrence(corpus_limpo, window = 5L, min_count = 2L)
 if (requireNamespace("ggraph", quietly = TRUE)) {
   ac_plot_cooccurrence(cooc, top_n = 25) +
     ggplot2::labs(
-      title    = "Rede de coocorrencia (janela = 5, freq minima = 2)",
+      title    = "Rede de coocorrência (janela = 5, freq mínima = 2)",
       subtitle = "Arestas conectam termos que co-ocorrem no mesmo contexto"
     )
 }
 ```
 
-![](quantitativo_files/figure-html/coocorrencia-1.png)
+![](quantitativo_files/figure-html/coocorr%C3%AAncia-1.png)
 
 ### 9.1 Trocando o peso: PMI em vez de contagem
 
@@ -372,13 +372,13 @@ esperado por acaso*; revela pares surpreendentes, mesmo que raros.
 if (requireNamespace("ggraph", quietly = TRUE)) {
   ac_plot_cooccurrence(cooc, top_n = 25, weight = "pmi") +
     ggplot2::labs(
-      title    = "Rede de coocorrencia ponderada por PMI",
-      subtitle = "Destaca pares associados alem do esperado por acaso"
+      title    = "Rede de coocorrência ponderada por PMI",
+      subtitle = "Destaca pares associados além do esperado por acaso"
     )
 }
 ```
 
-![](quantitativo_files/figure-html/coocorrencia-pmi-1.png)
+![](quantitativo_files/figure-html/coocorr%C3%AAncia-pmi-1.png)
 
 ### 9.2 Trocando o layout
 
@@ -392,13 +392,13 @@ para corpora pequenos onde a topologia importa menos que a legibilidade.
 if (requireNamespace("ggraph", quietly = TRUE)) {
   ac_plot_cooccurrence(cooc, top_n = 25, layout = "circle") +
     ggplot2::labs(
-      title    = "Rede de coocorrencia — layout circular",
+      title    = "Rede de coocorrência — layout circular",
       subtitle = "Todas as palavras num anel; arestas mostram o grafo cru"
     )
 }
 ```
 
-![](quantitativo_files/figure-html/coocorrencia-circle-1.png)
+![](quantitativo_files/figure-html/coocorr%C3%AAncia-circle-1.png)
 
 ### 9.3 Coocorrência como matriz (heatmap)
 
@@ -416,7 +416,7 @@ ggplot2::ggplot(cooc_mat,
   ggplot2::geom_tile(color = "white") +
   ggplot2::scale_fill_gradient(low = "#F1F5F9", high = ac_palette(1)) +
   ggplot2::labs(
-    title    = "Matriz de coocorrencia (top 12 termos)",
+    title    = "Matriz de coocorrência (top 12 termos)",
     subtitle = "Alternativa ao grafo quando a rede fica densa",
     x = NULL, y = NULL, fill = "cooc."
   ) +
@@ -426,7 +426,7 @@ ggplot2::ggplot(cooc_mat,
   )
 ```
 
-![](quantitativo_files/figure-html/coocorrencia-heatmap-1.png)
+![](quantitativo_files/figure-html/coocorr%C3%AAncia-heatmap-1.png)
 
 ## Novidades: diagnóstico de corpus, escalas e dicionários
 
@@ -457,17 +457,17 @@ conteúdo:
 
 ``` r
 
-avaliacoes <- data.frame(
+avaliações <- data.frame(
   id = paste0("rev", 1:4),
   texto = c(
     "Este produto é incrível. Funciona perfeitamente bem e chegou rápido.",
-    "O manual técnico especifica que a calibração requer ajuste periódico do sensor piezoelétrico conforme a norma vigente, o que demanda qualificação especializada do operador responsável pela manutenção preventiva do equipamento.",
+    "O manual técnico específica que a calibração requer ajuste periódico do sensor piezoelétrico conforme a norma vigente, o que demanda qualificação especializada do operador responsável pela manutenção preventiva do equipamento.",
     "Bom. Chegou. Funciona. Recomendo.",
     "A experiência de uso revelou inconsistências na usabilidade da interface, comprometendo a jornada do consumidor e gerando fricção considerável ao longo do processo de integração do dispositivo ao ecossistema existente."
   ),
   stringsAsFactors = FALSE
 )
-corpus_aval <- ac_corpus(avaliacoes, text = texto, docid = id)
+corpus_aval <- ac_corpus(avaliações, text = texto, docid = id)
 ```
 
 ``` r
@@ -589,7 +589,7 @@ noticias <- data.frame(
 )
 serie <- ac_temporal(noticias, date_col = "data", value_col = "sentimento",
                       unit = "month", stat = "mean")
-ac_plot_temporal(serie, ylab = "Sentimento medio")
+ac_plot_temporal(serie, ylab = "Sentimento médio")
 #> Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
 #> : span too small.  fewer data values than degrees of freedom.
 #> Warning in simpleLoess(y, x, w, span, degree = degree, parametric = parametric,
@@ -620,10 +620,10 @@ resenhas <- data.frame(
   id = paste0("r", 1:6),
   texto = c(
     "produto excelente, superou expectativas, recomendo muito",
-    "muito bom, chegou rapido e funciona perfeitamente",
-    "produto regular, cumpre o basico",
-    "nao funcionou bem, qualidade ruim, nao recomendo",
-    "pessimo, quebrado e com defeito, decepcao total",
+    "muito bom, chegou rápido e funciona perfeitamente",
+    "produto regular, cumpre o básico",
+    "não funcionou bem, qualidade ruim, não recomendo",
+    "péssimo, quebrado e com defeito, decepcao total",
     "produto ok, nada de especial mas atende"
   ),
   stringsAsFactors = FALSE
@@ -668,7 +668,7 @@ Emotion Lexicon; Mohammad & Turney, 2013).
 ``` r
 
 dict <- ac_build_dictionary(
-  entrega = c("entrega", "atrasou", "atrasada", "rapida", "rastreio"),
+  entrega = c("entrega", "atrasou", "atrasada", "rápida", "rastreio"),
   produto = c("defeito", "quebrado", "perfeito", "excelente")
 )
 ac_dictionary(corpus_atend, dict)
@@ -719,9 +719,9 @@ categorias <- data.frame(
     "entrega atrasada rastreio sumiu",
     "pedido atrasou rastreio sumiu",
     "produto defeito quebrado chegou",
-    "veio quebrado produto pessimo",
-    "atendimento excelente resolveram rapido",
-    "suporte educado resolveu rapido"
+    "veio quebrado produto péssimo",
+    "atendimento excelente resolveram rápido",
+    "suporte educado resolveu rápido"
   ),
   categoria = c("entrega", "entrega", "produto", "produto",
                 "atendimento", "atendimento"),

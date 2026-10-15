@@ -313,7 +313,7 @@ categorias similares.</p>
 <span>  <span class="op">)</span>,</span>
 <span>  multilabel <span class="op">=</span> <span class="cn">FALSE</span>,   <span class="co"># cada doc recebe UMA categoria; se TRUE, a coluna</span></span>
 <span>                        <span class="co"># `categoria` na saida vira uma string pipe-separada</span></span>
-<span>                        <span class="co"># ("tecnica|politica") quando mais de uma se aplicar.</span></span>
+<span>                        <span class="co"># ("técnica|politica") quando mais de uma se aplicar.</span></span>
 <span>  lang       <span class="op">=</span> <span class="st">"pt"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Categoria <span style="color: #0000BB;">"neutro"</span>: sem exemplos negativos (<span style="color: #00BB00;">examples_neg</span>).</span></span>
@@ -326,7 +326,7 @@ categorias similares.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"positivo"</span>, <span style="color: #0000BB;">"negativo"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 14/10/2026 23:35</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 13:56</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique o tom geral do discurso parlamentar.</span></span>
@@ -352,7 +352,7 @@ sobrepõem.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Adicionar categoria iterativamente</span></span>
 <span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_add.html">ac_qual_codebook_add</a></span><span class="op">(</span><span class="va">cb</span>,</span>
-<span>  tecnico <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  técnico <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    definition   <span class="op">=</span> <span class="st">"Discurso com linguagem técnica e referências normativas."</span>,</span>
 <span>    examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Conforme o art. 37 da CF, a administração pública..."</span><span class="op">)</span>,</span>
 <span>    weight       <span class="op">=</span> <span class="fl">1</span></span>
@@ -360,7 +360,7 @@ sobrepõem.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Remover se necessário</span></span>
-<span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_remove.html">ac_qual_codebook_remove</a></span><span class="op">(</span><span class="va">cb</span>, <span class="st">"tecnico"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook_remove.html">ac_qual_codebook_remove</a></span><span class="op">(</span><span class="va">cb</span>, <span class="st">"técnico"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -807,7 +807,7 @@ Landis-Koch, Gilardi, Wang, Gwet</li>
 </ol>
 <p>Uso mínimo:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Apos ter o resultado da classificacao</span></span>
+<code class="sourceCode R"><span><span class="co"># Após ter o resultado da classificação</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_report.html">ac_qual_report</a></span><span class="op">(</span></span>
 <span>  coded     <span class="op">=</span> <span class="va">resultado</span>,</span>
 <span>  codebook  <span class="op">=</span> <span class="va">cb_completo</span>,</span>

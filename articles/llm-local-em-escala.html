@@ -203,9 +203,9 @@ diferencia os tipos de falha:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">coded</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></span>
 <span><span class="co"># ok                 -- classificado normalmente</span></span>
-<span><span class="co"># resposta_invalida  -- o servidor respondeu, mas nao em JSON valido</span></span>
+<span><span class="co"># resposta_invalida  -- o servidor respondeu, mas não em JSON valido</span></span>
 <span><span class="co"># estouro_contexto   -- documento excedeu a janela de contexto</span></span>
-<span><span class="co"># timeout            -- servidor nao respondeu a tempo</span></span>
+<span><span class="co"># timeout            -- servidor não respondeu a tempo</span></span>
 <span><span class="co"># erro_servidor      -- outro erro de rede/servidor</span></span></code></pre></div>
 <p><code>max_retries</code> tenta de novo (com espera exponencial) para
 <code>timeout</code> e <code>erro_servidor</code>, mas não para
@@ -258,7 +258,7 @@ rodada:</p>
 <code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">coded</span>, <span class="st">"run_info"</span><span class="op">)</span></span>
 <span><span class="va">info</span><span class="op">$</span><span class="va">model</span></span>
 <span><span class="va">info</span><span class="op">$</span><span class="va">params_efetivos</span><span class="op">$</span><span class="va">temperature</span>   <span class="co"># a temperatura que o PROVEDOR confirmou</span></span>
-<span><span class="va">info</span><span class="op">$</span><span class="va">temperatura_pedida</span>            <span class="co"># a temperatura que voce PEDIU</span></span>
+<span><span class="va">info</span><span class="op">$</span><span class="va">temperatura_pedida</span>            <span class="co"># a temperatura que você PEDIU</span></span>
 <span><span class="va">info</span><span class="op">$</span><span class="va">codebook_hash</span></span></code></pre></div>
 <p>Compare <code>params_efetivos$temperature</code> com
 <code>temperatura_pedida</code> antes de reportar

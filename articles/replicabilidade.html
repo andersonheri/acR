@@ -139,18 +139,18 @@ importação de PDFs.</p>
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%02d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Apoio integralmente esta reforma que simplifica o sistema tributario."</span>,</span>
+<span>    <span class="st">"Apoio integralmente esta reforma que simplifica o sistema tributário."</span>,</span>
 <span>    <span class="st">"Sou favoravel a proposta: reduz distorcoes historicas do setor."</span>,</span>
 <span>    <span class="st">"Voto sim com plena adesao: precisamos modernizar a estrutura fiscal."</span>,</span>
-<span>    <span class="st">"Aprovo a reforma tributaria, e uma conquista para o desenvolvimento."</span>,</span>
+<span>    <span class="st">"Aprovo a reforma tributária, e uma conquista para o desenvolvimento."</span>,</span>
 <span>    <span class="st">"Rejeito esta proposta, e um retrocesso para os trabalhadores."</span>,</span>
 <span>    <span class="st">"Voto contra: a reforma prejudica os mais pobres e as pequenas empresas."</span>,</span>
-<span>    <span class="st">"Sou contrario a essa proposta, ela beneficia apenas grandes corporacoes."</span>,</span>
-<span>    <span class="st">"Nao apoio o texto atual, precisa de revisao profunda antes da votacao."</span>,</span>
+<span>    <span class="st">"Sou contrário a essa proposta, ela beneficia apenas grandes corporacoes."</span>,</span>
+<span>    <span class="st">"Não apoio o texto atual, precisa de revisao profunda antes da votacao."</span>,</span>
 <span>    <span class="st">"O texto substitutivo altera o artigo 145 da Constituicao Federal."</span>,</span>
-<span>    <span class="st">"O relatorio incorporou 47 emendas apresentadas em plenario."</span>,</span>
+<span>    <span class="st">"O relatório incorporou 47 emendas apresentadas em plenário."</span>,</span>
 <span>    <span class="st">"A comissao aprovou o parecer com 15 votos a favor e 8 contra."</span>,</span>
-<span>    <span class="st">"O projeto seguira para votacao na proxima sessao ordinaria."</span></span>
+<span>    <span class="st">"O projeto seguira para votacao na próxima sessao ordinária."</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  partido <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>,<span class="st">"PSD"</span>,<span class="st">"PL"</span>,<span class="st">"MDB"</span>,<span class="st">"PSOL"</span>,<span class="st">"PT"</span>,<span class="st">"PDT"</span>,<span class="st">"PSOL"</span>,</span>
 <span>              <span class="st">"MDB"</span>,<span class="st">"PSDB"</span>,<span class="st">"PL"</span>,<span class="st">"MDB"</span><span class="op">)</span>,</span>
@@ -173,7 +173,7 @@ importação de PDFs.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> doc_1      Apoio integralmente esta reforma que simplifica… d01        PT     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> doc_2      Sou favoravel a proposta: reduz distorcoes hist… d02        PSD    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> doc_3      Voto sim com plena adesao: precisamos moderniza… d03        PL     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4      Aprovo a reforma tributaria, e uma conquista pa… d04        MDB    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> doc_4      Aprovo a reforma tributária, e uma conquista pa… d04        MDB    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> doc_5      Rejeito esta proposta, e um retrocesso para os … d05        PSOL   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> doc_6      Voto contra: a reforma prejudica os mais pobres… d06        PT     </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more rows</span></span></span></code></pre></div>
@@ -188,12 +188,12 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <code class="sourceCode R"><span><span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_codebook.html">ac_qual_codebook</a></span><span class="op">(</span></span>
 <span>  name         <span class="op">=</span> <span class="st">"posicao_reforma_tributaria"</span>,</span>
 <span>  instructions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Classifique a posicao do parlamentar sobre a reforma tributaria"</span>,</span>
+<span>    <span class="st">"Classifique a posicao do parlamentar sobre a reforma tributária"</span>,</span>
 <span>    <span class="st">"com base no discurso apresentado."</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    favor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      definition   <span class="op">=</span> <span class="st">"Apoio explicito a aprovacao da reforma tributaria."</span>,</span>
+<span>      definition   <span class="op">=</span> <span class="st">"Apoio explicito a aprovacao da reforma tributária."</span>,</span>
 <span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sou a favor desta reforma que simplifica o sistema."</span><span class="op">)</span>,</span>
 <span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"O texto altera o artigo 145 da Constituicao Federal."</span><span class="op">)</span>,</span>
 <span>      weight       <span class="op">=</span> <span class="fl">1</span></span>
@@ -205,8 +205,8 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <span>      weight       <span class="op">=</span> <span class="fl">1.2</span>  <span class="co"># categoria com mais dificuldade retorica</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    neutro <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      definition   <span class="op">=</span> <span class="st">"Discurso tecnico ou processual, sem posicionamento claro."</span>,</span>
-<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"O relatorio incorporou emendas apresentadas."</span><span class="op">)</span>,</span>
+<span>      definition   <span class="op">=</span> <span class="st">"Discurso técnico ou processual, sem posicionamento claro."</span>,</span>
+<span>      examples_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"O relatório incorporou emendas apresentadas."</span><span class="op">)</span>,</span>
 <span>      examples_neg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sou totalmente contra esta proposta."</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
@@ -220,28 +220,28 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"favor"</span>, <span style="color: #0000BB;">"contra"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 14/10/2026 23:36</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 13:57</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
-<span><span class="co">#&gt; Classifique a posicao do parlamentar sobre a reforma tributaria com base no</span></span>
+<span><span class="co">#&gt; Classifique a posicao do parlamentar sobre a reforma tributária com base no</span></span>
 <span><span class="co">#&gt; discurso apresentado.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Categorias</span>:</span></span>
-<span><span class="co">#&gt; • <span style="color: #0000BB;">"favor"</span>: Apoio explicito a aprovacao da reforma tributaria.</span></span>
+<span><span class="co">#&gt; • <span style="color: #0000BB;">"favor"</span>: Apoio explicito a aprovacao da reforma tributária.</span></span>
 <span><span class="co">#&gt; Ex+: Sou a favor desta reforma que simplifica o sistema.</span></span>
 <span><span class="co">#&gt; • <span style="color: #0000BB;">"contra"</span> [peso: 1.2]: Oposicao explicita a reforma, com argumentos de</span></span>
 <span><span class="co">#&gt; rejeicao.</span></span>
 <span><span class="co">#&gt; Ex+: Voto contra: prejudica os trabalhadores.</span></span>
-<span><span class="co">#&gt; • <span style="color: #0000BB;">"neutro"</span>: Discurso tecnico ou processual, sem posicionamento claro.</span></span>
-<span><span class="co">#&gt; Ex+: O relatorio incorporou emendas apresentadas.</span></span></code></pre></div>
+<span><span class="co">#&gt; • <span style="color: #0000BB;">"neutro"</span>: Discurso técnico ou processual, sem posicionamento claro.</span></span>
+<span><span class="co">#&gt; Ex+: O relatório incorporou emendas apresentadas.</span></span></code></pre></div>
 <p>Salvar o codebook em YAML permite versionamento em Git e retomada da
 análise em outra sessão:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arquivo_cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo_cb</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpTMxouj/file246a1c8e536f.yaml</span></span></span>
+<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmppVveDf/file22d4708de923.yaml</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Codebook salvo em:"</span>, <span class="va">arquivo_cb</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpTMxouj/file246a1c8e536f.yaml</span></span></code></pre></div>
+<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmppVveDf/file22d4708de923.yaml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classificação-com-live-view">3. Classificação com live view<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-live-view"></a>
@@ -282,11 +282,11 @@ hora:</p>
 <span>    <span class="st">"'Aprovo' e 'conquista' marcam adesao."</span>,</span>
 <span>    <span class="st">"'Rejeito' e 'retrocesso' marcam oposicao."</span>,</span>
 <span>    <span class="st">"'Voto contra' e argumento distributivo."</span>,</span>
-<span>    <span class="st">"'Sou contrario' com justificativa."</span>,</span>
-<span>    <span class="st">"'Nao apoio' + pede revisao (borderline neutro/contra)."</span>,</span>
+<span>    <span class="st">"'Sou contrário' com justificativa."</span>,</span>
+<span>    <span class="st">"'Não apoio' + pede revisao (borderline neutro/contra)."</span>,</span>
 <span>    <span class="st">"Descreve alteracao normativa sem posicionar."</span>,</span>
 <span>    <span class="st">"Descreve processo legislativo."</span>,</span>
-<span>    <span class="st">"Numeros do resultado, sem opiniao. Borderline."</span>,</span>
+<span>    <span class="st">"Números do resultado, sem opiniao. Borderline."</span>,</span>
 <span>    <span class="st">"Encaminhamento processual."</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -300,11 +300,11 @@ hora:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> d04    favor                 1    'Aprovo' e 'conquista' marcam adesao.      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> d05    contra                1    'Rejeito' e 'retrocesso' marcam oposicao.  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> d06    contra                1    'Voto contra' e argumento distributivo.    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> d07    contra                1    'Sou contrario' com justificativa.         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> d08    contra                0.67 'Nao apoio' + pede revisao (borderline neu…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> d07    contra                1    'Sou contrário' com justificativa.         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> d08    contra                0.67 'Não apoio' + pede revisao (borderline neu…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> d09    neutro                1    Descreve alteracao normativa sem posiciona…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> d10    neutro                1    Descreve processo legislativo.             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> d11    neutro                0.67 Numeros do resultado, sem opiniao. Borderl…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> d11    neutro                0.67 Números do resultado, sem opiniao. Borderl…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> d12    neutro                1    Encaminhamento processual.</span></span></code></pre></div>
 <p>Distribuição dos resultados:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -327,8 +327,8 @@ humana):</p>
 <span><span class="co">#&gt;   doc_id categoria confidence_score reasoning                                   </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                       </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d03    favor                 0.67 Voto declarado, mas ambivalente entre favor…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d08    contra                0.67 'Nao apoio' + pede revisao (borderline neut…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d11    neutro                0.67 Numeros do resultado, sem opiniao. Borderli…</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d08    contra                0.67 'Não apoio' + pede revisao (borderline neut…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d11    neutro                0.67 Números do resultado, sem opiniao. Borderli…</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="amostra-para-revisão-humana">4. Amostra para revisão humana<a class="anchor" aria-label="anchor" href="#amostra-para-revis%C3%A3o-humana"></a>
@@ -370,7 +370,7 @@ de método:</p>
 <code class="sourceCode R"><span><span class="va">humano</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  doc_id    <span class="op">=</span> <span class="va">resultado</span><span class="op">$</span><span class="va">doc_id</span>,</span>
 <span>  categoria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"favor"</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"contra"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>                <span class="st">"neutro"</span>,<span class="st">"neutro"</span>,<span class="st">"favor"</span>,<span class="st">"neutro"</span><span class="op">)</span>  <span class="co"># 1 discordancia</span></span>
+<span>                <span class="st">"neutro"</span>,<span class="st">"neutro"</span>,<span class="st">"favor"</span>,<span class="st">"neutro"</span><span class="op">)</span>  <span class="co"># 1 discordância</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">irr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ac_qual_reliability.html">ac_qual_reliability</a></span><span class="op">(</span></span>
@@ -600,14 +600,14 @@ de método:</p>
 distribuição de resultados, métricas de IRR — em um documento único,
 pronto para anexar como material suplementar de um artigo.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">arquivo_md</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"relatorio-"</span>, fileext <span class="op">=</span> <span class="st">".md"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">arquivo_md</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"relatório-"</span>, fileext <span class="op">=</span> <span class="st">".md"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/ac_qual_report.html">ac_qual_report</a></span><span class="op">(</span></span>
 <span>  coded       <span class="op">=</span> <span class="va">resultado</span>,</span>
 <span>  codebook    <span class="op">=</span> <span class="va">cb</span>,</span>
 <span>  reliability <span class="op">=</span> <span class="va">irr</span>,</span>
 <span>  chat        <span class="op">=</span> <span class="st">"anthropic/claude-sonnet-4-5"</span>,  <span class="co"># ou objeto Chat</span></span>
-<span>  title       <span class="op">=</span> <span class="st">"Classificacao de posicionamento na reforma tributaria"</span>,</span>
+<span>  title       <span class="op">=</span> <span class="st">"Classificação de posicionamento na reforma tributária"</span>,</span>
 <span>  author      <span class="op">=</span> <span class="st">"Silva, A.; Souza, B."</span>,</span>
 <span>  method      <span class="op">=</span> <span class="st">"Corpus de 12 pronunciamentos parlamentares (2023-2024)."</span>,</span>
 <span>  format      <span class="op">=</span> <span class="st">"md"</span>,</span>
@@ -616,13 +616,13 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Unknown or uninitialised column: `metrics`.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Relatorio salvo em</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpTMxouj/relatorio-246a30dacfa8.md</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmppVveDf/relatório-22d47b328f0f.md</span></span></span></code></pre></div>
 <p>Primeiras 40 linhas do relatório gerado:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">arquivo_md</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Classificacao de posicionamento na reforma tributaria</span></span>
+<span><span class="co">#&gt; # Classificação de posicionamento na reforma tributária</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - **Gerado em:** 2026-10-14 23:36:29 UTC</span></span>
+<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 13:57:02 UTC</span></span>
 <span><span class="co">#&gt; - **Versao do acR:** 0.6.0</span></span>
 <span><span class="co">#&gt; - **Autor(es):** Silva, A.; Souza, B.</span></span>
 <span><span class="co">#&gt; - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).</span></span>
@@ -638,17 +638,17 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="co">#&gt; | Idioma        | `pt` |</span></span>
 <span><span class="co">#&gt; | Modo        | `manual` |</span></span>
 <span><span class="co">#&gt; | Multilabel  | `FALSE` |</span></span>
-<span><span class="co">#&gt; | Criado em     | 2026-10-14 23:36:28 |</span></span>
+<span><span class="co">#&gt; | Criado em     | 2026-10-15 13:57:00 |</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; **Instrucoes ao codificador:**</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; &gt; Classifique a posicao do parlamentar sobre a reforma tributaria com base no discurso apresentado.</span></span>
+<span><span class="co">#&gt; &gt; Classifique a posicao do parlamentar sobre a reforma tributária com base no discurso apresentado.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ### Categorias</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; #### `favor`</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; **Definicao:** Apoio explicito a aprovacao da reforma tributaria.</span></span>
+<span><span class="co">#&gt; **Definicao:** Apoio explicito a aprovacao da reforma tributária.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; **Exemplos positivos:**</span></span>
 <span><span class="co">#&gt; - Sou a favor desta reforma que simplifica o sistema.</span></span>

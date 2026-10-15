@@ -105,10 +105,10 @@ e sem chave de API</strong>. Copie e cole.</p>
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  texto    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"Sou favoravel a reforma tributaria que simplifica os impostos."</span>,</span>
+<span>    <span class="st">"Sou favoravel a reforma tributária que simplifica os impostos."</span>,</span>
 <span>    <span class="st">"Voto contra a proposta, ela vai destruir o setor produtivo."</span>,</span>
-<span>    <span class="st">"Apoio integralmente a reforma, ha ganhos claros de eficiencia."</span>,</span>
-<span>    <span class="st">"Esta reforma e um retrocesso, vamos rejeitar em plenario."</span>,</span>
+<span>    <span class="st">"Apoio integralmente a reforma, ha ganhos claros de eficiência."</span>,</span>
+<span>    <span class="st">"Esta reforma e um retrocesso, vamos rejeitar em plenário."</span>,</span>
 <span>    <span class="st">"Defendo a proposta que corrige distorcoes historicas do sistema."</span>,</span>
 <span>    <span class="st">"Somos contra, o texto beneficia apenas grandes corporacoes."</span></span>
 <span>  <span class="op">)</span>,</span>
@@ -127,10 +127,10 @@ e sem chave de API</strong>. Copie e cole.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   doc_id text                                                            posicao</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1     Sou favoravel a reforma tributaria que simplifica os impostos.  favor  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1     Sou favoravel a reforma tributária que simplifica os impostos.  favor  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d2     Voto contra a proposta, ela vai destruir o setor produtivo.     contra </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3     Apoio integralmente a reforma, ha ganhos claros de eficiencia.  favor  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4     Esta reforma e um retrocesso, vamos rejeitar em plenario.       contra </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3     Apoio integralmente a reforma, ha ganhos claros de eficiência.  favor  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4     Esta reforma e um retrocesso, vamos rejeitar em plenário.       contra </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> d5     Defendo a proposta que corrige distorcoes historicas do sistem… favor  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> d6     Somos contra, o texto beneficia apenas grandes corporacoes.     contra</span></span></code></pre></div>
 </div>
@@ -152,7 +152,7 @@ e sem chave de API</strong>. Copie e cole.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> contra  corporacoes     1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> contra  destruir        1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> contra  grandes         1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> contra  plenario        1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> contra  plenário        1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> contra  produtivo       1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> contra  proposta        1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> contra  reforma         1</span></span>
@@ -182,7 +182,7 @@ e sem chave de API</strong>. Copie e cole.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span></span>
 <span><span class="co">#&gt;   doc_id n_pos n_neg n_neu score sentiment</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1         0     1     4    -<span style="color: #BB0000;">1</span> negativo </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1         1     1     3     0 neutro   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> d2         1     0     6     1 positivo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> d3         1     0     6     1 positivo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> d4         0     0     5     0 neutro   </span></span>

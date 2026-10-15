@@ -37,18 +37,18 @@ ou de importação de PDFs.
 df <- data.frame(
   doc_id = paste0("d", sprintf("%02d", 1:12)),
   text = c(
-    "Apoio integralmente esta reforma que simplifica o sistema tributario.",
+    "Apoio integralmente esta reforma que simplifica o sistema tributário.",
     "Sou favoravel a proposta: reduz distorcoes historicas do setor.",
     "Voto sim com plena adesao: precisamos modernizar a estrutura fiscal.",
-    "Aprovo a reforma tributaria, e uma conquista para o desenvolvimento.",
+    "Aprovo a reforma tributária, e uma conquista para o desenvolvimento.",
     "Rejeito esta proposta, e um retrocesso para os trabalhadores.",
     "Voto contra: a reforma prejudica os mais pobres e as pequenas empresas.",
-    "Sou contrario a essa proposta, ela beneficia apenas grandes corporacoes.",
-    "Nao apoio o texto atual, precisa de revisao profunda antes da votacao.",
+    "Sou contrário a essa proposta, ela beneficia apenas grandes corporacoes.",
+    "Não apoio o texto atual, precisa de revisao profunda antes da votacao.",
     "O texto substitutivo altera o artigo 145 da Constituicao Federal.",
-    "O relatorio incorporou 47 emendas apresentadas em plenario.",
+    "O relatório incorporou 47 emendas apresentadas em plenário.",
     "A comissao aprovou o parecer com 15 votos a favor e 8 contra.",
-    "O projeto seguira para votacao na proxima sessao ordinaria."
+    "O projeto seguira para votacao na próxima sessao ordinária."
   ),
   partido = c("PT","PSD","PL","MDB","PSOL","PT","PDT","PSOL",
               "MDB","PSDB","PL","MDB"),
@@ -71,7 +71,7 @@ corpus
 #> 1 doc_1      Apoio integralmente esta reforma que simplifica… d01        PT     
 #> 2 doc_2      Sou favoravel a proposta: reduz distorcoes hist… d02        PSD    
 #> 3 doc_3      Voto sim com plena adesao: precisamos moderniza… d03        PL     
-#> 4 doc_4      Aprovo a reforma tributaria, e uma conquista pa… d04        MDB    
+#> 4 doc_4      Aprovo a reforma tributária, e uma conquista pa… d04        MDB    
 #> 5 doc_5      Rejeito esta proposta, e um retrocesso para os … d05        PSOL   
 #> 6 doc_6      Voto contra: a reforma prejudica os mais pobres… d06        PT     
 #> # ℹ 6 more rows
@@ -88,12 +88,12 @@ e negativos para desambiguar categorias vizinhas.
 cb <- ac_qual_codebook(
   name         = "posicao_reforma_tributaria",
   instructions = paste(
-    "Classifique a posicao do parlamentar sobre a reforma tributaria",
+    "Classifique a posicao do parlamentar sobre a reforma tributária",
     "com base no discurso apresentado."
   ),
   categories = list(
     favor = list(
-      definition   = "Apoio explicito a aprovacao da reforma tributaria.",
+      definition   = "Apoio explicito a aprovacao da reforma tributária.",
       examples_pos = c("Sou a favor desta reforma que simplifica o sistema."),
       examples_neg = c("O texto altera o artigo 145 da Constituicao Federal."),
       weight       = 1
@@ -105,8 +105,8 @@ cb <- ac_qual_codebook(
       weight       = 1.2  # categoria com mais dificuldade retorica
     ),
     neutro = list(
-      definition   = "Discurso tecnico ou processual, sem posicionamento claro.",
-      examples_pos = c("O relatorio incorporou emendas apresentadas."),
+      definition   = "Discurso técnico ou processual, sem posicionamento claro.",
+      examples_pos = c("O relatório incorporou emendas apresentadas."),
       examples_neg = c("Sou totalmente contra esta proposta.")
     )
   ),
@@ -120,20 +120,20 @@ cb
 #> • Categorias (3): "favor", "contra", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 14/10/2026 23:36
+#> • Criado em: 15/10/2026 13:57
 #> 
 #> Instrução geral:
-#> Classifique a posicao do parlamentar sobre a reforma tributaria com base no
+#> Classifique a posicao do parlamentar sobre a reforma tributária com base no
 #> discurso apresentado.
 #> 
 #> Categorias:
-#> • "favor": Apoio explicito a aprovacao da reforma tributaria.
+#> • "favor": Apoio explicito a aprovacao da reforma tributária.
 #> Ex+: Sou a favor desta reforma que simplifica o sistema.
 #> • "contra" [peso: 1.2]: Oposicao explicita a reforma, com argumentos de
 #> rejeicao.
 #> Ex+: Voto contra: prejudica os trabalhadores.
-#> • "neutro": Discurso tecnico ou processual, sem posicionamento claro.
-#> Ex+: O relatorio incorporou emendas apresentadas.
+#> • "neutro": Discurso técnico ou processual, sem posicionamento claro.
+#> Ex+: O relatório incorporou emendas apresentadas.
 ```
 
 Salvar o codebook em YAML permite versionamento em Git e retomada da
@@ -143,9 +143,9 @@ análise em outra sessão:
 
 arquivo_cb <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo_cb)
-#> ✅ Codebook salvo em /tmp/RtmpTMxouj/file246a1c8e536f.yaml
+#> ✅ Codebook salvo em /tmp/RtmppVveDf/file22d4708de923.yaml
 cat("Codebook salvo em:", arquivo_cb, "\n")
-#> Codebook salvo em: /tmp/RtmpTMxouj/file246a1c8e536f.yaml
+#> Codebook salvo em: /tmp/RtmppVveDf/file22d4708de923.yaml
 ```
 
 ## 3. Classificação com live view
@@ -193,11 +193,11 @@ resultado <- tibble::tibble(
     "'Aprovo' e 'conquista' marcam adesao.",
     "'Rejeito' e 'retrocesso' marcam oposicao.",
     "'Voto contra' e argumento distributivo.",
-    "'Sou contrario' com justificativa.",
-    "'Nao apoio' + pede revisao (borderline neutro/contra).",
+    "'Sou contrário' com justificativa.",
+    "'Não apoio' + pede revisao (borderline neutro/contra).",
     "Descreve alteracao normativa sem posicionar.",
     "Descreve processo legislativo.",
-    "Numeros do resultado, sem opiniao. Borderline.",
+    "Números do resultado, sem opiniao. Borderline.",
     "Encaminhamento processual."
   )
 )
@@ -211,11 +211,11 @@ resultado
 #>  4 d04    favor                 1    'Aprovo' e 'conquista' marcam adesao.      
 #>  5 d05    contra                1    'Rejeito' e 'retrocesso' marcam oposicao.  
 #>  6 d06    contra                1    'Voto contra' e argumento distributivo.    
-#>  7 d07    contra                1    'Sou contrario' com justificativa.         
-#>  8 d08    contra                0.67 'Nao apoio' + pede revisao (borderline neu…
+#>  7 d07    contra                1    'Sou contrário' com justificativa.         
+#>  8 d08    contra                0.67 'Não apoio' + pede revisao (borderline neu…
 #>  9 d09    neutro                1    Descreve alteracao normativa sem posiciona…
 #> 10 d10    neutro                1    Descreve processo legislativo.             
-#> 11 d11    neutro                0.67 Numeros do resultado, sem opiniao. Borderl…
+#> 11 d11    neutro                0.67 Números do resultado, sem opiniao. Borderl…
 #> 12 d12    neutro                1    Encaminhamento processual.
 ```
 
@@ -245,8 +245,8 @@ resultado |>
 #>   doc_id categoria confidence_score reasoning                                   
 #>   <chr>  <chr>                <dbl> <chr>                                       
 #> 1 d03    favor                 0.67 Voto declarado, mas ambivalente entre favor…
-#> 2 d08    contra                0.67 'Nao apoio' + pede revisao (borderline neut…
-#> 3 d11    neutro                0.67 Numeros do resultado, sem opiniao. Borderli…
+#> 2 d08    contra                0.67 'Não apoio' + pede revisao (borderline neut…
+#> 3 d11    neutro                0.67 Números do resultado, sem opiniao. Borderli…
 ```
 
 ## 4. Amostra para revisão humana
@@ -295,7 +295,7 @@ de método:
 humano <- tibble::tibble(
   doc_id    = resultado$doc_id,
   categoria = c(rep("favor", 4), rep("contra", 4),
-                "neutro","neutro","favor","neutro")  # 1 discordancia
+                "neutro","neutro","favor","neutro")  # 1 discordância
 )
 
 irr <- ac_qual_reliability(
@@ -528,14 +528,14 @@ material suplementar de um artigo.
 
 ``` r
 
-arquivo_md <- tempfile(pattern = "relatorio-", fileext = ".md")
+arquivo_md <- tempfile(pattern = "relatório-", fileext = ".md")
 
 ac_qual_report(
   coded       = resultado,
   codebook    = cb,
   reliability = irr,
   chat        = "anthropic/claude-sonnet-4-5",  # ou objeto Chat
-  title       = "Classificacao de posicionamento na reforma tributaria",
+  title       = "Classificação de posicionamento na reforma tributária",
   author      = "Silva, A.; Souza, B.",
   method      = "Corpus de 12 pronunciamentos parlamentares (2023-2024).",
   format      = "md",
@@ -544,7 +544,7 @@ ac_qual_report(
 )
 #> Warning: Unknown or uninitialised column: `metrics`.
 #> ✔ Relatorio salvo em
-#> /tmp/RtmpTMxouj/relatorio-246a30dacfa8.md
+#> /tmp/RtmppVveDf/relatório-22d47b328f0f.md
 ```
 
 Primeiras 40 linhas do relatório gerado:
@@ -552,9 +552,9 @@ Primeiras 40 linhas do relatório gerado:
 ``` r
 
 cat(head(readLines(arquivo_md), 40), sep = "\n")
-#> # Classificacao de posicionamento na reforma tributaria
+#> # Classificação de posicionamento na reforma tributária
 #> 
-#> - **Gerado em:** 2026-10-14 23:36:29 UTC
+#> - **Gerado em:** 2026-10-15 13:57:02 UTC
 #> - **Versao do acR:** 0.6.0
 #> - **Autor(es):** Silva, A.; Souza, B.
 #> - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).
@@ -570,17 +570,17 @@ cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> | Idioma        | `pt` |
 #> | Modo        | `manual` |
 #> | Multilabel  | `FALSE` |
-#> | Criado em     | 2026-10-14 23:36:28 |
+#> | Criado em     | 2026-10-15 13:57:00 |
 #> 
 #> **Instrucoes ao codificador:**
 #> 
-#> > Classifique a posicao do parlamentar sobre a reforma tributaria com base no discurso apresentado.
+#> > Classifique a posicao do parlamentar sobre a reforma tributária com base no discurso apresentado.
 #> 
 #> ### Categorias
 #> 
 #> #### `favor`
 #> 
-#> **Definicao:** Apoio explicito a aprovacao da reforma tributaria.
+#> **Definicao:** Apoio explicito a aprovacao da reforma tributária.
 #> 
 #> **Exemplos positivos:**
 #> - Sou a favor desta reforma que simplifica o sistema.

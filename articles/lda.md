@@ -1,4 +1,4 @@
-# Modelagem de topicos com LDA
+# Modelagem de tópicos com LDA
 
 ## O que é LDA e para que serve
 
@@ -57,47 +57,47 @@ sobreposto (para o modelo ter algo interessante para desemaranhar).
 
 textos <- c(
   # Tema 1: reforma tributária (8 documentos)
-  "A reforma tributaria simplifica o sistema de impostos e reduz a carga fiscal para empresas.",
+  "A reforma tributária simplifica o sistema de impostos e reduz a carga fiscal para empresas.",
   "O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arrecadacao federal.",
-  "Deputados debatem aliquotas e excecoes tributarias para setores economicos.",
-  "A reforma tributaria unifica impostos indiretos e simplifica obrigacoes das empresas.",
-  "Empresarios criticam a alta carga tributaria brasileira sobre o consumo popular.",
+  "Deputados debatem aliquotas e excecoes tributárias para setores economicos.",
+  "A reforma tributária unifica impostos indiretos e simplifica obrigacoes das empresas.",
+  "Empresários criticam a alta carga tributária brasileira sobre o consumo popular.",
   "O relator propoe aliquotas diferenciadas para produtos essenciais no novo IVA.",
-  "A reforma tributaria promete reduzir litigios fiscais e aumentar a arrecadacao.",
-  "Congresso avalia impacto da reforma tributaria sobre pequenas empresas e servicos.",
+  "A reforma tributária promete reduzir litigios fiscais e aumentar a arrecadacao.",
+  "Congresso avalia impacto da reforma tributária sobre pequenas empresas e servicos.",
   # Tema 2: IA e proteção de dados (8 documentos)
-  "O marco legal da inteligencia artificial regulamenta o uso de algoritmos e dados.",
+  "O marco legal da inteligência artificial regulamenta o uso de algoritmos e dados.",
   "Privacidade e seguranca de dados pessoais sao prioridades da nova lei de IA.",
-  "Algoritmos de inteligencia artificial precisam de transparencia e auditoria publica.",
+  "Algoritmos de inteligência artificial precisam de transparência e auditoria pública.",
   "A LGPD estabelece regras para tratamento de dados pessoais por empresas e governo.",
   "Modelos de IA generativa levantam questoes eticas sobre direitos autorais e dados.",
   "A ANPD fiscaliza o cumprimento das regras de protecao de dados no Brasil.",
   "Especialistas defendem regulamentacao de algoritmos preditivos usados por bancos.",
-  "Inteligencia artificial na saude requer protocolos de seguranca e privacidade.",
+  "Inteligência artificial na saude requer protocolos de seguranca e privacidade.",
   # Tema 3: habitação e cidade (8 documentos)
   "O programa habitacional amplia recursos federais para moradia popular urbana.",
   "O deficit habitacional afeta milhoes de familias de baixa renda nas cidades.",
-  "Urbanizacao de favelas e regularizacao fundiaria avancam em municipios brasileiros.",
+  "Urbanizacao de favelas e regularizacao fundiária avancam em municipios brasileiros.",
   "Moradia digna e direito social garantido pela Constituicao federal de 1988.",
-  "Assentamentos precarios crescem nas periferias metropolitanas do pais.",
+  "Assentamentos precários crescem nas periferias metropolitanas do pais.",
   "O programa Minha Casa Minha Vida entrega novas unidades habitacionais populares.",
   "Especialistas em urbanismo debatem alugueis abusivos nas grandes cidades.",
-  "Politicas de habitacao popular incluem regularizacao fundiaria e infraestrutura urbana.",
+  "Politicas de habitacao popular incluem regularizacao fundiária e infraestrutura urbana.",
   # Tema 4: educação (8 documentos)
-  "A educacao basica recebe novos recursos do Fundeb ampliado pelo Congresso.",
+  "A educacao básica recebe novos recursos do Fundeb ampliado pelo Congresso.",
   "Alfabetizacao na idade certa e meta central do novo Plano Nacional de Educacao.",
-  "Professores debatem remuneracao e condicoes de trabalho nas escolas publicas.",
-  "O ensino medio integrado ao tecnico expande vagas em institutos federais.",
-  "A avaliacao Prova Brasil mede aprendizagem em portugues e matematica.",
-  "Politicas de permanencia estudantil ampliam bolsas para universitarios pobres.",
+  "Professores debatem remuneracao e condicoes de trabalho nas escolas públicas.",
+  "O ensino médio integrado ao técnico expande vagas em institutos federais.",
+  "A avaliação Prova Brasil mede aprendizagem em português e matemática.",
+  "Politicas de permanência estudantil ampliam bolsas para universitários pobres.",
   "O piso salarial nacional dos professores e reajustado pelo governo federal.",
-  "A formacao continuada de professores e desafio permanente da educacao basica."
+  "A formacao continuada de professores e desafio permanente da educacao básica."
 )
 
 corpus <- ac_corpus(
   data.frame(
     text = textos,
-    tema = rep(c("tributario","tecnologia","habitacao","educacao"), each = 8L),
+    tema = rep(c("tributário","tecnologia","habitacao","educacao"), each = 8L),
     stringsAsFactors = FALSE
   )
 )
@@ -111,11 +111,11 @@ corpus
 #> # A tibble: 32 × 3
 #>   doc_id text                                                              tema 
 #>   <chr>  <chr>                                                             <chr>
-#> 1 doc_1  A reforma tributaria simplifica o sistema de impostos e reduz a … trib…
+#> 1 doc_1  A reforma tributária simplifica o sistema de impostos e reduz a … trib…
 #> 2 doc_2  O IVA dual substitui PIS, COFINS e ICMS no novo modelo de arreca… trib…
-#> 3 doc_3  Deputados debatem aliquotas e excecoes tributarias para setores … trib…
-#> 4 doc_4  A reforma tributaria unifica impostos indiretos e simplifica obr… trib…
-#> 5 doc_5  Empresarios criticam a alta carga tributaria brasileira sobre o … trib…
+#> 3 doc_3  Deputados debatem aliquotas e excecoes tributárias para setores … trib…
+#> 4 doc_4  A reforma tributária unifica impostos indiretos e simplifica obr… trib…
+#> 5 doc_5  Empresários criticam a alta carga tributária brasileira sobre o … trib…
 #> 6 doc_6  O relator propoe aliquotas diferenciadas para produtos essenciai… trib…
 #> # ℹ 26 more rows
 ```
@@ -145,11 +145,11 @@ corpus_limpo
 #> # A tibble: 32 × 3
 #>   doc_id text                                                              tema 
 #>   <chr>  <chr>                                                             <chr>
-#> 1 doc_1  reforma tributaria simplifica sistema impostos reduz carga fisca… trib…
+#> 1 doc_1  reforma tributária simplifica sistema impostos reduz carga fisca… trib…
 #> 2 doc_2  iva dual substitui pis cofins icms modelo arrecadacao federal     trib…
-#> 3 doc_3  deputados debatem aliquotas excecoes tributarias setores economi… trib…
-#> 4 doc_4  reforma tributaria unifica impostos indiretos simplifica obrigac… trib…
-#> 5 doc_5  empresarios criticam alta carga tributaria brasileira consumo po… trib…
+#> 3 doc_3  deputados debatem aliquotas excecoes tributárias setores economi… trib…
+#> 4 doc_4  reforma tributária unifica impostos indiretos simplifica obrigac… trib…
+#> 5 doc_5  empresários criticam alta carga tributária brasileira consumo po… trib…
 #> 6 doc_6  relator propoe aliquotas diferenciadas produtos essenciais iva    trib…
 #> # ℹ 26 more rows
 ```
@@ -193,8 +193,8 @@ tune
 
 ac_plot_lda_tune(tune) +
   ggplot2::labs(
-    title    = "Perplexidade por numero de topicos (K)",
-    subtitle = "Menor = melhor ajuste. Procure o cotovelo, nao o minimo global.",
+    title    = "Perplexidade por número de tópicos (K)",
+    subtitle = "Menor = melhor ajuste. Procure o cotovelo, não o mínimo global.",
     caption  = "acR - ac_lda_tune()"
   )
 ```
@@ -252,7 +252,7 @@ head(beta, 10)
 #>  6     1 reforma    0.0702
 #>  7     1 simplifica 0.0351
 #>  8     1 sistema    0.0175
-#>  9     1 tributaria 0.0877
+#>  9     1 tributária 0.0877
 #> 10     1 dados      0.0175
 ```
 
@@ -262,15 +262,15 @@ Visualização — os 10 termos com maior β por tópico:
 
 ac_plot_lda_topics(modelo, top_n = 10L) +
   ggplot2::labs(
-    title    = "Top 10 termos por topico (LDA, K=4)",
-    subtitle = "Beta = probabilidade do termo dado o topico"
+    title    = "Top 10 termos por tópico (LDA, K=4)",
+    subtitle = "Beta = probabilidade do termo dado o tópico"
   )
 ```
 
 ![](lda_files/figure-html/plot-topics-1.png)
 
 O gráfico permite **rotular** os tópicos. Nomeamos com base nos termos
-dominantes — se um tópico é dominado por *reforma*, *tributaria*, *iva*,
+dominantes — se um tópico é dominado por *reforma*, *tributária*, *iva*,
 *aliquotas*, chamamos de “Reforma Tributária”.
 
 ## 6. Distribuição de tópicos por documento (matriz γ)
@@ -333,14 +333,14 @@ estrutura conhecida**:
 
 ``` r
 
-# Recuperar o metadado 'tema' e cruzar com o topico dominante
+# Recuperar o metadado 'tema' e cruzar com o tópico dominante
 tema_real <- corpus[, c("doc_id", "tema")]
-comparacao <- merge(dominante, tema_real, by = "doc_id")
+comparação <- merge(dominante, tema_real, by = "doc_id")
 
-# Tabela de contingencia: topico dominante x tema real
-table(comparacao$topico_dominante, comparacao$tema)
+# Tabela de contingência: tópico dominante x tema real
+table(comparação$topico_dominante, comparação$tema)
 #>    
-#>     educacao habitacao tecnologia tributario
+#>     educacao habitacao tecnologia tributário
 #>   1        0         1          2          4
 #>   2        3         3          1          1
 #>   3        3         1          3          2
@@ -373,9 +373,9 @@ top_terms_por_topico
 #> # A tibble: 4 × 2
 #>   topic top_termos                                                              
 #>   <int> <chr>                                                                   
-#> 1     1 tributaria, reforma, empresas, carga, impostos, simplifica, fiscal      
+#> 1     1 tributária, reforma, empresas, carga, impostos, simplifica, fiscal      
 #> 2     2 popular, programa, urbana, politicas, empresas, dados, pessoais         
-#> 3     3 artificial, inteligencia, debatem, algoritmos, federal, nacional, profe…
+#> 3     3 artificial, inteligência, debatem, algoritmos, federal, nacional, profe…
 #> 4     4 dados, ia, congresso, lei, pessoais, prioridades, privacidade
 ```
 
@@ -404,8 +404,8 @@ ggplot2::ggplot(
   ) +
   ggplot2::labs(
     title    = "Composicao tematica de cada documento (matriz gamma)",
-    subtitle = "Cores mais fortes = maior peso do topico no documento",
-    x        = "Topico",
+    subtitle = "Cores mais fortes = maior peso do tópico no documento",
+    x        = "Tópico",
     y        = "Documento",
     caption  = "acR - LDA soft assignment"
   ) +

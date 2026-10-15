@@ -205,7 +205,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="va">corpus_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_fetch_camara.html">ac_fetch_camara</a></span><span class="op">(</span></span>
 <span>  data_inicio   <span class="op">=</span> <span class="st">"2024-03-11"</span>,</span>
 <span>  data_fim      <span class="op">=</span> <span class="st">"2024-03-15"</span>,</span>
-<span>  tipo_discurso <span class="op">=</span> <span class="st">"plenario"</span>,</span>
+<span>  tipo_discurso <span class="op">=</span> <span class="st">"plenário"</span>,</span>
 <span>  n_max         <span class="op">=</span> <span class="fl">30L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -236,7 +236,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span>  remove_url          <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  remove_email        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  remove_hashtags     <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># novo: remove #termos separado de símbolos</span></span>
-<span>  remove_mentions     <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># novo: remove @usuario separado de símbolos</span></span>
+<span>  remove_mentions     <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># novo: remove @usuário separado de símbolos</span></span>
 <span>  remove_stopwords    <span class="op">=</span> <span class="st">"pt-legislativo"</span>,</span>
 <span>  extra_stopwords     <span class="op">=</span> <span class="va">sw</span>,         <span class="co"># novo: stopwords adicionais ao preset</span></span>
 <span>  protect             <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PT"</span>, <span class="st">"PL"</span>, <span class="st">"CCJ"</span><span class="op">)</span>,  <span class="co"># siglas preservadas</span></span>
@@ -244,7 +244,7 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span>  custom_replacements <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>       <span class="co"># novo: substituições livres antes da limpeza</span></span>
 <span>    <span class="st">"pres\\."</span>  <span class="op">=</span> <span class="st">"presidente"</span>,</span>
 <span>    <span class="st">"dep\\."</span>   <span class="op">=</span> <span class="st">"deputado"</span>,</span>
-<span>    <span class="st">"v\\.exa"</span> <span class="op">=</span> <span class="st">"vossa excelencia"</span></span>
+<span>    <span class="st">"v\\.exa"</span> <span class="op">=</span> <span class="st">"vossa excelência"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  min_char            <span class="op">=</span> <span class="fl">3L</span>,         <span class="co"># novo: descarta tokens com menos de 3 chars</span></span>
 <span>  handle_na           <span class="op">=</span> <span class="st">"remove"</span>,   <span class="co"># novo: remove documentos com texto NA</span></span>
@@ -380,17 +380,17 @@ Monitora corpora de proposições e relatórios, produz nuvens, séries de senti
 <span><span class="va">lda</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_lda.html">ac_lda</a></span><span class="op">(</span><span class="va">tokens</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_lda_topics.html">ac_plot_lda_topics</a></span><span class="op">(</span><span class="va">lda</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Novidades: diagnostico, escalas e dicionarios</span></span>
+<span><span class="co"># Novidades: diagnóstico, escalas e dicionários</span></span>
 <span><span class="fu"><a href="reference/ac_readability.html">ac_readability</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_lexical_diversity.html">ac_lexical_diversity</a></span><span class="op">(</span><span class="va">corpus_limpo</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_kwic.html">ac_kwic</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, pattern <span class="op">=</span> <span class="st">"reforma"</span>, window <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_collocations.html">ac_collocations</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, measure <span class="op">=</span> <span class="st">"pmi"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">dicionario</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
+<span><span class="va">dicionário</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_build_dictionary.html">ac_build_dictionary</a></span><span class="op">(</span></span>
 <span>  economia <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"imposto"</span>, <span class="st">"orcamento"</span>, <span class="st">"deficit"</span><span class="op">)</span>,</span>
 <span>  saude    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saude"</span>, <span class="st">"vacina"</span>, <span class="st">"hospital"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, <span class="va">dicionario</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/ac_dictionary.html">ac_dictionary</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, <span class="va">dicionário</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ac_ca.html">ac_ca</a></span><span class="op">(</span><span class="va">corpus_limpo</span>, by <span class="op">=</span> <span class="st">"partido"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ac_plot_ca.html">ac_plot_ca</a></span><span class="op">(</span><span class="va">ca</span><span class="op">)</span></span></code></pre></div>
@@ -714,7 +714,7 @@ https://andersonheri.github.io/acR/</code></pre>
 <p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer agreement for categorical data. <em>Biometrics</em>, 33(1), 159–174.</p>
 <p>Maerz, S. F., &amp; Benoit, K. (2025). <em>quallmer: Qualitative Analysis with Large Language Models</em>. R package version 0.3.0. <a href="https://quallmer.github.io/quallmer/" class="external-link uri">https://quallmer.github.io/quallmer/</a></p>
 <p>Priem, J. et al. (2022). OpenAlex: A fully-open index of the global research system. <em>arXiv</em>, 2205.01833.</p>
-<p>Sampaio, R. C., &amp; Lycarião, D. (2021). <em>Análise de conteúdo categorial: manual de aplicação</em>. Brasília: ENAP. <a href="https://repositorio.enap.gov.br/handle/1/6542" class="external-link uri">https://repositorio.enap.gov.br/handle/1/6542</a></p>
+<p>Sampaio, R. C., &amp; Lycarião, D. (2021). <em>Análise de conteúdo categorial: manual de aplicação</em>. Brasília: ENAP. <a href="https://reposit%C3%B3rio.enap.gov.br/handle/1/6542" class="external-link uri">https://repositório.enap.gov.br/handle/1/6542</a></p>
 <p>Santos, V. (2024). <em>senatebR: Functions to collect data from the Brazilian Senate</em>. R package version 0.1.0. <a href="https://github.com/vsntos/senatebR" class="external-link uri">https://github.com/vsntos/senatebR</a></p>
 <p>Souza, M., &amp; Vieira, R. (2012). Sentiment analysis on Twitter data for Portuguese language. <em>PROPOR</em>.</p>
 <p>Wang, X. et al. (2023). Self-consistency improves chain of thought reasoning in language models. <em>EMNLP</em>.</p>

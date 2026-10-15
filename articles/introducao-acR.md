@@ -22,14 +22,14 @@ adicionais. As demais funções aceitam esse objeto diretamente.
 df <- data.frame(
   id      = paste0("d", 1:8),
   texto   = c(
-    "Sou favoravel a reforma tributaria: simplifica o sistema e reduz distorcoes.",
+    "Sou favoravel a reforma tributária: simplifica o sistema e reduz distorcoes.",
     "Voto contra: essa reforma vai destruir o setor produtivo brasileiro.",
-    "Apoio a proposta com forte adesao, ha ganhos claros de eficiencia arrecadatoria.",
+    "Apoio a proposta com forte adesao, ha ganhos claros de eficiência arrecadatória.",
     "Rejeito o texto: transfere renda das familias para grandes corporacoes.",
     "Defendo a reforma que corrige as distorcoes historicas do nosso sistema.",
-    "Somos contrarios: o projeto beneficia apenas os mais ricos do pais.",
-    "Voto sim, precisamos modernizar urgentemente a estrutura tributaria.",
-    "Voto nao, os pequenos empresarios serao os grandes prejudicados."
+    "Somos contrários: o projeto beneficia apenas os mais ricos do pais.",
+    "Voto sim, precisamos modernizar urgentemente a estrutura tributária.",
+    "Voto não, os pequenos empresários serao os grandes prejudicados."
   ),
   partido = c("PT","PL","PT","PL","PT","PL","PT","PL"),
   posicao = c("favor","contra","favor","contra","favor","contra","favor","contra"),
@@ -47,12 +47,12 @@ corpus
 #> # A tibble: 8 × 4
 #>   doc_id text                                                    partido posicao
 #>   <chr>  <chr>                                                   <chr>   <chr>  
-#> 1 d1     Sou favoravel a reforma tributaria: simplifica o siste… PT      favor  
+#> 1 d1     Sou favoravel a reforma tributária: simplifica o siste… PT      favor  
 #> 2 d2     Voto contra: essa reforma vai destruir o setor produti… PL      contra 
 #> 3 d3     Apoio a proposta com forte adesao, ha ganhos claros de… PT      favor  
 #> 4 d4     Rejeito o texto: transfere renda das familias para gra… PL      contra 
 #> 5 d5     Defendo a reforma que corrige as distorcoes historicas… PT      favor  
-#> 6 d6     Somos contrarios: o projeto beneficia apenas os mais r… PL      contra 
+#> 6 d6     Somos contrários: o projeto beneficia apenas os mais r… PL      contra 
 #> # ℹ 2 more rows
 ```
 
@@ -69,20 +69,20 @@ corpus_limpo <- ac_clean(corpus, remove_stopwords = "pt")
 # Frequência global
 freq <- ac_count(corpus_limpo)
 ac_top_terms(freq, n = 8)
-#> # A tibble: 57 × 3
+#> # A tibble: 56 × 3
 #>    doc_id token             n
 #>    <chr>  <chr>         <int>
 #>  1 d3     adesao            1
 #>  2 d6     apenas            1
 #>  3 d3     apoio             1
-#>  4 d3     arrecadatoria     1
+#>  4 d3     arrecadatória     1
 #>  5 d6     beneficia         1
 #>  6 d2     brasileiro        1
 #>  7 d3     claros            1
 #>  8 d2     contra            1
-#>  9 d6     contrarios        1
+#>  9 d6     contrários        1
 #> 10 d4     corporacoes       1
-#> # ℹ 47 more rows
+#> # ℹ 46 more rows
 ```
 
 Agora quebrando por lado (`favor` vs `contra`):
@@ -91,7 +91,7 @@ Agora quebrando por lado (`favor` vs `contra`):
 
 freq_lado <- ac_count(corpus_limpo, by = "posicao")
 ac_top_terms(freq_lado, n = 5, by = "posicao")
-#> # A tibble: 51 × 3
+#> # A tibble: 50 × 3
 #>    posicao token           n
 #>    <chr>   <chr>       <int>
 #>  1 contra  grandes         2
@@ -100,11 +100,11 @@ ac_top_terms(freq_lado, n = 5, by = "posicao")
 #>  4 contra  beneficia       1
 #>  5 contra  brasileiro      1
 #>  6 contra  contra          1
-#>  7 contra  contrarios      1
+#>  7 contra  contrários      1
 #>  8 contra  corporacoes     1
 #>  9 contra  destruir        1
-#> 10 contra  empresarios     1
-#> # ℹ 41 more rows
+#> 10 contra  empresários     1
+#> # ℹ 40 more rows
 ```
 
 ## 2. Termos distintivos com *keyness*
@@ -119,12 +119,12 @@ head(key, 6)
 #> # A tibble: 6 × 10
 #>   token group target reference n_target n_reference total_target total_reference
 #>   <chr> <chr> <chr>  <chr>        <dbl>       <dbl>        <dbl>           <dbl>
-#> 1 dist… posi… favor  contra           2           0           29              28
-#> 2 sist… posi… favor  contra           2           0           29              28
-#> 3 trib… posi… favor  contra           2           0           29              28
-#> 4 ades… posi… favor  contra           1           0           29              28
-#> 5 apoio posi… favor  contra           1           0           29              28
-#> 6 arre… posi… favor  contra           1           0           29              28
+#> 1 dist… posi… favor  contra           2           0           29              27
+#> 2 sist… posi… favor  contra           2           0           29              27
+#> 3 trib… posi… favor  contra           2           0           29              27
+#> 4 ades… posi… favor  contra           1           0           29              27
+#> 5 apoio posi… favor  contra           1           0           29              27
+#> 6 arre… posi… favor  contra           1           0           29              27
 #> # ℹ 2 more variables: keyness <dbl>, direction <chr>
 ```
 
@@ -151,13 +151,13 @@ sent
 #> # A tibble: 8 × 6
 #>   doc_id n_pos n_neg n_neu score sentiment
 #>   <chr>  <int> <int> <int> <int> <chr>    
-#> 1 d1         0     0    11     0 neutro   
+#> 1 d1         1     0    10     1 positivo 
 #> 2 d2         1     0     9     1 positivo 
 #> 3 d3         2     0    10     2 positivo 
 #> 4 d4         0     0    10     0 neutro   
 #> 5 d5         0     0    11     0 neutro   
-#> 6 d6         1     0    10     1 positivo 
-#> 7 d7         0     0     8     0 neutro   
+#> 6 d6         1     1     9     0 neutro   
+#> 7 d7         1     0     7     1 positivo 
 #> 8 d8         0     1     8    -1 negativo
 ```
 
@@ -205,7 +205,7 @@ etc.) e por isso não roda na construção da vignette. Estrutura mínima:
 
 codebook <- ac_qual_codebook(
   name         = "posicionamento",
-  instructions = "Classifique o posicionamento sobre a reforma tributaria.",
+  instructions = "Classifique o posicionamento sobre a reforma tributária.",
   categories   = list(
     favor  = list(
       definition   = "Manifestação favorável à reforma.",
