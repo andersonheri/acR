@@ -291,9 +291,10 @@ resultado <- ac_qual_code(
 )
 ```
 
-Os resultados esperados para este corpus, dado o conteúdo inequívoco dos
-textos, são classificações com confiança alta (≥ 0.80) em todos os
-documentos:
+Os resultados esperados para este corpus, dado o conteúdo
+majoritariamente inequívoco dos textos, são classificações com confiança
+alta (≥ 0.80) na maioria dos documentos, com uma exceção deliberadamente
+ambígua:
 
     ## # A tibble: 9 × 5
     ##   doc_id          tema    tipo       categoria      confidence_score

@@ -365,9 +365,10 @@ baixa: ideal para corpora de tamanho médio como este.</p>
 <span>  reasoning        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  reasoning_length <span class="op">=</span> <span class="st">"short"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Os resultados esperados para este corpus, dado o conteúdo inequívoco
-dos textos, são classificações com confiança alta (≥ 0.80) em todos os
-documentos:</p>
+<p>Os resultados esperados para este corpus, dado o conteúdo
+majoritariamente inequívoco dos textos, são classificações com confiança
+alta (≥ 0.80) na maioria dos documentos, com uma exceção deliberadamente
+ambígua:</p>
 <pre><code><span><span class="co">## # A tibble: 9 × 5</span></span>
 <span><span class="co">##   doc_id          tema    tipo       categoria      confidence_score</span></span>
 <span><span class="co">##   &lt;chr&gt;           &lt;chr&gt;   &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;</span></span>

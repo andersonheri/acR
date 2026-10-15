@@ -184,7 +184,7 @@ print(cb)
 #> • Categorias (3): "positivo", "negativo", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 16:00
+#> • Criado em: 15/10/2026 16:03
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso parlamentar.
@@ -441,8 +441,13 @@ metadados originais do corpus.
 > o suficiente para o modelo “errar com confiança” de forma sistemática.
 > Use `confidence_score` para priorizar a amostra de revisão humana
 > (`ac_qual_sample(strategy = "uncertainty")`), não como substituto
-> dela. Na prática, documentos abaixo de 0.67 (menos da maioria das
-> rodadas concordando) quase sempre merecem segunda leitura.
+> dela. O valor é sempre a fração de rodadas de self-consistency que
+> concordaram, então os valores possíveis dependem de `k_consistency`:
+> com `k_consistency = 3` (usado neste exemplo), só existem os valores
+> 0, 0,33, 0,67 e 1,0. Documentos com menos da metade das rodadas
+> concordando — abaixo de 0,67 com `k_consistency = 3`, ou o equivalente
+> proporcional com outro `k_consistency` — quase sempre merecem segunda
+> leitura.
 
 ### Live view: tirando o LLM do caixa-preta
 
@@ -562,7 +567,11 @@ divergentes na seção de método.
 ## Diagnosticando problemas comuns
 
 Antes de partir para o relatório final, vale conhecer os quatro modos de
-falha mais frequentes de uma rodada com LLM, e o que cada um pede.
+falha mais frequentes de uma rodada com LLM, e o que cada um pede. Os
+limiares de `confidence_score` citados abaixo (0,67; 0,80) assumem
+`k_consistency = 3`, como no exemplo desta vignette: com outro
+`k_consistency`, ajuste para o valor proporcional mais próximo (ver
+“Como interpretar” na seção anterior).
 
 ### 1. Categorias com concordância baixa entre `k_consistency`
 
