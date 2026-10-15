@@ -5,7 +5,7 @@ output:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Replicabilidade ponta-a-ponta — do codebook ao relatório de método}
+  %\VignetteIndexEntry{Replicabilidade ponta-a-ponta: do codebook ao relatório de método}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -35,17 +35,17 @@ paga); a estrutura, formatos e sequência são idênticos a uma rodada real.
 
 ## O pipeline em 6 etapas
 
-1. **Coleta** — corpus real ou fabricado
-2. **Codebook** — instrumento analítico (`ac_qual_codebook`)
-3. **Classificação** — LLM com `live view` (`ac_qual_code(live = ...)`)
-4. **Amostragem para revisão** — `ac_qual_sample()`
-5. **Confiabilidade inter-codificador** — `ac_qual_reliability()`
-6. **Relatório de método** — `ac_qual_report()`
+1. **Coleta**: corpus real ou fabricado
+2. **Codebook**: instrumento analítico (`ac_qual_codebook`)
+3. **Classificação**: LLM com `live view` (`ac_qual_code(live = ...)`)
+4. **Amostragem para revisão**: `ac_qual_sample()`
+5. **Confiabilidade inter-codificador**: `ac_qual_reliability()`
+6. **Relatório de método**: `ac_qual_report()`
 
 ## 1. Corpus
 
 Corpus fabricado de 12 pronunciamentos com posição declarada
-(favor/contra/neutro) — em uso real, este data.frame viria de
+(favor/contra/neutro). Em uso real, este data.frame viria de
 `ac_fetch_camara()`, `ac_fetch_senado()` ou de importação de PDFs.
 
 ```{r corpus}
@@ -196,7 +196,7 @@ resultado |>
 ## 4. Amostra para revisão humana
 
 `ac_qual_sample(strategy = "uncertainty")` prioriza documentos com menor
-`confidence_score` — foca o esforço humano onde o LLM mais errou.
+`confidence_score`: foca o esforço humano onde o LLM mais errou.
 
 ```{r amostra}
 amostra <- ac_qual_sample(
@@ -220,7 +220,7 @@ revisado <- ac_qual_import_human("revisao.xlsx")
 ## 5. Confiabilidade inter-codificador
 
 Simulamos a revisão humana (com 1 discordância em 12) e calculamos as
-métricas de concordância — no artigo, essas métricas aparecem na seção
+métricas de concordância: no artigo, essas métricas aparecem na seção
 de método:
 
 ```{r reliability}
@@ -238,11 +238,18 @@ irr <- ac_qual_reliability(
 irr
 ```
 
-## 6. Relatório de método — replicabilidade automática
+> **Como interpretar:** com 1 discordância em 12 documentos, espera-se
+> *percent agreement* alto (~92%) mas Kappa e Alpha mais conservadores,
+> já que corrigem pela concordância esperada ao acaso dado o desbalanço
+> entre categorias. O intervalo de confiança via *bootstrap* importa mais
+> em amostras pequenas como esta: reporte-o junto da estimativa pontual,
+> não apenas o valor central.
+
+## 6. Relatório de método: replicabilidade automática
 
 Aqui está o **coração desta vignette**: `ac_qual_report()` empacota
-tudo — codebook, config LLM, distribuição de resultados, métricas de
-IRR — em um documento único, pronto para anexar como material
+tudo (codebook, config LLM, distribuição de resultados, métricas de
+IRR) em um documento único, pronto para anexar como material
 suplementar de um artigo.
 
 ```{r report}
@@ -303,7 +310,7 @@ ac_qual_report(resultado, cb, reliability = irr, path = "metodo.md")
 ```
 
 Seis funções principais, um pipeline reproduzível, um relatório
-automático — do texto bruto ao apêndice metodológico do artigo.
+automático: do texto bruto ao apêndice metodológico do artigo.
 
 ## Referências
 
