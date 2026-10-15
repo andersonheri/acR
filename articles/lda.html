@@ -360,25 +360,43 @@ passado via <code>control</code>:</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/plot-tune-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> compare as duas colunas da tabela.
-A perplexidade <strong>de treino</strong>
-(<code>perplexity_train</code>) cai sem parar, de ≈ 198 em K = 2 para ≈
-109 em K = 8: é o sobreajuste descrito acima, e escolher K por ela
-levaria sempre ao maior K testado. A perplexidade <strong>fora da
-amostra</strong> (<code>perplexity</code>, a do gráfico) cai até K = 4
-(≈ 131) e depois para de melhorar (≈ 136 a 143 de K = 5 a K = 8):
-tópicos extras já não ajudam a prever documentos novos. Repare no
-desvio-padrão entre as partes (<code>perplexity_sd</code>, de 10 a 22):
-K = 5, 6 e 7 ficam dentro dessa margem de K = 4, então a curva
-<strong>delimita uma faixa</strong>, não um valor exato. Isso é
-esperado: Chang et al. (2009) mostram que perplexidade e
-interpretabilidade humana nem sempre concordam. A decisão final combina
-a curva, a <strong>leitura dos tópicos</strong> de alguns K candidatos
-(são coerentes e distintos?) e o conhecimento substantivo do corpus
-(DiMaggio, Nag &amp; Blei, 2013). Aqui os três apontam para K = 4. Faça
-o teste: com o método padrão (<code>"VEM"</code>) a curva fora da
-amostra <strong>sobe</strong> com K neste corpus, sinal de que o ajuste,
-e não só o K, precisa de atenção.</p>
+<p><strong>Como ler a tabela e o gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Na tabela, cada linha é um K
+testado. Compare duas colunas: <code>perplexity_train</code> (medida nos
+mesmos documentos do ajuste) e <code>perplexity</code> (medida em
+documentos que o modelo não viu; é a do gráfico). Menor = o modelo prevê
+melhor as palavras. No gráfico, procure onde a curva <strong>para de
+cair</strong>. <code>perplexity_sd</code> diz o quanto o valor variou
+entre as 5 partes da validação.</p></li>
+<li>
+<p><strong>O que este exemplo mostra.</strong> A de treino cai sem
+parar, de ≈ 198 (K = 2) até ≈ 109 (K = 8). A de fora da amostra cai até
+K = 4 (≈</p>
+<ol start="131" style="list-style-type: decimal">
+<li>e depois fica parada entre ≈ 136 e ≈ 143. O
+<code>perplexity_sd</code> fica entre 10 e 22.</li>
+</ol>
+</li>
+<li><p><strong>Em palavras simples.</strong> Na versão de treino, mais
+tópicos sempre parecem melhores, porque o modelo decora o corpus;
+escolher K por ela levaria sempre ao maior K testado. Em documentos
+novos, tópicos além do 4º já não ajudam a prever nada: o ganho acaba em
+K = 4, que é o número de temas com que o corpus foi construído.</p></li>
+<li>
+<p><strong>Cuidado.</strong> A curva delimita uma faixa, não um
+valor exato: K = 5, 6 e 7 ficam dentro da margem de variação
+(<code>perplexity_sd</code>) de K =</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Perplexidade e interpretabilidade humana nem sempre concordam (Chang
+et al., 2009); a decisão final combina a curva, a leitura dos tópicos de
+alguns K candidatos e o conhecimento do corpus (DiMaggio, Nag &amp;
+Blei, 2013). Faça o teste: com o método padrão (<code>"VEM"</code>), a
+curva fora da amostra <strong>sobe</strong> com K neste corpus, sinal de
+que o ajuste precisa de atenção, não só o K.</li>
+</ol>
+</li>
+</ol>
 </blockquote>
 </div>
 </div>
@@ -440,13 +458,30 @@ inspecionar o que cada tópico “significa”.</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/plot-topics-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> leia cada painel de baixo para
-cima, do termo com maior β para o menor. O rótulo do tópico não vem do
-modelo, vem de <strong>você</strong>: olhe os termos dominantes e
-proponha um nome substantivo. Termos genéricos demais nos 2-3 primeiros
-lugares (ex. “governo”, “política”) em todos os tópicos sugerem que
-faltou remover alguma <em>stopword</em> específica do domínio na etapa
-2.</p>
+<p><strong>Como ler este gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Um painel por tópico. Em cada
+painel, a barra mais longa (no topo) é a palavra mais provável daquele
+tópico (β). Leia as 3 ou 4 primeiras palavras de cada painel e pergunte:
+“sobre o que fala um texto que usa essas palavras?”.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> Tópico 1:
+<em>moradia</em>, <em>familias</em>, <em>renda</em>, <em>urbana</em>
+(habitação). Tópico 2: <em>professores</em>, <em>ensino</em>,
+<em>escolas</em>, <em>educacao</em> (educação). Tópico 3:
+<em>dados</em>, com a barra mais longa do gráfico, seguido de
+<em>algoritmos</em>, <em>pessoais</em>, <em>ia</em> (IA e proteção de
+dados). Tópico 4: <em>tributária</em>, <em>reforma</em>,
+<em>impostos</em>, <em>imposto</em> (reforma tributária).</p></li>
+<li><p><strong>Em palavras simples.</strong> Cada tópico corresponde a
+uma das quatro agendas do corpus. O modelo não sabe os nomes dos temas:
+quem dá o nome é você, olhando as palavras.</p></li>
+<li><p><strong>Cuidado.</strong> Palavras genéricas aparecem no fim de
+alguns painéis (<em>precisam</em>, <em>ampliam</em>, <em>empresas</em>).
+Se elas aparecerem nas <strong>primeiras</strong> posições de todos os
+tópicos, faltou removê-las como <em>stopwords</em> do domínio na etapa
+2. E não confunda os números: “Tópico 1” não é o primeiro tema do
+corpus; a numeração é arbitrária e muda com a semente.</p></li>
+</ol>
 </blockquote>
 <p>O gráfico permite <strong>rotular</strong> os tópicos. Nomeamos com
 base nos termos dominantes: se um tópico é dominado por
@@ -537,21 +572,31 @@ misto).</p>
 <span><span class="co">#&gt;   3        0         0          8          0</span></span>
 <span><span class="co">#&gt;   4        0         0          0          7</span></span></code></pre></div>
 <blockquote>
-<p><strong>Como interpretar:</strong> procure a estrutura diagonal. Se
-cada linha (tópico dominante) tiver a maior contagem concentrada numa
-única coluna (tema real), o modelo recuperou bem a estrutura, mesmo que
-os números de tópico não coincidam com a ordem dos temas (LDA não “sabe”
-que o tópico 3 é “educação”, apenas que ele é diferente dos demais).
-Contagens espalhadas por várias colunas numa mesma linha indicam que
-aquele tópico está misturando temas que deveriam ser distintos:
-considere aumentar K ou revisar a limpeza do corpus. Neste exemplo, 31
-dos 32 documentos caem no tópico do seu tema. A exceção é
+<p><strong>Como ler esta tabela</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Linhas = tópico dominante de cada
+documento (o de maior γ); colunas = tema real, que o modelo não viu.
+Cada número é quantos documentos caem naquela combinação. O ideal é
+<strong>uma célula grande por linha</strong> (cada tópico ligado a um
+tema só). Como a numeração dos tópicos é arbitrária, a “diagonal” pode
+aparecer embaralhada.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> O Tópico 1 tem os 8
+documentos de <code>habitacao</code>, o Tópico 2 os 8 de
+<code>educacao</code>, o Tópico 3 os 8 de <code>tecnologia</code> e o
+Tópico 4 7 dos 8 de <code>tributário</code>. O único fora do lugar é um
+documento tributário no Tópico 1 (habitação).</p></li>
+<li><p><strong>Em palavras simples.</strong> O modelo recuperou os
+quatro temas sem ver nenhum rótulo, com 31 acertos em 32
+documentos.</p></li>
+<li><p><strong>Cuidado.</strong> O “erro” é instrutivo: é
 <code>doc_5</code>, um texto tributário sobre <em>cashback</em> para
-“famílias de baixa renda”: ele divide o peso quase ao meio entre o
-tópico tributário e o de habitação (γ ≈ 0,52 contra 0,47), porque
-compartilha vocabulário com os textos de moradia. Não é um erro
-aleatório; é um documento genuinamente ambíguo, e a seção 8 mostra como
-reconhecê-lo pela γ.</p>
+“famílias de baixa renda”. Ele divide o peso quase ao meio entre os
+tópicos tributário e de habitação (γ ≈ 0,47 e ≈ 0,52) porque compartilha
+vocabulário com os textos de moradia. É um documento genuinamente
+ambíguo, e a seção 8 mostra como reconhecê-lo. Em corpora reais, sem
+tema conhecido, essa validação vem da leitura humana dos tópicos e de
+alguns documentos de cada um.</p></li>
+</ol>
 </blockquote>
 <p>Se a diagonal for dominante (cada tópico se alinha bem com um tema
 real), o modelo capturou a estrutura. Em corpora reais sem “rótulo
@@ -594,7 +639,8 @@ mostra os documentos como linhas, os tópicos como colunas, e a cor como
 <code>gamma</code> (0 = nada; 1 = totalidade da massa).</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gamma_ord</span> <span class="op">&lt;-</span> <span class="va">gamma</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">doc_id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># ordem numérica (doc_1 no topo), para os 4 temas aparecerem em blocos</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">doc_id</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fl">32</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span>
 <span>  <span class="va">gamma_ord</span>,</span>
@@ -619,15 +665,34 @@ mostra os documentos como linhas, os tópicos como colunas, e a cor como
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="lda_files/figure-html/gamma-heatmap-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> cada linha (documento) soma 1 ao
-longo das colunas (tópicos), porque γ é uma distribuição de
-probabilidade. Linhas com uma única célula escura são documentos “puros”
-num tema; linhas com duas ou três células de cor intermediária são
-documentos de tema misto, o caso mais comum em discurso político real.
-Não existe um limiar universal para “documento pertence ao tópico X”: a
-prática usual é reportar o tópico de maior γ (ver <code>dominante</code>
-acima) e, quando γ do segundo tópico estiver próximo do primeiro,
-sinalizar o documento como ambíguo na análise.</p>
+<p><strong>Como ler este gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Uma linha por documento
+(<code>doc_1</code> no topo), uma coluna por tópico. Cor escura = o
+tópico ocupa quase todo o documento; cinza médio = o documento está
+dividido. Como cada linha soma 1, procure linhas com <strong>duas
+células cinzas</strong> em vez de uma escura: são os documentos
+mistos.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> Os 32 documentos
+formam 4 blocos escuros, um por tema: <code>doc_1</code> a
+<code>doc_8</code> no Tópico 4, <code>doc_9</code> a <code>doc_16</code>
+no 3, <code>doc_17</code> a <code>doc_24</code> no 1 e
+<code>doc_25</code> a <code>doc_32</code> no 2. Destoam poucas linhas:
+<code>doc_5</code> (dividido entre os Tópicos 1 e 4),
+<code>doc_17</code> (entre 1 e 2) e, em menor grau, <code>doc_6</code>,
+<code>doc_23</code> e <code>doc_30</code>.</p></li>
+<li><p><strong>Em palavras simples.</strong> Quase todo documento fala
+de um assunto só. Os poucos divididos são textos que usam palavras de
+dois temas (<code>doc_17</code>, sobre programa habitacional, fala de
+“recursos federais”, vocabulário que também aparece nos textos de
+educação).</p></li>
+<li><p><strong>Cuidado.</strong> Não há um limiar universal para dizer
+que um documento “pertence” a um tópico. A prática usual é reportar o
+tópico de maior γ e marcar como ambíguos os documentos em que o segundo
+tópico chega perto do primeiro. A proporção de documentos puros também
+depende do α escolhido na seção 3: α baixo favorece documentos
+concentrados (Wallach, Mimno &amp; McCallum, 2009).</p></li>
+</ol>
 </blockquote>
 <p>Neste corpus, a maioria dos documentos é quase “pura”: a γ do tópico
 principal tem mediana ≈ 0,98. Só 5 dos 32 documentos dão mais de 0,20 a

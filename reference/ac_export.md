@@ -123,7 +123,7 @@ out_rds <- file.path(tempdir(), "resultados.rds")
 
 # CSV
 ac_export(resultados, out_csv)
-#> ✔ Exportado para /tmp/RtmpKYJmmb/resultados.csv (csv).
+#> ✔ Exportado para /tmp/RtmpATkOcv/resultados.csv (csv).
 
 # LaTeX (para incluir em artigo)
 ac_export(
@@ -132,11 +132,11 @@ ac_export(
   latex_caption = "Classificação do tom dos discursos por LLM",
   latex_label   = "tab:tom_discursos"
 )
-#> ✔ Exportado para /tmp/RtmpKYJmmb/resultados.tex (latex).
+#> ✔ Exportado para /tmp/RtmpATkOcv/resultados.tex (latex).
 
 # RDS (replicabilidade)
 ac_export(resultados, out_rds)
-#> ✔ Exportado para /tmp/RtmpKYJmmb/resultados.rds (rds).
+#> ✔ Exportado para /tmp/RtmpATkOcv/resultados.rds (rds).
 
 # Excel (requer openxlsx ou writexl instalado)
 if (requireNamespace("writexl", quietly = TRUE) ||
@@ -144,7 +144,7 @@ if (requireNamespace("writexl", quietly = TRUE) ||
   out_xlsx <- file.path(tempdir(), "resultados.xlsx")
   ac_export(resultados, out_xlsx, excel_sheet = "Classificação")
 }
-#> ✔ Exportado para /tmp/RtmpKYJmmb/resultados.xlsx (xlsx).
+#> ✔ Exportado para /tmp/RtmpATkOcv/resultados.xlsx (xlsx).
 
 # Objeto ac_irr (comparar codificacao humana vs. LLM)
 gold <- data.frame(
@@ -157,5 +157,5 @@ predicted <- data.frame(
 )
 irr_result <- ac_qual_irr(gold, predicted, verbose = FALSE)
 ac_export(irr_result, file.path(tempdir(), "confiabilidade.csv"))
-#> ✔ Exportado para /tmp/RtmpKYJmmb/confiabilidade.csv (csv).
+#> ✔ Exportado para /tmp/RtmpATkOcv/confiabilidade.csv (csv).
 ```

@@ -56,7 +56,7 @@ dominariam qualquer contagem em português.
 corpus <- ac_clean(corpus, remove_stopwords = "pt")
 freq_por_grupo <- ac_count(corpus, by = "posicao")
 ac_top_terms(freq_por_grupo, n = 5, by = "posicao")
-#> # A tibble: 34 × 3
+#> # A tibble: 10 × 3
 #>    posicao token           n
 #>    <chr>   <chr>       <int>
 #>  1 contra  contra          2
@@ -64,12 +64,11 @@ ac_top_terms(freq_por_grupo, n = 5, by = "posicao")
 #>  3 contra  beneficia       1
 #>  4 contra  corporacoes     1
 #>  5 contra  destruir        1
-#>  6 contra  grandes         1
-#>  7 contra  plenário        1
-#>  8 contra  produtivo       1
-#>  9 contra  proposta        1
-#> 10 contra  reforma         1
-#> # ℹ 24 more rows
+#>  6 favor   reforma         2
+#>  7 favor   apoio           1
+#>  8 favor   claros          1
+#>  9 favor   corrige         1
+#> 10 favor   defendo         1
 ```
 
 ## 3 · Palavras distintivas de cada lado (*keyness*)

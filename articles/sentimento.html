@@ -258,42 +258,40 @@ método padrão <code>sum</code>) e o rótulo categórico
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> favor          0      1        4</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> neutro         2      1        1</span></span></code></pre></div>
 <blockquote>
-<p><strong>Como interpretar:</strong> leia a tabela por linha (posição
-declarada), não por coluna. Uma linha “favor” concentrada na coluna
-<code>positivo</code> mostra que o léxico captura bem aquela posição;
-uma linha “neutro” dispersa entre
-<code>positivo</code>/<code>negativo</code>/<code>neutro</code> é
-esperada, não é erro: documentos técnicos legitimamente usam pouco
-vocabulário emotivo em qualquer direção. O problema real seria uma linha
-“contra” concentrada em <code>positivo</code>, sinal de que o léxico
-está invertendo a leitura.</p>
-<p>Aqui o léxico acerta a direção na maioria dos casos (4 de 5 “favor”
-saem positivos, 3 de 5 “contra” saem negativos), e nenhum documento é
-invertido. Os erros são instrutivos porque mostram as duas falhas
-clássicas do método de dicionário (Grimmer &amp; Stewart, 2013):</p>
-<ul>
-<li>
-<strong>Cobertura.</strong> <code>doc_3</code> (“Vitória histórica
-para a economia”) e <code>doc_8</code> (“Uma tragédia nacional: estão
-roubando direitos”) não têm <strong>nenhuma</strong> palavra com
-polaridade no OpLexicon e saem neutros, embora a posição seja óbvia para
-um leitor. O OpLexicon é formado sobretudo por adjetivos (Souza et al.,
-2011); substantivos e verbos carregados (“vitória”, “tragédia”,
-“roubando”) ficam de fora.</li>
-<li>
-<strong>Sentido no domínio.</strong> <code>doc_14</code> (“segue
-para votação na próxima sessão ordinária”) sai negativo porque o léxico
-lê “ordinária” como adjetivo pejorativo, e não como “sessão regular” do
-jargão legislativo. Em <code>doc_6</code>, “trabalhadores” conta +1
-(lido como “trabalhador, esforçado”), o que anula o “vergonhoso” e deixa
-um discurso contrário com escore 0. Loughran &amp; McDonald (2011)
-mostraram o mesmo problema em finanças (“liability” não é negativo num
-balanço) e por isso defendem léxicos ajustados ao domínio.</li>
-</ul>
-<p>Conclusão prática: antes de usar o OpLexicon num corpus legislativo,
-liste os termos do léxico mais frequentes no seu corpus e retire ou
-corrija os que têm outro sentido ali; e valide numa amostra humana (ver
-<code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>).</p>
+<p><strong>Como ler esta tabela</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Cada linha é uma posição declarada
+pelos autores (<code>favor</code>, <code>contra</code>,
+<code>neutro</code>); cada coluna é o rótulo que o léxico deu. Leia
+<strong>por linha</strong>: o número em cada célula é quantos discursos
+daquela posição receberam aquele rótulo. O acerto está nas células
+“favor × positivo” e “contra × negativo”.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> Dos 5 discursos
+<code>favor</code>, 4 saem <code>positivo</code>; dos 5
+<code>contra</code>, 3 saem <code>negativo</code>; nenhum discurso é
+invertido (não há “contra” lido como positivo, nem “favor” como
+negativo). Os erros caem todos em <code>neutro</code> ou nos textos
+técnicos. Os três casos que mais ensinam: <code>doc_3</code> (“Vitória
+histórica para a economia”) e <code>doc_8</code> (“Uma tragédia
+nacional: estão roubando direitos”) saem neutros porque
+<strong>nenhuma</strong> das palavras deles está no OpLexicon; e
+<code>doc_14</code> (“segue para votação na próxima sessão ordinária”)
+sai negativo porque o léxico lê “ordinária” como adjetivo
+pejorativo.</p></li>
+<li><p><strong>Em palavras simples.</strong> O léxico acerta a direção
+quando o texto usa adjetivos de opinião (“excelente”, “desastrosa”), e
+erra de dois jeitos: quando a opinião está em substantivos e verbos que
+ele não conhece (cobertura) e quando uma palavra tem outro sentido no
+jargão legislativo (domínio).</p></li>
+<li><p><strong>Cuidado.</strong> Esses dois erros são os clássicos do
+método de dicionário (Grimmer &amp; Stewart, 2013). O OpLexicon é
+formado sobretudo por adjetivos (Souza et al., 2011), e palavras mudam
+de polaridade conforme o domínio: Loughran &amp; McDonald (2011)
+mostraram o mesmo com “liability” em relatórios financeiros. Antes de
+usar o léxico num corpus legislativo, liste os termos dele mais
+frequentes no seu corpus, corrija os que têm outro sentido e valide numa
+amostra humana (<code><a href="../reference/ac_dictionary_validate.html">ac_dictionary_validate()</a></code>).</p></li>
+</ol>
 </blockquote>
 </div>
 <div class="section level2">
@@ -349,22 +347,33 @@ foca só na intensidade emotiva relativa.</li>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-bar-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> as barras são ordenadas por
-<code>score</code> (não pela ordem original dos documentos no corpus),
-então o gráfico já agrupa visualmente positivos no topo e negativos na
-base. A cor também é determinada pelo sinal do <code>score</code>, não
-por um limiar fixo: um <code>score</code> muito perto de zero recebe a
-mesma cor categórica (positivo/negativo) de um <code>score</code>
-extremo, mesmo que o primeiro seja um caso ambíguo. Neste exemplo, 4 dos
-14 documentos ficam com barra de largura zero (<code>score = 0</code>):
-só um deles é técnico (<code>doc_11</code>); os outros são
-<code>doc_3</code> (favorável), <code>doc_6</code> e <code>doc_8</code>
-(contrários), pelos motivos de cobertura e sentido no domínio vistos na
-seção 2. Já dois textos técnicos (<code>doc_12</code> e
-<code>doc_14</code>) aparecem como negativos. Os extremos são
-<code>doc_4</code> e <code>doc_5</code> (+2, favoráveis) no topo e
-<code>doc_7</code> (−3, contrário) na base. A cor “negativa” do pacote é
-laranja, não vermelho.</p>
+<p><strong>Como ler este gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Cada barra é um discurso, e o
+comprimento é o <code>score</code> (palavras positivas menos negativas).
+Barra para a <strong>direita</strong> (verde) = saldo positivo; para a
+<strong>esquerda</strong> (laranja) = negativo; sem barra = saldo zero.
+As barras estão ordenadas pelo escore, não pela ordem dos
+documentos.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> No topo,
+<code>doc_4</code> e <code>doc_5</code> (+2, ambos favoráveis); na base,
+<code>doc_7</code> (−3, contrário: “proposta desastrosa ataca os mais
+pobres e vulneráveis”, três palavras negativas). Quatro discursos ficam
+sem barra (escore 0): só um é técnico (<code>doc_11</code>); os outros
+são <code>doc_3</code> (favorável), <code>doc_6</code> e
+<code>doc_8</code> (contrários). E dois textos técnicos
+(<code>doc_12</code>, <code>doc_14</code>) aparecem em laranja.</p></li>
+<li><p><strong>Em palavras simples.</strong> O gráfico ordena os
+discursos do mais positivo ao mais negativo segundo o léxico, mas a
+ordem só é tão boa quanto o léxico: as barras “vazias” e as laranjas dos
+textos técnicos são os erros de cobertura e de domínio da seção
+2.</p></li>
+<li><p><strong>Cuidado.</strong> A cor depende só do sinal: +1 recebe o
+mesmo verde que +2, embora +1 seja um caso quase neutro (uma única
+palavra positiva). E o escore <code>sum</code> cresce com o tamanho do
+texto; em textos de tamanhos muito diferentes, compare com
+<code>method = "mean"</code> ou <code>"ratio"</code> (seção 3).</p></li>
+</ol>
 </blockquote>
 </div>
 <div class="section level2">
@@ -380,21 +389,28 @@ bimodal (dois picos, favor e contra) ou tem uma cauda longa?</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-density-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> cuidado com um artefato de
-construção deste gráfico. As curvas são separadas pela coluna
-<code>sentiment</code>, que é o próprio sinal do <code>score</code>: a
-curva “positivo” só pode ficar à direita de zero e a “negativo” só à
-esquerda, e a “neutro” é uma linha em cima do zero (todos os seus
-escores valem exatamente 0). Ou seja, ver picos separados por cor
-<strong>não</strong> é evidência de polarização: aconteceria com
-qualquer conjunto de escores. Polarização, no sentido usado por
-DiMaggio, Evans &amp; Bryson (1996), é uma propriedade da distribuição
-<strong>inteira</strong> (dispersão e bimodalidade), e se avalia olhando
-todos os escores juntos, como no histograma abaixo, ou colorindo por uma
-variável externa ao escore (por exemplo, a posição declarada). Além
-disso, a estimativa de densidade por kernel (Silverman, 1986) é instável
-com poucos pontos: com 14 documentos, os picos dependem da largura de
-banda escolhida.</p>
+<p><strong>Como ler este gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Uma curva colorida para cada rótulo
+(<code>positivo</code>, <code>negativo</code>, <code>neutro</code>). A
+linha tracejada vertical marca o zero.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> A curva verde fica
+toda à direita do zero, a laranja toda à esquerda, e a cinza é um pico
+fino em cima do zero.</p></li>
+<li><p><strong>Em palavras simples.</strong> Essa separação <strong>não
+é um achado</strong>: as cores foram definidas pelo próprio sinal do
+escore, então a curva “positivo” só pode ficar à direita do zero, e a
+“neutro” só pode ficar no zero. Aconteceria com qualquer conjunto de
+textos. Este gráfico não mostra polarização; ele só mostra como cada
+grupo de rótulo se espalha.</p></li>
+<li><p><strong>Cuidado.</strong> Polarização, no sentido de DiMaggio,
+Evans &amp; Bryson (1996), é uma propriedade da distribuição
+<strong>inteira</strong> (o quanto os escores se espalham e se formam
+dois montes). Avalie olhando todos os escores juntos, como no histograma
+abaixo, ou colorindo por uma variável que não seja o próprio escore (a
+posição declarada, por exemplo). E com 14 documentos a estimativa de
+densidade é instável (Silverman, 1986).</p></li>
+</ol>
 </blockquote>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sent</span>, <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -408,13 +424,26 @@ banda escolhida.</p>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-hist-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> com todos os escores juntos, a
-distribuição deste exemplo tem a maior barra no zero (4 documentos),
-seguida de −1 e +1 (3 cada), com caudas curtas até −3 e +2: pelo
-histograma, o corpus parece <strong>menos</strong> polarizado do que as
-posições declaradas sugerem. A seção 2 explica por quê: parte dos
-documentos opinativos caiu em zero por falta de cobertura do léxico. O
-histograma descreve os escores, não as posições reais dos autores.</p>
+<p><strong>Como ler este gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Cada barra é um valor de escore (−3,
+−2, …, +2), e a altura é quantos discursos tiveram aquele escore. A
+linha tracejada marca o zero. Procure <strong>dois montes
+separados</strong> (sinal de polarização) ou <strong>um monte
+só</strong> (sinal de consenso ou de pouca opinião).</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> A barra mais alta é a
+do zero (4 discursos); −1 e +1 vêm logo depois (3 cada); as pontas são
+curtas (um discurso em −3, um em −2, dois em +2). É um monte só,
+centrado perto do zero.</p></li>
+<li><p><strong>Em palavras simples.</strong> Pelos escores do léxico, o
+corpus parece <strong>pouco</strong> polarizado, embora os autores
+tenham declarado posições bem opostas (favor e contra).</p></li>
+<li><p><strong>Cuidado.</strong> O histograma descreve os escores, não
+as posições reais. Parte dos discursos opinativos caiu no zero por falta
+de cobertura do léxico (seção 2), o que puxa a distribuição para o
+centro. Quando o histograma contradiz o que você sabe do corpus, a
+explicação costuma estar no instrumento, não nos textos.</p></li>
+</ol>
 </blockquote>
 </div>
 <div class="section level2">
@@ -442,12 +471,27 @@ de plotar:</p>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-line-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> com a reordenação acima, a linha
-conecta documentos na verdadeira ordem de entrada (<code>doc_1</code> a
-<code>doc_14</code>); numa análise real, use a data de publicação como
-esse factor ordenado, não o <code>doc_id</code>. Uma tendência
-consistente (subindo ou caindo) é mais informativa que oscilação ponto a
-ponto, que costuma refletir apenas ruído em amostras pequenas.</p>
+<p><strong>Como ler este gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> O eixo horizontal é a ordem dos
+documentos (<code>doc_1</code> a <code>doc_14</code>); cada ponto é o
+escore de um documento, colorido pelo rótulo; a linha tracejada é o
+zero.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> Os 5 primeiros pontos
+ficam acima do zero ou nele, os 5 seguintes (<code>doc_6</code> a
+<code>doc_10</code>) descem até −3, e os 4 últimos ficam perto do
+zero.</p></li>
+<li><p><strong>Em palavras simples.</strong> A “série” sobe, cai e se
+estabiliza, mas isso <strong>não é tendência no tempo</strong>: os
+documentos foram criados em três blocos, primeiro os favoráveis, depois
+os contrários, depois os técnicos. O desenho só reproduz a ordem em que
+o exemplo foi montado.</p></li>
+<li><p><strong>Cuidado.</strong> Uma linha só mostra evolução se o eixo
+for de fato tempo. Numa análise real, ordene pela data de publicação (ou
+use <code><a href="../reference/ac_temporal.html">ac_temporal()</a></code>, que agrega por período) e desconfie de
+oscilações ponto a ponto em amostras pequenas: costumam ser
+ruído.</p></li>
+</ol>
 </blockquote>
 </div>
 <div class="section level2">
@@ -511,13 +555,28 @@ ponto, que costuma refletir apenas ruído em amostras pequenas.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-partidos-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> com poucos documentos por partido
-(aqui, de 1 a 3), <code>score_med</code> é sensível a outliers: um único
-pronunciamento muito extremo desloca a média do partido inteiro. Sempre
-reporte <code>score_dp</code> ao lado de <code>score_med</code> e
-<code>n_docs</code>; uma média alta com desvio-padrão também alto, ou
-com <code>n_docs</code> baixo, é um resultado frágil que merece ressalva
-no texto, não uma afirmação categórica sobre a posição do partido.</p>
+<p><strong>Como ler esta tabela</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Uma linha por partido. Leia
+<code>score_med</code> (média dos escores) <strong>sempre junto</strong>
+com <code>n_docs</code> (quantos discursos entraram na média) e
+<code>score_dp</code> (desvio-padrão: o quanto os discursos do partido
+discordam entre si).</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> PSD tem a maior média
+(1,00), mas com <strong>1 discurso só</strong>. O PT aparece com média
+−1,00, perto do PSOL e do PCdoB, mas o desvio-padrão dele é o maior da
+tabela (2,83): seus 2 discursos são um favorável (+1) e um contrário
+(−3), e a média de posições opostas parece uma posição negativa que
+nenhum dos dois discursos tem.</p></li>
+<li><p><strong>Em palavras simples.</strong> A média resume bem um
+partido quando os discursos dele são parecidos; quando são opostos, ela
+inventa um meio-termo. O desvio-padrão alto é o aviso.</p></li>
+<li><p><strong>Cuidado.</strong> Com 1 a 3 discursos por partido,
+nenhuma dessas médias sustenta uma afirmação sobre “a posição do
+partido”. Reporte <code>n_docs</code> e <code>score_dp</code> ao lado da
+média, e quando o desvio-padrão for alto, olhe os discursos individuais
+antes de concluir.</p></li>
+</ol>
 </blockquote>
 </div>
 <div class="section level2">
@@ -527,22 +586,37 @@ no texto, não uma afirmação categórica sobre a posição do partido.</p>
 aparecem dentro de cada documento. Útil para ver se palavras negativas
 se concentram no começo, meio ou fim, sinal de estrutura retórica.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_xray.html">ac_plot_xray</a></span><span class="op">(</span><span class="va">corpus</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reforma"</span>, <span class="st">"trabalhadores"</span>, <span class="st">"aprovar"</span>, <span class="st">"vergonha"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_xray.html">ac_plot_xray</a></span><span class="op">(</span><span class="va">corpus</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reforma"</span>, <span class="st">"trabalhadores"</span>, <span class="st">"proposta"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
 <span>    title    <span class="op">=</span> <span class="st">"Onde os termos-chave aparecem no corpus"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"Cada ponto marca uma ocorrência do termo (posição relativa no texto)"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Termo(s) sem ocorrencia: <span style="color: #0000BB;">"aprovar"</span> and <span style="color: #0000BB;">"vergonha"</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Verifique ortografia/acentuacao ou o efeito de `ac_clean()`.</span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-xray-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
 <blockquote>
-<p><strong>Como interpretar:</strong> o eixo horizontal é posição
-<em>relativa</em> no documento (0 = início, 1 = fim), não posição
-absoluta em caracteres: isso permite comparar documentos de tamanhos
-diferentes no mesmo gráfico. Termos concentrados perto de 0 tendem a
-aparecer em introduções/resumos; termos perto de 1, em conclusões.
-Pontos espalhados por todo o eixo sugerem um termo usado de forma
-difusa, sem função estrutural clara no discurso.</p>
+<p><strong>Como ler este gráfico</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Cada linha é um documento; cada
+marca é uma ocorrência de um dos termos buscados, colorida pelo termo. O
+eixo horizontal é a posição relativa dentro do texto: 0 = primeira
+palavra, 1 = última.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> <em>reforma</em>
+aparece no começo de vários discursos (posição 0 em <code>doc_4</code> e
+<code>doc_10</code>, 0,11 em <code>doc_6</code>); <em>proposta</em>
+também tende ao início (de 0,10 a 0,40); <em>trabalhadores</em> aparece
+no meio de <code>doc_5</code> (0,50) e na última palavra de
+<code>doc_6</code> (1,00).</p></li>
+<li><p><strong>Em palavras simples.</strong> Nos discursos contrários e
+favoráveis, o objeto do debate (“a reforma”, “a proposta”) é nomeado
+logo no início da frase, e as consequências (“prejudica os
+trabalhadores”) vêm no fim.</p></li>
+<li><p><strong>Cuidado.</strong> O X-ray foi pensado para documentos
+longos, onde início, meio e fim correspondem a partes do discurso
+(introdução, argumento, conclusão). Aqui cada documento é uma frase só,
+então a posição reflete a ordem das palavras na frase, não a estrutura
+retórica. Use o gráfico para ver <strong>onde</strong> um termo aparece;
+a interpretação de por que aparece ali pede leitura dos trechos
+(<code><a href="../reference/ac_kwic.html">ac_kwic()</a></code>).</p></li>
+</ol>
 </blockquote>
 </div>
 <div class="section level2">

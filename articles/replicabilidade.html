@@ -222,7 +222,7 @@ positivos e negativos para desambiguar categorias vizinhas.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"favor"</span>, <span style="color: #0000BB;">"contra"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 17:07</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 17:56</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique a posicao do parlamentar sobre a reforma tributária com base no</span></span>
@@ -241,9 +241,9 @@ análise em outra sessão:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arquivo_cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".yaml"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ac_qual_save_codebook.html">ac_qual_save_codebook</a></span><span class="op">(</span><span class="va">cb</span>, path <span class="op">=</span> <span class="va">arquivo_cb</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpeagQZA/file2273b693187.yaml</span></span></span>
+<span><span class="co">#&gt; ✅ Codebook salvo em <span style="color: #0000BB;">/tmp/RtmpkEgEHA/file22126d3d5d78.yaml</span></span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Codebook salvo em:"</span>, <span class="va">arquivo_cb</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpeagQZA/file2273b693187.yaml</span></span></code></pre></div>
+<span><span class="co">#&gt; Codebook salvo em: /tmp/RtmpkEgEHA/file22126d3d5d78.yaml</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classificação-com-live-view">3. Classificação com live view<a class="anchor" aria-label="anchor" href="#classifica%C3%A7%C3%A3o-com-live-view"></a>
@@ -398,22 +398,29 @@ método:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gwet_ac1              0.875    0.629        1 quase perfeita (Landis &amp; Koch, …</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> f1_macro              0.915    0.625        1 sem faixa canônica (não corrigi…</span></span></code></pre></div>
 <blockquote>
-<p><strong>Como interpretar:</strong> com 1 discordância em 12
-documentos, o <em>percent agreement</em> é ≈ 0,92, e as métricas que
-corrigem pelo acaso ficam um pouco abaixo (alfa de Krippendorff ≈ 0,88;
-AC1 de Gwet ≈ 0,87), porque parte da concordância observada seria
-esperada só pela distribuição das categorias. Cada linha usa a
-referência própria da métrica (coluna <code>interpretation</code>): o
-alfa é lido pelas faixas de Krippendorff (2018), o AC1 pelas de Landis
-&amp; Koch (1977), e o F1 não recebe rótulo. A lição principal está nos
-intervalos: o alfa pontual passa de 0,800 (“confiável”), mas o IC
-<em>bootstrap</em> vai de ≈ 0,58 a 1, ou seja, inclui valores abaixo do
-mínimo de 0,667. Krippendorff (2018, sec. 12.5) decide pela
-probabilidade de o alfa ficar abaixo do mínimo exigido, não pelo valor
-pontual; com 12 documentos, não dá para afirmar que a codificação é
-confiável. O rótulo vem do valor pontual: leia-o sempre junto com o IC e
-o tamanho da amostra. (Usamos só 100 réplicas <em>bootstrap</em> para a
-vignette rodar rápido; em uso real, deixe o padrão de 1000.)</p>
+<p><strong>Como ler esta tabela</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Uma linha por métrica. Leia três
+colunas juntas: <code>estimate</code> (o valor), <code>ci_lower</code> e
+<code>ci_upper</code> (o intervalo de confiança: onde o valor verdadeiro
+provavelmente está) e <code>interpretation</code> (o rótulo, segundo a
+referência própria de cada métrica).</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> Com 1 discordância em
+12 documentos, o <em>percent agreement</em> é ≈ 0,92. As métricas que
+descontam o acaso ficam um pouco abaixo: alfa de Krippendorff ≈ 0,88 e
+AC1 de Gwet ≈ 0,87. O alfa recebe o rótulo “confiável” (acima de 0,800),
+<strong>mas</strong> o intervalo dele vai de ≈ 0,58 a 1.</p></li>
+<li><p><strong>Em palavras simples.</strong> O valor pontual parece
+ótimo, mas com 12 documentos a incerteza é grande: o alfa verdadeiro
+pode estar abaixo do mínimo aceitável de 0,667.</p></li>
+<li><p><strong>Cuidado.</strong> O rótulo vem do valor pontual; a
+decisão deve olhar o intervalo. Krippendorff (2018, sec. 12.5) decide
+pela chance de o alfa estar abaixo do mínimo exigido, e aqui essa chance
+não é pequena. Com 12 documentos não dá para afirmar que a codificação é
+confiável: aumente a amostra (Neuendorf, 2017, sugere ao menos 50
+unidades). O exemplo usa só 100 réplicas <em>bootstrap</em> para rodar
+rápido; em uso real, deixe o padrão de 1000.</p></li>
+</ol>
 </blockquote>
 </div>
 <div class="section level2">
@@ -440,13 +447,13 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Unknown or uninitialised column: `metrics`.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Relatorio salvo em</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpeagQZA/relatório-22737802ebaa.md</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpkEgEHA/relatório-221221033a62.md</span></span></span></code></pre></div>
 <p>Primeiras 40 linhas do relatório gerado:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">arquivo_md</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Classificação de posicionamento na reforma tributária</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 17:07:43 UTC</span></span>
+<span><span class="co">#&gt; - **Gerado em:** 2026-10-15 17:56:41 UTC</span></span>
 <span><span class="co">#&gt; - **Versao do acR:** 0.6.0</span></span>
 <span><span class="co">#&gt; - **Autor(es):** Silva, A.; Souza, B.</span></span>
 <span><span class="co">#&gt; - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).</span></span>
@@ -462,7 +469,7 @@ pronto para anexar como material suplementar de um artigo.</p>
 <span><span class="co">#&gt; | Idioma        | `pt` |</span></span>
 <span><span class="co">#&gt; | Modo        | `manual` |</span></span>
 <span><span class="co">#&gt; | Multilabel  | `FALSE` |</span></span>
-<span><span class="co">#&gt; | Criado em     | 2026-10-15 17:07:41 |</span></span>
+<span><span class="co">#&gt; | Criado em     | 2026-10-15 17:56:40 |</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; **Instrucoes ao codificador:**</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -526,6 +533,8 @@ Its Methodology</em> (4th ed.). SAGE.</li>
 <li>Landis, J. R.; Koch, G. G. (1977). The measurement of observer
 agreement for categorical data. <em>Biometrics</em>, 33(1),
 159-174.</li>
+<li>Neuendorf, K. A. (2017). <em>The Content Analysis Guidebook</em>
+(2nd ed.). SAGE.</li>
 <li>Wang, X. et al. (2023). Self-consistency improves chain of thought
 reasoning in language models. <em>International Conference on Learning
 Representations (ICLR)</em>.</li>

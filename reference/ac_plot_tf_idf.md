@@ -40,7 +40,8 @@ ac_plot_tf_idf(
 
   Número de termos a exibir. Se `NULL` (padrao), usa todas as linhas de
   `x`. Se informado, seleciona os top `n` termos por `tf_idf` no geral
-  ou em cada grupo definido por `by`.
+  ou em cada grupo definido por `by`. Empates na última posição são
+  desfeitos em ordem alfabética.
 
 - style:
 

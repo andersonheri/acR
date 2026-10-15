@@ -120,7 +120,7 @@ cb
 #> • Categorias (3): "favor", "contra", and "neutro"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 15/10/2026 17:07
+#> • Criado em: 15/10/2026 17:56
 #> 
 #> Instrução geral:
 #> Classifique a posicao do parlamentar sobre a reforma tributária com base no
@@ -143,9 +143,9 @@ análise em outra sessão:
 
 arquivo_cb <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo_cb)
-#> ✅ Codebook salvo em /tmp/RtmpeagQZA/file2273b693187.yaml
+#> ✅ Codebook salvo em /tmp/RtmpkEgEHA/file22126d3d5d78.yaml
 cat("Codebook salvo em:", arquivo_cb, "\n")
-#> Codebook salvo em: /tmp/RtmpeagQZA/file2273b693187.yaml
+#> Codebook salvo em: /tmp/RtmpkEgEHA/file22126d3d5d78.yaml
 ```
 
 ## 3. Classificação com live view
@@ -322,22 +322,31 @@ irr
 #> 4 f1_macro              0.915    0.625        1 sem faixa canônica (não corrigi…
 ```
 
-> **Como interpretar:** com 1 discordância em 12 documentos, o *percent
-> agreement* é ≈ 0,92, e as métricas que corrigem pelo acaso ficam um
-> pouco abaixo (alfa de Krippendorff ≈ 0,88; AC1 de Gwet ≈ 0,87), porque
-> parte da concordância observada seria esperada só pela distribuição
-> das categorias. Cada linha usa a referência própria da métrica (coluna
-> `interpretation`): o alfa é lido pelas faixas de Krippendorff (2018),
-> o AC1 pelas de Landis & Koch (1977), e o F1 não recebe rótulo. A lição
-> principal está nos intervalos: o alfa pontual passa de 0,800
-> (“confiável”), mas o IC *bootstrap* vai de ≈ 0,58 a 1, ou seja, inclui
-> valores abaixo do mínimo de 0,667. Krippendorff (2018, sec. 12.5)
-> decide pela probabilidade de o alfa ficar abaixo do mínimo exigido,
-> não pelo valor pontual; com 12 documentos, não dá para afirmar que a
-> codificação é confiável. O rótulo vem do valor pontual: leia-o sempre
-> junto com o IC e o tamanho da amostra. (Usamos só 100 réplicas
-> *bootstrap* para a vignette rodar rápido; em uso real, deixe o padrão
-> de 1000.)
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Uma linha por métrica. Leia três colunas juntas:
+>     `estimate` (o valor), `ci_lower` e `ci_upper` (o intervalo de
+>     confiança: onde o valor verdadeiro provavelmente está) e
+>     `interpretation` (o rótulo, segundo a referência própria de cada
+>     métrica).
+>
+> 2.  **O que este exemplo mostra.** Com 1 discordância em 12
+>     documentos, o *percent agreement* é ≈ 0,92. As métricas que
+>     descontam o acaso ficam um pouco abaixo: alfa de Krippendorff ≈
+>     0,88 e AC1 de Gwet ≈ 0,87. O alfa recebe o rótulo “confiável”
+>     (acima de 0,800), **mas** o intervalo dele vai de ≈ 0,58 a 1.
+>
+> 3.  **Em palavras simples.** O valor pontual parece ótimo, mas com 12
+>     documentos a incerteza é grande: o alfa verdadeiro pode estar
+>     abaixo do mínimo aceitável de 0,667.
+>
+> 4.  **Cuidado.** O rótulo vem do valor pontual; a decisão deve olhar o
+>     intervalo. Krippendorff (2018, sec. 12.5) decide pela chance de o
+>     alfa estar abaixo do mínimo exigido, e aqui essa chance não é
+>     pequena. Com 12 documentos não dá para afirmar que a codificação é
+>     confiável: aumente a amostra (Neuendorf, 2017, sugere ao menos 50
+>     unidades). O exemplo usa só 100 réplicas *bootstrap* para rodar
+>     rápido; em uso real, deixe o padrão de 1000.
 
 ## 6. Relatório de método: replicabilidade automática
 
@@ -365,7 +374,7 @@ ac_qual_report(
 )
 #> Warning: Unknown or uninitialised column: `metrics`.
 #> ✔ Relatorio salvo em
-#> /tmp/RtmpeagQZA/relatório-22737802ebaa.md
+#> /tmp/RtmpkEgEHA/relatório-221221033a62.md
 ```
 
 Primeiras 40 linhas do relatório gerado:
@@ -375,7 +384,7 @@ Primeiras 40 linhas do relatório gerado:
 cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> # Classificação de posicionamento na reforma tributária
 #> 
-#> - **Gerado em:** 2026-10-15 17:07:43 UTC
+#> - **Gerado em:** 2026-10-15 17:56:41 UTC
 #> - **Versao do acR:** 0.6.0
 #> - **Autor(es):** Silva, A.; Souza, B.
 #> - **Metodo:** Corpus de 12 pronunciamentos parlamentares (2023-2024).
@@ -391,7 +400,7 @@ cat(head(readLines(arquivo_md), 40), sep = "\n")
 #> | Idioma        | `pt` |
 #> | Modo        | `manual` |
 #> | Multilabel  | `FALSE` |
-#> | Criado em     | 2026-10-15 17:07:41 |
+#> | Criado em     | 2026-10-15 17:56:40 |
 #> 
 #> **Instrucoes ao codificador:**
 #> 
@@ -461,6 +470,8 @@ automático: do texto bruto ao apêndice metodológico do artigo.
   Methodology* (4th ed.). SAGE.
 - Landis, J. R.; Koch, G. G. (1977). The measurement of observer
   agreement for categorical data. *Biometrics*, 33(1), 159-174.
+- Neuendorf, K. A. (2017). *The Content Analysis Guidebook* (2nd ed.).
+  SAGE.
 - Wang, X. et al. (2023). Self-consistency improves chain of thought
   reasoning in language models. *International Conference on Learning
   Representations (ICLR)*.

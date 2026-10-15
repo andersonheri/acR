@@ -41,17 +41,22 @@ ac_top_terms(x, n = 20L, by = NULL, sort = TRUE)
 
 - sort:
 
-  Lógico. Se `TRUE` (padrao), ordena a saida em ordem decrescente de
-  frequência (`n`). Se `FALSE`, preserva a ordem retornada pela operacao
-  interna de selecao, apenas garantindo que os grupos (quando houver)
-  venham juntos.
+  Lógico. Se `TRUE` (padrão), ordena a saída em ordem decrescente de
+  frequência (`n`). Se `FALSE`, ordena os termos selecionados
+  alfabeticamente (dentro de cada grupo, quando houver).
 
 ## Value
 
 Um
 [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
-com as mesmas colunas de `x`, mas restrito aos `n` termos mais
-frequentes (no geral ou por grupo).
+com as colunas `token` e `n` (mais as colunas de `by`, se houver), com
+exatamente `n` termos (ou menos, se o vocabulário for menor) no geral ou
+por grupo. A frequência de cada termo é **somada** sobre os documentos
+(ou dentro de cada grupo), de modo que uma tabela por documento, saída
+padrão de
+[`ac_count()`](https://andersonheri.github.io/acR/reference/ac_count.md),
+dá o total do corpus. Empates na última posição são desfeitos em ordem
+alfabética.
 
 ## See also
 
@@ -77,46 +82,34 @@ corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
 # Top 10 termos no corpus inteiro
 freq <- ac_count(corp)
 ac_top_terms(freq, n = 10)
-#> # A tibble: 20 × 3
-#>    doc_id token          n
-#>    <chr>  <chr>      <int>
-#>  1 d1     CCJ.           1
-#>  2 d3     CCJ.           1
-#>  3 d1     O              1
-#>  4 d2     O              1
-#>  5 d3     O              1
-#>  6 d2     PL             1
-#>  7 d1     PT             1
-#>  8 d3     PT             1
-#>  9 d1     deputado       1
-#> 10 d2     deputado       1
-#> 11 d1     do             1
-#> 12 d2     do             1
-#> 13 d3     do             1
-#> 14 d1     falou          1
-#> 15 d2     falou          1
-#> 16 d3     falou          1
-#> 17 d1     na             1
-#> 18 d3     na             1
-#> 19 d2     novamente.     1
-#> 20 d3     senador        1
+#> # A tibble: 10 × 2
+#>    token          n
+#>    <chr>      <int>
+#>  1 O              3
+#>  2 do             3
+#>  3 falou          3
+#>  4 CCJ.           2
+#>  5 PT             2
+#>  6 deputado       2
+#>  7 na             2
+#>  8 PL             1
+#>  9 novamente.     1
+#> 10 senador        1
 
 # Top 5 termos por partido
 freq_by <- ac_count(corp, by = "partido")
 ac_top_terms(freq_by, n = 5, by = "partido")
-#> # A tibble: 12 × 3
-#>    partido token          n
-#>    <chr>   <chr>      <int>
-#>  1 PL      O              1
-#>  2 PL      PL             1
-#>  3 PL      deputado       1
-#>  4 PL      do             1
-#>  5 PL      falou          1
-#>  6 PL      novamente.     1
-#>  7 PT      CCJ.           2
-#>  8 PT      O              2
-#>  9 PT      PT             2
-#> 10 PT      do             2
-#> 11 PT      falou          2
-#> 12 PT      na             2
+#> # A tibble: 10 × 3
+#>    partido token        n
+#>    <chr>   <chr>    <int>
+#>  1 PL      O            1
+#>  2 PL      PL           1
+#>  3 PL      deputado     1
+#>  4 PL      do           1
+#>  5 PL      falou        1
+#>  6 PT      CCJ.         2
+#>  7 PT      O            2
+#>  8 PT      PT           2
+#>  9 PT      do           2
+#> 10 PT      falou        2
 ```

@@ -35,7 +35,8 @@ ac_plot_keyness(
 
   Número de termos a exibir por direcao. Se `NULL` (padrao), usa todas
   as linhas de `x`. Se informado, seleciona os top `n` termos com
-  `keyness` positivo e os top `n` com `keyness` negativo.
+  `keyness` positivo e os top `n` com `keyness` negativo. Empates na
+  última posição são desfeitos em ordem alfabética.
 
 - style:
 

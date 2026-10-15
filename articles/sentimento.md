@@ -146,39 +146,40 @@ sent |>
 #> 3 neutro         2      1        1
 ```
 
-> **Como interpretar:** leia a tabela por linha (posição declarada), não
-> por coluna. Uma linha “favor” concentrada na coluna `positivo` mostra
-> que o léxico captura bem aquela posição; uma linha “neutro” dispersa
-> entre `positivo`/`negativo`/`neutro` é esperada, não é erro:
-> documentos técnicos legitimamente usam pouco vocabulário emotivo em
-> qualquer direção. O problema real seria uma linha “contra” concentrada
-> em `positivo`, sinal de que o léxico está invertendo a leitura.
+> **Como ler esta tabela**
 >
-> Aqui o léxico acerta a direção na maioria dos casos (4 de 5 “favor”
-> saem positivos, 3 de 5 “contra” saem negativos), e nenhum documento é
-> invertido. Os erros são instrutivos porque mostram as duas falhas
-> clássicas do método de dicionário (Grimmer & Stewart, 2013):
+> 1.  **Onde olhar.** Cada linha é uma posição declarada pelos autores
+>     (`favor`, `contra`, `neutro`); cada coluna é o rótulo que o léxico
+>     deu. Leia **por linha**: o número em cada célula é quantos
+>     discursos daquela posição receberam aquele rótulo. O acerto está
+>     nas células “favor × positivo” e “contra × negativo”.
 >
-> - **Cobertura.** `doc_3` (“Vitória histórica para a economia”) e
->   `doc_8` (“Uma tragédia nacional: estão roubando direitos”) não têm
->   **nenhuma** palavra com polaridade no OpLexicon e saem neutros,
->   embora a posição seja óbvia para um leitor. O OpLexicon é formado
->   sobretudo por adjetivos (Souza et al., 2011); substantivos e verbos
->   carregados (“vitória”, “tragédia”, “roubando”) ficam de fora.
-> - **Sentido no domínio.** `doc_14` (“segue para votação na próxima
->   sessão ordinária”) sai negativo porque o léxico lê “ordinária” como
->   adjetivo pejorativo, e não como “sessão regular” do jargão
->   legislativo. Em `doc_6`, “trabalhadores” conta +1 (lido como
->   “trabalhador, esforçado”), o que anula o “vergonhoso” e deixa um
->   discurso contrário com escore 0. Loughran & McDonald (2011)
->   mostraram o mesmo problema em finanças (“liability” não é negativo
->   num balanço) e por isso defendem léxicos ajustados ao domínio.
+> 2.  **O que este exemplo mostra.** Dos 5 discursos `favor`, 4 saem
+>     `positivo`; dos 5 `contra`, 3 saem `negativo`; nenhum discurso é
+>     invertido (não há “contra” lido como positivo, nem “favor” como
+>     negativo). Os erros caem todos em `neutro` ou nos textos técnicos.
+>     Os três casos que mais ensinam: `doc_3` (“Vitória histórica para a
+>     economia”) e `doc_8` (“Uma tragédia nacional: estão roubando
+>     direitos”) saem neutros porque **nenhuma** das palavras deles está
+>     no OpLexicon; e `doc_14` (“segue para votação na próxima sessão
+>     ordinária”) sai negativo porque o léxico lê “ordinária” como
+>     adjetivo pejorativo.
 >
-> Conclusão prática: antes de usar o OpLexicon num corpus legislativo,
-> liste os termos do léxico mais frequentes no seu corpus e retire ou
-> corrija os que têm outro sentido ali; e valide numa amostra humana
-> (ver
-> [`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md)).
+> 3.  **Em palavras simples.** O léxico acerta a direção quando o texto
+>     usa adjetivos de opinião (“excelente”, “desastrosa”), e erra de
+>     dois jeitos: quando a opinião está em substantivos e verbos que
+>     ele não conhece (cobertura) e quando uma palavra tem outro sentido
+>     no jargão legislativo (domínio).
+>
+> 4.  **Cuidado.** Esses dois erros são os clássicos do método de
+>     dicionário (Grimmer & Stewart, 2013). O OpLexicon é formado
+>     sobretudo por adjetivos (Souza et al., 2011), e palavras mudam de
+>     polaridade conforme o domínio: Loughran & McDonald (2011)
+>     mostraram o mesmo com “liability” em relatórios financeiros. Antes
+>     de usar o léxico num corpus legislativo, liste os termos dele mais
+>     frequentes no seu corpus, corrija os que têm outro sentido e
+>     valide numa amostra humana
+>     ([`ac_dictionary_validate()`](https://andersonheri.github.io/acR/reference/ac_dictionary_validate.md)).
 
 ## 3. Comparar métodos de agregação
 
@@ -231,20 +232,32 @@ ac_plot_sentiment(sent, type = "bar") +
 
 ![](sentimento_files/figure-html/plot-bar-1.png)
 
-> **Como interpretar:** as barras são ordenadas por `score` (não pela
-> ordem original dos documentos no corpus), então o gráfico já agrupa
-> visualmente positivos no topo e negativos na base. A cor também é
-> determinada pelo sinal do `score`, não por um limiar fixo: um `score`
-> muito perto de zero recebe a mesma cor categórica (positivo/negativo)
-> de um `score` extremo, mesmo que o primeiro seja um caso ambíguo.
-> Neste exemplo, 4 dos 14 documentos ficam com barra de largura zero
-> (`score = 0`): só um deles é técnico (`doc_11`); os outros são `doc_3`
-> (favorável), `doc_6` e `doc_8` (contrários), pelos motivos de
-> cobertura e sentido no domínio vistos na seção 2. Já dois textos
-> técnicos (`doc_12` e `doc_14`) aparecem como negativos. Os extremos
-> são `doc_4` e `doc_5` (+2, favoráveis) no topo e `doc_7` (−3,
-> contrário) na base. A cor “negativa” do pacote é laranja, não
-> vermelho.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada barra é um discurso, e o comprimento é o
+>     `score` (palavras positivas menos negativas). Barra para a
+>     **direita** (verde) = saldo positivo; para a **esquerda**
+>     (laranja) = negativo; sem barra = saldo zero. As barras estão
+>     ordenadas pelo escore, não pela ordem dos documentos.
+>
+> 2.  **O que este exemplo mostra.** No topo, `doc_4` e `doc_5` (+2,
+>     ambos favoráveis); na base, `doc_7` (−3, contrário: “proposta
+>     desastrosa ataca os mais pobres e vulneráveis”, três palavras
+>     negativas). Quatro discursos ficam sem barra (escore 0): só um é
+>     técnico (`doc_11`); os outros são `doc_3` (favorável), `doc_6` e
+>     `doc_8` (contrários). E dois textos técnicos (`doc_12`, `doc_14`)
+>     aparecem em laranja.
+>
+> 3.  **Em palavras simples.** O gráfico ordena os discursos do mais
+>     positivo ao mais negativo segundo o léxico, mas a ordem só é tão
+>     boa quanto o léxico: as barras “vazias” e as laranjas dos textos
+>     técnicos são os erros de cobertura e de domínio da seção 2.
+>
+> 4.  **Cuidado.** A cor depende só do sinal: +1 recebe o mesmo verde
+>     que +2, embora +1 seja um caso quase neutro (uma única palavra
+>     positiva). E o escore `sum` cresce com o tamanho do texto; em
+>     textos de tamanhos muito diferentes, compare com `method = "mean"`
+>     ou `"ratio"` (seção 3).
 
 ## 5. Visualização: distribuição (densidade)
 
@@ -262,20 +275,29 @@ ac_plot_sentiment(sent, type = "density") +
 
 ![](sentimento_files/figure-html/plot-density-1.png)
 
-> **Como interpretar:** cuidado com um artefato de construção deste
-> gráfico. As curvas são separadas pela coluna `sentiment`, que é o
-> próprio sinal do `score`: a curva “positivo” só pode ficar à direita
-> de zero e a “negativo” só à esquerda, e a “neutro” é uma linha em cima
-> do zero (todos os seus escores valem exatamente 0). Ou seja, ver picos
-> separados por cor **não** é evidência de polarização: aconteceria com
-> qualquer conjunto de escores. Polarização, no sentido usado por
-> DiMaggio, Evans & Bryson (1996), é uma propriedade da distribuição
-> **inteira** (dispersão e bimodalidade), e se avalia olhando todos os
-> escores juntos, como no histograma abaixo, ou colorindo por uma
-> variável externa ao escore (por exemplo, a posição declarada). Além
-> disso, a estimativa de densidade por kernel (Silverman, 1986) é
-> instável com poucos pontos: com 14 documentos, os picos dependem da
-> largura de banda escolhida.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Uma curva colorida para cada rótulo (`positivo`,
+>     `negativo`, `neutro`). A linha tracejada vertical marca o zero.
+>
+> 2.  **O que este exemplo mostra.** A curva verde fica toda à direita
+>     do zero, a laranja toda à esquerda, e a cinza é um pico fino em
+>     cima do zero.
+>
+> 3.  **Em palavras simples.** Essa separação **não é um achado**: as
+>     cores foram definidas pelo próprio sinal do escore, então a curva
+>     “positivo” só pode ficar à direita do zero, e a “neutro” só pode
+>     ficar no zero. Aconteceria com qualquer conjunto de textos. Este
+>     gráfico não mostra polarização; ele só mostra como cada grupo de
+>     rótulo se espalha.
+>
+> 4.  **Cuidado.** Polarização, no sentido de DiMaggio, Evans & Bryson
+>     (1996), é uma propriedade da distribuição **inteira** (o quanto os
+>     escores se espalham e se formam dois montes). Avalie olhando todos
+>     os escores juntos, como no histograma abaixo, ou colorindo por uma
+>     variável que não seja o próprio escore (a posição declarada, por
+>     exemplo). E com 14 documentos a estimativa de densidade é instável
+>     (Silverman, 1986).
 
 ``` r
 
@@ -292,13 +314,28 @@ ggplot2::ggplot(sent, ggplot2::aes(x = score)) +
 
 ![](sentimento_files/figure-html/plot-hist-1.png)
 
-> **Como interpretar:** com todos os escores juntos, a distribuição
-> deste exemplo tem a maior barra no zero (4 documentos), seguida de −1
-> e +1 (3 cada), com caudas curtas até −3 e +2: pelo histograma, o
-> corpus parece **menos** polarizado do que as posições declaradas
-> sugerem. A seção 2 explica por quê: parte dos documentos opinativos
-> caiu em zero por falta de cobertura do léxico. O histograma descreve
-> os escores, não as posições reais dos autores.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada barra é um valor de escore (−3, −2, …, +2), e
+>     a altura é quantos discursos tiveram aquele escore. A linha
+>     tracejada marca o zero. Procure **dois montes separados** (sinal
+>     de polarização) ou **um monte só** (sinal de consenso ou de pouca
+>     opinião).
+>
+> 2.  **O que este exemplo mostra.** A barra mais alta é a do zero (4
+>     discursos); −1 e +1 vêm logo depois (3 cada); as pontas são curtas
+>     (um discurso em −3, um em −2, dois em +2). É um monte só, centrado
+>     perto do zero.
+>
+> 3.  **Em palavras simples.** Pelos escores do léxico, o corpus parece
+>     **pouco** polarizado, embora os autores tenham declarado posições
+>     bem opostas (favor e contra).
+>
+> 4.  **Cuidado.** O histograma descreve os escores, não as posições
+>     reais. Parte dos discursos opinativos caiu no zero por falta de
+>     cobertura do léxico (seção 2), o que puxa a distribuição para o
+>     centro. Quando o histograma contradiz o que você sabe do corpus, a
+>     explicação costuma estar no instrumento, não nos textos.
 
 ## 6. Visualização: série ordenada
 
@@ -325,12 +362,27 @@ ac_plot_sentiment(sent_ordenado, type = "line") +
 
 ![](sentimento_files/figure-html/plot-line-1.png)
 
-> **Como interpretar:** com a reordenação acima, a linha conecta
-> documentos na verdadeira ordem de entrada (`doc_1` a `doc_14`); numa
-> análise real, use a data de publicação como esse factor ordenado, não
-> o `doc_id`. Uma tendência consistente (subindo ou caindo) é mais
-> informativa que oscilação ponto a ponto, que costuma refletir apenas
-> ruído em amostras pequenas.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** O eixo horizontal é a ordem dos documentos
+>     (`doc_1` a `doc_14`); cada ponto é o escore de um documento,
+>     colorido pelo rótulo; a linha tracejada é o zero.
+>
+> 2.  **O que este exemplo mostra.** Os 5 primeiros pontos ficam acima
+>     do zero ou nele, os 5 seguintes (`doc_6` a `doc_10`) descem até
+>     −3, e os 4 últimos ficam perto do zero.
+>
+> 3.  **Em palavras simples.** A “série” sobe, cai e se estabiliza, mas
+>     isso **não é tendência no tempo**: os documentos foram criados em
+>     três blocos, primeiro os favoráveis, depois os contrários, depois
+>     os técnicos. O desenho só reproduz a ordem em que o exemplo foi
+>     montado.
+>
+> 4.  **Cuidado.** Uma linha só mostra evolução se o eixo for de fato
+>     tempo. Numa análise real, ordene pela data de publicação (ou use
+>     [`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md),
+>     que agrega por período) e desconfie de oscilações ponto a ponto em
+>     amostras pequenas: costumam ser ruído.
 
 ## 7. Agregação por grupo (partido)
 
@@ -400,13 +452,29 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ![](sentimento_files/figure-html/plot-partidos-1.png)
 
-> **Como interpretar:** com poucos documentos por partido (aqui, de 1 a
-> 3), `score_med` é sensível a outliers: um único pronunciamento muito
-> extremo desloca a média do partido inteiro. Sempre reporte `score_dp`
-> ao lado de `score_med` e `n_docs`; uma média alta com desvio-padrão
-> também alto, ou com `n_docs` baixo, é um resultado frágil que merece
-> ressalva no texto, não uma afirmação categórica sobre a posição do
-> partido.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Uma linha por partido. Leia `score_med` (média dos
+>     escores) **sempre junto** com `n_docs` (quantos discursos entraram
+>     na média) e `score_dp` (desvio-padrão: o quanto os discursos do
+>     partido discordam entre si).
+>
+> 2.  **O que este exemplo mostra.** PSD tem a maior média (1,00), mas
+>     com **1 discurso só**. O PT aparece com média −1,00, perto do PSOL
+>     e do PCdoB, mas o desvio-padrão dele é o maior da tabela (2,83):
+>     seus 2 discursos são um favorável (+1) e um contrário (−3), e a
+>     média de posições opostas parece uma posição negativa que nenhum
+>     dos dois discursos tem.
+>
+> 3.  **Em palavras simples.** A média resume bem um partido quando os
+>     discursos dele são parecidos; quando são opostos, ela inventa um
+>     meio-termo. O desvio-padrão alto é o aviso.
+>
+> 4.  **Cuidado.** Com 1 a 3 discursos por partido, nenhuma dessas
+>     médias sustenta uma afirmação sobre “a posição do partido”.
+>     Reporte `n_docs` e `score_dp` ao lado da média, e quando o
+>     desvio-padrão for alto, olhe os discursos individuais antes de
+>     concluir.
 
 ## 8. Termos-chave dentro do texto (X-ray)
 
@@ -417,24 +485,40 @@ estrutura retórica.
 
 ``` r
 
-ac_plot_xray(corpus, terms = c("reforma", "trabalhadores", "aprovar", "vergonha")) +
+ac_plot_xray(corpus, terms = c("reforma", "trabalhadores", "proposta")) +
   ggplot2::labs(
     title    = "Onde os termos-chave aparecem no corpus",
     subtitle = "Cada ponto marca uma ocorrência do termo (posição relativa no texto)"
   )
-#> Warning: Termo(s) sem ocorrencia: "aprovar" and "vergonha".
-#> ℹ Verifique ortografia/acentuacao ou o efeito de `ac_clean()`.
 ```
 
 ![](sentimento_files/figure-html/plot-xray-1.png)
 
-> **Como interpretar:** o eixo horizontal é posição *relativa* no
-> documento (0 = início, 1 = fim), não posição absoluta em caracteres:
-> isso permite comparar documentos de tamanhos diferentes no mesmo
-> gráfico. Termos concentrados perto de 0 tendem a aparecer em
-> introduções/resumos; termos perto de 1, em conclusões. Pontos
-> espalhados por todo o eixo sugerem um termo usado de forma difusa, sem
-> função estrutural clara no discurso.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada linha é um documento; cada marca é uma
+>     ocorrência de um dos termos buscados, colorida pelo termo. O eixo
+>     horizontal é a posição relativa dentro do texto: 0 = primeira
+>     palavra, 1 = última.
+>
+> 2.  **O que este exemplo mostra.** *reforma* aparece no começo de
+>     vários discursos (posição 0 em `doc_4` e `doc_10`, 0,11 em
+>     `doc_6`); *proposta* também tende ao início (de 0,10 a 0,40);
+>     *trabalhadores* aparece no meio de `doc_5` (0,50) e na última
+>     palavra de `doc_6` (1,00).
+>
+> 3.  **Em palavras simples.** Nos discursos contrários e favoráveis, o
+>     objeto do debate (“a reforma”, “a proposta”) é nomeado logo no
+>     início da frase, e as consequências (“prejudica os trabalhadores”)
+>     vêm no fim.
+>
+> 4.  **Cuidado.** O X-ray foi pensado para documentos longos, onde
+>     início, meio e fim correspondem a partes do discurso (introdução,
+>     argumento, conclusão). Aqui cada documento é uma frase só, então a
+>     posição reflete a ordem das palavras na frase, não a estrutura
+>     retórica. Use o gráfico para ver **onde** um termo aparece; a
+>     interpretação de por que aparece ali pede leitura dos trechos
+>     ([`ac_kwic()`](https://andersonheri.github.io/acR/reference/ac_kwic.md)).
 
 ## 9. Exportar para artigo/relatório
 

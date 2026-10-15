@@ -69,20 +69,17 @@ corpus_limpo <- ac_clean(corpus, remove_stopwords = "pt")
 # Frequência global
 freq <- ac_count(corpus_limpo)
 ac_top_terms(freq, n = 8)
-#> # A tibble: 56 × 3
-#>    doc_id token             n
-#>    <chr>  <chr>         <int>
-#>  1 d3     adesao            1
-#>  2 d6     apenas            1
-#>  3 d3     apoio             1
-#>  4 d3     arrecadatória     1
-#>  5 d6     beneficia         1
-#>  6 d2     brasileiro        1
-#>  7 d3     claros            1
-#>  8 d2     contra            1
-#>  9 d6     contrários        1
-#> 10 d4     corporacoes       1
-#> # ℹ 46 more rows
+#> # A tibble: 8 × 2
+#>   token          n
+#>   <chr>      <int>
+#> 1 reforma        3
+#> 2 voto           3
+#> 3 distorcoes     2
+#> 4 grandes        2
+#> 5 sistema        2
+#> 6 tributária     2
+#> 7 adesao         1
+#> 8 apenas         1
 ```
 
 Agora quebrando por lado (`favor` vs `contra`):
@@ -91,20 +88,19 @@ Agora quebrando por lado (`favor` vs `contra`):
 
 freq_lado <- ac_count(corpus_limpo, by = "posicao")
 ac_top_terms(freq_lado, n = 5, by = "posicao")
-#> # A tibble: 50 × 3
-#>    posicao token           n
-#>    <chr>   <chr>       <int>
-#>  1 contra  grandes         2
-#>  2 contra  voto            2
-#>  3 contra  apenas          1
-#>  4 contra  beneficia       1
-#>  5 contra  brasileiro      1
-#>  6 contra  contra          1
-#>  7 contra  contrários      1
-#>  8 contra  corporacoes     1
-#>  9 contra  destruir        1
-#> 10 contra  empresários     1
-#> # ℹ 40 more rows
+#> # A tibble: 10 × 3
+#>    posicao token          n
+#>    <chr>   <chr>      <int>
+#>  1 contra  grandes        2
+#>  2 contra  voto           2
+#>  3 contra  apenas         1
+#>  4 contra  beneficia      1
+#>  5 contra  brasileiro     1
+#>  6 favor   distorcoes     2
+#>  7 favor   reforma        2
+#>  8 favor   sistema        2
+#>  9 favor   tributária     2
+#> 10 favor   adesao         1
 ```
 
 ## 2. Termos distintivos com *keyness*
@@ -139,11 +135,32 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ![](introducao-acR_files/figure-html/plot-keyness-1.png)
 
-> **Como interpretar:** barras maiores indicam termos mais distintivos
-> do grupo-alvo (`target`), não apenas mais frequentes. Um termo raro
-> que aparece quase só num dos lados pode ter χ² alto mesmo com contagem
-> absoluta baixa, por isso vale sempre olhar a tabela `key` junto do
-> gráfico antes de interpretar uma barra isolada.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada barra é uma palavra. Barra para a **direita**
+>     (verde-azulada) = mais usada nos discursos `favor`; para a
+>     **esquerda** (vermelha) = mais usada nos `contra`. Quanto mais
+>     comprida, maior a diferença entre os lados. Confira os números na
+>     tabela `key` logo acima: `n_target` (vezes em `favor`) e
+>     `n_reference` (vezes em `contra`).
+>
+> 2.  **O que este exemplo mostra.** Do lado favorável, as três barras
+>     mais longas são *distorcoes*, *sistema* e *tributária* (2 vezes em
+>     `favor`, nenhuma em `contra`). Do lado contrário, a barra mais
+>     longa de todo o gráfico é *grandes* (0 contra 2: “grandes
+>     corporacoes”, “grandes prejudicados”). As outras barras, mais
+>     curtas e todas iguais, são palavras que aparecem uma vez só.
+>
+> 3.  **Em palavras simples.** Quem defende a reforma fala do sistema
+>     tributário e de corrigir distorções; quem é contra fala de quem
+>     ganha e quem perde (os “grandes”).
+>
+> 4.  **Cuidado.** Com 8 discursos curtos, uma diferença de 2 contra 0 é
+>     pouca evidência: leia o gráfico como pista para o que ler nos
+>     textos, não como resultado estatístico (Dunning, 1993). Quando
+>     várias palavras empatam (as barras curtas), o gráfico mostra as
+>     primeiras em ordem alfabética: a escolha entre elas não tem
+>     significado.
 
 ## 3. Sentimento por documento (OpLexicon)
 
@@ -178,13 +195,33 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ![](introducao-acR_files/figure-html/plot-sentimento-1.png)
 
-> **Como interpretar:** o escore de cada documento é relativo ao léxico
-> OpLexicon, não uma medida absoluta de “o quão positivo” é o texto.
-> Compare documentos entre si (quem está mais à direita é mais positivo
-> que quem está mais à esquerda) em vez de fixar um limiar universal de
-> corte. A
-> [`vignette("sentimento")`](https://andersonheri.github.io/acR/articles/sentimento.md)
-> detalha essa leitura com mais formas de visualização.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada barra é um discurso; o comprimento é o escore
+>     (palavras positivas menos negativas do léxico OpLexicon). Para a
+>     direita (verde) = positivo; para a esquerda (laranja) = negativo;
+>     sem barra = zero. Compare com a posição declarada de cada
+>     discurso, que você conhece pela tabela do corpus.
+>
+> 2.  **O que este exemplo mostra.** `d3` tem o maior escore (+2:
+>     “forte” e “claros”). O caso que mais ensina é `d2`, um discurso
+>     **contra** (“Voto contra: essa reforma vai destruir o setor
+>     produtivo”) que sai **positivo**: o léxico conta “produtivo” como
+>     +1 e não tem nenhuma palavra negativa para “destruir”. `d6`
+>     (contra) sai zero porque “ricos” conta +1 e anula “contrários”
+>     (−1).
+>
+> 3.  **Em palavras simples.** O léxico não lê a frase, ele soma
+>     palavras soltas. Quando a opinião está num verbo (“destruir”) ou
+>     quando uma palavra positiva aparece num contexto negativo (“setor
+>     produtivo” sendo destruído), o escore erra a direção.
+>
+> 4.  **Cuidado.** O escore é relativo ao léxico, não uma medida de
+>     “quão positivo é o texto” (Taboada et al., 2011). Neste corpus,
+>     até “tributária” conta como +1, um erro de domínio. Antes de usar
+>     o escore, compare-o com uma amostra lida por humanos; a
+>     [`vignette("sentimento")`](https://andersonheri.github.io/acR/articles/sentimento.md)
+>     mostra esses erros em detalhe.
 
 ## 4. Escolher um modelo LLM
 
@@ -306,6 +343,9 @@ Koch (1977) e Gwet (2014).
 
 ## Referências
 
+DUNNING, T. Accurate methods for the statistics of surprise and
+coincidence. *Computational Linguistics*, v. 19, n. 1, p. 61-74, 1993.
+
 GILARDI, F.; ALIZADEH, M.; KUBLI, M. ChatGPT outperforms crowd workers
 for text-annotation tasks. *PNAS*, v. 120, n. 30, 2023.
 
@@ -320,6 +360,9 @@ categorical data. *Biometrics*, v. 33, n. 1, p. 159-174, 1977.
 
 SOUZA, M.; VIEIRA, R. Sentiment analysis on Twitter with Portuguese
 language. *STIL/SBC*, 2012.
+
+TABOADA, M. et al. Lexicon-based methods for sentiment analysis.
+*Computational Linguistics*, v. 37, n. 2, p. 267-307, 2011.
 
 TÖRNBERG, P. ChatGPT-4 outperforms experts and crowd workers in
 annotating political Twitter messages with zero-shot learning. *PLOS

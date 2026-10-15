@@ -387,15 +387,30 @@ confiança 0.667, caso limítrofe que ilustra a utilidade do
 self-consistency para identificar documentos ambíguos que merecem
 revisão humana prioritária.</p>
 <blockquote>
-<p><strong>Como interpretar:</strong> <code>confidence_score</code> mede
-o quanto as <code>k_consistency</code> rodadas independentes concordaram
-entre si, não se a categoria escolhida está “correta”. 1.000 significa
-que todas as rodadas bateram na mesma categoria; 0.667 com
-<code>k_consistency = 3L</code> significa que 2 das 3 rodadas
-concordaram e 1 discordou. Documentos com confiança baixa são bons
-candidatos a uma rodada de <strong>diagnóstico</strong> do codebook
-(<code>strategy = "uncertainty"</code>), separada da amostra aleatória
-que a seção 5 usa para estimar a confiabilidade.</p>
+<p><strong>Como ler esta tabela</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Olhe a última coluna,
+<code>confidence_score</code>, e procure valores <strong>abaixo de
+1,000</strong>. Com <code>k_consistency = 3L</code>, 1,000 = as três
+rodadas escolheram a mesma categoria; 0,667 = duas escolheram, uma
+discordou.</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> 8 dos 9 documentos
+têm 1,000. A exceção é <code>pl2858_favor</code> (0,667), classificado
+como <code>populista</code>: “Presos políticos: votar pela anistia é
+votar pela democracia” defende a proposta com um apelo à democracia em
+tom de slogan, e uma das três rodadas leu isso como discurso populista
+em vez de posição favorável.</p></li>
+<li><p><strong>Em palavras simples.</strong> O modelo teve dúvida
+justamente no texto que um leitor humano também acharia
+ambíguo.</p></li>
+<li><p><strong>Cuidado.</strong> Confiança alta não garante acerto: as
+três rodadas podem errar do mesmo jeito. Documentos como
+<code>pl2858_favor</code> são bons candidatos a uma rodada de
+<strong>diagnóstico</strong> do codebook
+(<code>strategy = "uncertainty"</code>), separada da amostra
+<strong>aleatória</strong> que a seção 5 usa para estimar a
+confiabilidade.</p></li>
+</ol>
 </blockquote>
 <hr>
 </div>
@@ -449,22 +464,29 @@ codebook, não para estimar confiabilidade.</p>
 <span><span class="co">## Fleiss' Kappa                   1.000       [1.000, 1.000]  quase perfeita (Landis &amp; Koch, 1977)</span></span>
 <span><span class="co">## Krippendorff's Alpha (nominal)  1.000       [1.000, 1.000]  confiável (&gt;= 0,800; Krippendorff, 2018)</span></span></code></pre>
 <blockquote>
-<p><strong>Como interpretar:</strong> Percent Agreement ignora a chance
-de acerto aleatório e por isso é sempre a métrica mais otimista da
-tabela; Kappa e Alpha corrigem por essa chance e tendem a ser mais
-conservadoras, especialmente quando uma categoria é muito mais frequente
-que as outras. Reporte Kappa ou Alpha como medida principal no artigo, e
-Percent Agreement apenas como complemento descritivo. Cada linha traz o
-rótulo da referência própria da métrica: Landis &amp; Koch (1977) para
-kappa, Krippendorff (2018) para o alfa e Neuendorf (2017) para o
-percentual.</p>
-<p>Note o IC de [1, 1]: ele <strong>não</strong> significa certeza. Com
-concordância perfeita em 5 documentos, toda reamostra <em>bootstrap</em>
-também é perfeita, e o método não tem como expressar a incerteza que uma
-amostra tão pequena carrega. Intervalos degenerados assim são um limite
-conhecido do <em>bootstrap</em> em amostras pequenas (Efron &amp;
-Tibshirani, 1993); a resposta é aumentar a amostra, não confiar no
-intervalo.</p>
+<p><strong>Como ler esta tabela</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Uma linha por métrica. Olhe
+<code>Estimativa</code> (de 0 a 1), o intervalo <code>IC</code> e a
+<code>Interpretacao</code>, que usa a referência própria de cada
+métrica: Landis &amp; Koch (1977) para kappa, Krippendorff (2018) para o
+alfa, Neuendorf (2017) para o percentual. A matriz de confusão embaixo
+mostra onde humano e modelo discordaram (fora da diagonal).</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> Todas as métricas
+valem 1,000 e a matriz de confusão só tem números na diagonal: nos 5
+documentos revisados, humano e modelo deram exatamente a mesma
+categoria.</p></li>
+<li><p><strong>Em palavras simples.</strong> Concordância perfeita nesta
+amostra, o esperado para textos construídos com posições
+inequívocas.</p></li>
+<li><p><strong>Cuidado.</strong> O IC de [1,000; 1,000]
+<strong>não</strong> significa certeza. Com concordância perfeita, toda
+reamostra <em>bootstrap</em> também é perfeita, e o método não consegue
+expressar a incerteza de uma amostra de 5 documentos (Efron &amp;
+Tibshirani, 1993). Reporte kappa ou alfa como medida principal (o
+percentual não desconta o acaso) e use uma amostra bem maior antes de
+afirmar confiabilidade.</p></li>
+</ol>
 </blockquote>
 <p>Concordância perfeita é esperada para este corpus, dado que os textos
 foram construídos com posicionamentos inequívocos. Em corpora reais com

@@ -256,13 +256,13 @@ contagem
 
 ## 5. Top termos: o vocabulário do corpus
 
-O gráfico abaixo mostra as **15 palavras mais frequentes**. Agora, com
+O gráfico abaixo mostra as **12 palavras mais frequentes**. Agora, com
 *stopwords* removidas, é possível ler os *temas* dominantes: reforma,
 projeto, tributária, orçamento, etc.
 
 ``` r
 
-top <- ac_top_terms(contagem, n = 15)
+top <- ac_top_terms(contagem, n = 12)
 ac_plot_top_terms(top) +
   ggplot2::labs(
     title    = "Termos mais frequentes no corpus",
@@ -273,12 +273,28 @@ ac_plot_top_terms(top) +
 
 ![](quantitativo_files/figure-html/top-termos-1.png)
 
-> **Como interpretar:** o comprimento da barra é contagem bruta de
-> ocorrências, não relevância temática. Frequência alta identifica
-> candidatos a tema dominante, mas não confirma: um termo pode ser
-> frequente só porque é comum na língua em geral (mesmo após remover
-> *stopwords*). Compare sempre com o TF-IDF (§7) antes de afirmar que um
-> termo frequente é também *distintivo* do corpus.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada barra é uma palavra, e o comprimento é
+>     quantas vezes ela aparece somando os 12 discursos. Leia de cima
+>     para baixo: a primeira barra é a palavra mais usada do corpus.
+>
+> 2.  **O que este exemplo mostra.** *tributária* e *projeto* estão no
+>     topo, com 3 ocorrências cada; as outras 10 palavras do gráfico
+>     aparecem 2 vezes. Todo o resto do vocabulário aparece uma vez só e
+>     por isso ficou de fora do top 12.
+>
+> 3.  **Em palavras simples.** O corpus fala muito de reforma tributária
+>     e de projetos em tramitação. É o retrato do vocabulário *mais
+>     usado*, ainda não do vocabulário *mais característico*.
+>
+> 4.  **Cuidado.** Frequência não é relevância. *projeto* está no topo
+>     porque quase todo discurso legislativo fala de projeto, não porque
+>     seja um tema. Para achar o que distingue um texto dos outros, a
+>     ideia é dar menos peso a palavras espalhadas por todos os
+>     documentos (Spärck Jones, 1972): é o que fazem o TF-IDF (§7) e o
+>     *keyness* (§8). E com 12 discursos, a diferença entre 3 e 2
+>     ocorrências é uma única palavra.
 
 ## 6. Nuvem de palavras
 
@@ -395,24 +411,35 @@ ac_plot_keyness(kn, n = 10) +
 
 ![](quantitativo_files/figure-html/keyness-1.png)
 
-> **Como interpretar:** o sinal diz o lado (positivo = mais frequente em
-> `fiscal`, negativo = em `tributário`) e o valor absoluto, o tamanho do
-> qui-quadrado da tabela 2x2 daquele termo. Aqui, *tributária*,
-> *reforma* e *empresas* marcam o lado tributário (3 ou 2 ocorrências
-> lá, nenhuma no fiscal), e *orcamento* e *oposicao* o lado fiscal (2
-> contra 0). Mas cuidado ao chamar isso de “significativo”: só
-> *tributária* passa do valor crítico de 3,84 (p \< 0,05 com 1 g.l.), e
-> por pouco (χ² ≈ 4,55). Três razões para ler esses números como
-> descritivos, não como testes: (1) os dois grupos somam só 51 tokens, e
-> com contagens esperadas abaixo de 5 a aproximação do qui-quadrado é
-> pouco confiável, o que levou Dunning (1993) a propor o log-likelihood
-> (`measure = "ll"`) para eventos raros; (2) testar dezenas de termos ao
-> mesmo tempo faz alguns passarem de 3,84 só por acaso, e um critério
-> com correção para comparações múltiplas (Benjamini & Hochberg, 1995)
-> eliminaria até *tributária*; (3) keyness mede diferença de frequência,
-> não relevância teórica. Em corpora reais, com milhares de tokens por
-> grupo, os mesmos cálculos ganham poder; o ranking dos termos, que é o
-> que o gráfico mostra, já é útil mesmo aqui.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada barra é uma palavra. Barra para a **direita**
+>     (vermelha) = palavra mais usada nos textos `fiscal`; para a
+>     **esquerda** (verde-azulada) = mais usada nos textos `tributário`.
+>     Quanto mais comprida a barra, maior a diferença entre os dois
+>     grupos.
+>
+> 2.  **O que este exemplo mostra.** A barra mais comprida é
+>     *tributária*, para a esquerda: aparece 3 vezes nos textos
+>     tributários e nenhuma nos fiscais. Logo abaixo vêm *reforma* e
+>     *empresas* (2 contra 0). À direita, as maiores são *orcamento* e
+>     *oposicao* (2 vezes no fiscal, 0 no tributário). As várias barras
+>     curtas e iguais são palavras que aparecem uma única vez, só num
+>     dos lados.
+>
+> 3.  **Em palavras simples.** Quem fala de imposto diz “reforma
+>     tributária” e fala de empresas; quem fala de contas públicas fala
+>     de orçamento e de oposição.
+>
+> 4.  **Cuidado.** Barra comprida não é prova. Os dois grupos somam só
+>     51 palavras, e só *tributária* passa do limite usual de
+>     significância (qui-quadrado de 4,55 contra 3,84), por pouco. Com
+>     contagens tão baixas o qui-quadrado é pouco confiável (Dunning,
+>     1993, propõe o log-likelihood, `measure = "ll"`); e, testando
+>     dezenas de palavras de uma vez, alguma passa do limite por acaso:
+>     com correção para comparações múltiplas (Benjamini & Hochberg,
+>     1995), nem *tributária* passaria. Aqui, leia a **ordem** das
+>     barras como pista, não como conclusão.
 
 ## 9. Rede de co-ocorrência
 
@@ -439,12 +466,31 @@ if (requireNamespace("ggraph", quietly = TRUE)) {
 
 ![](quantitativo_files/figure-html/coocorr%C3%AAncia-1.png)
 
-> **Como interpretar:** o tamanho do nó reflete seu grau (quantas
-> conexões ele tem): nós maiores são mais centrais na rede,
-> conectando-se a mais termos diferentes. A espessura da aresta reflete
-> a força da coocorrência entre aquele par específico. Agrupamentos
-> visuais (*clusters* de nós bem conectados entre si, mas pouco
-> conectados ao resto) costumam corresponder a sub-temas do corpus.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada bolinha (nó) é uma palavra; cada linha
+>     (aresta) liga duas palavras que apareceram a até 5 palavras de
+>     distância uma da outra pelo menos 2 vezes (`min_count = 2L`).
+>     Bolinha maior = palavra ligada a mais palavras diferentes; linha
+>     mais grossa = par que se encontrou mais vezes.
+>
+> 2.  **O que este exemplo mostra.** Com o filtro de 2 encontros, sobram
+>     só 6 ligações, que formam duas “ilhas” separadas: {*projeto*,
+>     *beneficios*, *sociais*, *comissao*} e {*tributária*, *reforma*,
+>     *empresas*}. *projeto* é o nó mais conectado (3 ligações).
+>
+> 3.  **Em palavras simples.** As ilhas são subtemas: um bloco fala de
+>     projetos de benefícios sociais em comissão; o outro, de reforma
+>     tributária e empresas.
+>
+> 4.  **Cuidado.** Aparecer perto não é ter o mesmo sentido: é só
+>     proximidade no texto. A posição das bolinhas no desenho é
+>     calculada para evitar sobreposição (algoritmo de Fruchterman &
+>     Reingold,
+>
+>     1991. e muda a cada rodada: só as **ligações** têm significado, a
+>           distância no papel não. E com `min_count = 2`, um par entra
+>           com apenas 2 encontros; em corpus real, use 5 ou mais.
 
 ### 9.1 Trocando o peso: PMI em vez de contagem
 
@@ -570,21 +616,30 @@ ac_readability(corpus_aval)
 #> 4 rev4           30        1        81  -10.0 muito dificil
 ```
 
-> **Como interpretar:** o índice de Flesch (1948), adaptado ao português
-> por Martins et al. (1996), não é limitado a 0-100 na prática: é uma
-> combinação linear de duas razões (palavras/frase e sílabas/palavra)
-> sem teto nem piso, e pode produzir valores negativos em textos muito
-> densos, como o manual técnico do exemplo (-18.5). A coluna `nivel`
-> categoriza o escore nas quatro faixas de Martins et al. (1996),
-> calibradas em livros didáticos: `>= 75` muito fácil, `50-74,9` fácil,
-> `25-49,9` difícil, `< 25` muito difícil. Note que mesmo a avaliação
-> curta e coloquial (“Bom. Chegou. Funciona.”) cai em *difícil* (36.3),
-> não em *fácil*: o peso do termo sílabas/palavra na fórmula (84,6×) é
-> alto o bastante para que poucas palavras longas já derrubem o escore,
-> mesmo com frases curtas. Ainda assim, pontua bem mais alto que o
-> manual técnico (-18.5): a métrica mede *forma*, não qualidade do
-> conteúdo, e seu valor está em comparações relativas entre textos, não
-> em ler o número isolado contra uma escala fixa de “bom”/“ruim”.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Olhe a coluna `flesch` (quanto **maior**, mais
+>     fácil de ler) e a coluna `nivel`, que traduz o número em palavras.
+>     As colunas `n_palavras`, `n_frases` e `n_silabas` mostram de onde
+>     o número veio.
+>
+> 2.  **O que este exemplo mostra.** As duas avaliações curtas ficam em
+>     *difícil*: `rev1` com 40,7 e `rev3` com 36,3. O manual técnico
+>     (`rev2`, −18,5) e o texto corporativo (`rev4`, −10,0) caem em
+>     *muito difícil*, com valores negativos: os dois têm uma frase só
+>     de 30 palavras e quase 3 sílabas por palavra.
+>
+> 3.  **Em palavras simples.** O índice pune duas coisas: frases longas
+>     e palavras longas. `rev2` e `rev4` têm as duas; por isso ficam
+>     muito abaixo das avaliações curtas.
+>
+> 4.  **Cuidado.** O índice não tem teto nem piso (dá negativo), e as
+>     faixas de `nivel` foram calibradas em livros didáticos (Martins et
+>     al., 1996), não em avaliações de produto. Até “Bom. Chegou.
+>     Funciona. Recomendo.” sai *difícil* (36,3): com só 4 palavras, a
+>     média de 2,5 sílabas por palavra pesa demais na fórmula. Use o
+>     índice para **comparar** textos do mesmo tipo, não para dar uma
+>     nota isolada.
 
 ``` r
 
@@ -598,22 +653,29 @@ ac_lexical_diversity(corpus_aval)
 #> 4 rev4         30      25 0.833    0.946  50.4
 ```
 
-> **Como interpretar:** o MTLD (McCarthy & Jarvis, 2010) é o comprimento
-> médio, em tokens, de um trecho de texto que mantém a TTR acima de
-> 0,72: quanto maior, mais palavras o autor consegue usar antes de
-> começar a se repetir. Não há faixas universais de “baixo” e “alto” (o
-> valor depende de gênero e língua), então compare só textos do mesmo
-> tipo. **Atenção a textos muito curtos:** o algoritmo mede quantas
-> vezes o TTR acumulado cai abaixo de um limiar (0,72) conforme o texto
-> avança; se o documento termina antes de atingir esse limiar mesmo uma
-> vez (como `rev1` e `rev3` aqui, com vocabulário 100% único), a métrica
-> devolve o próprio número de tokens, não uma medida de diversidade de
-> fato. Por isso `rev1` (10 tokens) e `rev3` (4 tokens) têm MTLD igual à
-> sua contagem de palavras. McCarthy & Jarvis (2010) validaram o MTLD em
-> textos de cerca de 100 a 2.000 palavras, e Koizumi (2012) mostra que
-> ele fica instável abaixo de ~100 tokens: os 4 exemplos aqui (4 a 30
-> tokens) servem para mostrar o cálculo, não para comparar riqueza
-> lexical.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Olhe a coluna `mtld` junto com `n_tokens` (quantas
+>     palavras o texto tem). `ttr` é a fração de palavras diferentes (1
+>     = nenhuma repetida).
+>
+> 2.  **O que este exemplo mostra.** `rev2` e `rev4` têm 30 palavras, 25
+>     diferentes, e MTLD de 50,4. Já `rev1` e `rev3` têm MTLD igual ao
+>     próprio número de palavras (10 e 4): nenhuma palavra se repete
+>     neles.
+>
+> 3.  **Em palavras simples.** O MTLD responde “quantas palavras, em
+>     média, o autor escreve antes de começar a se repetir” (McCarthy &
+>     Jarvis, 2010). Quando o texto acaba antes de qualquer repetição, a
+>     resposta possível é só “o texto inteiro”, e por isso o valor
+>     coincide com o tamanho.
+>
+> 4.  **Cuidado.** Com textos tão curtos o MTLD não mede riqueza de
+>     vocabulário. Ele foi validado em textos de cerca de 100 a 2.000
+>     palavras (McCarthy & Jarvis, 2010) e fica instável abaixo de ~100
+>     (Koizumi, 2012). Os 4 exemplos (4 a 30 palavras) servem para
+>     mostrar o cálculo, não para comparar os autores; e não existem
+>     faixas universais de “MTLD alto” ou “baixo”.
 
 ``` r
 
@@ -666,14 +728,32 @@ ac_plot_zipf(freq_aval)
 
 ![](quantitativo_files/figure-html/zipf-1.png)
 
-> **Como interpretar:** o gráfico é log-log (ambos os eixos em escala
-> logarítmica). Se os pontos seguem de perto a linha pontilhada de
-> referência (inclinação igual a -1), o corpus se comporta como texto
-> natural. Pontos muito acima da linha no início (um ou dois termos
-> dominando desproporcionalmente) costumam indicar *stopwords* não
-> removidas ou um termo repetido por erro de coleta; corpora muito
-> pequenos (como este exemplo de 4 documentos) naturalmente se desviam
-> mais da linha teórica do que corpora de milhares de documentos.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Cada ponto é uma palavra: no eixo horizontal, a
+>     posição dela no ranking (1 = a mais frequente); no vertical,
+>     quantas vezes aparece. Os dois eixos estão em escala logarítmica.
+>     A linha tracejada é a Lei de Zipf ideal, **desenhada a partir do
+>     primeiro ponto**: por isso o ponto 1 sempre cai em cima dela.
+>     Compare os pontos seguintes com a linha.
+>
+> 2.  **O que este exemplo mostra.** A palavra mais frequente é *do* (6
+>     vezes), seguida de *a* (3), que cai bem na linha. Depois os pontos
+>     param de descer e formam um patamar plano em 1: das 62 palavras
+>     diferentes, a maioria aparece uma única vez.
+>
+> 3.  **Em palavras simples.** No começo, o corpus se comporta como a
+>     lei prevê (a 2ª palavra aparece metade das vezes da 1ª). O patamar
+>     no fim é o “chão”: nenhuma palavra pode aparecer menos de 1 vez.
+>
+> 4.  **Cuidado.** O patamar em 1 é inevitável em corpus pequeno e não
+>     indica problema nos dados. A Lei de Zipf é uma tendência que
+>     aparece em corpora grandes (Piantadosi, 2014); com 4 textos
+>     curtos, só a parte inicial da curva é comparável. Note também que
+>     as palavras mais frequentes são *do* e *a*: este exemplo não
+>     passou por
+>     [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md),
+>     então as *stopwords* estão lá.
 
 Quando o corpus tem grupos, `ac_plot_zipf(freq_tbl, by = "grupo")`
 faceta um painel por grupo, útil para comparar se todos os subcorpora
@@ -711,16 +791,30 @@ ac_plot_zipf(freq_zipf_grupo, by = "fonte")
 
 ![](quantitativo_files/figure-html/zipf-grupo-1.png)
 
-> **Como interpretar:** compare o ponto de posto 1 (a palavra mais
-> frequente) de cada painel em relação à linha tracejada: em
-> `manual_tecnico`, “tecnico” aparece bem mais acima da linha teórica do
-> que a palavra mais frequente de `noticias`, sinal de um vocabulário
-> mais concentrado em poucos termos repetidos, esperado num texto
-> técnico/formulaico. Com corpora deste tamanho (6 documentos curtos por
-> grupo) a curva de ambos os painéis ainda se desvia visivelmente da
-> linha teórica (como já discutido acima): o que vale comparar aqui é a
-> posição *relativa* dos pontos iniciais entre os grupos, não o ajuste
-> absoluto de nenhum dos dois à reta.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Um painel por grupo. Ignore o primeiro ponto de
+>     cada painel (a linha é desenhada a partir dele, então ele sempre
+>     fica em cima). Olhe os pontos **2 a 10**: se ficam acima da linha,
+>     as palavras seguintes se repetem mais do que a Lei de Zipf prevê.
+>
+> 2.  **O que este exemplo mostra.** Em `manual_tecnico`, os pontos 2 a
+>     9 ficam bem acima da linha: depois de *tecnico* (9 vezes) vêm
+>     *manual* e *o* (6 cada) e várias palavras com 3 ou 4 ocorrências.
+>     Em `noticias`, os pontos 2 e 3 caem em cima da linha, e a partir
+>     do 7º tudo está no patamar de 1: quase todas as palavras aparecem
+>     uma vez só.
+>
+> 3.  **Em palavras simples.** O manual repete o mesmo punhado de termos
+>     o tempo todo (vocabulário concentrado); as notícias variam muito
+>     de palavra (vocabulário espalhado). É o que se espera de um texto
+>     técnico e formulaico comparado a notícias de assuntos diversos.
+>
+> 4.  **Cuidado.** Com 6 textos curtos por grupo, compare os grupos
+>     **entre si**, não cada um com a linha (Piantadosi, 2014). E repare
+>     em *A* maiúsculo entre as mais frequentes de `noticias`: sem
+>     [`ac_clean()`](https://andersonheri.github.io/acR/reference/ac_clean.md),
+>     “A” e “a” contam como palavras diferentes.
 
 ### 12. Concordância (KWIC) e colocações
 
@@ -767,12 +861,28 @@ ac_kwic(corpus_atend, pattern = "defeito", window = 4)
 #> 3 call3         4 o produto sem         defeito foi elogiado pelo cliente
 ```
 
-> **Como interpretar:** leia a coluna `before`, depois `keyword`, depois
-> `after`, como uma frase só. No exemplo, “defeito” aparece tanto
-> associado a reclamação (“chegou com defeito”) quanto a elogio negado
-> (“sem defeito foi elogiado”): uma contagem de frequência trataria as
-> três ocorrências como idênticas, mas o contexto mostra que a terceira
-> é, na verdade, uma menção à *ausência* do problema.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Leia cada linha da esquerda para a direita, como
+>     uma frase: `before` (o que vem antes) + `keyword` (o termo
+>     buscado)
+>
+>     - `after` (o que vem depois). `doc_id` e `position` dizem onde
+>       achar o trecho no texto original.
+>
+> 2.  **O que este exemplo mostra.** As três linhas têm *defeito*, mas
+>     em sentidos diferentes: “chegou com **defeito** de fabrica” e
+>     “relatou **defeito** no produto” são reclamações; “o produto sem
+>     **defeito** foi elogiado” é o contrário, um elogio.
+>
+> 3.  **Em palavras simples.** Uma contagem diria “*defeito* aparece 3
+>     vezes = 3 reclamações”. O contexto mostra que são 2.
+>
+> 4.  **Cuidado.** O KWIC é para ler, não para contar. É o primeiro
+>     passo da análise de discurso baseada em corpus (Sinclair, 1991):
+>     antes de interpretar por que uma palavra é frequente, leia algumas
+>     ocorrências. Em corpus grande, leia uma amostra das linhas, não
+>     todas.
 
 #### 12.2 Colocações: associação estatística entre palavras
 
@@ -803,13 +913,29 @@ ac_collocations(corpus_atend, n = 2, measure = "pmi", min_count = 1)
 #> # ℹ 21 more rows
 ```
 
-> **Como interpretar:** PMI mede o quanto duas palavras aparecem juntas
-> *além* do esperado pelo acaso, dadas suas frequências individuais.
-> Valores mais altos indicam associação mais forte; PMI próximo de zero
-> indica que as palavras aparecem juntas tanto quanto o esperado só pela
-> frequência de cada uma. Com corpora pequenos (poucos documentos), PMI
-> tende a inflar colocações raras: sempre acompanhe `measure = "pmi"` da
-> coluna `count`, e desconsidere pares com contagem muito baixa.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Cada linha é um par de palavras vizinhas. Olhe
+>     `association` (o PMI: quanto **maior**, mais as duas aparecem
+>     juntas acima do que o acaso explicaria) e, sempre ao lado, `count`
+>     (quantas vezes o par apareceu).
+>
+> 2.  **O que este exemplo mostra.** As sete primeiras linhas empatam em
+>     5,13, todas com `count = 1`. Das 31 duplas, só uma aparece duas
+>     vezes: “o produto”, e ela tem PMI **menor** (2,96), porque “o” e
+>     “produto” são palavras frequentes, então encontrá-las juntas
+>     surpreende menos.
+>
+> 3.  **Em palavras simples.** PMI de 5,13 quer dizer que o par apareceu
+>     cerca de 35 vezes mais do que o acaso preveria (2 elevado a 5,13 ≈
+>     35). Aqui, 5,13 é o valor máximo possível: é o que qualquer dupla
+>     de palavras que aparecem uma vez cada recebe.
+>
+> 4.  **Cuidado.** O PMI favorece pares raros (Church & Hanks, 1990;
+>     Evert, 2005), e o empate no topo mostra isso: são pares que
+>     ocorreram uma única vez. Num corpus real, use `min_count` de 5 ou
+>     mais, ou `measure = "ll"` (Dunning, 1993), que pesa melhor a
+>     frequência.
 
 Para visualizar as colocações mais fortes em vez de ler a tabela, um
 gráfico de barras ordenado funciona bem com poucos pares:
@@ -878,15 +1004,25 @@ serie
 #> 4 2024-04-01  0.5         1
 ```
 
-> **Como interpretar a tabela:**
-> [`ac_temporal()`](https://andersonheri.github.io/acR/reference/ac_temporal.md)
-> devolve uma linha por período, com `period` (data de início da
-> janela), `value` (a estatística agregada, aqui a média do sentimento)
-> e `n_docs` (quantos documentos caíram naquele período). **Sempre olhe
-> `n_docs` antes do `value`**: um `value` calculado sobre 1 documento
-> (como o período de abril aqui) não é uma “média” de fato, é só aquele
-> documento isolado, e deve ser tratado com a mesma cautela que uma
-> amostra de n=1.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Cada linha é um período (aqui, um mês; `period` é
+>     o primeiro dia dele). Olhe **primeiro `n_docs`** (quantas notícias
+>     caíram no mês) e só depois `value` (a média do sentimento naquele
+>     mês).
+>
+> 2.  **O que este exemplo mostra.** Janeiro tem 3 notícias e média ≈
+>     0,07; fevereiro cai para −0,35 (2 notícias); março volta a
+>     0,15 (2) e abril chega a 0,50, mas com **1 notícia só**.
+>
+> 3.  **Em palavras simples.** O sentimento fica neutro em janeiro,
+>     piora em fevereiro e se recupera em março e abril.
+>
+> 4.  **Cuidado.** Um mês com 1 documento não tem “média”: é aquele
+>     documento. O 0,50 de abril pode ser só uma notícia muito positiva.
+>     Antes de falar em tendência, confira se todos os períodos têm
+>     documentos suficientes; se não tiverem, use uma unidade de tempo
+>     maior (`unit = "year"`, por exemplo).
 
 ``` r
 
@@ -905,19 +1041,27 @@ ac_plot_temporal(serie, ylab = "Sentimento médio")
 
 ![](quantitativo_files/figure-html/plot-temporal-1.png)
 
-> **Como interpretar o gráfico:** a linha de tendência (LOESS;
-> Cleveland, 1979) suaviza flutuações de curto prazo para destacar a
-> direção geral: aqui, queda até o meio do período seguida de
-> recuperação. A suavização local precisa de pontos suficientes na
-> vizinhança de cada ajuste para estimar a curva com estabilidade; com
-> poucos pontos (4 meses, com `n_docs` variando de 1 a 3 por mês neste
-> exemplo), o próprio [`loess()`](https://rdrr.io/r/stats/loess.html) já
-> avisa sobre instabilidade numérica (“span too small”, “pseudoinverse
-> used”) — um sinal de que a linha de tendência está extrapolando mais
-> do que suavizando. Nesses casos, prefira olhar os pontos brutos da
-> tabela (ou o gráfico de barras logo abaixo) em vez de confiar na
-> curva; com séries mais longas e `n_docs` mais estável por período, a
-> suavização se torna mais confiável.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Os pontos azuis são os valores mensais da tabela
+>     acima, ligados por uma linha azul. A linha tracejada cinza é a
+>     tendência suavizada (LOESS; Cleveland, 1979), que ignora as
+>     oscilações de curto prazo.
+>
+> 2.  **O que este exemplo mostra.** Os pontos descem de janeiro para
+>     fevereiro e sobem em março e abril. Os avisos logo acima do
+>     gráfico (“span too small”, “pseudoinverse used”) são o próprio
+>     [`loess()`](https://rdrr.io/r/stats/loess.html) dizendo que tem
+>     pontos de menos para estimar a curva.
+>
+> 3.  **Em palavras simples.** Queda no começo do período e recuperação
+>     depois.
+>
+> 4.  **Cuidado.** Com 4 pontos, a linha tracejada é pouco confiável:
+>     ela precisa de vários pontos em cada trecho da série para suavizar
+>     (Cleveland, 1979). Aqui, confie nos pontos, não na curva. Com
+>     séries longas (dezenas de períodos, cada um com vários
+>     documentos), a curva passa a ser útil.
 
 Uma visão alternativa, mais direta para comparar poucos períodos entre
 si, é o gráfico de barras:
@@ -1012,31 +1156,37 @@ ac_plot_wordscores(wordscores)
 
 ![](quantitativo_files/figure-html/wordscores-plot-1.png)
 
-> **Como interpretar:** cada ponto é um documento, ordenado pelo `score`
-> estimado; a cor diferencia referência (nota conhecida) de estimado
-> (virgem). Usamos `rescale = "mv"` (Martin & Vanberg, 2008). Compare as
-> colunas `score_raw` e `score` da tabela: os escores brutos vão só de ≈
-> 1,16 a ≈ 4,65, mais comprimidos que as notas de 1 a 5, porque palavras
-> comuns a todas as avaliações (“produto”, “qualidade”) puxam todo mundo
-> para o centro. A transformação MV estica a escala ancorando-a nas
-> referências extremas (as de nota 1 e as de nota 5). Primeiro teste de
-> sanidade, nas próprias referências: `r3` (nota 4) sai em ≈ 4,18, `r4`
-> (nota 3) em ≈ 3,03 e `r5` (nota 2) em ≈ 2,14, perto das notas
-> verdadeiras. Segundo teste, nos dois virgens: `r8` (“simplesmente
-> perfeito”) fica em ≈ 4,30, entre as referências de nota 4 e 5, e `r9`
-> (“nem bom nem ruim, mediano”) em ≈ 3,53, entre as de nota 3 e 4. O
-> `r9` não cai exatamente em 3 porque contém “bom”, palavra que no
-> conjunto de referência só aparece em avaliações positivas: o método
-> conta palavras e não entende a negação em “nem bom”. A escala é
-> relativa às referências: um escore de 4,3 não é uma “nota”, é uma
-> posição comparável à delas.
+> **Como ler este gráfico**
 >
-> Por que não `rescale = "lbg"`? A transformação de Laver, Benoit &
-> Garry (2003) usa a média e o desvio-padrão dos próprios documentos
-> virgens. Com só 2 virgens, como aqui, ela sempre os coloca a ≈ 0,71
-> desvio-padrão para cada lado da média deles, seja qual for o texto;
-> por isso a função avisa. Martin & Vanberg (2008) propuseram a MV
-> justamente para não depender do conjunto de virgens.
+> 1.  **Onde olhar.** Cada ponto é uma avaliação, posicionada no eixo
+>     horizontal pelo escore estimado. Verde = avaliação com nota
+>     conhecida (referência); cinza = avaliação sem nota (virgem), que o
+>     método estimou. Compare a coluna `score` da tabela com as notas
+>     que você conhece.
+>
+> 2.  **O que este exemplo mostra.** Primeiro teste, nas referências:
+>     `r3` (nota 4) sai em ≈ 4,18, `r4` (nota 3) em ≈ 3,03 e `r5` (nota
+>
+>     2.  em ≈ 2,14, perto das notas verdadeiras. Segundo teste, nos
+>         dois virgens: `r8` (“simplesmente perfeito”) fica em ≈ 4,30,
+>         entre as referências de nota 4 e 5, e `r9` (“nem bom nem ruim,
+>         mediano”) em ≈ 3,53, entre as de nota 3 e 4.
+>
+> 3.  **Em palavras simples.** Sem nunca ver uma nota de `r8` ou `r9`, o
+>     método os colocou em lugares que fazem sentido, só pelo
+>     vocabulário. `r9` não cai exatamente em 3 porque contém “bom”, que
+>     nas referências só aparece numa avaliação de nota 4: o método
+>     conta palavras e não entende o “nem”.
+>
+> 4.  **Cuidado.** O escore é uma posição relativa às referências, não
+>     uma nota. Os escores brutos (`score_raw`) vão só de ≈ 1,16 a ≈
+>     4,65, porque palavras comuns a todas as avaliações (“produto”,
+>     “qualidade”) puxam tudo para o centro; o `rescale = "mv"` (Martin
+>     & Vanberg, 2008) estica a escala ancorando nas referências
+>     extremas. Evite `"lbg"` com poucos virgens: com só 2, a
+>     transformação de Laver, Benoit & Garry (2003) sempre os coloca a ≈
+>     0,71 desvio-padrão para cada lado da média deles, seja qual for o
+>     texto (por isso a função avisa).
 
 Uma alternativa que aparece com frequência em relatórios, mas que exige
 cuidado, é o gráfico de barras:
@@ -1058,17 +1208,25 @@ ggplot2::ggplot(wordscores, ggplot2::aes(x = score, y = doc_id, fill = is_refere
 
 ![](quantitativo_files/figure-html/wordscores-bar-1.png)
 
-> **Como interpretar:** o ranking é o mesmo do gráfico de pontos, mas
-> este gráfico tem uma armadilha: o comprimento de uma barra é lido como
-> uma quantidade medida a partir do zero (Cleveland, 1985), e aqui o
-> zero não significa nada. A escala do Wordscores é posicional e
-> relativa às referências; `r6` só fica com uma barra curtinha (≈ 0,55)
-> porque a escala MV pode passar um pouco das notas de referência, não
-> porque seja “quase nada”. Por isso a razão entre duas barras (ex.:
-> “`r8` tem o dobro de `r5`”) não tem interpretação. Para apresentar a
-> escala, prefira o gráfico de pontos (Cleveland, 1985, recomenda *dot
-> plots* justamente quando o eixo não tem um zero significativo); use
-> barras apenas para quantidades com zero real, como contagens.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** O ranking é o mesmo do gráfico de pontos. A
+>     diferença está no que o olho lê: o **comprimento** de cada barra,
+>     medido a partir do zero.
+>
+> 2.  **O que este exemplo mostra.** `r6` tem a barra mais curta (≈
+>     0,55) e `r2` a mais longa (≈ 5,29). Pela figura, `r8` parece ter
+>     “o dobro” de `r5`.
+>
+> 3.  **Em palavras simples.** Essa leitura está errada. A escala do
+>     Wordscores não tem um zero com significado: 0 não quer dizer
+>     “nenhuma satisfação”, e a barra de `r6` só é curta porque a escala
+>     pode passar um pouco das notas de referência.
+>
+> 4.  **Cuidado.** Use barras só para quantidades com zero real, como
+>     contagens. Para posições numa escala, prefira o gráfico de pontos:
+>     Cleveland (1985) recomenda *dot plots* justamente quando o eixo
+>     não começa num zero significativo.
 
 ### 15. Dicionários multi-categoria, emoções e validação
 
@@ -1125,15 +1283,28 @@ resultado_dict
 #> 6 call6            11         2         1        0.182       0.0909
 ```
 
-> **Como interpretar:** a coluna `<categoria>_prop` é a proporção de
-> tokens do documento pertencentes àquela categoria, não a proporção de
-> sentenças ou de “sentimento”. Um `produto_prop` alto não significa que
-> o documento fala *bem* ou *mal* do produto, só que usa vocabulário da
-> categoria “produto” com frequência: dicionários contam palavras, não
-> interpretam contexto, negação ou ironia (por isso a validação em 15.3
-> é indispensável). Documentos podem pontuar em mais de uma categoria ao
-> mesmo tempo (`call3` e `call6` têm tokens de `entrega` **e**
-> `produto`): as categorias não são mutuamente exclusivas por padrão.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Para cada documento, `entrega_n` e `produto_n`
+>     contam quantas palavras do texto estão em cada lista do
+>     dicionário; `_prop` divide essa contagem pelo total de palavras
+>     (`total_tokens`).
+>
+> 2.  **O que este exemplo mostra.** `call1` tem 3 palavras de entrega
+>     em 11 (*entrega*, *atrasou*, *rastreio*: 27%). `call2` tem 2 de
+>     produto (*defeito*, *quebrado*: 20%). `call3` e `call6` pontuam
+>     nas duas categorias.
+>
+> 3.  **Em palavras simples.** Os registros 1 e 4 falam de entrega; 2 e
+>     5, de produto; 3 e 6, das duas coisas.
+>
+> 4.  **Cuidado.** O dicionário conta palavras, não sentido. `call5`
+>     (“produto perfeito … sem nenhum problema”) pontua em `produto` por
+>     causa de *perfeito*, embora seja um elogio, e uma reclamação
+>     escrita com palavras fora da lista daria zero. As categorias não
+>     são excludentes: um registro pode estar nas duas. Por isso a
+>     validação contra codificação humana (15.3) é obrigatória antes de
+>     usar os números (Grimmer & Stewart, 2013).
 
 Para visualizar a composição temática de vários documentos de uma vez,
 um gráfico de barras empilhadas às proporções funciona melhor que a
@@ -1159,14 +1330,26 @@ ggplot2::ggplot(long_dict, ggplot2::aes(x = doc_id, y = prop, fill = categoria))
 
 ![](quantitativo_files/figure-html/dictionary-plot-1.png)
 
-> **Como interpretar:** a altura total da barra é a proporção de tokens
-> do documento capturada por **qualquer** categoria do dicionário; o
-> restante (até completar 100%) é vocabulário fora do dicionário —
-> normal e esperado, já que a maior parte de qualquer texto é gramática
-> e palavras funcionais, não vocabulário temático. Barras com as duas
-> cores empilhadas (`call3`, `call6`) são documentos que mencionam
-> entrega e produto na mesma frase; barras de uma cor só, documentos
-> focados num único problema.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Uma barra por registro. A altura de cada cor é a
+>     proporção do texto que pertence àquela categoria; a altura total é
+>     o quanto do texto o dicionário reconheceu.
+>
+> 2.  **O que este exemplo mostra.** As barras mais altas são `call3`
+>     (cerca de 50%: 2 palavras de entrega e 1 de produto em 6) e
+>     `call1` (27%). `call3` e `call6` são as únicas com as duas cores.
+>
+> 3.  **Em palavras simples.** Nenhuma barra chega perto de 100%: a
+>     maior parte de qualquer texto é gramática e palavras que não estão
+>     no dicionário. Barras de duas cores são registros que tratam dos
+>     dois problemas.
+>
+> 4.  **Cuidado.** A altura depende também do tamanho do texto: um
+>     registro curto (`call3`, 6 palavras) tem barra alta com poucas
+>     palavras do dicionário. Compare a composição de cores, não só a
+>     altura, e lembre que proporção alta não diz se o tom é positivo ou
+>     negativo.
 
 #### 15.2 Léxico de emoções
 
@@ -1195,18 +1378,27 @@ ac_emotion(corpus_atend2, lexicon = lexico_emocao)
 #> # ℹ 1 more variable: tristeza_prop <dbl>
 ```
 
-> **Como interpretar:** mecanicamente é a mesma lógica da seção 15.1
-> (conta palavras por categoria), só que as categorias são emoções em
-> vez de temas — por isso o mesmo cuidado se aplica: a função conta
-> vocabulário associado à emoção, não detecta a emoção real do autor.
-> Note que `call1` (“atrasou”) pontua em `raiva`, não em `tristeza`,
-> porque foi essa a emoção atribuída a “atrasou” no léxico de exemplo: a
-> qualidade do resultado depende inteiramente de que léxico você usa. O
-> pacote não distribui um léxico de emoções pronto (por isso o exemplo
-> define um na mão); para português, procure léxicos adaptados do NRC ou
-> construa o seu com
-> [`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md)
-> a partir de categorias validadas na literatura da sua área.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Mesma lógica da tabela do dicionário: uma coluna
+>     `_n` (contagem) e uma `_prop` (proporção) por emoção.
+>
+> 2.  **O que este exemplo mostra.** `call2` (“chegou com defeito e veio
+>     quebrado”) pontua em `raiva` (*quebrado*) **e** em `tristeza`
+>     (*defeito*): a mesma reclamação foi dividida em duas emoções só
+>     porque o léxico de exemplo classificou as duas palavras de jeitos
+>     diferentes. E `call4` (“o pacote nunca chegou”), claramente uma
+>     reclamação, tem zero em tudo: nenhuma palavra dele está no léxico.
+>
+> 3.  **Em palavras simples.** A função conta palavras ligadas a
+>     emoções; ela não detecta a emoção de quem escreveu.
+>
+> 4.  **Cuidado.** O resultado depende inteiramente do léxico (Mohammad
+>     & Turney, 2013). O pacote não traz um léxico de emoções pronto,
+>     por isso o exemplo define um à mão; para português, use léxicos
+>     adaptados do NRC ou construa o seu com
+>     [`ac_build_dictionary()`](https://andersonheri.github.io/acR/reference/ac_build_dictionary.md)
+>     a partir de categorias da literatura da sua área, e valide.
 
 #### 15.3 Validação contra codificação humana
 
@@ -1239,22 +1431,30 @@ ac_dictionary_validate(resultado_dict, humano)
 #> # ℹ 2 more variables: gwet_ac1 <dbl>, krippendorff_alfa <dbl>
 ```
 
-> **Como interpretar:** leia `precisao` e `recall` por categoria, não só
-> uma `concordancia` geral. No exemplo, `entrega` tem **precisão** menor
-> (0.75): o dicionário marcou `call1` como “entrega”, mas o humano
-> discordou — um falso positivo. `produto` tem **recall** menor (0.8): o
-> humano marcou um caso como “produto” que o dicionário não capturou —
-> um falso negativo. Essa é a diferença prática entre os dois erros:
-> precisão baixa é o dicionário marcando demais (alarme falso); recall
-> baixo é o dicionário deixando passar (caso perdido), e qual dos dois
-> importa mais depende do uso: numa triagem para revisão humana, recall
-> alto é mais importante (não quer perder casos); num relatório
-> automático sem revisão, precisão alta é mais importante (não quer
-> alarmes falsos). Krippendorff (2018, sec. 12.4) exige
-> `krippendorff_alfa` de pelo menos 0,800 para conclusões sem ressalvas
-> e aceita entre 0,667 e 0,800 só para conclusões provisórias. Com 6
-> documentos, como aqui, nenhuma dessas faixas pode ser afirmada: o
-> exemplo ilustra o cálculo, não um tamanho de amostra adequado.
+> **Como ler esta tabela**
+>
+> 1.  **Onde olhar.** Uma linha por categoria. `vp` = o dicionário e o
+>     humano marcaram; `fp` = só o dicionário marcou (alarme falso);
+>     `fn` = só o humano marcou (caso perdido). `precisao` e `recall`
+>     resumem esses erros.
+>
+> 2.  **O que este exemplo mostra.** `entrega` tem precisão 0,75: o
+>     dicionário marcou `call1` como entrega, e o humano não (1 alarme
+>     falso). `produto` tem recall 0,8: o humano marcou um caso de
+>     produto que o dicionário não pegou (1 caso perdido).
+>
+> 3.  **Em palavras simples.** Precisão baixa = o dicionário marca
+>     demais. Recall baixo = o dicionário deixa passar. Qual erro
+>     importa mais depende do uso: numa triagem para revisão humana,
+>     você não quer perder casos (recall); num relatório automático sem
+>     revisão, não quer alarmes falsos (precisão).
+>
+> 4.  **Cuidado.** Com 6 documentos nada disso pode ser afirmado: o
+>     exemplo mostra o cálculo, não um tamanho de amostra adequado. Para
+>     concluir sobre a confiabilidade, Krippendorff (2018, sec. 12.4)
+>     pede `krippendorff_alfa` de pelo menos 0,800 (0,667 só para
+>     conclusões provisórias), numa amostra aleatória de tamanho
+>     suficiente.
 
 ### 16. Análise de correspondência (CA): um mapa de grupos e termos
 
@@ -1270,40 +1470,56 @@ parecida.
 ``` r
 
 categorias <- data.frame(
-  id = paste0("d", 1:6),
+  id = paste0("d", 1:9),
   texto = c(
-    "entrega atrasada rastreio sumiu",
-    "pedido atrasou rastreio sumiu",
-    "produto defeito quebrado chegou",
-    "veio quebrado produto péssimo",
-    "atendimento excelente resolveram rápido",
-    "suporte educado resolveu rápido"
+    "entrega atrasou rastreio sumiu pedido",
+    "pedido atrasou entrega demora atendimento",
+    "rastreio parado entrega demora pedido",
+    "produto quebrado defeito troca",
+    "produto defeito demora troca atendimento",
+    "veio quebrado produto troca defeito",
+    "atendimento educado resolveu rapido",
+    "suporte resolveu troca rapido atendimento",
+    "atendimento demora mas resolveu educado"
   ),
-  categoria = c("entrega", "entrega", "produto", "produto",
-                "atendimento", "atendimento"),
+  categoria = rep(c("entrega", "produto", "atendimento"), each = 3),
   stringsAsFactors = FALSE
 )
 corpus_cat <- ac_corpus(categorias, text = texto, docid = id, meta = categoria)
-ca <- ac_ca(corpus_cat, by = "categoria", min_count = 1)
+ca <- ac_ca(corpus_cat, by = "categoria", min_count = 2)
 ac_plot_ca(ca)
 ```
 
 ![](quantitativo_files/figure-html/ca-1.png)
 
-> **Como interpretar:** os pontos verdes são grupos (aqui, categorias de
-> atendimento); os triângulos roxos são termos. Este é um mapa
-> “simétrico”: compare grupos com grupos e termos com termos pela
-> distância, mas leia a relação **grupo-termo** pela **direção** a
-> partir da origem, não pela distância entre os dois pontos, que nesse
-> tipo de mapa não tem interpretação direta (Greenacre, 2007, cap. 8-9).
-> Um termo longe da origem e na mesma direção de um grupo é
-> característico dele; um termo perto da origem (o cruzamento dos eixos)
-> é genérico, usado de forma parecida por todos os grupos. As
-> porcentagens nos títulos dos eixos (`Dim 1`, `Dim 2`) indicam quanto
-> da variação total cada dimensão explica: se a Dim 1 já explica a maior
-> parte, o mapa 2D captura bem a estrutura; se as duas dimensões
-> dividirem a variação de forma mais equilibrada, interpretar só a Dim 1
-> perde informação relevante.
+> **Como ler este gráfico**
+>
+> 1.  **Onde olhar.** Pontos verdes = categorias de atendimento;
+>     triângulos roxos = palavras. Comece pela **origem** (o cruzamento
+>     das linhas cinzas, no centro): ela representa o “perfil médio” do
+>     corpus. Depois veja em que **direção**, a partir da origem, cada
+>     palavra e cada categoria estão.
+>
+> 2.  **O que este exemplo mostra.** As três categorias ficam em
+>     direções diferentes: `atendimento` em cima, `entrega` à direita,
+>     `produto` embaixo à esquerda. As palavras exclusivas de cada uma
+>     ficam na mesma direção e afastadas do centro (*educado, rapido,
+>     resolveu* junto de atendimento; *atrasou, entrega, pedido,
+>     rastreio* junto de entrega). *demora*, que aparece nas três
+>     categorias, fica perto da origem; *troca*, usada em produto e em
+>     atendimento, fica entre as duas.
+>
+> 3.  **Em palavras simples.** Quanto mais longe do centro, mais
+>     característica de um grupo é a palavra; perto do centro, a palavra
+>     é de todo mundo. Palavras com o mesmo perfil caem no mesmo ponto,
+>     e o gráfico junta os rótulos delas.
+>
+> 4.  **Cuidado.** Neste tipo de mapa (“simétrico”) a distância entre
+>     uma palavra e uma categoria não tem interpretação direta; leia a
+>     relação pela direção a partir da origem (Greenacre, 2007, cap.
+>     8-9). Compare distâncias só entre categorias ou só entre palavras.
+>     E veja os dois eixos: aqui eles explicam 54,7% e 45,3% da
+>     variação, então nenhum dos dois sozinho conta a história.
 
 Quando o mapa fica poluído de termos, uma alternativa é olhar só as
 coordenadas dos grupos, sem os termos: útil quando a pergunta é apenas
@@ -1341,8 +1557,13 @@ ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
 - Cleveland, W. S. (1985). *The Elements of Graphing Data*. Wadsworth.
 - Dunning, T. (1993). Accurate Methods for the Statistics of Surprise
   and Coincidence. *Computational Linguistics*, 19(1), 61-74.
+- Evert, S. (2005). *The Statistics of Word Cooccurrences: Word Pairs
+  and Collocations*. Tese (Doutorado), Universität Stuttgart.
 - Flesch, R. (1948). A New Readability Yardstick. *Journal of Applied
   Psychology*, 32(3), 221-233.
+- Fruchterman, T. M. J.; Reingold, E. M. (1991). Graph drawing by
+  force-directed placement. *Software: Practice and Experience*, 21(11),
+  1129-1164.
 - Greenacre, M. (2007). *Correspondence Analysis in Practice* (2nd ed.).
   Chapman and Hall/CRC.
 - Grimmer, J.; Stewart, B. M. (2013). Text as Data: The Promise and
@@ -1374,6 +1595,9 @@ ggplot2::ggplot(ca$row_coords, ggplot2::aes(x = dim1, y = dim2, label = unit)) +
 - Silge, J.; Robinson, D. (2017). *Text Mining with R*. O’Reilly.
 - Sinclair, J. (1991). *Corpus, Concordance, Collocation*. Oxford
   University Press.
+- Spärck Jones, K. (1972). A statistical interpretation of term
+  specificity and its application in retrieval. *Journal of
+  Documentation*, 28(1), 11-21.
 - Stone, P. J. et al. (1966). *The General Inquirer: A Computer Approach
   to Content Analysis*. MIT Press.
 - Tweedie, F. J.; Baayen, R. H. (1998). How variable may a constant be?

@@ -401,7 +401,7 @@ categorias similares.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Categorias (3): <span style="color: #0000BB;">"positivo"</span>, <span style="color: #0000BB;">"negativo"</span>, and <span style="color: #0000BB;">"neutro"</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Multilabel: <span style="color: #0000BB;">FALSE</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Idioma: <span style="color: #0000BB;">"pt"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 17:06</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Criado em: 15/10/2026 17:56</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Instrução geral</span>:</span></span>
 <span><span class="co">#&gt; Classifique o tom geral do discurso parlamentar.</span></span>
@@ -637,22 +637,34 @@ abaixo.</li>
 <code>reasoning</code> (raciocínio do modelo, se pedido) e os metadados
 originais do corpus.</p>
 <blockquote>
-<p><strong>Como interpretar:</strong> <code>confidence_score</code> mede
-<em>consistência interna</em> do modelo, não <em>acerto</em>. Um
-documento com <code>confidence_score = 1.0</code> pode ainda assim estar
-classificado errado, se o codebook for ambíguo o suficiente para o
-modelo “errar com confiança” de forma sistemática. Use
-<code>confidence_score</code> para achar os casos a revisar quando o
-objetivo é <strong>diagnosticar erros</strong>
-(<code>ac_qual_sample(strategy = "uncertainty")</code>), nunca como
-substituto da validação humana, que deve ser feita numa amostra
-aleatória. O valor é sempre a fração de rodadas de self-consistency que
-concordaram, então os valores possíveis dependem de
-<code>k_consistency</code>: com <code>k_consistency = 3</code> (usado
-neste exemplo), só existem os valores 0, 0,33, 0,67 e 1,0. Documentos
-com menos da metade das rodadas concordando — abaixo de 0,67 com
-<code>k_consistency = 3</code>, ou o equivalente proporcional com outro
-<code>k_consistency</code> — quase sempre merecem segunda leitura.</p>
+<p><strong>Como ler esta tabela</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Onde olhar.</strong> Na saída de
+<code>head(resultado)</code>, olhe a coluna
+<code>confidence_score</code>: a fração das <code>k_consistency</code>
+rodadas que escolheram a categoria final. Com
+<code>k_consistency = 3</code> (este exemplo), ela só pode valer 0,33
+(as três rodadas discordaram), 0,67 (duas concordaram) ou 1,00 (todas
+concordaram).</p></li>
+<li><p><strong>O que este exemplo mostra.</strong> Num corpus de textos
+claros, a maioria das linhas tem 1,00; os documentos com 0,67 ou 0,33
+são os que o modelo achou ambíguos, e são eles que você deve abrir
+primeiro.</p></li>
+<li><p><strong>Em palavras simples.</strong>
+<code>confidence_score</code> mede se o modelo <strong>concorda consigo
+mesmo</strong>, não se ele <strong>acertou</strong>. Um modelo pode
+errar as três rodadas do mesmo jeito (por exemplo, quando o codebook tem
+uma definição ambígua) e sair com 1,00.</p></li>
+<li><p><strong>Cuidado.</strong> A ideia de usar concordância entre
+rodadas como sinal de incerteza vem de Wang et al. (2023) e Xiong et
+al. (2024), que mostram que ela se relaciona com acerto, mas não
+oferecem cortes universais. Use os casos de confiança baixa para
+<strong>diagnosticar</strong> o codebook
+(<code>ac_qual_sample(strategy = "uncertainty")</code>); a validação que
+vai para o artigo tem de ser feita numa amostra
+<strong>aleatória</strong> codificada por humanos (Krippendorff, 2018,
+cap. 12).</p></li>
+</ol>
 </blockquote>
 <div class="section level3">
 <h3 id="live-view-tirando-o-llm-do-caixa-preta">Live view: tirando o LLM do caixa-preta<a class="anchor" aria-label="anchor" href="#live-view-tirando-o-llm-do-caixa-preta"></a>
@@ -820,7 +832,7 @@ de falha mais frequentes de uma rodada com LLM, e o que cada um pede. Os
 limiares de <code>confidence_score</code> citados abaixo (0,67; 0,80)
 assumem <code>k_consistency = 3</code>, como no exemplo desta vignette:
 com outro <code>k_consistency</code>, ajuste para o valor proporcional
-mais próximo (ver “Como interpretar” na seção anterior).</p>
+mais próximo (ver “Como ler” na seção anterior).</p>
 <div class="section level3">
 <h3 id="categorias-com-concordância-baixa-entre-k_consistency">1. Categorias com concordância baixa entre
 <code>k_consistency</code><a class="anchor" aria-label="anchor" href="#categorias-com-concord%C3%A2ncia-baixa-entre-k_consistency"></a>
@@ -984,8 +996,15 @@ ed.). SAGE.</p>
 Analysis with Large Language Models in R</em>. GitHub. <a href="https://github.com/quallmer/quallmer" class="external-link uri">https://github.com/quallmer/quallmer</a></p>
 <p>Sampaio, R. C., &amp; Lycarião, D. (2021). <em>Análise de conteúdo
 categorial: manual de aplicação</em>. Brasília: ENAP.</p>
+<p>Wang, X., et al. (2023). Self-consistency improves chain of thought
+reasoning in language models. <em>International Conference on Learning
+Representations (ICLR)</em>.</p>
 <p>Wickham, H., et al. (2025). <em>ellmer: Chat with Large Language
 Models</em>. R package. <a href="https://ellmer.tidyverse.org" class="external-link uri">https://ellmer.tidyverse.org</a></p>
+<p>Xiong, M., et al. (2024). Can LLMs express their uncertainty? An
+empirical evaluation of confidence elicitation in LLMs.
+<em>International Conference on Learning Representations
+(ICLR)</em>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
