@@ -32,7 +32,7 @@ df <- data.frame(
   score  = c(-2, -1, 0, 1, 2, 1)
 )
 temporal <- ac_temporal(df, date_col = "data", value_col = "score")
-ac_plot_temporal(temporal, ylab = "Sentimento medio")
+ac_plot_temporal(temporal, ylab = "Sentimento médio")
 
 }
 \seealso{

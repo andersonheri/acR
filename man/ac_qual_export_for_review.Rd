@@ -30,7 +30,7 @@ para um arquivo Excel, com colunas para o codificador humano preencher.
 }
 \examples{
 if (requireNamespace("openxlsx", quietly = TRUE)) {
-  # Amostra de documentos ja classificados pela LLM
+  # Amostra de documentos já classificados pela LLM
   coded <- tibble::tibble(
     doc_id           = paste0("doc_", 1:5),
     categoria        = c("favor", "contra", "favor", "contra", "favor"),
@@ -38,7 +38,7 @@ if (requireNamespace("openxlsx", quietly = TRUE)) {
   )
   amostra <- ac_qual_sample(coded, n = 3, strategy = "uncertainty")
 
-  # Exportar para revisao humana em arquivo temporario
+  # Exportar para revisao humana em arquivo temporário
   arquivo <- tempfile(fileext = ".xlsx")
   ac_qual_export_for_review(amostra, path = arquivo)
   file.exists(arquivo)

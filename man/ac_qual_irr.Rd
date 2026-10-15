@@ -16,15 +16,15 @@ ac_qual_irr(
 )
 }
 \arguments{
-\item{gold}{\code{data.frame}. Anotacoes de referencia (anotador humano ou
+\item{gold}{\code{data.frame}. Anotacoes de referência (anotador humano ou
 gold standard). Deve conter colunas \code{id_discurso} (ou \code{id}) e \code{categoria}.}
 
 \item{predicted}{\code{data.frame}. Anotacoes a comparar (ex.: saida do LLM via
 \code{\link[=ac_qual_code]{ac_qual_code()}}). Mesmas colunas exigidas.}
 
-\item{method}{\code{character}. Metrica(s) a calcular. Opcoes: \code{"all"} (padrao),
+\item{method}{\code{character}. Métrica(s) a calcular. Opcoes: \code{"all"} (padrao),
 \code{"cohen_kappa"}, \code{"fleiss_kappa"}, \code{"krippendorff"}, \code{"percent_agreement"}.
-Aceita vetor de multiplas opcoes.}
+Aceita vetor de múltiplas opcoes.}
 
 \item{id_col}{\code{character}. Nome da coluna de identificador nos data.frames.
 Padrao: \code{"id_discurso"}.}
@@ -47,10 +47,10 @@ Um objeto de classe \code{ac_irr} (lista) com os elementos:
 \item{\code{metrics}}{\code{data.frame} com colunas \code{metric}, \code{estimate},
 \code{ci_lower}, \code{ci_upper}, \code{interpretation}.}
 \item{\code{confusion}}{\code{table}. Matriz de confusao entre os anotadores.}
-\item{\code{n_docs}}{\code{integer}. Numero de documentos comparados.}
-\item{\code{n_annotators}}{\code{integer}. Numero de anotadores.}
+\item{\code{n_docs}}{\code{integer}. Número de documentos comparados.}
+\item{\code{n_annotators}}{\code{integer}. Número de anotadores.}
 \item{\code{categories}}{\code{character}. Categorias encontradas.}
-\item{\code{method}}{\code{character}. Metrica(s) calculadas.}
+\item{\code{method}}{\code{character}. Métrica(s) calculadas.}
 }
 }
 \description{
@@ -70,11 +70,11 @@ A função aceita dois formatos de entrada: (a) dois data.frames com colunas
 data.frame em formato largo com uma coluna por anotador.
 }
 \details{
-\subsection{Interpretacao do Kappa (Landis & Koch, 1977)}{\tabular{ll}{
-   Kappa \tab Concordancia \cr
+\subsection{Interpretação do Kappa (Landis & Koch, 1977)}{\tabular{ll}{
+   Kappa \tab Concordância \cr
    < 0.00 \tab Pobre \cr
    0.00 - 0.20 \tab Leve \cr
-   0.21 - 0.40 \tab Razoavel \cr
+   0.21 - 0.40 \tab Razoável \cr
    0.41 - 0.60 \tab Moderada \cr
    0.61 - 0.80 \tab Substancial \cr
    0.81 - 1.00 \tab Quase perfeita \cr
@@ -91,7 +91,7 @@ passados como lista via \code{...}.
 
 \subsection{Krippendorff's Alpha}{
 
-Metrica mais geral: funciona com qualquer numero de anotadores, lida com
+Métrica mais geral: funciona com qualquer número de anotadores, lida com
 dados faltantes e suporta escalas nominais, ordinais e de intervalo
 (KRIPPENDORFF, 2018).
 }

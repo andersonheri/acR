@@ -3,13 +3,13 @@
 #' @description
 #' `ac_kwic()` localiza todas as ocorrências de um termo (ou padrão) nos
 #' documentos de um `ac_corpus` e devolve cada ocorrência com uma janela
-#' de palavras antes e depois — a técnica de concordância usada desde os
+#' de palavras antes e depois: a técnica de concordância usada desde os
 #' primórdios da linguística de corpus (Sinclair, 1991) para entender
 #' *como* uma palavra é usada, não só *com que frequência*.
 #'
 #' É o complemento natural de uma análise de frequência ou keyness: saber
 #' que "liberdade" é um termo-chave de um grupo não diz nada sobre como o
-#' termo é empregado — a concordância mostra se aparece ao lado de
+#' termo é empregado: a concordância mostra se aparece ao lado de
 #' "econômica", "de expressão" ou "individual", revelando o enquadramento
 #' (framing) real do termo em cada contexto. Funciona em qualquer corpus
 #' com linguagem natural: reviews de produto, letras de música, transcrições

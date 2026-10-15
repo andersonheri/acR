@@ -34,7 +34,7 @@ termos por tópico e prevalência por documento.
 }
 \examples{
 \donttest{
-# 1. Corpus sintetico com 3 temas nitidos (democracia, economia, saude, educacao)
+# 1. Corpus sintético com 3 temas nitidos (democracia, economia, saude, educacao)
 df <- data.frame(
   id = paste0("d", 1:10),
   texto = c(
@@ -45,14 +45,14 @@ df <- data.frame(
     "democracia eleicao voto politica partido",
     "economia inflacao juros fiscal orcamento",
     "saude sus medico hospital remedio",
-    "educacao universidade pesquisa ciencia",
+    "educacao universidade pesquisa ciência",
     "participacao social cidadania direitos igualdade",
-    "mercado trabalho emprego salario industria"
+    "mercado trabalho emprego salário industria"
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 
-# 2. Ajustar LDA com k=3 topicos (o corpus tem ~4 temas; k=3 for a experimentacao)
+# 2. Ajustar LDA com k=3 tópicos (o corpus tem ~4 temas; k=3 for a experimentacao)
 lda <- ac_lda(corpus, k = 3)
 lda  # imprime resumo do modelo
 }
@@ -62,7 +62,7 @@ lda  # imprime resumo do modelo
 Blei, D. M.; Ng, A. Y.; Jordan, M. I. (2003). Latent Dirichlet Allocation.
 \emph{Journal of Machine Learning Research}, 3, 993-1022.
 
-Vignette: \code{vignette("lda", package = "acR")} — tutorial completo com
+Vignette: \code{vignette("lda", package = "acR")}: tutorial completo com
 corpus real e visualizações.
 }
 \seealso{

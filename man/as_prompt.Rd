@@ -41,7 +41,7 @@ cb <- ac_qual_codebook(
   name         = "tom",
   instructions = "Classifique o tom do texto.",
   categories   = list(
-    formal   = list(definition = "Linguagem tecnica e impessoal."),
+    formal   = list(definition = "Linguagem técnica e impessoal."),
     informal = list(definition = "Linguagem coloquial ou emotiva.")
   )
 )

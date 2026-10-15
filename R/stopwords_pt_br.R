@@ -40,7 +40,7 @@
     ))
   }
 
-  # Preset inglês — retorna direto
+  # Preset inglês: retorna direto
   if (preset == "en") {
     return(stopwords::stopwords("en", source = "snowball"))
   }
@@ -48,7 +48,7 @@
   # Base: stopwords padrão do português
   base_pt_raw <- stopwords::stopwords("pt", source = "snowball")
 
-  # Preposições analiticamente relevantes para CP/CS/AP — removidas do preset
+  # Preposições analiticamente relevantes para CP/CS/AP: removidas do preset
   # "pt" para não suprimir dimensões substantivas do texto.
   # Pesquisador pode adicioná-las manualmente via extra_stopwords se desejar.
   preposicoes_substantivas <- c(

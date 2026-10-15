@@ -474,7 +474,7 @@ ac_fetch_senado <- function(
     }
   }
 
-  # id_deputado (codigo do parlamentar — nome padrao acR)
+  # id_deputado (codigo do parlamentar: nome padrao acR)
   if (!"id_deputado" %in% names(df)) {
     df$id_deputado <- if ("codigo_senador" %in% names(df)) {
       df$codigo_senador
@@ -495,7 +495,7 @@ ac_fetch_senado <- function(
   # uri_discurso
   if (!"uri_discurso" %in% names(df)) df$uri_discurso <- NA_character_
 
-  # coluna casa — diferencia do corpus da Camara
+  # coluna casa: diferencia do corpus da Camara
   df$casa <- "senado"
 
   # Colunas obrigatorias na ordem padrao acR + casa

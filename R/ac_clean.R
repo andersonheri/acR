@@ -329,7 +329,7 @@ ac_clean <- function(corpus,
 
 
 # ============================================================================
-# Objeto editável de stopwords extras — para o pesquisador customizar
+# Objeto editável de stopwords extras: para o pesquisador customizar
 # ============================================================================
 
 #' Inspecionar e editar stopwords extras do acR

@@ -7,7 +7,7 @@
 ac_calibrate_tokens(chat_factory, textos)
 }
 \arguments{
-\item{chat_factory}{Funcao \code{function(temperature, system_prompt) Chat}
+\item{chat_factory}{Função \code{function(temperature, system_prompt) Chat}
 que constroi o chat a usar (o mesmo padrao aceito por \code{model} em
 \code{\link[=ac_qual_code]{ac_qual_code()}}). Permite calibrar contra o provedor/modelo exato que
 sera usado na rodada real.}
@@ -16,18 +16,18 @@ sera usado na rodada real.}
 ideal variar o tamanho).}
 }
 \value{
-Numero: a mediana de caracteres por token observada na amostra.
+Número: a mediana de caracteres por token observada na amostra.
 }
 \description{
 \code{ac_calibrate_tokens()} mede, contra um \code{Chat} real, quantos tokens de
 entrada um conjunto de textos de amostra realmente consome, e devolve a
 razao caracteres/token observada -- para usar como \code{chars_per_token} em
 \code{\link[=ac_estimate_tokens]{ac_estimate_tokens()}} (ou como \code{chars_per_token} em \code{ac_qual_code()} /
-futuras funcoes que dependam da estimativa).
+futuras funções que dependam da estimativa).
 
 Faz uma chamada real ao modelo por texto de amostra (com uma mensagem
-minima, para medir so o consumo de tokens de entrada), entao usa poucos
-textos -- o suficiente para calibrar, nao uma amostra representativa de
+mínima, para medir so o consumo de tokens de entrada), então usa poucos
+textos -- o suficiente para calibrar, não uma amostra representativa de
 todo o corpus.
 }
 \examples{

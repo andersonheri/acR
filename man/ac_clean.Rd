@@ -45,7 +45,7 @@ Padrão: \code{FALSE}. Cuidado: hashtags e menções podem ser informativas.}
 
 \item{remove_hashtags}{Se \code{TRUE}, remove hashtags (#termo). Padrão: \code{FALSE}.}
 
-\item{remove_mentions}{Se \code{TRUE}, remove menções (\@usuario). Padrão: \code{FALSE}.}
+\item{remove_mentions}{Se \code{TRUE}, remove menções (\@usuário). Padrão: \code{FALSE}.}
 
 \item{remove_stopwords}{Pode ser:
 \itemize{

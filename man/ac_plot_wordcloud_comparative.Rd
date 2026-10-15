@@ -28,7 +28,7 @@ grupos). Padrão: as primeiras N cores de \code{\link[=ac_palette]{ac_palette()}
 
 \item{title}{Título do gráfico. Padrão: \code{NULL}.}
 
-\item{seed}{Semente para o posicionamento aleatorio dos termos. Padrao
+\item{seed}{Semente para o posicionamento aleatório dos termos. Padrao
 \code{42L} (garante layout reproduzivel entre chamadas).}
 
 \item{backend}{Motor de renderizacao: \code{"auto"} (padrao, prefere
@@ -51,15 +51,15 @@ a leitura fica naturalmente lado a lado; para mais, o layout se
 organiza em uma linha (ou grade, se muitos grupos).
 }
 \examples{
-# Corpus dividido em dois grupos com vocabulario contrastante
+# Corpus dividido em dois grupos com vocabulário contrastante
 df <- data.frame(
   id     = paste0("d", 1:6),
   texto  = c(
     "democracia participacao popular voto",
     "direitos cidadania liberdade democracia",
     "participacao popular igualdade direitos",
-    "mercado economia privatizacao eficiencia",
-    "privatizacao mercado livre eficiencia",
+    "mercado economia privatizacao eficiência",
+    "privatizacao mercado livre eficiência",
     "economia crescimento mercado investimento"
   ),
   grupo = c("A","A","A","B","B","B")

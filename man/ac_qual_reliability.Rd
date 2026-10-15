@@ -34,7 +34,7 @@ ac_qual_reliability(
 \item{by_variable}{Lógico. Se \code{TRUE}, calcula também métricas binárias
 (concordância, precisão, recall, F1, Gwet AC1, alfa de Krippendorff)
 para cada categoria do codebook individualmente, tratando a presença
-de cada categoria como um problema sim/não — essencial quando
+de cada categoria como um problema sim/não: essencial quando
 \code{multilabel = TRUE}, onde um único \code{categoria} (\code{"a|b"}) mistura
 várias decisões binárias independentes que as métricas agregadas
 (acima) não conseguem diagnosticar separadamente. Denominadores
@@ -43,7 +43,7 @@ geram \code{NA}, nunca \code{0} ou \code{1} artificiais. Padrão \code{FALSE}.}
 
 \item{exclude_status}{Vetor de valores da coluna \code{status} (ver
 \code{\link[=ac_qual_code]{ac_qual_code()}}) a excluir da comparação antes de calcular as
-métricas por variável — documentos que falharam na classificação
+métricas por variável: documentos que falharam na classificação
 não têm uma categoria confiável para comparar. Ignorado se \code{llm}
 não tiver coluna \code{status}. Padrão:
 \code{c("estouro_contexto", "timeout", "erro_servidor", "parcial")}.}
@@ -55,7 +55,7 @@ Tibble com colunas: \code{metric}, \code{estimate}, \code{ci_lower}, \code{ci_up
 \code{interpretation}. Quando \code{by_variable = TRUE}, o resultado carrega
 também um atributo \code{by_variable}: um tibble com uma linha por
 categoria do codebook e colunas \code{categoria}, \code{n}, \code{vp}, \code{fp}, \code{fn},
-\code{vn}, \code{concordancia}, \code{precisao}, \code{recall}, \code{f1}, \code{gwet_ac1},
+\code{vn}, \verb{concordância}, \code{precisao}, \code{recall}, \code{f1}, \code{gwet_ac1},
 \code{krippendorff_alfa}.
 }
 \description{
@@ -73,14 +73,14 @@ pergunta diferente:
 \itemize{
 \item \strong{Percent agreement} (\code{percent_agreement}): fração de documentos em
 que LLM e humano concordam. Fácil de reportar, mas ignora concordância
-por acaso — infla para categorias binárias com distribuição desigual.
+por acaso: infla para categorias binárias com distribuição desigual.
 \item \strong{Alpha de Krippendorff} (\code{krippendorff}): padrão-ouro em análise de
 conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
 número de categorias. Valores > 0,80 = quase perfeita; > 0,67 = aceitável
 para publicação; < 0,60 = codebook precisa ser refinado.
 \item \strong{AC1 de Gwet} (\code{gwet_ac1}): alternativa a Krippendorff mais estável
-quando as categorias são muito desbalanceadas (o "paradoxo do kappa"
-— kappa despenca com alta concordância se uma categoria domina).
+quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
+kappa despenca com alta concordância se uma categoria domina).
 \item \strong{F1 macro} (\code{f1_macro}): média não ponderada dos F1 por categoria.
 Útil quando você quer garantir que a LLM está indo bem também nas
 categorias raras, não só nas frequentes.
@@ -103,7 +103,7 @@ humano_df <- tibble::tibble(
   categoria = c("favor", "contra", "contra", "contra", "favor")
 )
 
-# Calcular metricas de confiabilidade (bootstrap curto so para demonstrar;
+# Calcular métricas de confiabilidade (bootstrap curto so para demonstrar;
 # em uso real, deixe o padrao de 1000 replicas)
 rel <- ac_qual_reliability(
   llm       = coded,

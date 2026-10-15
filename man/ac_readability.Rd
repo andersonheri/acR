@@ -30,7 +30,7 @@ adaptado ao português por Martins et al. (1996) a partir da fórmula
 original de Flesch (1948).
 
 É uma ferramenta de diagnóstico, não de julgamento de qualidade: um
-texto "difícil" pelo índice pode ser exatamente o esperado — uma
+texto "difícil" pelo índice pode ser exatamente o esperado: uma
 decisão judicial, um artigo técnico, uma bula de remédio. O uso típico
 é \strong{comparativo}: saber se o manual de instruções do produto A é mais
 acessível que o do produto B, se a imprensa simplificou a linguagem de
@@ -58,18 +58,18 @@ brasileira que usa o ILF):
 }
 }
 \examples{
-# Avaliacoes de produtos em um e-commerce, com nivel de complexidade variado
+# Avaliações de produtos em um e-commerce, com nivel de complexidade variado
 df <- data.frame(
   id = paste0("r", 1:4),
   texto = c(
-    "Bom. Gostei. Chegou rapido.",
+    "Bom. Gostei. Chegou rápido.",
     paste(
       "A ergonomia do dispositivo privilegia uma distribuicao",
       "assimetrica de peso, o que compromete substancialmente a",
-      "usabilidade prolongada em cenarios de utilizacao intensiva."
+      "usabilidade prolongada em cenários de utilizacao intensiva."
     ),
-    "Facil de usar e bonito.",
-    "O manual e confuso e a instalacao exige conhecimento tecnico avancado."
+    "Fácil de usar e bonito.",
+    "O manual e confuso e a instalacao exige conhecimento técnico avancado."
   ),
   categoria = c("eletronico", "eletronico", "casa", "eletronico"),
   stringsAsFactors = FALSE
@@ -78,7 +78,7 @@ corpus <- ac_corpus(df, text = texto, docid = id)
 
 ac_readability(corpus)
 
-# Comparando legibilidade media por categoria de produto
+# Comparando legibilidade média por categoria de produto
 ac_readability(corpus, by = "categoria")
 
 }

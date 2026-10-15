@@ -2,7 +2,7 @@
 #'
 #' @description
 #' `ac_emotion()` conta, por documento, quantas palavras caem em cada
-#' categoria de emoção de um léxico fornecido pelo usuário — indo além
+#' categoria de emoção de um léxico fornecido pelo usuário: indo além
 #' da polaridade binária de [ac_sentiment()] para distinguir, por
 #' exemplo, se um texto negativo expressa raiva, medo ou tristeza
 #' (Mohammad & Turney, 2013, propuseram essa distinção no NRC Emotion
@@ -14,7 +14,7 @@
 #' o usuário deve obter e licenciar por conta própria (o NRC é gratuito
 #' para pesquisa, mas não redistribuível livremente dentro de outro
 #' pacote). `ac_emotion()` é agnóstica ao léxico: funciona com qualquer
-#' tabela palavra→emoção que você tenha — o NRC traduzido, um léxico
+#' tabela palavra→emoção que você tenha: o NRC traduzido, um léxico
 #' doméstico, ou uma lista construída à mão para um domínio específico
 #' (ex.: emoções em avaliações de atendimento ao cliente).
 #'

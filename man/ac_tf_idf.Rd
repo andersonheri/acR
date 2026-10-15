@@ -7,30 +7,30 @@
 ac_tf_idf(x, by = NULL)
 }
 \arguments{
-\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no minimo,
+\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no mínimo,
 as colunas \code{token} e \code{n}. Em geral, o resultado de \code{\link[=ac_count]{ac_count()}}.}
 
 \item{by}{Vetor de nomes de colunas em \code{x} que identificam
 documentos ou grupos. Se \code{NULL} (padrao), usa \code{doc_id} (que deve
-existir em \code{x}). Se nao for \code{NULL}, cada combinacao de \code{by} e
+existir em \code{x}). Se não for \code{NULL}, cada combinacao de \code{by} e
 tratada como um documento no calculo de \code{idf}.}
 }
 \value{
 Um \code{\link[tibble:tibble]{tibble::tibble()}} com as colunas originais de \code{x} mais
 tres colunas numeric as:
 \itemize{
-\item \code{tf}: frequencia do termo no documento/grupo;
-\item \code{idf}: frequencia inversa de documentos;
+\item \code{tf}: frequência do termo no documento/grupo;
+\item \code{idf}: frequência inversa de documentos;
 \item \code{tf_idf}: produto \code{tf * idf}.
 }
 }
 \description{
-\code{ac_tf_idf()} calcula a frequencia de termos (\code{tf}), a frequencia
+\code{ac_tf_idf()} calcula a frequência de termos (\code{tf}), a frequência
 inversa de documentos (\code{idf}) e o produto \code{tf_idf} a partir de uma
-tabela de frequencias de termos (tipicamente o resultado de
+tabela de frequências de termos (tipicamente o resultado de
 \code{\link[=ac_count]{ac_count()}}).
 
-A funcao segue a mesma logica de \code{\link[tidytext:bind_tf_idf]{tidytext::bind_tf_idf()}}, mas
+A função segue a mesma lógica de \code{\link[tidytext:bind_tf_idf]{tidytext::bind_tf_idf()}}, mas
 adaptada para o fluxo de trabalho do pacote:
 \itemize{
 \item sem grupos (\code{by = NULL}): cada \code{doc_id} e tratado como um documento;
@@ -42,9 +42,9 @@ metadados e tratada como um "documento" no calculo de \code{idf}.
 A definicao de \code{tf}, \code{idf} e \code{tf_idf} segue a literatura padrao de
 tf-idf em mineracao de texto:
 \itemize{
-\item \code{tf} e a frequencia relativa do termo no documento;
-\item \code{idf} e log(N / df), em que N e o numero de documentos e df e o
-numero de documentos que contem o termo;
+\item \code{tf} e a frequência relativa do termo no documento;
+\item \code{idf} e log(N / df), em que N e o número de documentos e df e o
+número de documentos que contem o termo;
 \item \code{tf_idf} e o produto \code{tf * idf}.
 }
 
@@ -53,19 +53,19 @@ documento/grupo e termo (isto e, uma linha por termo-em-documento).
 }
 \examples{
 # Corpus com discursos sobre tres agendas distintas.
-# TF-IDF vai destacar o vocabulario proprio de cada texto,
-# nao os termos comuns a todos (que a frequencia bruta mostraria).
+# TF-IDF vai destacar o vocabulário proprio de cada texto,
+# não os termos comuns a todos (que a frequência bruta mostraria).
 df <- data.frame(
   id    = paste0("d", 1:6),
   texto = c(
-    "reforma tributaria simplifica sistema impostos empresas",
+    "reforma tributária simplifica sistema impostos empresas",
     "IVA dual substitui PIS COFINS ICMS federal",
     "programa habitacional amplia recursos moradia popular urbana",
     "deficit habitacional afeta familias baixa renda cidades",
-    "educacao basica recebe recursos Fundeb Congresso",
+    "educacao básica recebe recursos Fundeb Congresso",
     "alfabetizacao idade certa meta Plano Nacional Educacao"
   ),
-  tema  = rep(c("tributario", "habitacao", "educacao"), each = 2),
+  tema  = rep(c("tributário", "habitacao", "educacao"), each = 2),
   stringsAsFactors = FALSE
 )
 

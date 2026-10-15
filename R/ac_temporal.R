@@ -3,7 +3,7 @@
 #' @description
 #' `ac_temporal()` agrega qualquer métrica por documento (sentimento,
 #' frequência de um termo, legibilidade, confiança de classificação...)
-#' em janelas de tempo, para análise diacrônica — a pergunta "isso mudou
+#' em janelas de tempo, para análise diacrônica: a pergunta "isso mudou
 #' ao longo do tempo?" aparece em quase todo estudo de conteúdo com
 #' timestamp: cobertura de imprensa sobre um tema, reclamações de
 #' clientes por mês, evolução do tom de comunicados de uma empresa,
@@ -11,11 +11,11 @@
 #'
 #' A função é deliberadamente genérica: não importa se o valor vem de
 #' [ac_sentiment()], [ac_readability()], [ac_count()] filtrado para um
-#' termo específico, ou da saída de [ac_qual_code()] — qualquer tibble
+#' termo específico, ou da saída de [ac_qual_code()]: qualquer tibble
 #' com uma coluna de data e uma coluna numérica serve de entrada.
 #'
 #' @param data Tibble (ou `data.frame`) com, no mínimo, uma coluna de
-#'   data e uma coluna numérica a agregar — tipicamente o resultado de
+#'   data e uma coluna numérica a agregar: tipicamente o resultado de
 #'   uma das funções de análise do pacote, unido aos metadados do
 #'   corpus (ex.: `dplyr::left_join()` de [ac_sentiment()] com a data de
 #'   cada documento).

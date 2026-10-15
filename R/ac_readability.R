@@ -7,7 +7,7 @@
 #' original de Flesch (1948).
 #'
 #' É uma ferramenta de diagnóstico, não de julgamento de qualidade: um
-#' texto "difícil" pelo índice pode ser exatamente o esperado — uma
+#' texto "difícil" pelo índice pode ser exatamente o esperado: uma
 #' decisão judicial, um artigo técnico, uma bula de remédio. O uso típico
 #' é **comparativo**: saber se o manual de instruções do produto A é mais
 #' acessível que o do produto B, se a imprensa simplificou a linguagem de
@@ -187,7 +187,7 @@ ac_readability <- function(corpus, by = NULL) {
 #'
 #' @description
 #' `ac_plot_readability()` compara a distribuição do Índice de Flesch
-#' (ver [ac_readability()]) entre grupos, com boxplots — a forma usual
+#' (ver [ac_readability()]) entre grupos, com boxplots: a forma usual
 #' de reportar legibilidade comparada na literatura de linguística
 #' computacional e comunicação.
 #'

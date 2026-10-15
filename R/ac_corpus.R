@@ -42,7 +42,7 @@
 #' 5. `doc_id` não pode conter `NA`.
 #'
 #' Documentos com texto vazio ou `NA` geram aviso (`warning`) mas são
-#' mantidos no corpus com texto `""` — o usuário decide se filtra depois.
+#' mantidos no corpus com texto `""`: o usuário decide se filtra depois.
 #'
 #' @examples
 #' # A partir de um data.frame

@@ -34,7 +34,7 @@ divergiram (requer \code{confidence_score < 1});
 proporcional ao tamanho de cada estrato (método do maior resto),
 respeitando um mínimo por estrato. Diferente de \code{"stratified"}
 (que divide \code{n} igualmente entre categorias), preserva a
-distribuição original de \code{strata} na amostra — a escolha correta
+distribuição original de \code{strata} na amostra: a escolha correta
 quando a amostra alimenta uma estimativa populacional (ex.:
 \code{ac_qual_reliability()} ponderada), não só uma checagem
 qualitativa de cada categoria.
@@ -47,7 +47,7 @@ qualitativa de cada categoria.
 proporcional, mesmo que a alocação exata dê menos. Padrão \code{1}.}
 
 \item{min_stratum_size}{Estratos da população com menos documentos
-que isso são agrupados em \code{"Outras"} antes de alocar — evita
+que isso são agrupados em \code{"Outras"} antes de alocar: evita
 alocar uma fração ínfima da amostra a uma categoria com 2
 documentos na população inteira. Padrão \code{10}.}
 
@@ -72,7 +72,7 @@ LLM para validação por um codificador humano, usando diferentes estratégias
 para maximizar a eficiência da validação.
 }
 \examples{
-# Simular saida de ac_qual_code() com 20 documentos ja classificados
+# Simular saida de ac_qual_code() com 20 documentos já classificados
 set.seed(1)
 coded <- tibble::tibble(
   doc_id           = paste0("doc_", 1:20),

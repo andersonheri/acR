@@ -31,7 +31,7 @@ codificador humano, retornando um tibble compatível com
 }
 \examples{
 if (requireNamespace("openxlsx", quietly = TRUE)) {
-  # Simular uma planilha ja preenchida pelo codificador humano
+  # Simular uma planilha já preenchida pelo codificador humano
   arquivo <- tempfile(fileext = ".xlsx")
   openxlsx::write.xlsx(
     data.frame(

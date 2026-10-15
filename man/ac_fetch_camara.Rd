@@ -21,7 +21,7 @@ ac_fetch_camara(
 
 \item{data_fim}{\code{character}. Data de fim no formato \code{"YYYY-MM-DD"}.}
 
-\item{legislatura}{\code{integer} ou \code{NULL}. Numero da legislatura (ex.: \code{57}
+\item{legislatura}{\code{integer} ou \code{NULL}. Número da legislatura (ex.: \code{57}
 para 2023-2027). Se \code{NULL}, usa o periodo definido por \code{data_inicio} e
 \code{data_fim} sem filtrar por legislatura.}
 
@@ -32,11 +32,11 @@ Se \code{NULL}, inclui todos os partidos.}
 \item{uf}{\code{character} ou \code{NULL}. Sigla da UF para filtrar deputados
 (ex.: \code{"SP"}, \code{"MG"}). Aceita vetor de UFs. Se \code{NULL}, inclui todas.}
 
-\item{n_max}{\code{integer}. Numero maximo de discursos a retornar.
+\item{n_max}{\code{integer}. Número máximo de discursos a retornar.
 Padrao: \code{100}. Use \code{Inf} para coletar todos (atencao: pode ser lento).}
 
 \item{tipo_discurso}{\code{character}. Tipo de evento parlamentar. Opcoes
-principais: \code{"plenario"} (padrao), \code{"comissao"}, \code{"todos"}.}
+principais: \code{"plenário"} (padrao), \code{"comissao"}, \code{"todos"}.}
 
 \item{verbose}{\code{logical}. Se \code{TRUE} (padrao), exibe mensagens de progresso.}
 
@@ -46,7 +46,7 @@ para respeitar o rate limit. Padrao: \code{0.5}.}
 \value{
 Um \code{data.frame} com as colunas:
 \describe{
-\item{\code{id_discurso}}{\code{character}. Identificador unico do discurso.}
+\item{\code{id_discurso}}{\code{character}. Identificador único do discurso.}
 \item{\code{id_deputado}}{\code{integer}. ID do deputado na API da Camara.}
 \item{\code{nome_deputado}}{\code{character}. Nome civil do parlamentar.}
 \item{\code{partido}}{\code{character}. Sigla do partido na data do discurso.}
@@ -54,20 +54,20 @@ Um \code{data.frame} com as colunas:
 \item{\code{data}}{\code{Date}. Data do discurso.}
 \item{\code{hora_inicio}}{\code{character}. Hora de inicio (HH:MM).}
 \item{\code{tipo_discurso}}{\code{character}. Tipo de fase do evento.}
-\item{\code{sumario}}{\code{character}. Sumario do discurso (quando disponivel).}
+\item{\verb{sumário}}{\code{character}. Sumário do discurso (quando disponivel).}
 \item{\code{texto}}{\code{character}. Texto integral do discurso (quando disponivel).}
 \item{\code{uri_discurso}}{\code{character}. URI do recurso na API.}
 }
 }
 \description{
-Coleta discursos parlamentares diretamente da API publica da Camara dos
+Coleta discursos parlamentares diretamente da API pública da Camara dos
 Deputados (v2), retornando um \code{data.frame} padronizado e pronto para uso
-nas funcoes do \code{acR}. A coleta e feita em duas etapas: (1) lista deputados
+nas funções do \code{acR}. A coleta e feita em duas etapas: (1) lista deputados
 conforme os filtros informados; (2) para cada deputado, busca os discursos
-no periodo solicitado, com paginacao automatica.
+no periodo solicitado, com paginacao automática.
 }
 \details{
-A API Dados Abertos da Camara (v2) nao dispoe de endpoint unico para
+A API Dados Abertos da Camara (v2) não dispoe de endpoint único para
 discursos por periodo. O fluxo de coleta e:
 \enumerate{
 \item \code{GET /api/v2/deputados} - lista deputados com filtros de partido/UF.
@@ -77,11 +77,11 @@ com paginacao (max. 100 itens por pagina).
 
 O filtro \code{tipo_discurso} atua sobre o campo \code{tipoDiscurso} retornado pela
 API. Valores observados: \code{"DISCURSO"}, \code{"DISCURSO ENCAMINHADO"},
-\code{"BREVE COMUNICACAO"}, \code{"PELA ORDEM"}, \code{"COMUNICACAO PARLAMENTAR"}.
+\code{"BREVE COMUNICAÇÃO"}, \code{"PELA ORDEM"}, \code{"COMUNICAÇÃO PARLAMENTAR"}.
 }
 \examples{
 \dontrun{
-# Discursos do plenario, marco de 2024
+# Discursos do plenário, marco de 2024
 disc <- ac_fetch_camara(
   data_inicio = "2024-03-11",
   data_fim    = "2024-03-15",

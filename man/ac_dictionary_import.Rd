@@ -24,18 +24,18 @@ entrada por valor distinto de \code{category_col}.
 }
 \description{
 \code{ac_dictionary_import()} constrói um dicionário (ver
-\code{\link[=ac_build_dictionary]{ac_build_dictionary()}}) a partir de uma tabela em formato longo —
-uma linha por par palavra-categoria — o formato em que léxicos
+\code{\link[=ac_build_dictionary]{ac_build_dictionary()}}) a partir de uma tabela em formato longo:
+uma linha por par palavra-categoria, o formato em que léxicos
 costumam ser distribuídos (CSV, planilha). Útil para importar listas
 de palavras construídas fora do R, ou léxicos de terceiros já
 traduzidos/adaptados para português (o pacote não distribui nenhum
-léxico de categorias além do OpLexicon usado em \code{\link[=ac_sentiment]{ac_sentiment()}} —
-veja \code{vignette("dicionarios")} para onde encontrar léxicos de
+léxico de categorias além do OpLexicon usado em \code{\link[=ac_sentiment]{ac_sentiment()}};
+veja \code{vignette("dicionários")} para onde encontrar léxicos de
 terceiros e como adaptá-los a este formato).
 }
 \examples{
 lexico <- data.frame(
-  termo     = c("bom", "otimo", "mau", "pessimo"),
+  termo     = c("bom", "ótimo", "mau", "péssimo"),
   categoria = c("positivo", "positivo", "negativo", "negativo"),
   stringsAsFactors = FALSE
 )

@@ -57,7 +57,7 @@ et al., 2023) e na experiência prática com corpora em português
 brasileiro.
 }
 \examples{
-# Recomendação padrão para classificacao em PT com orcamento medio
+# Recomendação padrão para classificação em PT com orcamento médio
 ac_qual_recommend_model()
 
 # Opcao gratuita para explorar

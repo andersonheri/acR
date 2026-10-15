@@ -17,7 +17,7 @@ ac_plot_cluster(
 \item{kind}{Tipo de grafico. \code{"auto"} (padrao) escolhe conforme o metodo
 (dendrograma para \code{hclust}, scatter para \code{kmeans}/\code{pam}).}
 
-\item{title}{Titulo do grafico.}
+\item{title}{Título do grafico.}
 
 \item{palette}{Vetor de cores para os clusters. Padrao: \code{\link[=ac_palette]{ac_palette()}}.}
 }
@@ -42,10 +42,10 @@ df <- data.frame(
             "cidadania direitos participacao",
             "voto direitos liberdade",
             "democracia voto participacao",
-            "mercado economia eficiencia",
+            "mercado economia eficiência",
             "privatizacao mercado livre",
             "economia crescimento mercado",
-            "eficiencia mercado livre")
+            "eficiência mercado livre")
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 clust  <- ac_cluster_documents(corpus, k = 2)

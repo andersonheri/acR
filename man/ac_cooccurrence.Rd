@@ -46,7 +46,7 @@ janelas deslizantes ou dentro do mesmo documento, retornando frequências
 e medidas de associação (PMI, Dice).
 }
 \examples{
-# Corpus tematico: coocorrencia revela associacoes conceituais
+# Corpus tematico: coocorrência revela associações conceituais
 # (que palavras "andam juntas" no discurso).
 df <- data.frame(
   id = paste0("d", 1:6),
@@ -54,8 +54,8 @@ df <- data.frame(
     "democracia participacao voto liberdade cidadania popular",
     "cidadania direitos participacao democracia representacao politica",
     "voto direitos liberdade cidadania soberania popular",
-    "mercado economia eficiencia privatizacao competicao livre",
-    "privatizacao mercado livre eficiencia produtividade lucro",
+    "mercado economia eficiência privatizacao competicao livre",
+    "privatizacao mercado livre eficiência produtividade lucro",
     "economia crescimento investimento mercado capital juros"
   ),
   stringsAsFactors = FALSE
@@ -65,12 +65,12 @@ corpus <- ac_corpus(df, text = texto, docid = id) |>
   ac_clean()
 tokens <- ac_tokenize(corpus)
 
-# Janela de 3 tokens, sem filtro de frequencia minima
+# Janela de 3 tokens, sem filtro de frequência mínima
 # (em corpora reais use min_count >= 5 para reduzir ruido)
 cooc <- ac_cooccurrence(tokens, window = 3L, min_count = 1L)
 head(cooc)
 
-# Coocorrencia com PMI (associacao normalizada por acaso)
+# Coocorrência com PMI (associação normalizada por acaso)
 cooc_pmi <- ac_cooccurrence(tokens, window = 3L, measure = "pmi",
                             min_count = 1L)
 head(cooc_pmi)

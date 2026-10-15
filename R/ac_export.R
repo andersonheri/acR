@@ -37,7 +37,7 @@
 #' `\\usepackage{booktabs}` no preambulo do documento para melhor tipografia.
 #'
 #' ## Excel
-#' Usa [writexl::write_xlsx()] — sem dependência de Java ou LibreOffice.
+#' Usa [writexl::write_xlsx()]: sem dependência de Java ou LibreOffice.
 #' Cria arquivo `.xlsx` compativel com Excel 2007+, Google Sheets e
 #' LibreOffice Calc.
 #'

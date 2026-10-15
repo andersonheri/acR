@@ -34,7 +34,7 @@ e, para cada emoção presente em \code{lexicon}, colunas \verb{<emocao>_n} e
 }
 \description{
 \code{ac_emotion()} conta, por documento, quantas palavras caem em cada
-categoria de emoção de um léxico fornecido pelo usuário — indo além
+categoria de emoção de um léxico fornecido pelo usuário: indo além
 da polaridade binária de \code{\link[=ac_sentiment]{ac_sentiment()}} para distinguir, por
 exemplo, se um texto negativo expressa raiva, medo ou tristeza
 (Mohammad & Turney, 2013, propuseram essa distinção no NRC Emotion
@@ -46,7 +46,7 @@ português está sujeita aos termos de licença do léxico de origem, que
 o usuário deve obter e licenciar por conta própria (o NRC é gratuito
 para pesquisa, mas não redistribuível livremente dentro de outro
 pacote). \code{ac_emotion()} é agnóstica ao léxico: funciona com qualquer
-tabela palavra→emoção que você tenha — o NRC traduzido, um léxico
+tabela palavra→emoção que você tenha: o NRC traduzido, um léxico
 doméstico, ou uma lista construída à mão para um domínio específico
 (ex.: emoções em avaliações de atendimento ao cliente).
 
@@ -55,7 +55,7 @@ em formato longo (uma linha por palavra-emoção) para o formato de
 dicionário multi-categoria e aplica a mesma contagem.
 }
 \examples{
-# Lexico de emocao minimo, construido a mao para este exemplo
+# Lexico de emocao mínimo, construido a mao para este exemplo
 # (em uso real, substitua por um lexico de emocoes licenciado em PT)
 lexico <- data.frame(
   termo  = c("alegria", "feliz", "medo", "assustado", "raiva", "furioso"),
@@ -67,8 +67,8 @@ df <- data.frame(
   id = paste0("d", 1:3),
   texto = c(
     "fiquei muito feliz com a alegria do momento",
-    "fiquei assustado, senti muito medo da situacao",
-    "fiquei furioso, aquela raiva nao passava"
+    "fiquei assustado, senti muito medo da situação",
+    "fiquei furioso, aquela raiva não passava"
   ),
   stringsAsFactors = FALSE
 )

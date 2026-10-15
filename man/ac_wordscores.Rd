@@ -34,7 +34,7 @@ para os próprios documentos de referência.
 Vanberg, 2007).
 }}
 
-\item{drop_punct}{Logico, encaminhado para \code{\link[=ac_count]{ac_count()}}. Padrão:
+\item{drop_punct}{Lógico, encaminhado para \code{\link[=ac_count]{ac_count()}}. Padrão:
 \code{TRUE}.}
 }
 \value{
@@ -59,7 +59,7 @@ ponderada das posições dos documentos de referência em que ela
 aparece (ponderada pela frequência relativa da palavra em cada
 referência). Um documento virgem recebe a média dos escores de suas
 palavras, ponderada pela frequência relativa delas no próprio
-documento virgem — só palavras que também aparecem nos documentos de
+documento virgem: só palavras que também aparecem nos documentos de
 referência contam.
 
 Fora da ciência política (onde o método nasceu, aplicado a manifestos
@@ -70,16 +70,16 @@ com nota de estrelas conhecida, ou posicionar transcrições de
 atendimento num espectro de satisfação do cliente.
 }
 \examples{
-# Avaliacoes de produto com nota conhecida (referencia) e sem nota
+# Avaliações de produto com nota conhecida (referência) e sem nota
 # (a estimar), usadas como escala continua de satisfacao
 df <- data.frame(
   id = paste0("r", 1:6),
   texto = c(
     "produto excelente, superou expectativas, recomendo muito",
-    "muito bom, chegou rapido e funciona perfeitamente",
-    "produto regular, cumpre o basico",
-    "nao funcionou bem, qualidade ruim, nao recomendo",
-    "pessimo, quebrado e com defeito, decepcao total",
+    "muito bom, chegou rápido e funciona perfeitamente",
+    "produto regular, cumpre o básico",
+    "não funcionou bem, qualidade ruim, não recomendo",
+    "péssimo, quebrado e com defeito, decepcao total",
     "produto ok, nada de especial mas atende"
   ),
   stringsAsFactors = FALSE

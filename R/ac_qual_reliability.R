@@ -15,14 +15,14 @@
 #'
 #' * **Percent agreement** (`percent_agreement`): fração de documentos em
 #'   que LLM e humano concordam. Fácil de reportar, mas ignora concordância
-#'   por acaso — infla para categorias binárias com distribuição desigual.
+#'   por acaso: infla para categorias binárias com distribuição desigual.
 #' * **Alpha de Krippendorff** (`krippendorff`): padrão-ouro em análise de
 #'   conteúdo. Corrige por acaso, aceita missings, funciona com qualquer
 #'   número de categorias. Valores > 0,80 = quase perfeita; > 0,67 = aceitável
 #'   para publicação; < 0,60 = codebook precisa ser refinado.
 #' * **AC1 de Gwet** (`gwet_ac1`): alternativa a Krippendorff mais estável
-#'   quando as categorias são muito desbalanceadas (o "paradoxo do kappa"
-#'   — kappa despenca com alta concordância se uma categoria domina).
+#'   quando as categorias são muito desbalanceadas (o "paradoxo do kappa":
+#'   kappa despenca com alta concordância se uma categoria domina).
 #' * **F1 macro** (`f1_macro`): média não ponderada dos F1 por categoria.
 #'   Útil quando você quer garantir que a LLM está indo bem também nas
 #'   categorias raras, não só nas frequentes.
@@ -43,7 +43,7 @@
 #' @param by_variable Lógico. Se `TRUE`, calcula também métricas binárias
 #'   (concordância, precisão, recall, F1, Gwet AC1, alfa de Krippendorff)
 #'   para cada categoria do codebook individualmente, tratando a presença
-#'   de cada categoria como um problema sim/não — essencial quando
+#'   de cada categoria como um problema sim/não: essencial quando
 #'   `multilabel = TRUE`, onde um único `categoria` (`"a|b"`) mistura
 #'   várias decisões binárias independentes que as métricas agregadas
 #'   (acima) não conseguem diagnosticar separadamente. Denominadores
@@ -51,7 +51,7 @@
 #'   geram `NA`, nunca `0` ou `1` artificiais. Padrão `FALSE`.
 #' @param exclude_status Vetor de valores da coluna `status` (ver
 #'   [ac_qual_code()]) a excluir da comparação antes de calcular as
-#'   métricas por variável — documentos que falharam na classificação
+#'   métricas por variável: documentos que falharam na classificação
 #'   não têm uma categoria confiável para comparar. Ignorado se `llm`
 #'   não tiver coluna `status`. Padrão:
 #'   `c("estouro_contexto", "timeout", "erro_servidor", "parcial")`.
@@ -190,7 +190,7 @@ ac_qual_reliability <- function(llm,
 
   # Gwet AC1
 
-  # Gwet AC1 — implementacao propria (Gwet, 2014)
+  # Gwet AC1: implementacao propria (Gwet, 2014)
   if ("gwet_ac1" %in% metrics) {
     gwet <- .ac_gwet_ac1(llm_vec, human_vec)
     gwet_ci <- if (!is.na(gwet)) {
@@ -261,7 +261,7 @@ ac_qual_reliability <- function(llm,
 #'     proporcional ao tamanho de cada estrato (método do maior resto),
 #'     respeitando um mínimo por estrato. Diferente de `"stratified"`
 #'     (que divide `n` igualmente entre categorias), preserva a
-#'     distribuição original de `strata` na amostra — a escolha correta
+#'     distribuição original de `strata` na amostra: a escolha correta
 #'     quando a amostra alimenta uma estimativa populacional (ex.:
 #'     `ac_qual_reliability()` ponderada), não só uma checagem
 #'     qualitativa de cada categoria.
@@ -270,7 +270,7 @@ ac_qual_reliability <- function(llm,
 #' @param min_per_stratum Mínimo de documentos por estrato na amostra
 #'   proporcional, mesmo que a alocação exata dê menos. Padrão `1`.
 #' @param min_stratum_size Estratos da população com menos documentos
-#'   que isso são agrupados em `"Outras"` antes de alocar — evita
+#'   que isso são agrupados em `"Outras"` antes de alocar: evita
 #'   alocar uma fração ínfima da amostra a uma categoria com 2
 #'   documentos na população inteira. Padrão `10`.
 #' @param exclude_ids Vetor de `doc_id` a excluir do universo amostrado
@@ -778,7 +778,7 @@ ac_qual_import_human <- function(path,
 
 #' @keywords internal
 #' @noRd
-# Gwet AC1 — formula de Gwet (2014, cap. 3)
+# Gwet AC1: formula de Gwet (2014, cap. 3)
 # Corrige o paradoxo do kappa quando categorias sao altamente prevalentes.
 .ac_gwet_ac1 <- function(r1, r2) {
   # Remover NAs pareados

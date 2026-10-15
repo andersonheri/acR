@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_plot_wordcloud_comparative.R
 \name{ac_plot_xray}
 \alias{ac_plot_xray}
-\title{Gráfico X-ray — dispersão lexical de termos no corpus}
+\title{Gráfico X-ray: dispersão lexical de termos no corpus}
 \usage{
 ac_plot_xray(
   corpus,
@@ -41,7 +41,7 @@ df <- data.frame(
   id = c("d1", "d2"),
   texto = c(
     "democracia liberdade igualdade democracia direitos democracia",
-    "mercado liberdade privatizacao mercado eficiencia mercado"
+    "mercado liberdade privatizacao mercado eficiência mercado"
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)

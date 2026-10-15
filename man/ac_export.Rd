@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_export.R
 \name{ac_export}
 \alias{ac_export}
-\title{Exporta resultados de analise de conteudo em multiplos formatos}
+\title{Exporta resultados de análise de conteúdo em múltiplos formatos}
 \usage{
 ac_export(
   x,
@@ -22,13 +22,13 @@ ac_export(
 \item{path}{\code{character}. Caminho do arquivo de saida, incluindo extensao
 (ex.: \code{"resultados.csv"}, \code{"tabela1.tex"}, \code{"dados.xlsx"}). Se \code{NULL},
 o formato e inferido pelo argumento \code{format} e o arquivo e salvo no
-diretorio de trabalho com nome \code{"acR_export"}.}
+diretório de trabalho com nome \code{"acR_export"}.}
 
 \item{format}{\code{character}. Formato de saida: \code{"csv"}, \code{"latex"}, \code{"xlsx"},
 \code{"rds"}. Se \code{NULL} (padrao), inferido pela extensao de \code{path}.}
 
 \item{overwrite}{\code{logical}. Se \code{TRUE} (padrao), sobrescreve arquivo
-existente. Se \code{FALSE}, lanca erro se o arquivo ja existir.}
+existente. Se \code{FALSE}, lanca erro se o arquivo já existir.}
 
 \item{latex_caption}{\code{character} ou \code{NULL}. Legenda da tabela LaTeX.}
 
@@ -47,10 +47,10 @@ Padrao: \code{"acR"}.}
 Invisivel: o caminho do arquivo salvo (\code{character}).
 }
 \description{
-Exporta data.frames de resultados (corpus codificado, tabelas de frequencia,
-metricas de confiabilidade) para CSV, LaTeX, Excel (.xlsx) ou RDS.
+Exporta data.frames de resultados (corpus codificado, tabelas de frequência,
+métricas de confiabilidade) para CSV, LaTeX, Excel (.xlsx) ou RDS.
 Pensada para facilitar a transicao entre o pipeline \code{acR} e a escrita
-academica (tabelas em artigos) ou o compartilhamento de dados replicaveis.
+acadêmica (tabelas em artigos) ou o compartilhamento de dados replicaveis.
 }
 \details{
 \subsection{CSV}{
@@ -61,14 +61,14 @@ Separador: virgula. Adequado para importacao em Stata, SPSS, Python e R.
 
 \subsection{LaTeX}{
 
-Gera codigo LaTeX via \code{\link[knitr:kable]{knitr::kable()}} com \code{format = "latex"}, empacotado
+Gera código LaTeX via \code{\link[knitr:kable]{knitr::kable()}} com \code{format = "latex"}, empacotado
 em ambiente \code{table} com \verb{\\\\centering}, \verb{\\\\caption} e \verb{\\\\label}. Adicione
 \verb{\\\\usepackage\{booktabs\}} no preambulo do documento para melhor tipografia.
 }
 
 \subsection{Excel}{
 
-Usa \code{\link[writexl:write_xlsx]{writexl::write_xlsx()}} — sem dependencia de Java ou LibreOffice.
+Usa \code{\link[writexl:write_xlsx]{writexl::write_xlsx()}}: sem dependência de Java ou LibreOffice.
 Cria arquivo \code{.xlsx} compativel com Excel 2007+, Google Sheets e
 LibreOffice Calc.
 }
@@ -88,7 +88,7 @@ resultados <- data.frame(
   confianca     = c(0.94, 0.91, 0.87)
 )
 
-# Escrevemos em tempdir() para nao poluir o filesystem do usuario
+# Escrevemos em tempdir() para não poluir o filesystem do usuário
 out_csv <- file.path(tempdir(), "resultados.csv")
 out_tex <- file.path(tempdir(), "resultados.tex")
 out_rds <- file.path(tempdir(), "resultados.rds")
@@ -100,7 +100,7 @@ ac_export(resultados, out_csv)
 ac_export(
   resultados,
   out_tex,
-  latex_caption = "Classificacao do tom dos discursos por LLM",
+  latex_caption = "Classificação do tom dos discursos por LLM",
   latex_label   = "tab:tom_discursos"
 )
 
@@ -111,7 +111,7 @@ ac_export(resultados, out_rds)
 if (requireNamespace("writexl", quietly = TRUE) ||
     requireNamespace("openxlsx", quietly = TRUE)) {
   out_xlsx <- file.path(tempdir(), "resultados.xlsx")
-  ac_export(resultados, out_xlsx, excel_sheet = "Classificacao")
+  ac_export(resultados, out_xlsx, excel_sheet = "Classificação")
 }
 
 # Objeto ac_irr (comparar codificacao humana vs. LLM)

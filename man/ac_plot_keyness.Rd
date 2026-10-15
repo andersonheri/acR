@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_plot_keyness.R
 \name{ac_plot_keyness}
 \alias{ac_plot_keyness}
-\title{Plotar estatisticas de keyness}
+\title{Plotar estatísticas de keyness}
 \usage{
 ac_plot_keyness(
   x,
@@ -13,32 +13,32 @@ ac_plot_keyness(
 )
 }
 \arguments{
-\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no minimo,
+\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no mínimo,
 as colunas \code{token}, \code{keyness} e \code{direction}.}
 
-\item{n}{Numero de termos a exibir por direcao. Se \code{NULL} (padrao),
+\item{n}{Número de termos a exibir por direcao. Se \code{NULL} (padrao),
 usa todas as linhas de \code{x}. Se informado, seleciona os top \code{n}
 termos com \code{keyness} positivo e os top \code{n} com \code{keyness} negativo.}
 
 \item{style}{Estilo grafico. Pode ser \code{"default"} (padrao) ou \code{"ipea"}.
-Quando \code{"ipea"}, a funcao tenta aplicar \code{ipeaplot::theme_ipea()}.}
+Quando \code{"ipea"}, a função tenta aplicar \code{ipeaplot::theme_ipea()}.}
 
-\item{flip}{Logico. Se \code{TRUE} (padrao), usa barras horizontais com
+\item{flip}{Lógico. Se \code{TRUE} (padrao), usa barras horizontais com
 \code{\link[ggplot2:coord_flip]{ggplot2::coord_flip()}}.}
 
-\item{show_reference}{Logico. Se \code{TRUE} (padrao), mostra termos
-caracteristicos do grupo alvo e do grupo de referencia. Se \code{FALSE},
+\item{show_reference}{Lógico. Se \code{TRUE} (padrao), mostra termos
+caracteristicos do grupo alvo e do grupo de referência. Se \code{FALSE},
 mostra apenas os termos com \code{keyness} positivo.}
 }
 \value{
 Um objeto \code{ggplot}.
 }
 \description{
-\code{ac_plot_keyness()} cria um grafico de barras com as estatisticas de
+\code{ac_plot_keyness()} cria um grafico de barras com as estatísticas de
 keyness calculadas por \code{\link[=ac_keyness]{ac_keyness()}}, destacando os termos mais
-caracteristicos do grupo alvo e do grupo de referencia.
+caracteristicos do grupo alvo e do grupo de referência.
 
-A funcao usa \link[ggplot2:ggplot2-package]{ggplot2} como base e pode, opcionalmente, aplicar o
+A função usa \link[ggplot2:ggplot2-package]{ggplot2} como base e pode, opcionalmente, aplicar o
 estilo editorial do pacote \code{ipeaplot}.
 }
 \examples{

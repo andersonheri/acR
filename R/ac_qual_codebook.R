@@ -27,7 +27,7 @@
 #'   gerando um banco estruturado com trecho original, tradução, autor, ano,
 #'   revista e link. O pesquisador revisa e aprova interativamente.
 #'
-#' Todo codebook mantém um `history` das modificações — quem alterou, quando
+#' Todo codebook mantém um `history` das modificações: quem alterou, quando
 #' e o quê. Essencial para auditoria metodológica quando o instrumento evolui
 #' entre a versão piloto e a versão final publicada.
 #'

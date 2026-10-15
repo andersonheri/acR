@@ -13,20 +13,20 @@ ac_import(path, text_field = NULL, lang_ocr = "por", id_from = "filename", ...)
 \code{.tiff}.}
 
 \item{text_field}{Nome da coluna que contem o texto, para arquivos
-tabulares (\code{.xlsx}, \code{.xls}, \code{.csv}). Obrigatorio nesses formatos.}
+tabulares (\code{.xlsx}, \code{.xls}, \code{.csv}). Obrigatório nesses formatos.}
 
 \item{lang_ocr}{Lingua para OCR em imagens e PDFs escaneados.
-Padrao: \code{'por'} (portugues). Use \code{tesseract::tesseract_info()} para
+Padrao: \code{'por'} (português). Use \code{tesseract::tesseract_info()} para
 ver linguas instaladas.}
 
 \item{id_from}{Como gerar os IDs dos documentos. \code{'filename'} (padrao)
-usa o nome do arquivo sem extensao. \code{'rownum'} usa numeros sequenciais.
+usa o nome do arquivo sem extensao. \code{'rownum'} usa números sequenciais.
 Ou um vetor de strings com os IDs desejados.}
 
 \item{...}{Argumentos adicionais passados para \code{readtext::readtext()}.}
 }
 \value{
-Um objeto \code{ac_corpus} pronto para uso com todas as funcoes do acR.
+Um objeto \code{ac_corpus} pronto para uso com todas as funções do acR.
 }
 \description{
 Importa arquivos de texto em diferentes formatos (PDF, Word, Excel, CSV,
@@ -59,14 +59,14 @@ de o parser ser OCR ou readtext. IDs duplicados (dois arquivos com o
 mesmo \code{basename}) sao desambiguados automaticamente com um sufixo \verb{_2},
 \verb{_3}, ... e um aviso e emitido.
 
-\strong{Dependencias opcionais}: \code{readtext} e \code{tesseract} nao sao importados
+\strong{Dependências opcionais}: \code{readtext} e \code{tesseract} não sao importados
 automaticamente -- o \code{ac_import()} verifica se estao instalados e
-orienta a instalacao caso necessario.
+orienta a instalacao caso necessário.
 }
 \examples{
 \dontrun{
 # PDF com texto selecionavel
-corpus <- ac_import('relatorio.pdf')
+corpus <- ac_import('relatório.pdf')
 
 # Pasta inteira de Word
 corpus <- ac_import('proposicoes/*.docx')
@@ -74,7 +74,7 @@ corpus <- ac_import('proposicoes/*.docx')
 # Excel -- indicar a coluna de texto
 corpus <- ac_import('respostas.xlsx', text_field = 'resposta')
 
-# PDF escaneado (OCR em portugues)
+# PDF escaneado (OCR em português)
 corpus <- ac_import('ata_manuscrita.pdf', lang_ocr = 'por')
 
 # Imagem (OCR)

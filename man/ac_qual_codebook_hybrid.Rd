@@ -47,7 +47,7 @@ cb <- ac_qual_codebook(
   instructions = "Identifique tom populista no discurso.",
   categories   = list(
     populista     = list(definition = "Apela ao povo contra a elite."),
-    nao_populista = list(definition = "Discurso tecnico ou institucional.")
+    nao_populista = list(definition = "Discurso técnico ou institucional.")
   )
 )
 
@@ -59,7 +59,7 @@ cb_ancorado <- ac_qual_codebook_hybrid(
   lang     = "pt"
 )
 
-# 3. Inspecionar as referencias anexadas a cada categoria
+# 3. Inspecionar as referências anexadas a cada categoria
 cb_ancorado$categories$populista$references
 }
 

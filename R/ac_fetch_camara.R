@@ -171,7 +171,7 @@ ac_fetch_camara <- function(
     itens      = 100
   )
 
-  # Tipo comissao nao e suportado pela API — redirecionar para todos
+  # Tipo comissao nao e suportado pela API: redirecionar para todos
   if (tipo_discurso == "comissao") {
     cli::cli_warn(c(
       "!" = "O tipo {.val comissao} nao e suportado pela API da Camara.",

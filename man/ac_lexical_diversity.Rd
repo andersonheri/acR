@@ -27,16 +27,16 @@ Tibble com colunas:
 }
 \description{
 \code{ac_lexical_diversity()} mede quão variado é o vocabulário dos
-documentos de um \code{ac_corpus} — uma pergunta recorrente em linguística
+documentos de um \code{ac_corpus}: uma pergunta recorrente em linguística
 computacional (textos de falantes nativos vs. aprendizes de uma
 língua), análise de redações escolares, estudos de estilo autoral, ou
 comparação de roteiros/transcrições por gênero ou locutor.
 
 Calcula três métricas, cada uma respondendo à mesma pergunta de forma
-diferente — e cada uma com um ponto fraco diferente:
+diferente: e cada uma com um ponto fraco diferente:
 \itemize{
 \item \strong{TTR} (\emph{Type-Token Ratio}): proporção simples \code{tipos / tokens}.
-Fácil de entender, mas extremamente sensível ao tamanho do texto —
+Fácil de entender, mas extremamente sensível ao tamanho do texto:
 textos mais longos quase sempre têm TTR menor, então \strong{não compare
 TTR entre documentos de tamanhos muito diferentes}.
 \item \strong{C de Herdan} (Herdan, 1960): \code{log(tipos) / log(tokens)}. Mais
@@ -50,7 +50,7 @@ documentos comparados têm tamanhos desiguais.
 }
 }
 \examples{
-# Transcricoes de dois narradores com estilos de vocabulario distintos
+# Transcricoes de dois narradores com estilos de vocabulário distintos
 df <- data.frame(
   id = paste0("t", 1:4),
   texto = c(
@@ -59,10 +59,10 @@ df <- data.frame(
       "o felino ascendeu ao parapeito, permaneceu imovel por instantes,",
       "descendeu com cautela e retornou ao ponto de partida original"
     ),
-    "ela correu muito rapido e muito rapido e muito rapido ainda",
+    "ela correu muito rápido e muito rápido e muito rápido ainda",
     paste(
       "a atleta acelerou vertiginosamente, superando marcas anteriores",
-      "com uma performance notavel e consistente ao longo do percurso"
+      "com uma performance notável e consistente ao longo do percurso"
     )
   ),
   narrador = c("simples", "rebuscado", "simples", "rebuscado"),
@@ -72,7 +72,7 @@ corpus <- ac_corpus(df, text = texto, docid = id, meta = narrador)
 
 ac_lexical_diversity(corpus)
 
-# Comparar riqueza de vocabulario entre os dois estilos narrativos
+# Comparar riqueza de vocabulário entre os dois estilos narrativos
 ac_lexical_diversity(corpus, by = "narrador")
 
 }

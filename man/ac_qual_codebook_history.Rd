@@ -29,11 +29,11 @@ cb <- ac_qual_codebook(
   )
 )
 cb <- ac_qual_codebook_add(cb,
-  neutro = list(definition = "Sem valencia clara.")
+  neutro = list(definition = "Sem valência clara.")
 )
 cb <- ac_qual_codebook_remove(cb, "neutro")
 
-# Ver historico completo de acoes registradas
+# Ver histórico completo de acoes registradas
 ac_qual_codebook_history(cb)
 
 }

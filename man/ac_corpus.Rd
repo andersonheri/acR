@@ -17,7 +17,7 @@ ac_corpus(data, text = NULL, docid = NULL, meta = NULL, lang = "pt", ...)
 \item{text}{Nome da coluna de texto, sem aspas (usa \emph{tidyselect} /
 \emph{non-standard evaluation}). Apenas relevante quando \code{data} é um
 \code{data.frame}. Se \code{NULL} (padrão), a função tenta detectar automaticamente
-uma coluna chamada \code{text}, \code{texto}, \code{doc}, \code{content} ou \code{conteudo}.}
+uma coluna chamada \code{text}, \code{texto}, \code{doc}, \code{content} ou \verb{conteúdo}.}
 
 \item{docid}{Nome da coluna de identificador único, sem aspas. Se \code{NULL}
 (padrão), gera IDs sequenciais no formato \code{doc_1}, \code{doc_2}, ...}
@@ -60,7 +60,7 @@ de problema:
 }
 
 Documentos com texto vazio ou \code{NA} geram aviso (\code{warning}) mas são
-mantidos no corpus com texto \code{""} — o usuário decide se filtra depois.
+mantidos no corpus com texto \code{""}: o usuário decide se filtra depois.
 }
 \examples{
 # A partir de um data.frame

@@ -23,15 +23,15 @@ ac_tokenize(
 a 1. Para \code{n = 1}, o resultado sao tokens individuais; para
 \code{n = 2}, bigramas (\code{"A B"}), para \code{n = 3}, trigramas etc.}
 
-\item{keep_empty}{Logico. Se \code{FALSE} (padrao), documentos que
-resultarem em texto vazio apos a limpeza nao geram linhas na
+\item{keep_empty}{Lógico. Se \code{FALSE} (padrao), documentos que
+resultarem em texto vazio após a limpeza não geram linhas na
 saida. Se \code{TRUE}, cada documento vazio gera uma linha com
 \code{token = NA} quando \code{n = 1}.}
 
-\item{drop_punct}{Logico. Se \code{TRUE}, remove da sequencia tokens
-que consistem apenas de pontuacao (por exemplo \code{"!"}, \code{"..."})
+\item{drop_punct}{Lógico. Se \code{TRUE}, remove da sequência tokens
+que consistem apenas de pontuação (por exemplo \code{"!"}, \code{"..."})
 antes de construir n-gramas. Tokens que misturam letras e
-pontuacao (por exemplo \code{"ola,"}) sao mantidos.}
+pontuação (por exemplo \code{"ola,"}) sao mantidos.}
 
 \item{...}{Ignorado, reservado para argumentos futuros.}
 }
@@ -55,7 +55,7 @@ contíguas de tokens dentro de cada documento.
 É o segundo passo canônico do pipeline quantitativo, geralmente entre
 \code{\link[=ac_clean]{ac_clean()}} e \code{\link[=ac_count]{ac_count()}}. Para análises que dependem de expressões
 compostas (\"reforma tributária\", \"desenvolvimento sustentável\"),
-use \code{n = 2L} para bigramas — cada n-grama vira uma unidade de contagem
+use \code{n = 2L} para bigramas: cada n-grama vira uma unidade de contagem
 independente.
 }
 \examples{
@@ -73,7 +73,7 @@ corp <- ac_corpus(df, text = texto, docid = id)
 tokens <- ac_tokenize(corp)
 tokens
 
-# Removendo tokens que sao apenas pontuacao
+# Removendo tokens que sao apenas pontuação
 df2 <- data.frame(
   id    = "d1",
   texto = "Ola, mundo ! ..."

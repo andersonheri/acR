@@ -12,17 +12,17 @@ ac_count(corpus, n = 1L, drop_punct = FALSE, by = NULL, sort = TRUE, ...)
 \item{n}{Tamanho do n-grama a ser tokenizado. Encaminhado para
 \code{\link[=ac_tokenize]{ac_tokenize()}}. Veja \code{?ac_tokenize} para detalhes.}
 
-\item{drop_punct}{Logico. Se \code{TRUE}, remove tokens compostos apenas
-por pontuacao antes de calcular as frequencias (via
+\item{drop_punct}{Lógico. Se \code{TRUE}, remove tokens compostos apenas
+por pontuação antes de calcular as frequências (via
 \code{drop_punct = TRUE} em \code{\link[=ac_tokenize]{ac_tokenize()}}).}
 
 \item{by}{Vetor de nomes de colunas de metadados em \code{corpus} a serem
 usados como grupos de agregacao. Se \code{NULL} (padrao), as contagens
-sao feitas por documento (\code{doc_id}). Se nao for \code{NULL}, as colunas
-indicadas sao usadas como grupos e \code{doc_id} nao entra no resultado.}
+sao feitas por documento (\code{doc_id}). Se não for \code{NULL}, as colunas
+indicadas sao usadas como grupos e \code{doc_id} não entra no resultado.}
 
-\item{sort}{Logico. Se \code{TRUE} (padrao), ordena a saida em ordem
-decrescente de frequencia (\code{n}).}
+\item{sort}{Lógico. Se \code{TRUE} (padrao), ordena a saida em ordem
+decrescente de frequência (\code{n}).}
 
 \item{...}{Argumentos adicionais encaminhados para
 \code{\link[=ac_tokenize]{ac_tokenize()}} (por exemplo, \code{keep_empty}).}
@@ -31,7 +31,7 @@ decrescente de frequencia (\code{n}).}
 Um \code{\link[tibble:tibble]{tibble::tibble()}}:
 \itemize{
 \item Se \code{by = NULL}: colunas \code{doc_id}, \code{token}, \code{n};
-\item Se \code{by} nao nulo: colunas \code{by}, \code{token}, \code{n}.
+\item Se \code{by} não nulo: colunas \code{by}, \code{token}, \code{n}.
 }
 }
 \description{
@@ -66,13 +66,13 @@ df <- data.frame(
 
 corp <- ac_corpus(df, text = texto, docid = id, meta = partido)
 
-# Frequencia de palavras (unigramas) por documento
+# Frequência de palavras (unigramas) por documento
 ac_count(corp)
 
-# Frequencia de palavras por partido
+# Frequência de palavras por partido
 ac_count(corp, by = "partido")
 
-# Frequencia de bigramas por partido, removendo apenas pontuacao
+# Frequência de bigramas por partido, removendo apenas pontuação
 ac_count(corp, n = 2, drop_punct = TRUE, by = "partido")
 
 }

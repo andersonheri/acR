@@ -13,21 +13,21 @@ ac_plot_tf_idf(
 )
 }
 \arguments{
-\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no minimo,
+\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no mínimo,
 as colunas \code{token} e \code{tf_idf}.}
 
 \item{by}{Vetor de nomes de colunas em \code{x} a serem usados como grupos
-de facetas. Se \code{NULL} (padrao), produz um unico grafico. Se nao for
+de facetas. Se \code{NULL} (padrao), produz um único grafico. Se não for
 \code{NULL}, cria facetas por combinacao das colunas informadas.}
 
-\item{n}{Numero de termos a exibir. Se \code{NULL} (padrao), usa todas as
+\item{n}{Número de termos a exibir. Se \code{NULL} (padrao), usa todas as
 linhas de \code{x}. Se informado, seleciona os top \code{n} termos por \code{tf_idf}
 no geral ou em cada grupo definido por \code{by}.}
 
 \item{style}{Estilo grafico. Pode ser \code{"default"} (padrao) ou \code{"ipea"}.
-Quando \code{"ipea"}, a funcao tenta aplicar \code{ipeaplot::theme_ipea()}.}
+Quando \code{"ipea"}, a função tenta aplicar \code{ipeaplot::theme_ipea()}.}
 
-\item{flip}{Logico. Se \code{TRUE} (padrao), usa barras horizontais com
+\item{flip}{Lógico. Se \code{TRUE} (padrao), usa barras horizontais com
 \code{\link[ggplot2:coord_flip]{ggplot2::coord_flip()}}.}
 }
 \value{
@@ -38,7 +38,7 @@ Um objeto \code{ggplot}.
 caracteristicos a partir de uma tabela com a coluna \code{tf_idf}, tipicamente
 gerada por \code{\link[=ac_tf_idf]{ac_tf_idf()}}.
 
-A funcao usa \link[ggplot2:ggplot2-package]{ggplot2} como base e pode, opcionalmente, aplicar o
+A função usa \link[ggplot2:ggplot2-package]{ggplot2} como base e pode, opcionalmente, aplicar o
 estilo editorial do pacote \code{ipeaplot}.
 }
 \examples{
@@ -54,7 +54,7 @@ df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# 2. Pipeline padrao: corpus -> frequencia -> tf-idf
+# 2. Pipeline padrao: corpus -> frequência -> tf-idf
 corp  <- ac_corpus(df, text = texto, docid = id, meta = partido)
 freq  <- ac_count(corp)
 tfidf <- ac_tf_idf(freq)

@@ -35,27 +35,27 @@ Tibble com uma linha por ocorrência, colunas:
 \description{
 \code{ac_kwic()} localiza todas as ocorrências de um termo (ou padrão) nos
 documentos de um \code{ac_corpus} e devolve cada ocorrência com uma janela
-de palavras antes e depois — a técnica de concordância usada desde os
+de palavras antes e depois: a técnica de concordância usada desde os
 primórdios da linguística de corpus (Sinclair, 1991) para entender
 \emph{como} uma palavra é usada, não só \emph{com que frequência}.
 
 É o complemento natural de uma análise de frequência ou keyness: saber
 que "liberdade" é um termo-chave de um grupo não diz nada sobre como o
-termo é empregado — a concordância mostra se aparece ao lado de
+termo é empregado: a concordância mostra se aparece ao lado de
 "econômica", "de expressão" ou "individual", revelando o enquadramento
 (framing) real do termo em cada contexto. Funciona em qualquer corpus
 com linguagem natural: reviews de produto, letras de música, transcrições
 de atendimento, posts em redes sociais.
 }
 \examples{
-# Avaliacoes de atendimento ao cliente
+# Avaliações de atendimento ao cliente
 df <- data.frame(
   id = paste0("a", 1:4),
   texto = c(
-    "o atendimento foi rapido e a atendente foi muito educada comigo",
+    "o atendimento foi rápido e a atendente foi muito educada comigo",
     "fiquei esperando muito tempo e o atendimento foi frio e distante",
     "atendimento excelente, resolveram meu problema na hora",
-    "o atendimento automatico nao entendeu minha solicitacao"
+    "o atendimento automático não entendeu minha solicitacao"
   ),
   stringsAsFactors = FALSE
 )

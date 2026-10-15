@@ -25,12 +25,12 @@ cb <- ac_qual_codebook(
   instructions = "Classifique o tom.",
   categories   = list(
     positivo = list(definition = "Tom propositivo."),
-    negativo = list(definition = "Tom critico."),
+    negativo = list(definition = "Tom crítico."),
     neutro   = list(definition = "Tom neutro.")
   )
 )
 
-# Remover a categoria "neutro" (aceita tambem um vetor de nomes)
+# Remover a categoria "neutro" (aceita também um vetor de nomes)
 cb <- ac_qual_codebook_remove(cb, "neutro")
 names(cb$categories)  # "positivo" "negativo"
 

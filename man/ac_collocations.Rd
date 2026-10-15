@@ -21,9 +21,9 @@ ac_collocations(
 \item{measure}{Medida de associação:
 \itemize{
 \item \code{"pmi"} (padrão): \emph{Pointwise Mutual Information} (Church & Hanks,
-1990) — quanto mais alto, mais a coocorrência surpreende em
+1990): quanto mais alto, mais a coocorrência surpreende em
 relação ao esperado pelo acaso. Tende a favorecer pares raros.
-\item \code{"ll"}: log-likelihood ratio (Dunning, 1993) — mais robusta que
+\item \code{"ll"}: log-likelihood ratio (Dunning, 1993): mais robusta que
 PMI para colocações de baixa frequência; é a medida padrão do
 \code{quanteda.textstats::textstat_collocations()}.
 \item \code{"chi2"}: qui-quadrado de associação, mesma lógica de
@@ -48,17 +48,17 @@ Tibble ordenado por associação decrescente, com colunas:
 }
 \description{
 \code{ac_collocations()} identifica pares (ou trincas) de palavras que
-aparecem juntas com mais frequência do que o esperado pelo acaso —
+aparecem juntas com mais frequência do que o esperado pelo acaso:
 colocações como "reforma tributária", "não recomendo" ou "atendimento
-ao cliente" — usando medidas de associação estatística em vez de
+ao cliente", usando medidas de associação estatística em vez de
 frequência bruta de bigramas/trigramas.
 
 A diferença importa: bigramas puramente frequentes tendem a ser
 dominados por combinações de palavras funcionais comuns ("de o",
 "que a"), que são frequentes mas não informativas. As medidas de
 associação penalizam esse efeito, destacando combinações que ocorrem
-juntas mais do que a frequência individual de cada palavra sugeriria
-— o uso típico é alimentar um dicionário customizado (ver
+juntas mais do que a frequência individual de cada palavra sugeriria:
+o uso típico é alimentar um dicionário customizado (ver
 \code{\link[=ac_build_dictionary]{ac_build_dictionary()}}) ou simplesmente explorar expressões
 compostas específicas de um domínio (jurídico, médico, técnico) antes
 de uma análise de frequência ou nuvem de palavras.
@@ -71,8 +71,8 @@ df <- data.frame(
     "atendimento ao cliente impecavel, super recomendo o lugar",
     "o atendimento ao cliente deixou a desejar dessa vez",
     "comida boa mas atendimento ao cliente lento",
-    "nao recomendo, atendimento ao cliente horrivel",
-    "ambiente agradavel e atendimento ao cliente rapido",
+    "não recomendo, atendimento ao cliente horrivel",
+    "ambiente agradável e atendimento ao cliente rápido",
     "preco justo, atendimento ao cliente cordial sempre"
   ),
   stringsAsFactors = FALSE

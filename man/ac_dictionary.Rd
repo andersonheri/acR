@@ -9,7 +9,7 @@ ac_dictionary(corpus, dictionary, by = NULL, case_insensitive = TRUE)
 \arguments{
 \item{corpus}{Objeto \code{ac_corpus}.}
 
-\item{dictionary}{Lista nomeada de vetores de caracteres — uma
+\item{dictionary}{Lista nomeada de vetores de caracteres: uma
 entrada por categoria, cada uma com as palavras daquela categoria
 (ver \code{\link[=ac_build_dictionary]{ac_build_dictionary()}}). Palavras são comparadas a tokens
 individuais (correspondência exata, não substring).}
@@ -29,7 +29,7 @@ Tibble com uma linha por documento (ou grupo), contendo
 }
 \description{
 \code{ac_dictionary()} conta, para cada documento de um \code{ac_corpus},
-quantas palavras caem em cada categoria de um dicionário —
+quantas palavras caem em cada categoria de um dicionário:
 generalização do método que \code{\link[=ac_sentiment]{ac_sentiment()}} já aplica só para
 polaridade (positivo/negativo). Um dicionário aqui é qualquer lista
 nomeada de listas de palavras: temas ("economia", "saúde"),
@@ -39,11 +39,11 @@ qualquer taxonomia definida a priori pelo pesquisador.
 Métodos de dicionário são o método mais antigo e mais transparente de
 análise de conteúdo assistida por computador (Stone et al., 1966,
 \emph{The General Inquirer}; revisado em Grimmer & Stewart, 2013): toda
-decisão de classificação é auditável — basta olhar a lista de
+decisão de classificação é auditável: basta olhar a lista de
 palavras. O preço é a falta de sensibilidade a contexto: a palavra
 "não" imediatamente antes de um termo do dicionário não inverte a
 contagem, e sarcasmo ou negação sofisticada passam batido. Para esses
-casos, o pipeline de LLM (\code{\link[=ac_qual_code]{ac_qual_code()}}) é a alternativa — mais
+casos, o pipeline de LLM (\code{\link[=ac_qual_code]{ac_qual_code()}}) é a alternativa: mais
 caro, menos transparente, mas sensível a contexto.
 }
 \examples{
@@ -51,17 +51,17 @@ caro, menos transparente, mas sensível a contexto.
 df <- data.frame(
   id = paste0("c", 1:4),
   texto = c(
-    "a entrega atrasou muito e o rastreio nao funcionava",
+    "a entrega atrasou muito e o rastreio não funcionava",
     "o produto chegou com defeito e quebrado na caixa",
     "cobraram duas vezes no cartao e o reembolso demorou",
-    "entrega rapida mas o produto tinha um defeito de fabrica"
+    "entrega rápida mas o produto tinha um defeito de fabrica"
   ),
   stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 
 dict <- ac_build_dictionary(
-  entrega    = c("entrega", "atrasou", "rastreio", "rapida"),
+  entrega    = c("entrega", "atrasou", "rastreio", "rápida"),
   produto    = c("defeito", "quebrado", "fabrica"),
   financeiro = c("cobraram", "cartao", "reembolso")
 )

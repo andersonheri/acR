@@ -46,7 +46,7 @@ chave de API real.
 
 Classificar com um modelo local (via \code{\link[=ac_qual_code]{ac_qual_code()}}) elimina o custo
 por token e mantem os documentos fora de qualquer rede externa, ao
-preco de gerencia propria do servidor: tamanho de contexto, tempo de
+preco de gerência propria do servidor: tamanho de contexto, tempo de
 resposta e throughput passam a depender do hardware local. Use junto
 com \code{checkpoint_dir} e \code{max_retries} em \code{ac_qual_code()} para rodadas
 longas, e \code{\link[=ac_estimate_tokens]{ac_estimate_tokens()}} para evitar estouro de contexto.
@@ -60,7 +60,7 @@ cb <- ac_qual_codebook(
   name = "tom", instructions = "Classifique o tom.",
   categories = list(
     positivo = list(definition = "Tom propositivo."),
-    negativo = list(definition = "Tom critico.")
+    negativo = list(definition = "Tom crítico.")
   )
 )
 df <- data.frame(id = "d1", texto = "Proponho cooperacao.")

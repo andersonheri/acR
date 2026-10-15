@@ -12,7 +12,7 @@
 #' É o segundo passo canônico do pipeline quantitativo, geralmente entre
 #' [ac_clean()] e [ac_count()]. Para análises que dependem de expressões
 #' compostas (\"reforma tributária\", \"desenvolvimento sustentável\"),
-#' use `n = 2L` para bigramas — cada n-grama vira uma unidade de contagem
+#' use `n = 2L` para bigramas: cada n-grama vira uma unidade de contagem
 #' independente.
 #'
 #' @param corpus Objeto de classe [`ac_corpus()`].

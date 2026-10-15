@@ -20,19 +20,19 @@ ac_qual_report(
 \arguments{
 \item{coded}{Tibble com resultado de \code{\link[=ac_qual_code]{ac_qual_code()}}.}
 
-\item{codebook}{Objeto \code{ac_codebook} usado na classificacao.}
+\item{codebook}{Objeto \code{ac_codebook} usado na classificação.}
 
 \item{reliability}{Opcional. Saida de \code{\link[=ac_qual_reliability]{ac_qual_reliability()}}; se
 fornecido, adiciona secao de confiabilidade inter-codificador.}
 
 \item{chat}{Opcional. Objeto \code{Chat} do \code{ellmer} (ou string de modelo);
-se fornecido, extrai provedor/modelo/parametros para o relatorio.}
+se fornecido, extrai provedor/modelo/parametros para o relatório.}
 
-\item{title}{Titulo do relatorio. Padrao: gerado a partir do nome do codebook.}
+\item{title}{Título do relatório. Padrao: gerado a partir do nome do codebook.}
 
 \item{author}{Autor(es) do estudo (opcional).}
 
-\item{method}{Descricao livre do metodo de coleta do corpus (opcional).}
+\item{method}{Descrição livre do metodo de coleta do corpus (opcional).}
 
 \item{format}{Formato de saida: \code{"md"} (padrao) ou \code{"html"}.}
 
@@ -54,7 +54,7 @@ referências bibliográficas.
 assistidas por LLM: \strong{o revisor ou leitor não consegue reproduzir a
 rodada} sem saber exatamente qual modelo, qual codebook, quais
 parâmetros e qual amostra foram usados. Sem esse relatório, o leitor
-tem que confiar no autor — algo que a tradição de análise de conteúdo
+tem que confiar no autor: algo que a tradição de análise de conteúdo
 (Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido
 e pode ser anexado como material suplementar do artigo, publicado como
 apêndice ou depositado num repositório de dados junto com o codebook em
@@ -81,7 +81,7 @@ coded <- tibble::tibble(
   reasoning        = rep("...", 5)
 )
 
-# Gerar relatorio em markdown temporario
+# Gerar relatório em markdown temporário
 arquivo <- tempfile(fileext = ".md")
 ac_qual_report(coded, cb, path = arquivo, author = "Fulano de Tal")
 # readLines(arquivo, n = 20)

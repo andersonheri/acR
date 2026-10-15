@@ -9,14 +9,14 @@ ac_plot_wordscores(wordscores_tbl, title = NULL)
 \arguments{
 \item{wordscores_tbl}{Tibble retornado por \code{\link[=ac_wordscores]{ac_wordscores()}}.}
 
-\item{title}{Titulo do grafico. Padrao: \code{NULL} (titulo automatico).}
+\item{title}{Título do grafico. Padrao: \code{NULL} (título automático).}
 }
 \value{
 Objeto \code{ggplot}.
 }
 \description{
 \code{ac_plot_wordscores()} plota os escores estimados por
-\code{\link[=ac_wordscores]{ac_wordscores()}} num eixo unico, destacando quais documentos foram
+\code{\link[=ac_wordscores]{ac_wordscores()}} num eixo único, destacando quais documentos foram
 usados como referência.
 }
 \examples{
@@ -25,8 +25,8 @@ df <- data.frame(
   texto = c(
     "excelente, recomendo muito",
     "bom, atende bem",
-    "ruim, nao gostei",
-    "pessimo, decepcao"
+    "ruim, não gostei",
+    "péssimo, decepcao"
   ),
   stringsAsFactors = FALSE
 )

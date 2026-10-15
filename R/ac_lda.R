@@ -22,7 +22,7 @@
 #' Blei, D. M.; Ng, A. Y.; Jordan, M. I. (2003). Latent Dirichlet Allocation.
 #' *Journal of Machine Learning Research*, 3, 993-1022.
 #'
-#' Vignette: `vignette("lda", package = "acR")` — tutorial completo com
+#' Vignette: `vignette("lda", package = "acR")`: tutorial completo com
 #' corpus real e visualizações.
 #'
 #' @examples

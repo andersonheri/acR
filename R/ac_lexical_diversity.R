@@ -2,16 +2,16 @@
 #'
 #' @description
 #' `ac_lexical_diversity()` mede quão variado é o vocabulário dos
-#' documentos de um `ac_corpus` — uma pergunta recorrente em linguística
+#' documentos de um `ac_corpus`: uma pergunta recorrente em linguística
 #' computacional (textos de falantes nativos vs. aprendizes de uma
 #' língua), análise de redações escolares, estudos de estilo autoral, ou
 #' comparação de roteiros/transcrições por gênero ou locutor.
 #'
 #' Calcula três métricas, cada uma respondendo à mesma pergunta de forma
-#' diferente — e cada uma com um ponto fraco diferente:
+#' diferente: e cada uma com um ponto fraco diferente:
 #'
 #' * **TTR** (*Type-Token Ratio*): proporção simples `tipos / tokens`.
-#'   Fácil de entender, mas extremamente sensível ao tamanho do texto —
+#'   Fácil de entender, mas extremamente sensível ao tamanho do texto:
 #'   textos mais longos quase sempre têm TTR menor, então **não compare
 #'   TTR entre documentos de tamanhos muito diferentes**.
 #' * **C de Herdan** (Herdan, 1960): `log(tipos) / log(tokens)`. Mais

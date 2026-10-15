@@ -62,7 +62,7 @@ theme_ac <- function(base_size = 12, base_family = "") {
 #' Paleta categórica do acR
 #'
 #' @description
-#' Retorna a paleta categórica padrão do pacote — cores compatíveis com
+#' Retorna a paleta categórica padrão do pacote: cores compatíveis com
 #' contraste WCAG AA e teste de daltonismo (deuteranopia). Deriva da
 #' paleta Okabe-Ito, referência para acessibilidade em visualização
 #' científica.

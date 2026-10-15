@@ -38,7 +38,7 @@ Tibble com colunas:
 \item \code{cost_input}: custo por 1M tokens de entrada (USD), \code{NA} se gratuito/local;
 \item \code{cost_output}: custo por 1M tokens de saída (USD);
 \item \code{tier}: categoria (\code{"frontier"}, \code{"balanced"}, \code{"fast"}, \code{"free"}, \code{"local"});
-\item \code{pt_support}: suporte estimado ao português (\code{"alto"}, \code{"medio"}, \code{"baixo"});
+\item \code{pt_support}: suporte estimado ao português (\code{"alto"}, \code{"médio"}, \code{"baixo"});
 \item \code{acr_string}: string pronta para uso em \code{model = ...} no \code{acR}.
 }
 }

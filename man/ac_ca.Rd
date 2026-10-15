@@ -49,14 +49,14 @@ geométrico de modo que unidades e termos próximos no gráfico tendem
 a co-ocorrer mais do que o esperado pelo acaso (Greenacre, 2007). É
 uma alternativa simples e determinística à Alocação de Dirichlet
 Latente (LDA, já disponível em \code{\link[=ac_lda]{ac_lda()}}) para visualizar
-associações entre vocabulário e grupos em duas dimensões — sem
+associações entre vocabulário e grupos em duas dimensões: sem
 assumir um número de tópicos latentes, e com uma interpretação
 geométrica direta (distâncias no biplot ~ dissimilaridade de perfis
 de frequência).
 
 É útil, por exemplo, para visualizar como o vocabulário difere entre
 categorias de atendimento ao cliente, entre seções de um conjunto de
-notícias, ou entre partidos/períodos legislativos — qualquer
+notícias, ou entre partidos/períodos legislativos: qualquer
 situação em que se queira um "mapa" conjunto de grupos e das
 palavras que os caracterizam.
 
@@ -72,11 +72,11 @@ df <- data.frame(
   id = paste0("d", 1:6),
   texto = c(
     "entrega atrasada rastreio sumiu",
-    "pedido atrasou muito, rastreio nao atualiza",
+    "pedido atrasou muito, rastreio não atualiza",
     "produto com defeito, chegou quebrado",
-    "veio quebrado, qualidade pessima",
-    "atendimento excelente, resolveram rapido",
-    "suporte educado e rapido, resolveu tudo"
+    "veio quebrado, qualidade péssima",
+    "atendimento excelente, resolveram rápido",
+    "suporte educado e rápido, resolveu tudo"
   ),
   categoria = c("entrega", "entrega", "produto", "produto",
                  "atendimento", "atendimento"),

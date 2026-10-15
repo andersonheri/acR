@@ -16,11 +16,11 @@ Objeto \code{ac_codebook}.
 }
 \description{
 Le um arquivo YAML gerado por \code{\link[=ac_qual_save_codebook]{ac_qual_save_codebook()}} e reconstroi
-o objeto \code{ac_codebook} na sessao atual. Uso tipico: retomar uma analise
-iniciada em outra sessao ou por outro pesquisador.
+o objeto \code{ac_codebook} na sessão atual. Uso típico: retomar uma análise
+iniciada em outra sessão ou por outro pesquisador.
 }
 \examples{
-# Preparar um codebook e salvar em arquivo temporario
+# Preparar um codebook e salvar em arquivo temporário
 cb <- ac_qual_codebook(
   name         = "polaridade",
   instructions = "Classifique a polaridade do texto.",
@@ -32,7 +32,7 @@ cb <- ac_qual_codebook(
 arquivo <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo)
 
-# Recarregar em outra sessao
+# Recarregar em outra sessão
 cb_novo <- ac_qual_load_codebook(arquivo)
 names(cb_novo$categories)  # "favor" "contra"
 

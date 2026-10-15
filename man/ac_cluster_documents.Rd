@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_cluster.R
 \name{ac_cluster_documents}
 \alias{ac_cluster_documents}
-\title{Agrupamento nao supervisionado de documentos}
+\title{Agrupamento não supervisionado de documentos}
 \usage{
 ac_cluster_documents(
   corpus,
@@ -24,15 +24,15 @@ com ligacao Ward.D2; \code{"kmeans"} usa k-means com \code{nstart = 25L};
 \item{features}{Como representar cada documento. \code{"tfidf"} (padrao) pesa
 por TF-IDF; \code{"count"} usa contagens brutas.}
 
-\item{k}{Numero de grupos. Se \code{NULL} (padrao) e \code{method \%in\% c("hclust","kmeans")}, tenta escolher automaticamente por silhouette
-entre 2 e 8; requer \code{cluster}. Se \code{cluster} nao estiver instalado,
+\item{k}{Número de grupos. Se \code{NULL} (padrao) e \code{method \%in\% c("hclust","kmeans")}, tenta escolher automaticamente por silhouette
+entre 2 e 8; requer \code{cluster}. Se \code{cluster} não estiver instalado,
 \code{k = 3} e o fallback.}
 
-\item{distance}{Metrica de dissimilaridade. \code{"cosine"} (padrao) e o
+\item{distance}{Métrica de dissimilaridade. \code{"cosine"} (padrao) e o
 classico em textos; \code{"euclidean"} funciona melhor com vetores
 normalizados.}
 
-\item{min_docs}{Minimo de documentos para nao emitir warning de corpus
+\item{min_docs}{Mínimo de documentos para não emitir warning de corpus
 pequeno. Padrao: \code{15L}.}
 }
 \value{
@@ -40,20 +40,20 @@ Objeto de classe \code{ac_cluster} com:
 \describe{
 \item{\code{assignments}}{\code{tibble} com \code{doc_id} e \code{cluster} (integer).}
 \item{\code{fit}}{Objeto bruto do algoritmo (\code{hclust}, \code{kmeans} ou \code{pam}).}
-\item{\code{k}}{Numero final de grupos.}
+\item{\code{k}}{Número final de grupos.}
 \item{\code{method}, \code{features}, \code{distance}}{Parametros usados.}
-\item{\code{silhouette}}{Silhueta media (NA se \code{cluster} nao instalado).}
+\item{\code{silhouette}}{Silhueta média (NA se \code{cluster} não instalado).}
 \item{\code{dtm}}{Matriz documento-termo usada (para plotagem).}
 }
 }
 \description{
 \code{ac_cluster_documents()} particiona os documentos de um corpus em grupos
-"duros" (hard clustering) com base na similaridade de vocabulario. Serve
+"duros" (hard clustering) com base na similaridade de vocabulário. Serve
 para descobrir tipologias latentes, montar amostras estratificadas de
-revisao humana ou produzir dendrogramas para relatorios metodologicos.
+revisao humana ou produzir dendrogramas para relatórios metodologicos.
 
-Nao substitui \code{\link[=ac_lda]{ac_lda()}}: LDA e clustering \emph{soft} (cada documento vira
-uma mistura de topicos), enquanto esta funcao devolve \strong{uma etiqueta
+Não substitui \code{\link[=ac_lda]{ac_lda()}}: LDA e clustering \emph{soft} (cada documento vira
+uma mistura de tópicos), enquanto esta função devolve \strong{uma etiqueta
 por documento}.
 }
 \examples{
@@ -64,10 +64,10 @@ df <- data.frame(
             "cidadania direitos participacao democracia",
             "voto direitos liberdade cidadania",
             "democracia voto participacao popular",
-            "mercado economia eficiencia privatizacao",
-            "privatizacao mercado livre eficiencia",
+            "mercado economia eficiência privatizacao",
+            "privatizacao mercado livre eficiência",
             "economia crescimento investimento mercado",
-            "eficiencia mercado economia livre"),
+            "eficiência mercado economia livre"),
   stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)

@@ -16,7 +16,7 @@
 #' aparece (ponderada pela frequência relativa da palavra em cada
 #' referência). Um documento virgem recebe a média dos escores de suas
 #' palavras, ponderada pela frequência relativa delas no próprio
-#' documento virgem — só palavras que também aparecem nos documentos de
+#' documento virgem: só palavras que também aparecem nos documentos de
 #' referência contam.
 #'
 #' Fora da ciência política (onde o método nasceu, aplicado a manifestos

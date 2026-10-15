@@ -12,7 +12,7 @@ ac_dictionary_validate(scored, human, cat_col = "categoria", threshold = 0)
 categoria).}
 
 \item{human}{Tibble com colunas \code{doc_id} e uma coluna de categoria
-(ver \code{cat_col}) — a codificação humana de referência, no mesmo
+(ver \code{cat_col}): a codificação humana de referência, no mesmo
 formato aceito por \code{\link[=ac_qual_reliability]{ac_qual_reliability()}} (multilabel como string
 separada por \code{"|"}).}
 
@@ -25,8 +25,8 @@ dicionário considerar a categoria presente no documento. Padrão:
 }
 \value{
 Tibble com uma linha por categoria do dicionário e colunas
-\code{categoria}, \code{n}, \code{vp}, \code{fp}, \code{fn}, \code{vn}, \code{concordancia},
-\code{precisao}, \code{recall}, \code{f1}, \code{gwet_ac1}, \code{krippendorff_alfa} — as
+\code{categoria}, \code{n}, \code{vp}, \code{fp}, \code{fn}, \code{vn}, \verb{concordância},
+\code{precisao}, \code{recall}, \code{f1}, \code{gwet_ac1}, \code{krippendorff_alfa}: as
 mesmas colunas de \code{attr(ac_qual_reliability(...), "by_variable")}.
 Denominadores indefinidos (ex.: uma categoria que nenhum dos dois
 lados marcou) geram \code{NA}, nunca \code{0} ou \code{1} artificiais.
@@ -35,14 +35,14 @@ lados marcou) geram \code{NA}, nunca \code{0} ou \code{1} artificiais.
 \code{ac_dictionary_validate()} compara a classificação por dicionário
 (saída de \code{\link[=ac_dictionary]{ac_dictionary()}}, \code{\link[=ac_emotion]{ac_emotion()}} ou \code{\link[=ac_sentiment]{ac_sentiment()}} com
 categorias binarizadas) contra uma codificação de referência humana,
-categoria por categoria — a mesma lógica de validação que
+categoria por categoria: a mesma lógica de validação que
 \code{\link[=ac_qual_reliability]{ac_qual_reliability()}} aplica à classificação por LLM (com
 \code{by_variable = TRUE}), agora para o método de dicionário.
 
 Nenhum dicionário deveria ser usado numa análise publicável sem essa
 etapa (Grimmer & Stewart, 2013): um dicionário construído à mão pode
 parecer razoável e ainda assim ter baixa precisão ou recall numa
-categoria específica — só a comparação com uma amostra codificada por
+categoria específica: só a comparação com uma amostra codificada por
 humano revela isso.
 }
 \examples{
@@ -52,18 +52,18 @@ df <- data.frame(
     "a entrega atrasou muito",
     "o produto chegou com defeito",
     "cobraram duas vezes no cartao",
-    "entrega rapida e produto perfeito"
+    "entrega rápida e produto perfeito"
   ),
   stringsAsFactors = FALSE
 )
 corpus <- ac_corpus(df, text = texto, docid = id)
 dict <- ac_build_dictionary(
-  entrega = c("entrega", "atrasou", "rapida"),
+  entrega = c("entrega", "atrasou", "rápida"),
   produto = c("defeito", "perfeito")
 )
 scored <- ac_dictionary(corpus, dict)
 
-# Codificacao humana de referencia (simulada para o exemplo)
+# Codificacao humana de referência (simulada para o exemplo)
 human <- tibble::tibble(
   doc_id    = paste0("d", 1:4),
   categoria = c("entrega", "produto", NA, "entrega|produto")

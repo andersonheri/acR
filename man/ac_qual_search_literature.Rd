@@ -2,7 +2,7 @@
 % Please edit documentation in R/ac_qual_search_literature.R
 \name{ac_qual_search_literature}
 \alias{ac_qual_search_literature}
-\title{Buscar referencias bibliograficas sobre um conceito via OpenAlex e LLM}
+\title{Buscar referências bibliograficas sobre um conceito via OpenAlex e LLM}
 \usage{
 ac_qual_search_literature(
   concept,
@@ -16,7 +16,7 @@ ac_qual_search_literature(
 )
 }
 \arguments{
-\item{concept}{String. Conceito ou termo teorico a buscar
+\item{concept}{String. Conceito ou termo teórico a buscar
 (ex: \code{"democratic backsliding"}, \code{"state capacity"}).}
 
 \item{chat}{Objeto \code{Chat} do pacote \code{ellmer} (ex: \code{chat_google_gemini()},
@@ -26,18 +26,18 @@ ac_qual_search_literature(
 \item{model}{String no formato \code{"provedor/modelo"}. Ignorado quando \code{chat}
 e fornecido.}
 
-\item{n_refs}{Inteiro. Numero de referencias a retornar. Padrao: \code{5}.}
+\item{n_refs}{Inteiro. Número de referências a retornar. Padrao: \code{5}.}
 
 \item{journals}{Periodicos a considerar. Opcoes:
 \itemize{
-\item \code{"default"}: lista curada de periodicos de referencia em CP/CS/AP;
+\item \code{"default"}: lista curada de periodicos de referência em CP/CS/AP;
 \item \code{"all"}: sem restricao de periodico;
 \item Vetor de strings: lista customizada (ex: \code{c("default", "RBCS")}).
 }}
 
 \item{lang}{Idioma das definicoes sintetizadas. Padrao: \code{"pt"}.}
 
-\item{min_citations}{Inteiro. Numero minimo de citacoes. Padrao: \code{0}.}
+\item{min_citations}{Inteiro. Número mínimo de citacoes. Padrao: \code{0}.}
 
 \item{...}{Argumentos adicionais passados a \code{ellmer::chat()}.}
 }
@@ -47,14 +47,14 @@ Tibble com colunas: \code{conceito}, \code{autor}, \code{ano}, \code{revista},
 \code{link}.
 }
 \description{
-\code{ac_qual_search_literature()} busca referencias academicas reais na API do
+\code{ac_qual_search_literature()} busca referências acadêmicas reais na API do
 OpenAlex e usa um modelo de linguagem via \code{ellmer} para sintetizar os
-abstracts em portugues. Retorna um tibble com metadados bibliograficos
+abstracts em português. Retorna um tibble com metadados bibliograficos
 verificados e definicoes sintetizadas pela LLM.
 
 A arquitetura e: OpenAlex recupera registros reais (autor, ano, DOI,
-abstract, revista, numero de citacoes); a LLM sintetiza o abstract em
-portugues e extrai o trecho mais relevante. Isso evita alucinacoes
+abstract, revista, número de citacoes); a LLM sintetiza o abstract em
+português e extrai o trecho mais relevante. Isso evita alucinacoes
 bibliograficas comuns quando a LLM opera sem fonte externa.
 }
 \examples{
@@ -64,7 +64,7 @@ bibliograficas comuns quando a LLM opera sem fonte externa.
 # Chat via Groq (plano gratuito com gpt-oss-120b)
 chat_obj <- ellmer::chat_groq(model = "openai/gpt-oss-120b", echo = "none")
 
-# Buscar 5 referencias mais citadas sobre o conceito e sintetizar cada uma
+# Buscar 5 referências mais citadas sobre o conceito e sintetizar cada uma
 lit <- ac_qual_search_literature(
   concept       = "democratic backsliding",
   n_refs        = 5,

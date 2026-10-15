@@ -18,7 +18,7 @@ Invisivel: caminho do arquivo gerado.
 }
 \description{
 Serializa um objeto \code{ac_codebook} em disco no formato YAML, preservando
-instrucoes, categorias, exemplos, referencias e historico de modificacoes.
+instrucoes, categorias, exemplos, referências e histórico de modificacoes.
 YAML foi escolhido por ser legivel por humanos e versionavel em Git.
 }
 \examples{
@@ -28,11 +28,11 @@ cb <- ac_qual_codebook(
   instructions = "Classifique o tom do discurso.",
   categories   = list(
     positivo = list(definition = "Tom propositivo e colaborativo."),
-    negativo = list(definition = "Tom critico e confrontacional.")
+    negativo = list(definition = "Tom crítico e confrontacional.")
   )
 )
 
-# Salvar em arquivo temporario (usar caminho real fora de exemplos)
+# Salvar em arquivo temporário (usar caminho real fora de exemplos)
 arquivo <- tempfile(fileext = ".yaml")
 ac_qual_save_codebook(cb, path = arquivo)
 

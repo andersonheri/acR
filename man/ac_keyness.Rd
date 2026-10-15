@@ -2,12 +2,12 @@
 % Please edit documentation in R/ac_keyness.R
 \name{ac_keyness}
 \alias{ac_keyness}
-\title{Calcular estatisticas de keyness entre dois grupos}
+\title{Calcular estatísticas de keyness entre dois grupos}
 \usage{
 ac_keyness(x, group, target, measure = c("chi2", "ll"), sort = TRUE)
 }
 \arguments{
-\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no minimo,
+\item{x}{Um \code{data.frame} ou \code{\link[tibble:tibble]{tibble::tibble()}} contendo, no mínimo,
 as colunas \code{token}, \code{n} e uma coluna de grupo.}
 
 \item{group}{Nome da coluna em \code{x} que identifica os grupos (string).
@@ -15,13 +15,13 @@ Essa coluna deve possuir exatamente dois valores distintos.}
 
 \item{target}{Valor de \code{group} que sera considerado o grupo alvo
 (por exemplo, \code{"Governo"}). O outro valor sera tratado como grupo
-de referencia.}
+de referência.}
 
-\item{measure}{Estatistica de keyness a ser usada. Pode ser \code{"chi2"}
+\item{measure}{Estatística de keyness a ser usada. Pode ser \code{"chi2"}
 (padrao) para qui-quadrado com 1 grau de liberdade, ou \code{"ll"} para
 log-likelihood (G^2).}
 
-\item{sort}{Logico. Se \code{TRUE} (padrao), ordena a saida por \code{keyness}
+\item{sort}{Lógico. Se \code{TRUE} (padrao), ordena a saida por \code{keyness}
 em ordem decrescente (termos mais caracteristicos do grupo alvo no
 topo).}
 }
@@ -29,26 +29,26 @@ topo).}
 Um \code{\link[tibble:tibble]{tibble::tibble()}} com uma linha por termo, contendo:
 \itemize{
 \item \code{token}
-\item \code{group} (nome da coluna de grupo, repetido para referencia)
+\item \code{group} (nome da coluna de grupo, repetido para referência)
 \item \code{target}, \code{reference}
 \item \code{n_target}, \code{n_reference}
 \item \code{total_target}, \code{total_reference}
-\item \code{keyness} (estatistica assinada, positiva quando o termo e mais
+\item \code{keyness} (estatística assinada, positiva quando o termo e mais
 frequente no grupo alvo, negativa quando e mais frequente no
-grupo de referencia)
+grupo de referência)
 \item \code{direction} (nome do grupo em que o termo e relativamente mais
 frequente)
 }
 }
 \description{
-\code{ac_keyness()} calcula estatisticas de "keyness" para comparar a
+\code{ac_keyness()} calcula estatísticas de "keyness" para comparar a
 distribuicao de termos entre dois grupos. O criterio que define os
 grupos e do pesquisador: partido, periodo, tema, regiao, autor,
-condicao experimental ou qualquer variavel categorica no corpus. A
-funcao e inspirada em \code{\link[quanteda.textstats:textstat_keyness]{quanteda.textstats::textstat_keyness()}} e
+condicao experimental ou qualquer variável categorica no corpus. A
+função e inspirada em \code{\link[quanteda.textstats:textstat_keyness]{quanteda.textstats::textstat_keyness()}} e
 utiliza tabelas 2x2 por termo.
 
-A entrada tipica e uma tabela de frequencias gerada por
+A entrada típica e uma tabela de frequências gerada por
 \code{\link[=ac_count]{ac_count()}}, agregada por uma coluna de grupo:
 \itemize{
 \item \code{ac_count(corp, by = "grupo")} seguido de
@@ -56,10 +56,10 @@ A entrada tipica e uma tabela de frequencias gerada por
 }
 }
 \details{
-Para cada termo, a funcao constroi uma tabela 2x2:
+Para cada termo, a função constroi uma tabela 2x2:
 \itemize{
-\item \code{a = n_target} (frequencia do termo no grupo alvo)
-\item \code{b = n_reference} (frequencia do termo no grupo de referencia)
+\item \code{a = n_target} (frequência do termo no grupo alvo)
+\item \code{b = n_reference} (frequência do termo no grupo de referência)
 \item \code{c = total_target - a}
 \item \code{d = total_reference - b}
 }
@@ -70,36 +70,36 @@ Em seguida, calcula:
 \item log-likelihood ratio (G^2) na opcao \code{measure = "ll"}.
 }
 
-Em ambos os casos, a estatistica e multiplicada pelo sinal da
-diferenca de frequencias relativas \code{(a / total_target - b / total_reference)},
+Em ambos os casos, a estatística e multiplicada pelo sinal da
+diferenca de frequências relativas \code{(a / total_target - b / total_reference)},
 de forma que valores positivos indiquem termos mais caracteristicos
 do grupo alvo e valores negativos termos mais caracteristicos do
-grupo de referencia.
+grupo de referência.
 }
 \examples{
-# Comparar vocabulario entre dois grupos (aqui, dois temas legislativos).
+# Comparar vocabulário entre dois grupos (aqui, dois temas legislativos).
 # O criterio de grupo e do pesquisador: partido, periodo, regiao, tema...
 df <- data.frame(
   id    = paste0("d", 1:8),
   texto = c(
-    "reforma tributaria simplifica sistema impostos empresas",
+    "reforma tributária simplifica sistema impostos empresas",
     "IVA dual substitui PIS COFINS ICMS federal",
-    "aliquotas excecoes tributarias setores economicos",
-    "reforma tributaria unifica impostos indiretos",
+    "aliquotas excecoes tributárias setores economicos",
+    "reforma tributária unifica impostos indiretos",
     "programa habitacional amplia recursos moradia popular",
     "deficit habitacional afeta familias baixa renda",
-    "urbanizacao favelas regularizacao fundiaria municipios",
+    "urbanizacao favelas regularizacao fundiária municipios",
     "moradia digna direito social constituicao"
   ),
-  tema  = rep(c("tributario", "habitacao"), each = 4),
+  tema  = rep(c("tributário", "habitacao"), each = 4),
   stringsAsFactors = FALSE
 )
 
 corp <- ac_corpus(df, text = texto, docid = id)
 freq <- ac_count(corp, by = "tema")
 
-# Termos-chave do grupo "tributario" versus o resto
-key <- ac_keyness(freq, group = "tema", target = "tributario")
+# Termos-chave do grupo "tributário" versus o resto
+key <- ac_keyness(freq, group = "tema", target = "tributário")
 head(key)
 
 }

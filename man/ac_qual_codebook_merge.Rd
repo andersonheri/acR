@@ -50,7 +50,7 @@ cb_estilo <- ac_qual_codebook(
   )
 )
 
-# Fundir em um unico codebook com 4 categorias
+# Fundir em um único codebook com 4 categorias
 cb <- ac_qual_codebook_merge(cb_tom, cb_estilo, name = "tom_estilo")
 names(cb$categories)  # "positivo" "negativo" "pathos" "logos"
 

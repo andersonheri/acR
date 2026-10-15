@@ -14,13 +14,13 @@ Lista nomeada de vetores de caracteres (um dicionário).
 }
 \description{
 \code{ac_build_dictionary()} monta um dicionário no formato esperado por
-\code{\link[=ac_dictionary]{ac_dictionary()}} a partir de argumentos nomeados — cada argumento é
+\code{\link[=ac_dictionary]{ac_dictionary()}} a partir de argumentos nomeados: cada argumento é
 uma categoria, e seu valor é o vetor de palavras daquela categoria.
 }
 \examples{
 dict <- ac_build_dictionary(
-  positivo = c("bom", "otimo", "excelente"),
-  negativo = c("mau", "pessimo", "horrivel")
+  positivo = c("bom", "ótimo", "excelente"),
+  negativo = c("mau", "péssimo", "horrivel")
 )
 dict
 

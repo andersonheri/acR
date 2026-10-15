@@ -27,7 +27,7 @@ Os nomes da lista viram os títulos das seções do relatório.
 
 \item{chat}{Opcional. Objeto \code{Chat} do \code{ellmer} ou string de modelo
 \code{"provider/model"}. Aplica-se a todas as variáveis (assumindo que
-todas foram classificadas com o mesmo modelo — se não, deixe \code{NULL}).}
+todas foram classificadas com o mesmo modelo: se não, deixe \code{NULL}).}
 
 \item{title}{Título do relatório consolidado. Padrão: \code{"Relatório consolidado de análise de conteúdo"}.}
 
@@ -46,7 +46,7 @@ Invisível: caminho do arquivo gerado.
 }
 \description{
 \code{ac_qual_report_full()} gera \strong{um único} documento (Markdown ou HTML)
-consolidando resultados de N variáveis de codificação qualitativa —
+consolidando resultados de N variáveis de codificação qualitativa:
 cada uma com seu próprio codebook, rodada de \code{\link[=ac_qual_code]{ac_qual_code()}} e,
 opcionalmente, métricas de \code{\link[=ac_qual_reliability]{ac_qual_reliability()}} ou \code{\link[=ac_qual_irr]{ac_qual_irr()}}.
 
@@ -57,10 +57,10 @@ pesquisador precisava chamar \code{\link[=ac_qual_report]{ac_qual_report()}} N v
 relatórios manualmente, ou escrever um consolidador ad hoc por projeto.
 
 Aceita variáveis \code{multilabel = TRUE} e \code{multilabel = FALSE} no mesmo
-relatório — cada seção herda a apresentação apropriada para o tipo.
+relatório: cada seção herda a apresentação apropriada para o tipo.
 }
 \examples{
-# Duas variaveis de conteudo, cada uma com seu codebook
+# Duas variáveis de conteúdo, cada uma com seu codebook
 cb_tom <- ac_qual_codebook(
   name = "tom",
   instructions = "Classifique o tom.",

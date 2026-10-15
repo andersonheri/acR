@@ -11,7 +11,7 @@
 #' assistidas por LLM: **o revisor ou leitor não consegue reproduzir a
 #' rodada** sem saber exatamente qual modelo, qual codebook, quais
 #' parâmetros e qual amostra foram usados. Sem esse relatório, o leitor
-#' tem que confiar no autor — algo que a tradição de análise de conteúdo
+#' tem que confiar no autor: algo que a tradição de análise de conteúdo
 #' (Krippendorff, 2018) sempre rejeitou. O documento gerado é autocontido
 #' e pode ser anexado como material suplementar do artigo, publicado como
 #' apêndice ou depositado num repositório de dados junto com o codebook em
@@ -559,7 +559,7 @@ ac_qual_report <- function(coded,
 #'
 #' @description
 #' `ac_qual_report_full()` gera **um único** documento (Markdown ou HTML)
-#' consolidando resultados de N variáveis de codificação qualitativa —
+#' consolidando resultados de N variáveis de codificação qualitativa:
 #' cada uma com seu próprio codebook, rodada de [ac_qual_code()] e,
 #' opcionalmente, métricas de [ac_qual_reliability()] ou [ac_qual_irr()].
 #'
@@ -570,7 +570,7 @@ ac_qual_report <- function(coded,
 #' relatórios manualmente, ou escrever um consolidador ad hoc por projeto.
 #'
 #' Aceita variáveis `multilabel = TRUE` e `multilabel = FALSE` no mesmo
-#' relatório — cada seção herda a apresentação apropriada para o tipo.
+#' relatório: cada seção herda a apresentação apropriada para o tipo.
 #'
 #' @param variables Lista **nomeada** onde cada elemento é uma lista com:
 #'   * `coded`: tibble com resultado de [ac_qual_code()] (obrigatório).
@@ -580,7 +580,7 @@ ac_qual_report <- function(coded,
 #'   Os nomes da lista viram os títulos das seções do relatório.
 #' @param chat Opcional. Objeto `Chat` do `ellmer` ou string de modelo
 #'   `"provider/model"`. Aplica-se a todas as variáveis (assumindo que
-#'   todas foram classificadas com o mesmo modelo — se não, deixe `NULL`).
+#'   todas foram classificadas com o mesmo modelo: se não, deixe `NULL`).
 #' @param title Título do relatório consolidado. Padrão: `"Relatório
 #'   consolidado de análise de conteúdo"`.
 #' @param author Autor(es) do estudo.

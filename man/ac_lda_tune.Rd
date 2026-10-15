@@ -34,7 +34,7 @@ ideal de tópicos.
 }
 \examples{
 \donttest{
-# 1. Corpus sintetico (mesmos temas de ac_lda(), palavras diferentes)
+# 1. Corpus sintético (mesmos temas de ac_lda(), palavras diferentes)
 df <- data.frame(
   id = paste0("d", 1:10),
   texto = c(
@@ -45,9 +45,9 @@ df <- data.frame(
     "democracia cidadania direitos igualdade",
     "economia inflacao juros orcamento",
     "saude medico remedio tratamento",
-    "educacao pesquisa ciencia tecnologia",
+    "educacao pesquisa ciência tecnologia",
     "participacao social democracia cidadania",
-    "mercado trabalho emprego salario"
+    "mercado trabalho emprego salário"
   )
 )
 corpus <- ac_corpus(df, text = texto, docid = id)

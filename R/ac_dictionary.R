@@ -2,7 +2,7 @@
 #'
 #' @description
 #' `ac_dictionary()` conta, para cada documento de um `ac_corpus`,
-#' quantas palavras caem em cada categoria de um dicionário —
+#' quantas palavras caem em cada categoria de um dicionário:
 #' generalização do método que [ac_sentiment()] já aplica só para
 #' polaridade (positivo/negativo). Um dicionário aqui é qualquer lista
 #' nomeada de listas de palavras: temas ("economia", "saúde"),
@@ -12,15 +12,15 @@
 #' Métodos de dicionário são o método mais antigo e mais transparente de
 #' análise de conteúdo assistida por computador (Stone et al., 1966,
 #' *The General Inquirer*; revisado em Grimmer & Stewart, 2013): toda
-#' decisão de classificação é auditável — basta olhar a lista de
+#' decisão de classificação é auditável: basta olhar a lista de
 #' palavras. O preço é a falta de sensibilidade a contexto: a palavra
 #' "não" imediatamente antes de um termo do dicionário não inverte a
 #' contagem, e sarcasmo ou negação sofisticada passam batido. Para esses
-#' casos, o pipeline de LLM ([ac_qual_code()]) é a alternativa — mais
+#' casos, o pipeline de LLM ([ac_qual_code()]) é a alternativa: mais
 #' caro, menos transparente, mas sensível a contexto.
 #'
 #' @param corpus Objeto `ac_corpus`.
-#' @param dictionary Lista nomeada de vetores de caracteres — uma
+#' @param dictionary Lista nomeada de vetores de caracteres: uma
 #'   entrada por categoria, cada uma com as palavras daquela categoria
 #'   (ver [ac_build_dictionary()]). Palavras são comparadas a tokens
 #'   individuais (correspondência exata, não substring).
@@ -149,7 +149,7 @@ ac_dictionary <- function(corpus, dictionary, by = NULL, case_insensitive = TRUE
 #'
 #' @description
 #' `ac_build_dictionary()` monta um dicionário no formato esperado por
-#' [ac_dictionary()] a partir de argumentos nomeados — cada argumento é
+#' [ac_dictionary()] a partir de argumentos nomeados: cada argumento é
 #' uma categoria, e seu valor é o vetor de palavras daquela categoria.
 #'
 #' @param ... Argumentos nomeados, cada um um vetor de caracteres.
@@ -234,12 +234,12 @@ ac_dictionary_load <- function(path) {
 #'
 #' @description
 #' `ac_dictionary_import()` constrói um dicionário (ver
-#' [ac_build_dictionary()]) a partir de uma tabela em formato longo —
-#' uma linha por par palavra-categoria — o formato em que léxicos
+#' [ac_build_dictionary()]) a partir de uma tabela em formato longo:
+#' uma linha por par palavra-categoria, o formato em que léxicos
 #' costumam ser distribuídos (CSV, planilha). Útil para importar listas
 #' de palavras construídas fora do R, ou léxicos de terceiros já
 #' traduzidos/adaptados para português (o pacote não distribui nenhum
-#' léxico de categorias além do OpLexicon usado em [ac_sentiment()] —
+#' léxico de categorias além do OpLexicon usado em [ac_sentiment()];
 #' veja `vignette("dicionários")` para onde encontrar léxicos de
 #' terceiros e como adaptá-los a este formato).
 #'

@@ -97,13 +97,13 @@ gerando um banco estruturado com trecho original, tradução, autor, ano,
 revista e link. O pesquisador revisa e aprova interativamente.
 }
 
-Todo codebook mantém um \code{history} das modificações — quem alterou, quando
+Todo codebook mantém um \code{history} das modificações: quem alterou, quando
 e o quê. Essencial para auditoria metodológica quando o instrumento evolui
 entre a versão piloto e a versão final publicada.
 }
 \examples{
 # Codebook manual com duas categorias, cada uma com exemplos positivos
-# (o que E) e negativos (o que NAO e, para desambiguar categorias vizinhas)
+# (o que E) e negativos (o que NÃO e, para desambiguar categorias vizinhas)
 cb <- ac_qual_codebook(
   name         = "tom_discurso",
   instructions = "Classifique o tom geral do discurso.",
@@ -115,7 +115,7 @@ cb <- ac_qual_codebook(
       weight       = 1  # peso relativo no prompt; use >1 para priorizar
     ),
     negativo = list(
-      definition   = "Discurso com tom critico ou confrontacional.",
+      definition   = "Discurso com tom crítico ou confrontacional.",
       examples_pos = c("Esta proposta vai arruinar o pais."),
       examples_neg = c("Apresento esta emenda para melhorar o texto."),
       weight       = 1

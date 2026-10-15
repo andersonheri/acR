@@ -224,7 +224,7 @@ ac_plot_wordcloud_comparative <- function(corpus,
 }
 
 
-#' Gráfico X-ray — dispersão lexical de termos no corpus
+#' Gráfico X-ray: dispersão lexical de termos no corpus
 #'
 #' @description
 #' `ac_plot_xray()` exibe a posição de ocorrência de um ou mais termos ao

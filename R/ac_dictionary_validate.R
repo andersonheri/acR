@@ -4,21 +4,21 @@
 #' `ac_dictionary_validate()` compara a classificação por dicionário
 #' (saída de [ac_dictionary()], [ac_emotion()] ou [ac_sentiment()] com
 #' categorias binarizadas) contra uma codificação de referência humana,
-#' categoria por categoria — a mesma lógica de validação que
+#' categoria por categoria: a mesma lógica de validação que
 #' [ac_qual_reliability()] aplica à classificação por LLM (com
 #' `by_variable = TRUE`), agora para o método de dicionário.
 #'
 #' Nenhum dicionário deveria ser usado numa análise publicável sem essa
 #' etapa (Grimmer & Stewart, 2013): um dicionário construído à mão pode
 #' parecer razoável e ainda assim ter baixa precisão ou recall numa
-#' categoria específica — só a comparação com uma amostra codificada por
+#' categoria específica: só a comparação com uma amostra codificada por
 #' humano revela isso.
 #'
 #' @param scored Tibble retornado por [ac_dictionary()] ou
 #'   [ac_emotion()] (com colunas `doc_id` e `<categoria>_n` por
 #'   categoria).
 #' @param human Tibble com colunas `doc_id` e uma coluna de categoria
-#'   (ver `cat_col`) — a codificação humana de referência, no mesmo
+#'   (ver `cat_col`): a codificação humana de referência, no mesmo
 #'   formato aceito por [ac_qual_reliability()] (multilabel como string
 #'   separada por `"|"`).
 #' @param cat_col Nome da coluna de categoria em `human`. Padrão:
@@ -29,7 +29,7 @@
 #'
 #' @return Tibble com uma linha por categoria do dicionário e colunas
 #'   `categoria`, `n`, `vp`, `fp`, `fn`, `vn`, `concordância`,
-#'   `precisao`, `recall`, `f1`, `gwet_ac1`, `krippendorff_alfa` — as
+#'   `precisao`, `recall`, `f1`, `gwet_ac1`, `krippendorff_alfa`: as
 #'   mesmas colunas de `attr(ac_qual_reliability(...), "by_variable")`.
 #'   Denominadores indefinidos (ex.: uma categoria que nenhum dos dois
 #'   lados marcou) geram `NA`, nunca `0` ou `1` artificiais.
