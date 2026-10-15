@@ -18,7 +18,7 @@ Description: Provides an integrated pipeline for content analysis
     <https://quallmer.github.io/quallmer/>.
 License: MIT + file LICENSE
 URL: https://github.com/andersonheri/acR,
-    https://andersonheri.github.io/acR/
+    https://ahenriquecp.com/acR/
 BugReports: https://github.com/andersonheri/acR/issues
 Depends:
     R (>= 4.1)

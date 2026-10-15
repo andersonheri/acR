@@ -86,6 +86,25 @@ All other examples that need the internet (Câmara/Senado APIs, OpenAlex,
 LLM providers) were already in `\dontrun{}`, since they also require API
 access or credentials.
 
+### Changes after the incoming pre-test of the first upload
+
+The automatic pre-tests of the first upload of 0.6.0 (win-builder
+r-devel and Debian) returned a single NOTE on both flavors, which this
+version addresses:
+
+* `https://andersonheri.github.io/acR/` (DESCRIPTION, README,
+  `man/acR-package.Rd`) is permanently redirected to the package site's
+  canonical address, `https://ahenriquecp.com/acR/`; every such URL now
+  uses the canonical address (the pkgdown `url` too).
+* The ENAP repository link in the README used a host name with an accent
+  that does not resolve; it now points to
+  `https://repositorio.enap.gov.br/items/ab24ee50-6283-471d-8024-ce8049b1c5da`.
+* The README license badge link now points to
+  `https://opensource.org/license/MIT` (the old path redirected).
+
+The remaining remark of that NOTE, "Days since last update: 1", is
+explained in the section above.
+
 ## Test environments
 
 * GitHub Actions on the tip of `main` (commit 463a7a2), building

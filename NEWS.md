@@ -168,11 +168,11 @@ produzidos pelas funcoes afetadas mudam em relacao a 0.5.0.
 
 ## Manutencao de infraestrutura
 
-* Corrigidas referencias ao dominio pessoal do mantenedor
-  (`ahenriquecp.com`) que estavam, por engano, apontadas como site do
-  pacote em `_pkgdown.yml`, README, `DESCRIPTION` e
-  `cran-comments.md`; agora todas apontam para a URL real do pkgdown
-  (`https://andersonheri.github.io/acR/`).
+* URLs do site do pacote unificadas em `https://ahenriquecp.com/acR/`
+  (`_pkgdown.yml`, README, `DESCRIPTION`, `man/acR-package.Rd`): o
+  endereco `andersonheri.github.io/acR` redireciona (301) para ele, e
+  o CRAN aponta URLs que redirecionam. Corrigido tambem o link do
+  repositorio da ENAP no README, cujo endereco antigo nao resolvia.
 * Removida do controle de versao a pasta `docs/` que vinha sendo
   comitada por engano em `main` desde uma configuracao antiga de
   publicacao (hoje o site e publicado via GitHub Actions na branch
