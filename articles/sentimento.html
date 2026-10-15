@@ -242,7 +242,7 @@ método padrão <code>sum</code>) e o rótulo categórico
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> doc_7      0     3     7    -<span style="color: #BB0000;">3</span> negativo </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> doc_8      0     0     8     0 neutro   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> doc_9      0     3     9    -<span style="color: #BB0000;">3</span> negativo</span></span></code></pre></div>
-<p>Cruzando com a posição declarada — o léxico “acerta”?</p>
+<p>Cruzando com a posição declarada: o léxico “acerta”?</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sent</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">df</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>doc_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"doc_"</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -255,6 +255,17 @@ método padrão <code>sum</code>) e o rótulo categórico
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> contra         3      2        0</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> favor          0      1        4</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> neutro         2      1        1</span></span></code></pre></div>
+<blockquote>
+<p><strong>Como interpretar:</strong> leia a tabela por linha (posição
+declarada), não por coluna. Uma linha “favor” concentrada na coluna
+<code>positivo</code> mostra que o léxico captura bem aquela posição;
+uma linha “neutro” dispersa entre
+<code>positivo</code>/<code>negativo</code>/<code>neutro</code> é
+esperada, não é erro: documentos técnicos legitimamente usam pouco
+vocabulário emotivo em qualquer direção. O problema real seria uma linha
+“contra” concentrada em <code>positivo</code>, sinal de que o léxico
+está invertendo a leitura.</p>
+</blockquote>
 <p>Léxico funciona bem para <strong>posições explícitas</strong>
 (favor/contra) com vocabulário emotivo. Falha em textos
 técnicos-neutros, que tipicamente misturam palavras positivas e
@@ -312,14 +323,20 @@ foca só na intensidade emotiva relativa.</li>
 <span>    caption  <span class="op">=</span> <span class="st">"acR - ac_plot_sentiment(type = \"bar\")"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-bar-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<p>Padrão claro: os 5 primeiros documentos (favoráveis)
+<blockquote>
+<p><strong>Como interpretar:</strong> a cor é determinada pelo sinal do
+<code>score</code>, não por um limiar fixo: um <code>score</code> muito
+perto de zero recebe a mesma cor categórica (positivo/negativo) de um
+<code>score</code> extremo, mesmo que o primeiro seja um caso ambíguo.
+Padrão esperado aqui: os 5 primeiros documentos (favoráveis)
 verdes/positivos, os 5 seguintes (contrários) vermelhos/negativos, os 4
 últimos (neutros/técnicos) cinza.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="visualização-distribuição-densidade">5. Visualização: distribuição (densidade)<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o-distribui%C3%A7%C3%A3o-densidade"></a>
 </h2>
-<p>Útil para ver <strong>a forma da distribuição</strong> — sentimento é
+<p>Útil para ver <strong>a forma da distribuição</strong>: sentimento é
 bimodal (dois picos, favor e contra) ou tem uma cauda longa?</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_sentiment.html">ac_plot_sentiment</a></span><span class="op">(</span><span class="va">sent</span>, type <span class="op">=</span> <span class="st">"density"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -328,6 +345,16 @@ bimodal (dois picos, favor e contra) ou tem uma cauda longa?</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Bimodalidade sugere polarização; unimodal sugere consenso"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-density-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> dois picos bem separados (um
+negativo, um positivo) indicam um corpus polarizado, onde a maioria dos
+documentos adota uma posição clara. Um único pico perto de zero indica
+consenso ou, mais frequentemente, predominância de linguagem
+técnica/neutra. Com poucos documentos (como este exemplo de 14), a curva
+de densidade é instável; prefira o histograma de barras (§4) para
+amostras pequenas e reserve a densidade para corpora de centenas de
+documentos.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="visualização-série-ordenada">6. Visualização: série ordenada<a class="anchor" aria-label="anchor" href="#visualiza%C3%A7%C3%A3o-s%C3%A9rie-ordenada"></a>
@@ -341,6 +368,15 @@ série mostra tendência.</p>
 <span>    subtitle <span class="op">=</span> <span class="st">"Substitua a ordem por data em corpora reais"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-line-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> a linha conecta documentos na
+ordem em que aparecem no corpus, não necessariamente em ordem
+cronológica real: use essa visualização só depois de ordenar o
+<code>data.frame</code> por data (ou outra variável de interesse). Uma
+tendência consistente (subindo ou caindo) é mais informativa que
+oscilação ponto a ponto, que costuma refletir apenas ruído em amostras
+pequenas.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="agregação-por-grupo-partido">7. Agregação por grupo (partido)<a class="anchor" aria-label="anchor" href="#agrega%C3%A7%C3%A3o-por-grupo-partido"></a>
@@ -402,13 +438,22 @@ série mostra tendência.</p>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-partidos-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> com poucos documentos por partido
+(aqui, 1-5), <code>score_med</code> é sensível a outliers: um único
+pronunciamento muito extremo desloca a média do partido inteiro. Sempre
+reporte <code>score_dp</code> ao lado de <code>score_med</code> e
+<code>n_docs</code>; uma média alta com desvio-padrão também alto, ou
+com <code>n_docs</code> baixo, é um resultado frágil que merece ressalva
+no texto, não uma afirmação categórica sobre a posição do partido.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="termos-chave-dentro-do-texto-x-ray">8. Termos-chave dentro do texto (X-ray)<a class="anchor" aria-label="anchor" href="#termos-chave-dentro-do-texto-x-ray"></a>
 </h2>
 <p><code><a href="../reference/ac_plot_xray.html">ac_plot_xray()</a></code> mostra <strong>onde</strong> termos-alvo
 aparecem dentro de cada documento. Útil para ver se palavras negativas
-se concentram no começo, meio ou fim — sinal de estrutura retórica.</p>
+se concentram no começo, meio ou fim, sinal de estrutura retórica.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ac_plot_xray.html">ac_plot_xray</a></span><span class="op">(</span><span class="va">corpus</span>, terms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reforma"</span>, <span class="st">"trabalhadores"</span>, <span class="st">"aprovar"</span>, <span class="st">"vergonha"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
@@ -418,6 +463,15 @@ se concentram no começo, meio ou fim — sinal de estrutura retórica.</p>
 <span><span class="co">#&gt; Warning: Termo(s) sem ocorrencia: <span style="color: #0000BB;">"aprovar"</span> and <span style="color: #0000BB;">"vergonha"</span>.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Verifique ortografia/acentuacao ou o efeito de `ac_clean()`.</span></span></code></pre></div>
 <p><img src="sentimento_files/figure-html/plot-xray-1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<blockquote>
+<p><strong>Como interpretar:</strong> o eixo horizontal é posição
+<em>relativa</em> no documento (0 = início, 1 = fim), não posição
+absoluta em caracteres: isso permite comparar documentos de tamanhos
+diferentes no mesmo gráfico. Termos concentrados perto de 0 tendem a
+aparecer em introduções/resumos; termos perto de 1, em conclusões.
+Pontos espalhados por todo o eixo sugerem um termo usado de forma
+difusa, sem função estrutural clara no discurso.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="exportar-para-artigorelatório">9. Exportar para artigo/relatório<a class="anchor" aria-label="anchor" href="#exportar-para-artigorelat%C3%B3rio"></a>

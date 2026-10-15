@@ -129,7 +129,7 @@ sent
 #> 14 doc_9      0     3     9    -3 negativo
 ```
 
-Cruzando com a posição declarada — o léxico “acerta”?
+Cruzando com a posição declarada: o léxico “acerta”?
 
 ``` r
 
@@ -145,6 +145,14 @@ sent |>
 #> 2 favor          0      1        4
 #> 3 neutro         2      1        1
 ```
+
+> **Como interpretar:** leia a tabela por linha (posição declarada), não
+> por coluna. Uma linha “favor” concentrada na coluna `positivo` mostra
+> que o léxico captura bem aquela posição; uma linha “neutro” dispersa
+> entre `positivo`/`negativo`/`neutro` é esperada, não é erro:
+> documentos técnicos legitimamente usam pouco vocabulário emotivo em
+> qualquer direção. O problema real seria uma linha “contra” concentrada
+> em `positivo`, sinal de que o léxico está invertendo a leitura.
 
 Léxico funciona bem para **posições explícitas** (favor/contra) com
 vocabulário emotivo. Falha em textos técnicos-neutros, que tipicamente
@@ -201,13 +209,16 @@ ac_plot_sentiment(sent, type = "bar") +
 
 ![](sentimento_files/figure-html/plot-bar-1.png)
 
-Padrão claro: os 5 primeiros documentos (favoráveis) verdes/positivos,
-os 5 seguintes (contrários) vermelhos/negativos, os 4 últimos
-(neutros/técnicos) cinza.
+> **Como interpretar:** a cor é determinada pelo sinal do `score`, não
+> por um limiar fixo: um `score` muito perto de zero recebe a mesma cor
+> categórica (positivo/negativo) de um `score` extremo, mesmo que o
+> primeiro seja um caso ambíguo. Padrão esperado aqui: os 5 primeiros
+> documentos (favoráveis) verdes/positivos, os 5 seguintes (contrários)
+> vermelhos/negativos, os 4 últimos (neutros/técnicos) cinza.
 
 ## 5. Visualização: distribuição (densidade)
 
-Útil para ver **a forma da distribuição** — sentimento é bimodal (dois
+Útil para ver **a forma da distribuição**: sentimento é bimodal (dois
 picos, favor e contra) ou tem uma cauda longa?
 
 ``` r
@@ -220,6 +231,14 @@ ac_plot_sentiment(sent, type = "density") +
 ```
 
 ![](sentimento_files/figure-html/plot-density-1.png)
+
+> **Como interpretar:** dois picos bem separados (um negativo, um
+> positivo) indicam um corpus polarizado, onde a maioria dos documentos
+> adota uma posição clara. Um único pico perto de zero indica consenso
+> ou, mais frequentemente, predominância de linguagem técnica/neutra.
+> Com poucos documentos (como este exemplo de 14), a curva de densidade
+> é instável; prefira o histograma de barras (§4) para amostras pequenas
+> e reserve a densidade para corpora de centenas de documentos.
 
 ## 6. Visualização: série ordenada
 
@@ -236,6 +255,13 @@ ac_plot_sentiment(sent, type = "line") +
 ```
 
 ![](sentimento_files/figure-html/plot-line-1.png)
+
+> **Como interpretar:** a linha conecta documentos na ordem em que
+> aparecem no corpus, não necessariamente em ordem cronológica real: use
+> essa visualização só depois de ordenar o `data.frame` por data (ou
+> outra variável de interesse). Uma tendência consistente (subindo ou
+> caindo) é mais informativa que oscilação ponto a ponto, que costuma
+> refletir apenas ruído em amostras pequenas.
 
 ## 7. Agregação por grupo (partido)
 
@@ -305,12 +331,20 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
 
 ![](sentimento_files/figure-html/plot-partidos-1.png)
 
+> **Como interpretar:** com poucos documentos por partido (aqui, 1-5),
+> `score_med` é sensível a outliers: um único pronunciamento muito
+> extremo desloca a média do partido inteiro. Sempre reporte `score_dp`
+> ao lado de `score_med` e `n_docs`; uma média alta com desvio-padrão
+> também alto, ou com `n_docs` baixo, é um resultado frágil que merece
+> ressalva no texto, não uma afirmação categórica sobre a posição do
+> partido.
+
 ## 8. Termos-chave dentro do texto (X-ray)
 
 [`ac_plot_xray()`](https://andersonheri.github.io/acR/reference/ac_plot_xray.md)
 mostra **onde** termos-alvo aparecem dentro de cada documento. Útil para
-ver se palavras negativas se concentram no começo, meio ou fim — sinal
-de estrutura retórica.
+ver se palavras negativas se concentram no começo, meio ou fim, sinal de
+estrutura retórica.
 
 ``` r
 
@@ -324,6 +358,14 @@ ac_plot_xray(corpus, terms = c("reforma", "trabalhadores", "aprovar", "vergonha"
 ```
 
 ![](sentimento_files/figure-html/plot-xray-1.png)
+
+> **Como interpretar:** o eixo horizontal é posição *relativa* no
+> documento (0 = início, 1 = fim), não posição absoluta em caracteres:
+> isso permite comparar documentos de tamanhos diferentes no mesmo
+> gráfico. Termos concentrados perto de 0 tendem a aparecer em
+> introduções/resumos; termos perto de 1, em conclusões. Pontos
+> espalhados por todo o eixo sugerem um termo usado de forma difusa, sem
+> função estrutural clara no discurso.
 
 ## 9. Exportar para artigo/relatório
 
