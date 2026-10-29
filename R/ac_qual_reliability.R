@@ -83,7 +83,8 @@
 #'   métricas por variável: documentos que falharam na classificação
 #'   não têm uma categoria confiável para comparar. Ignorado se `llm`
 #'   não tiver coluna `status`. Padrão:
-#'   `c("estouro_contexto", "timeout", "erro_servidor", "parcial")`.
+#'   `c("estouro_contexto", "limite_taxa", "timeout", "erro_servidor",
+#'   "parcial")`.
 #' @param ... Ignorado.
 #'
 #' @return Tibble com colunas: `metric`, `estimate`, `ci_lower`, `ci_upper`,
@@ -149,7 +150,7 @@ ac_qual_reliability <- function(llm,
                                  bootstrap = 1000L,
                                  ci_level  = 0.95,
                                  by_variable    = FALSE,
-                                 exclude_status = c("estouro_contexto", "timeout",
+                                 exclude_status = c("estouro_contexto", "limite_taxa", "timeout",
                                                     "erro_servidor", "parcial"),
                                  ...) {
 

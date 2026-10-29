@@ -49,6 +49,8 @@ aciona o parser correto:
 \item \strong{Word} (\code{.doc}, \code{.docx}): \code{readtext}
 \item \strong{Excel} (\code{.xlsx}, \code{.xls}): \code{readtext} (requer \code{text_field})
 \item \strong{CSV}: \code{readtext} (requer \code{text_field})
+(em tabelas, \strong{cada linha vira um documento}, com \code{doc_id}
+\verb{<arquivo>.<n>}, e as demais colunas viram metadados do corpus)
 \item \strong{TXT / JSON}: \code{readtext}
 \item \strong{Pasta inteira / glob}: todos os arquivos compativeis de uma vez
 }
