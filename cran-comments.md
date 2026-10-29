@@ -34,10 +34,15 @@ dependencies, no change of defaults, no new exported functions.
 
 ## Test environments
 
-* Local macOS (R 4.3.2): `R CMD check --as-cran`.
-* GitHub Actions on the release branch: ubuntu-latest (R-devel, release,
-  oldrel-1), macOS-latest (release), windows-latest (release).
+* Local macOS Sonoma 14.4.1 (aarch64), R 4.3.2: `R CMD check --as-cran`,
+  with vignettes built (pandoc available), examples (including
+  `--run-donttest`) and the full test suite (585 test blocks, 0 failures).
 
 ## R CMD check results
 
-See the results below; the local check was run with `--as-cran`.
+0 errors | 0 warnings | 2 notes
+
+* `installed size is 5.8Mb` (sub-directory `doc` 4.7Mb): the vignettes. No
+  change in size policy since 0.6.0.
+* `unable to verify current time`: a limitation of the sandbox where the
+  check was run (no access to a time server); it does not occur on CRAN.
