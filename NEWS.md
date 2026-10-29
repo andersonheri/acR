@@ -2,6 +2,17 @@
 
 ## Correcoes
 
+* `ac_qual_code()`: erros de limite de taxa (HTTP 429, "tokens per minute",
+  cota esgotada) eram classificados como `"estouro_contexto"` por a mensagem
+  citar "tokens", e por isso nao eram repetidos. Agora ganham o status
+  `"limite_taxa"`, sao repetidos respeitando a dica do provedor ("try again in
+  Ns", ate 90s) e entram no `exclude_status` padrao de `ac_qual_reliability()`.
+  Pedidos grandes demais continuam como `"estouro_contexto"`.
+* `ac_qual_code(model = <funcao>)`: a funcao-fabrica de chat documentada em
+  `model` falhava logo no inicio com "cannot coerce type 'closure' to vector of
+  type 'character'" (o rotulo da mensagem de progresso). Corrigido; `run_info$model`
+  registra `"<funcao-fabrica de chat>"`.
+
 * `ac_import()`: planilhas (`.xlsx`, `.xls`) e CSV com mais de uma linha
   falhavam com "Nenhum documento foi importado com sucesso" (ou com o aviso
   de arquivos descartados). O `readtext` devolve uma linha por registro

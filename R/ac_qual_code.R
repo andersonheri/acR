@@ -80,6 +80,9 @@
 #' @param max_retries Número máximo de novas tentativas por rodada quando a
 #'   chamada ao LLM falha (erro de rede, timeout, resposta invalida).
 #'   Padrao `2`. Espera exponencial entre tentativas (até 30s). Quando o
+#'   erro e `"limite_taxa"` (HTTP 429), a espera segue a dica do provedor
+#'   ("try again in 12s"), até 90s: em planos gratuitos com `k_consistency`
+#'   alto, aumente `max_retries`. Quando o
 #'   erro e classificado como `"estouro_contexto"`, não ha nova tentativa
 #'   (repetir não resolve). Se mais da metade dos últimos 5+ documentos
 #'   falhar, a execucao e abortada com sugestao de usar `checkpoint_dir`.
@@ -119,8 +122,9 @@
 #'     `"both"`.
 #'   * `raciocinio`: justificativa da classificação (se `reasoning = TRUE`).
 #'   * `status`: resultado da rodada principal: `"ok"`, `"resposta_invalida"`
-#'     (JSON não parseavel), `"estouro_contexto"`, `"timeout"` ou
-#'     `"erro_servidor"`.
+#'     (JSON não parseavel), `"estouro_contexto"`, `"limite_taxa"` (limite
+#'     de requisições ou de tokens por minuto/dia do provedor, HTTP 429),
+#'     `"timeout"` ou `"erro_servidor"`.
 #'   * `n_tentativas`: número de tentativas até obter `status = "ok"` (ou
 #'     até esgotar `max_retries`).
 #'   * `tokens_entrada`, `tokens_saida`: tokens de entrada/saida da rodada
@@ -265,7 +269,7 @@ ac_qual_code <- function(corpus,
 
   # === Classificar cada documento =============================================
   n_docs      <- nrow(corpus)
-  model_label <- if (!is.null(chat)) class(chat)[1] else model
+  model_label <- if (!is.null(chat)) class(chat)[1] else if (is.function(model)) "<funcao-fabrica de chat>" else model
 
   cli::cli_inform(c(
     "i" = "Classificando {n_docs} documento{?s} com {.val {model_label}}...",
@@ -533,14 +537,37 @@ ac_qual_code <- function(corpus,
 #' @keywords internal
 #' @noRd
 .ac_status_do_erro <- function(msg) {
-  msg <- tolower(msg %||% "")
-  if (grepl("context|token|too long|maximum|context_length", msg)) {
+  msg <- tolower(paste(msg %||% "", collapse = " "))
+  # 1) texto grande demais para o modelo: repetir a mesma chamada nao resolve
+  if (grepl("context|too long|too large|maximum context|exceeds the maximum|reduce the length", msg)) {
     "estouro_contexto"
+  # 2) limite de taxa/cota (HTTP 429): esperar e repetir resolve. Vem DEPOIS do
+  #    estouro de contexto, mas ANTES de qualquer teste por "token": a mensagem
+  #    de limite do Groq ("tokens per minute") cita tokens e nao e estouro de contexto.
+  } else if (grepl("429|rate.?limit|too many requests|tokens per (minute|day)|requests per (minute|day)|resource.?exhausted|quota", msg)) {
+    "limite_taxa"
   } else if (grepl("timeout|timed out", msg)) {
     "timeout"
   } else {
     "erro_servidor"
   }
+}
+
+
+# Quanto esperar (segundos) antes de repetir uma chamada barrada por limite de taxa.
+# Usa a dica do provedor ("Please try again in 12.5s") quando existe; senao, espera
+# exponencial a partir de 5s. Limitado a 90s.
+#' @keywords internal
+#' @noRd
+.ac_espera_limite_taxa <- function(msg, tentativa) {
+  msg <- tolower(paste(msg %||% "", collapse = " "))
+  m <- regmatches(msg, regexec("try again in ([0-9]+(?:\\.[0-9]+)?)\\s*(ms|s|m)\\b", msg, perl = TRUE))[[1]]
+  espera <- if (length(m) == 3L) {
+    as.numeric(m[2]) * switch(m[3], ms = 0.001, s = 1, m = 60) + 1
+  } else {
+    5 * 2^(tentativa - 1L)
+  }
+  min(espera, 90)
 }
 
 
@@ -574,7 +601,8 @@ ac_qual_code <- function(corpus,
   }, error = function(e) list(input = NA_real_, output = NA_real_))
 
   if (is.null(resposta)) {
-    return(list(parsed = NULL, status = .ac_status_do_erro(erro_msg), tokens = tokens))
+    return(list(parsed = NULL, status = .ac_status_do_erro(erro_msg), tokens = tokens,
+                erro = erro_msg))
   }
 
   json_str <- stringr::str_extract(resposta, "\\{[^\\{\\}]*\\}")
@@ -607,7 +635,11 @@ ac_qual_code <- function(corpus,
     tentativa <- tentativa + 1L
     if (res$status == "ok" || res$status == "estouro_contexto") break
     if (tentativa > max_retries) break
-    Sys.sleep(min(2^tentativa, 30))
+    if (identical(res$status, "limite_taxa")) {
+      Sys.sleep(.ac_espera_limite_taxa(res$erro, tentativa))
+    } else {
+      Sys.sleep(min(2^tentativa, 30))
+    }
   }
   res$n_tentativas <- tentativa
   res$segundos     <- as.numeric(difftime(Sys.time(), inicio, units = "secs"))
@@ -656,7 +688,7 @@ ac_qual_code <- function(corpus,
                                 n_docs, start_time) {
   params_efetivos <- NULL
   base_url <- NULL
-  model_name <- if (!is.null(chat)) tryCatch(chat$get_model(), error = function(e) NULL) else model
+  model_name <- if (!is.null(chat)) tryCatch(chat$get_model(), error = function(e) NULL) else if (is.function(model)) "<funcao-fabrica de chat>" else model
 
   if (inherits(effective_model, "Chat")) {
     params_efetivos <- tryCatch(as.list(effective_model$get_model_object()@params),
