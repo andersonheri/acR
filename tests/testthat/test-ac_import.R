@@ -158,3 +158,75 @@ test_that("ac_import() com glob importa multiplos arquivos do diretorio", {
   expect_true(is_ac_corpus(corp))
   expect_equal(nrow(corp), 2L)
 })
+
+
+# ============================================================
+# Tabelas com varios registros (xlsx, csv): 1 documento por linha
+# ============================================================
+
+test_that("ac_import() com CSV de varias linhas gera 1 documento por linha", {
+  skip_if_not_installed("readtext")
+
+  tmp <- tempfile(pattern = "tabela_", fileext = ".csv")
+  write.csv(
+    data.frame(id = 1:3, municipio = c("A", "B", "C"),
+               texto = c("Texto um.", "Texto dois.", "Texto tres.")),
+    tmp, row.names = FALSE
+  )
+  on.exit(unlink(tmp))
+
+  corp <- ac_import(tmp, text_field = "texto")
+  base <- tools::file_path_sans_ext(basename(tmp))
+  expect_true(is_ac_corpus(corp))
+  expect_equal(nrow(corp), 3L)
+  expect_equal(corp$doc_id, paste0(base, ".", 1:3))
+  expect_equal(corp$text, c("Texto um.", "Texto dois.", "Texto tres."))
+  # as demais colunas da tabela viram metadados
+  expect_true(all(c("id", "municipio") %in% names(corp)))
+  expect_equal(corp$municipio, c("A", "B", "C"))
+})
+
+test_that("ac_import() com XLSX de varias linhas gera 1 documento por linha", {
+  skip_if_not_installed("readtext")
+  skip_if_not_installed("readxl")
+  skip_if_not_installed("openxlsx")
+
+  tmp <- tempfile(pattern = "planilha_", fileext = ".xlsx")
+  openxlsx::write.xlsx(
+    data.frame(ano = c(2023, 2024), resposta = c("Primeira.", "Segunda.")),
+    tmp
+  )
+  on.exit(unlink(tmp))
+
+  corp <- ac_import(tmp, text_field = "resposta")
+  expect_true(is_ac_corpus(corp))
+  expect_equal(nrow(corp), 2L)
+  expect_equal(corp$text, c("Primeira.", "Segunda."))
+  expect_equal(corp$ano, c(2023, 2024))
+})
+
+test_that("ac_import() mistura TXT e tabela preservando a ordem de entrada", {
+  skip_if_not_installed("readtext")
+
+  tmp_txt <- tempfile(pattern = "doc_", fileext = ".txt")
+  tmp_csv <- tempfile(pattern = "tab_", fileext = ".csv")
+  writeLines("Texto avulso.", tmp_txt)
+  write.csv(data.frame(texto = c("Linha 1.", "Linha 2.")), tmp_csv,
+            row.names = FALSE)
+  on.exit({ unlink(tmp_txt); unlink(tmp_csv) })
+
+  corp <- ac_import(c(tmp_csv, tmp_txt), text_field = "texto")
+  expect_equal(nrow(corp), 3L)
+  expect_equal(corp$text, c("Linha 1.", "Linha 2.", "Texto avulso."))
+})
+
+test_that("ac_import() id_from = 'rownum' funciona com tabelas", {
+  skip_if_not_installed("readtext")
+
+  tmp <- tempfile(fileext = ".csv")
+  write.csv(data.frame(texto = c("a b", "c d", "e f")), tmp, row.names = FALSE)
+  on.exit(unlink(tmp))
+
+  corp <- ac_import(tmp, text_field = "texto", id_from = "rownum")
+  expect_equal(corp$doc_id, paste0("doc_", 1:3))
+})
