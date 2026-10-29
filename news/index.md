@@ -1,6 +1,24 @@
 # Changelog
 
+## acR (development version)
+
+### Correcoes
+
+- [`ac_import()`](https://ahenriquecp.com/acR/reference/ac_import.md):
+  planilhas (`.xlsx`, `.xls`) e CSV com mais de uma linha falhavam com
+  “Nenhum documento foi importado com sucesso” (ou com o aviso de
+  arquivos descartados). O `readtext` devolve uma linha por registro
+  (`doc_id` `arquivo.ext.N`), e o
+  [`ac_import()`](https://ahenriquecp.com/acR/reference/ac_import.md)
+  comparava os IDs pelo nome do arquivo, descartando tudo. Agora cada
+  linha da tabela vira um documento (`doc_id` `<arquivo>.<n>`), as
+  demais colunas viram metadados do corpus, e entradas mistas (tabelas
+  com pdf, docx, txt) preservam a ordem de `path`. Novos testes cobrem
+  CSV, XLSX, entrada mista e `id_from = "rownum"`.
+
 ## acR 0.6.0
+
+CRAN release: 2026-10-16
 
 ### Correcoes metodologicas (auditoria de codigo e interpretacoes)
 

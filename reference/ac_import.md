@@ -68,7 +68,9 @@ aciona o parser correto:
 
 - **Excel** (`.xlsx`, `.xls`): `readtext` (requer `text_field`)
 
-- **CSV**: `readtext` (requer `text_field`)
+- **CSV**: `readtext` (requer `text_field`) (em tabelas, **cada linha
+  vira um documento**, com `doc_id` `<arquivo>.<n>`, e as demais colunas
+  viram metadados do corpus)
 
 - **TXT / JSON**: `readtext`
 
