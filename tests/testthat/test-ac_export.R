@@ -70,3 +70,28 @@ test_that("ac_export() aceita format explicito com path sem extensao", {
   expect_true(file.exists(path))
   expect_equal(path, tmp)
 })
+
+
+test_that("ac_export(latex) gera um unico ambiente table e respeita o rotulo", {
+  skip_if_not_installed("knitr")
+  skip_if_not_installed("kableExtra")
+  df <- data.frame(metrica = c("alfa", "kappa"), valor = c(0.78, 0.775))
+  f <- withr::local_tempfile(fileext = ".tex")
+  ac_export(df, path = f, latex_caption = "Concordancia", latex_label = "tab:concordancia",
+            verbose = FALSE)
+  tex <- readLines(f)
+  expect_equal(sum(grepl("\\\\begin\\{table\\}", tex)), 1L)
+  expect_equal(sum(grepl("\\\\end\\{table\\}", tex)), 1L)
+  expect_true(any(grepl("\\\\label\\{tab:concordancia\\}", tex)))
+  expect_false(any(grepl("tab:tab:", tex, fixed = TRUE)))
+})
+
+test_that("ac_export(latex) sem legenda empacota o tabular em um table", {
+  skip_if_not_installed("knitr")
+  df <- data.frame(a = 1:2, b = c("x", "y"))
+  f <- withr::local_tempfile(fileext = ".tex")
+  ac_export(df, path = f, verbose = FALSE)
+  tex <- readLines(f)
+  expect_equal(sum(grepl("\\\\begin\\{table\\}", tex)), 1L)
+  expect_true(any(grepl("\\\\begin\\{tabular\\}", tex)))
+})

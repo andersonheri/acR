@@ -204,22 +204,28 @@ ac_export <- function(
   num_cols <- sapply(x, is.numeric)
   x[num_cols] <- lapply(x[num_cols], round, digits = digits)
 
-  tbl <- knitr::kable(
+  # O knitr acrescenta sozinho o prefixo "tab:" ao rotulo; remove o do usuario
+  # para o rotulo final ficar como pedido (evita "tab:tab:nome").
+  if (!is.null(label)) label <- sub("^tab:", "", label)
+
+  tbl <- as.character(knitr::kable(
     x,
     format    = "latex",
     booktabs  = TRUE,
     caption   = caption,
     label     = label,
-    linesep   = ""
-  )
+    linesep   = "",
+    position  = "htbp"
+  ))
 
-  # Empacotar em ambiente table completo
-  lines <- c(
-    "\\begin{table}[htbp]",
-    "  \\centering",
-    as.character(tbl),
-    "\\end{table}"
-  )
+  # Com legenda, o kable ja devolve o ambiente table completo (com \\centering).
+  # Sem legenda devolve so o tabular: nesse caso, empacota. Empacotar sempre
+  # gerava dois \\begin{table} aninhados, que nao compilam.
+  lines <- if (any(grepl("\\\\begin\\{table\\}", tbl))) {
+    tbl
+  } else {
+    c("\\begin{table}[htbp]", "  \\centering", tbl, "\\end{table}")
+  }
 
   writeLines(lines, path)
 }
