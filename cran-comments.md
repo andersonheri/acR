@@ -6,8 +6,9 @@ Update of `acR` from 0.6.0 (published on CRAN on 2026-10-16) to 0.6.1.
 
 We know this follows 0.6.0 by only about two weeks and would not submit this
 quickly for new features. This is a bug-fix release: all five fixes were found
-while using the CRAN version of the package to run a course on text analysis
-(15 hours, 160 participants, with real data), and each one makes an exported
+while using the CRAN version of the package (0.6.0) to prepare the materials
+of a text-analysis course scheduled for January 2027 (15 hours, with real
+parliamentary speeches and a real LLM provider), and each one makes an exported
 function fail or return a wrong number:
 
 * `ac_import()`: spreadsheets (`.xlsx`, `.xls`) and CSV files with more than
