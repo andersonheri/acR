@@ -90,6 +90,9 @@ conforme documentos sao classificados (requer \code{shiny} e \code{callr}).
 \item{max_retries}{Número máximo de novas tentativas por rodada quando a
 chamada ao LLM falha (erro de rede, timeout, resposta invalida).
 Padrao \code{2}. Espera exponencial entre tentativas (até 30s). Quando o
+erro e \code{"limite_taxa"} (HTTP 429), a espera segue a dica do provedor
+("try again in 12s"), até 90s: em planos gratuitos com \code{k_consistency}
+alto, aumente \code{max_retries}. Quando o
 erro e classificado como \code{"estouro_contexto"}, não ha nova tentativa
 (repetir não resolve). Se mais da metade dos últimos 5+ documentos
 falhar, a execucao e abortada com sugestao de usar \code{checkpoint_dir}.}
@@ -133,8 +136,9 @@ categoria. Presentes quando \code{confidence} e \code{"by_variable"} ou
 \code{"both"}.
 \item \code{raciocinio}: justificativa da classificação (se \code{reasoning = TRUE}).
 \item \code{status}: resultado da rodada principal: \code{"ok"}, \code{"resposta_invalida"}
-(JSON não parseavel), \code{"estouro_contexto"}, \code{"timeout"} ou
-\code{"erro_servidor"}.
+(JSON não parseavel), \code{"estouro_contexto"}, \code{"limite_taxa"} (limite
+de requisições ou de tokens por minuto/dia do provedor, HTTP 429),
+\code{"timeout"} ou \code{"erro_servidor"}.
 \item \code{n_tentativas}: número de tentativas até obter \code{status = "ok"} (ou
 até esgotar \code{max_retries}).
 \item \code{tokens_entrada}, \code{tokens_saida}: tokens de entrada/saida da rodada

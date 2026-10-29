@@ -12,7 +12,8 @@ ac_qual_reliability(
   bootstrap = 1000L,
   ci_level = 0.95,
   by_variable = FALSE,
-  exclude_status = c("estouro_contexto", "timeout", "erro_servidor", "parcial"),
+  exclude_status = c("estouro_contexto", "limite_taxa", "timeout", "erro_servidor",
+    "parcial"),
   ...
 )
 }
@@ -46,7 +47,8 @@ geram \code{NA}, nunca \code{0} ou \code{1} artificiais. Padrão \code{FALSE}.}
 métricas por variável: documentos que falharam na classificação
 não têm uma categoria confiável para comparar. Ignorado se \code{llm}
 não tiver coluna \code{status}. Padrão:
-\code{c("estouro_contexto", "timeout", "erro_servidor", "parcial")}.}
+\code{c("estouro_contexto", "limite_taxa", "timeout", "erro_servidor",
+"parcial")}.}
 
 \item{...}{Ignorado.}
 }

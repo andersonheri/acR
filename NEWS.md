@@ -11,6 +11,17 @@
   entradas mistas (tabelas com pdf, docx, txt) preservam a ordem de `path`.
   Novos testes cobrem CSV, XLSX, entrada mista e `id_from = "rownum"`.
 
+* `ac_qual_code()`: erros de limite de taxa (HTTP 429, "tokens per minute",
+  cota esgotada) eram classificados como `"estouro_contexto"` por a mensagem
+  citar "tokens", e por isso nao eram repetidos. Agora ganham o status
+  `"limite_taxa"`, sao repetidos respeitando a dica do provedor ("try again in
+  Ns", ate 90s) e entram no `exclude_status` padrao de `ac_qual_reliability()`.
+  Pedidos grandes demais continuam como `"estouro_contexto"`.
+* `ac_qual_code(model = <funcao>)`: a funcao-fabrica de chat documentada em
+  `model` falhava logo no inicio com "cannot coerce type 'closure' to vector of
+  type 'character'" (o rotulo da mensagem de progresso). Corrigido; `run_info$model`
+  registra `"<funcao-fabrica de chat>"`.
+
 # acR 0.6.0
 
 ## Correcoes metodologicas (auditoria de codigo e interpretacoes)

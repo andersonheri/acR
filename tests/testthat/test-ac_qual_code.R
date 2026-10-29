@@ -559,6 +559,13 @@ test_that(".ac_make_chat() aplica temperature a objeto Chat pre-configurado", {
 test_that(".ac_status_do_erro() classifica mensagens de erro conhecidas", {
   expect_equal(acR:::.ac_status_do_erro("context_length_exceeded: too many tokens"), "estouro_contexto")
   expect_equal(acR:::.ac_status_do_erro("Request timed out"), "timeout")
+  # limite de taxa (429) NAO e estouro de contexto, mesmo citando "tokens"
+  expect_equal(acR:::.ac_status_do_erro(
+    "HTTP 429 Too Many Requests: Rate limit reached ... on tokens per minute (TPM): Limit 8000, Used 7900, Requested 1200. Please try again in 3.5s"),
+    "limite_taxa")
+  expect_equal(acR:::.ac_status_do_erro("RESOURCE_EXHAUSTED: quota exceeded"), "limite_taxa")
+  # pedido grande demais continua sendo estouro de contexto
+  expect_equal(acR:::.ac_status_do_erro("Request too large for model: tokens per minute (TPM) limit 6000"), "estouro_contexto")
   expect_equal(acR:::.ac_status_do_erro("500 Internal Server Error"), "erro_servidor")
   expect_equal(acR:::.ac_status_do_erro(NULL), "erro_servidor")
 })
@@ -637,6 +644,30 @@ test_that(".ac_classify_with_retry() nao tenta de novo quando erro e estouro_con
   )
   expect_equal(res$status, "estouro_contexto")
   expect_equal(res$n_tentativas, 1L)
+})
+
+test_that(".ac_espera_limite_taxa() usa a dica do provedor e limita a 90s", {
+  expect_equal(acR:::.ac_espera_limite_taxa("Please try again in 3.5s", 1L), 4.5)
+  expect_equal(acR:::.ac_espera_limite_taxa("Please try again in 500ms", 1L), 1.5)
+  expect_equal(acR:::.ac_espera_limite_taxa("try again in 2m", 1L), 90)
+  expect_equal(acR:::.ac_espera_limite_taxa("429", 1L), 5)
+  expect_equal(acR:::.ac_espera_limite_taxa("429", 3L), 20)
+  expect_equal(acR:::.ac_espera_limite_taxa(NULL, 10L), 90)
+})
+
+test_that(".ac_classify_with_retry() repete em limite_taxa, espera e termina em ok", {
+  skip_if_not_installed("ellmer")
+  fake <- make_fake_chat_with_responses(list(
+    simpleError("429 Rate limit reached on tokens per minute. Please try again in 0.001s"),
+    '{"categoria": "a"}'
+  ))
+  testthat::local_mocked_bindings(Sys.sleep = function(...) invisible(NULL), .package = "base")
+  res <- acR:::.ac_classify_with_retry(
+    text = "t", codebook = list(), model = fake, system_prompt = "sys",
+    temperature = 0, reasoning = FALSE, max_retries = 2L
+  )
+  expect_equal(res$status, "ok")
+  expect_equal(res$n_tentativas, 2L)
 })
 
 test_that(".ac_classify_with_retry() para em max_retries + 1 tentativas quando erro persiste", {
@@ -807,4 +838,23 @@ test_that(".ac_build_run_info() avisa quando Chat pre-configurado nao confirma t
     ),
     regexp = "Nao foi possivel confirmar"
   )
+})
+
+
+# ============================================================
+# model = funcao-fabrica nao deve quebrar o cabecalho nem o run_info
+# ============================================================
+
+test_that("ac_qual_code() aceita model = funcao-fabrica de chat", {
+  skip_if_not_installed("ellmer")
+  fabrica <- function(temperature = 0, system_prompt = NULL) {
+    make_fake_chat_with_responses(list('{"categoria": "positivo", "raciocinio": "ok"}'))
+  }
+  res <- suppressMessages(suppressWarnings(
+    ac_qual_code(make_corpus_test(), make_codebook_test(), model = fabrica,
+                 confidence = "none", reasoning = TRUE)
+  ))
+  expect_equal(nrow(res), 3L)
+  expect_true(all(res$status == "ok"))
+  expect_equal(attr(res, "run_info")$model, "<funcao-fabrica de chat>")
 })
