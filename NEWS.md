@@ -1,4 +1,4 @@
-# acR (development version)
+# acR 0.6.1
 
 ## Correcoes
 
@@ -26,7 +26,7 @@
   palavras se repetiam perto uma da outra, porque o numerador contava pares e o
   denominador, ocorrencias de token. O marginal agora e o numero de pares em que
   cada palavra entra, e o Dice fica entre 0 e 1. O PMI nao foi alterado.
-* `ac_export(format = "latex")`: o arquivo trazia dois `\\begin{table}` aninhados
+* `ac_export(format = "latex")`: o arquivo trazia dois `\begin{table}` aninhados
   (o `knitr::kable()` ja devolve o ambiente completo quando ha legenda) e o rotulo
   saia como `tab:tab:nome`. Agora ha um unico ambiente e o prefixo `tab:` nao se repete.
 
