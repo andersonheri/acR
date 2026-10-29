@@ -237,7 +237,8 @@ de casos representativos.</p>
 <span>  bootstrap <span class="op">=</span> <span class="fl">1000L</span>,</span>
 <span>  ci_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  by_variable <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  exclude_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"estouro_contexto"</span>, <span class="st">"timeout"</span>, <span class="st">"erro_servidor"</span>, <span class="st">"parcial"</span><span class="op">)</span>,</span>
+<span>  exclude_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"estouro_contexto"</span>, <span class="st">"limite_taxa"</span>, <span class="st">"timeout"</span>, <span class="st">"erro_servidor"</span>,</span>
+<span>    <span class="st">"parcial"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -290,7 +291,8 @@ geram <code>NA</code>, nunca <code>0</code> ou <code>1</code> artificiais. Padr�
 métricas por variável: documentos que falharam na classificação
 não têm uma categoria confiável para comparar. Ignorado se <code>llm</code>
 não tiver coluna <code>status</code>. Padrão:
-<code>c("estouro_contexto", "timeout", "erro_servidor", "parcial")</code>.</p></dd>
+<code>c("estouro_contexto", "limite_taxa", "timeout", "erro_servidor",
+"parcial")</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

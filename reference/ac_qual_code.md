@@ -156,10 +156,13 @@ ac_qual_code(
 
   Número máximo de novas tentativas por rodada quando a chamada ao LLM
   falha (erro de rede, timeout, resposta invalida). Padrao `2`. Espera
-  exponencial entre tentativas (até 30s). Quando o erro e classificado
-  como `"estouro_contexto"`, não ha nova tentativa (repetir não
-  resolve). Se mais da metade dos últimos 5+ documentos falhar, a
-  execucao e abortada com sugestao de usar `checkpoint_dir`.
+  exponencial entre tentativas (até 30s). Quando o erro e
+  `"limite_taxa"` (HTTP 429), a espera segue a dica do provedor ("try
+  again in 12s"), até 90s: em planos gratuitos com `k_consistency` alto,
+  aumente `max_retries`. Quando o erro e classificado como
+  `"estouro_contexto"`, não ha nova tentativa (repetir não resolve). Se
+  mais da metade dos últimos 5+ documentos falhar, a execucao e abortada
+  com sugestao de usar `checkpoint_dir`.
 
 - checkpoint_dir:
 
@@ -213,8 +216,9 @@ Tibble com colunas:
 - `raciocinio`: justificativa da classificação (se `reasoning = TRUE`).
 
 - `status`: resultado da rodada principal: `"ok"`, `"resposta_invalida"`
-  (JSON não parseavel), `"estouro_contexto"`, `"timeout"` ou
-  `"erro_servidor"`.
+  (JSON não parseavel), `"estouro_contexto"`, `"limite_taxa"` (limite de
+  requisições ou de tokens por minuto/dia do provedor, HTTP 429),
+  `"timeout"` ou `"erro_servidor"`.
 
 - `n_tentativas`: número de tentativas até obter `status = "ok"` (ou até
   esgotar `max_retries`).

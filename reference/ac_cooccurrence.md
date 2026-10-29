@@ -126,12 +126,12 @@ head(cooc)
 #> # A tibble: 6 × 5
 #>   word1      word2         cooc   pmi  dice
 #>   <chr>      <chr>        <int> <dbl> <dbl>
-#> 1 cidadania  direitos         2  3.58   0.8
-#> 2 cidadania  liberdade        2  3.58   0.8
-#> 3 cidadania  participacao     2  3.58   0.8
-#> 4 cidadania  popular          2  3.58   0.8
-#> 5 cidadania  voto             2  3.58   0.8
-#> 6 democracia participacao     2  4.17   1  
+#> 1 cidadania  direitos         2  3.58 0.2  
+#> 2 cidadania  liberdade        2  3.58 0.182
+#> 3 cidadania  participacao     2  3.58 0.190
+#> 4 cidadania  popular          2  3.58 0.222
+#> 5 cidadania  voto             2  3.58 0.2  
+#> 6 democracia participacao     2  4.17 0.235
 
 # Coocorrência com PMI (associação normalizada por acaso)
 cooc_pmi <- ac_cooccurrence(tokens, window = 3L, measure = "pmi",

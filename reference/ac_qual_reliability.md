@@ -77,7 +77,8 @@ ac_qual_reliability(
   bootstrap = 1000L,
   ci_level = 0.95,
   by_variable = FALSE,
-  exclude_status = c("estouro_contexto", "timeout", "erro_servidor", "parcial"),
+  exclude_status = c("estouro_contexto", "limite_taxa", "timeout", "erro_servidor",
+    "parcial"),
   ...
 )
 ```
@@ -131,7 +132,7 @@ ac_qual_reliability(
   documentos que falharam na classificação não têm uma categoria
   confiável para comparar. Ignorado se `llm` não tiver coluna `status`.
   Padrão:
-  `c("estouro_contexto", "timeout", "erro_servidor", "parcial")`.
+  `c("estouro_contexto", "limite_taxa", "timeout", "erro_servidor", "parcial")`.
 
 - ...:
 

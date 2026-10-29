@@ -243,6 +243,9 @@ conforme documentos sao classificados (requer <code>shiny</code> e <code>callr</
 <dd><p>Número máximo de novas tentativas por rodada quando a
 chamada ao LLM falha (erro de rede, timeout, resposta invalida).
 Padrao <code>2</code>. Espera exponencial entre tentativas (até 30s). Quando o
+erro e <code>"limite_taxa"</code> (HTTP 429), a espera segue a dica do provedor
+("try again in 12s"), até 90s: em planos gratuitos com <code>k_consistency</code>
+alto, aumente <code>max_retries</code>. Quando o
 erro e classificado como <code>"estouro_contexto"</code>, não ha nova tentativa
 (repetir não resolve). Se mais da metade dos últimos 5+ documentos
 falhar, a execucao e abortada com sugestao de usar <code>checkpoint_dir</code>.</p></dd>
@@ -290,8 +293,9 @@ categoria. Presentes quando <code>confidence</code> e <code>"by_variable"</code>
 <code>"both"</code>.</p></li>
 <li><p><code>raciocinio</code>: justificativa da classificação (se <code>reasoning = TRUE</code>).</p></li>
 <li><p><code>status</code>: resultado da rodada principal: <code>"ok"</code>, <code>"resposta_invalida"</code>
-(JSON não parseavel), <code>"estouro_contexto"</code>, <code>"timeout"</code> ou
-<code>"erro_servidor"</code>.</p></li>
+(JSON não parseavel), <code>"estouro_contexto"</code>, <code>"limite_taxa"</code> (limite
+de requisições ou de tokens por minuto/dia do provedor, HTTP 429),
+<code>"timeout"</code> ou <code>"erro_servidor"</code>.</p></li>
 <li><p><code>n_tentativas</code>: número de tentativas até obter <code>status = "ok"</code> (ou
 até esgotar <code>max_retries</code>).</p></li>
 <li><p><code>tokens_entrada</code>, <code>tokens_saida</code>: tokens de entrada/saida da rodada

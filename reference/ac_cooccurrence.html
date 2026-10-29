@@ -178,12 +178,12 @@ collocations for bilingual lexicons: A statistical approach.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   word1      word2         cooc   pmi  dice</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         2  3.58   0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        2  3.58   0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     2  3.58   0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          2  3.58   0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             2  3.58   0.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     2  4.17   1  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> cidadania  direitos         2  3.58 0.2  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> cidadania  liberdade        2  3.58 0.182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> cidadania  participacao     2  3.58 0.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> cidadania  popular          2  3.58 0.222</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cidadania  voto             2  3.58 0.2  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> democracia participacao     2  4.17 0.235</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Coocorrência com PMI (associação normalizada por acaso)</span></span></span>
 <span class="r-in"><span><span class="va">cooc_pmi</span> <span class="op">&lt;-</span> <span class="fu">ac_cooccurrence</span><span class="op">(</span><span class="va">tokens</span>, window <span class="op">=</span> <span class="fl">3L</span>, measure <span class="op">=</span> <span class="st">"pmi"</span>,</span></span>
