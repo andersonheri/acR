@@ -2,6 +2,14 @@
 
 ## Correcoes
 
+* `ac_cooccurrence(unit = "window")`: o Dice passava de 1 (ex.: 1,88) quando as
+  palavras se repetiam perto uma da outra, porque o numerador contava pares e o
+  denominador, ocorrencias de token. O marginal agora e o numero de pares em que
+  cada palavra entra, e o Dice fica entre 0 e 1. O PMI nao foi alterado.
+* `ac_export(format = "latex")`: o arquivo trazia dois `\\begin{table}` aninhados
+  (o `knitr::kable()` ja devolve o ambiente completo quando ha legenda) e o rotulo
+  saia como `tab:tab:nome`. Agora ha um unico ambiente e o prefixo `tab:` nao se repete.
+
 * `ac_qual_code()`: erros de limite de taxa (HTTP 429, "tokens per minute",
   cota esgotada) eram classificados como `"estouro_contexto"` por a mensagem
   citar "tokens", e por isso nao eram repetidos. Agora ganham o status
