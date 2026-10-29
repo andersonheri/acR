@@ -9,7 +9,7 @@ utils::globalVariables(c(
   # ac_plot_*
   ".data", "direction", "tf_idf",
   # ac_cooccurrence
-  "word1", "word2", "cooc", "pmi", "freq",
+  "word1", "word2", "cooc", "pmi", "freq", "word", "pair_freq", "pf1", "pf2",
   # ac_plot_cooccurrence (igraph/ggraph)
   "w", "degree", "name",
   # ac_lda
