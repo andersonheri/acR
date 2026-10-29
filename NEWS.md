@@ -1,4 +1,4 @@
-# acR (development version)
+# acR 0.6.1
 
 ## Correcoes
 
