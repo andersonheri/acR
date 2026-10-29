@@ -124,6 +124,18 @@ ac_cooccurrence <- function(corpus,
     return(.empty_cooc_tibble(measure))
   }
 
+  # Marginais em unidade de PAR (so no modo janela): em quantos pares cada palavra
+  # entra, contados ANTES do corte por min_count. O Dice precisa deste marginal:
+  # com a frequencia de token, uma palavra repetida perto de outra gera mais pares
+  # (A,B) do que ocorrencias de A e B, e o Dice passava de 1.
+  if (unit == "window" && "dice" %in% measure) {
+    pair_freq_tbl <- dplyr::bind_rows(
+      tibble::tibble(word = pairs$word1),
+      tibble::tibble(word = pairs$word2)
+    ) |>
+      dplyr::count(word, name = "pair_freq")
+  }
+
   # Contar co-ocorrências
   cooc_tbl <- pairs |>
     dplyr::count(word1, word2, name = "cooc") |>
@@ -169,12 +181,20 @@ ac_cooccurrence <- function(corpus,
       )
   }
 
-  # Dice
+  # Dice: 2 * cooc / (marginal1 + marginal2). Janela: marginal = numero de pares
+  # em que a palavra entra (assim 0 <= Dice <= 1). Documento: frequencia documental.
   if ("dice" %in% measure) {
-    cooc_tbl <- cooc_tbl |>
-      dplyr::mutate(
-        dice = (2 * cooc) / (freq1 + freq2)
-      )
+    if (unit == "window") {
+      cooc_tbl <- cooc_tbl |>
+        dplyr::left_join(pair_freq_tbl |> dplyr::rename(pf1 = pair_freq),
+                         by = c("word1" = "word")) |>
+        dplyr::left_join(pair_freq_tbl |> dplyr::rename(pf2 = pair_freq),
+                         by = c("word2" = "word")) |>
+        dplyr::mutate(dice = (2 * cooc) / (pf1 + pf2))
+    } else {
+      cooc_tbl <- cooc_tbl |>
+        dplyr::mutate(dice = (2 * cooc) / (freq1 + freq2))
+    }
   }
 
   # Limpar colunas auxiliares

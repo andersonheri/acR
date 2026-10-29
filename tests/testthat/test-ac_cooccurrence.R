@@ -203,3 +203,16 @@ test_that("ac_cooccurrence(unit = 'document') usa frequencia documental no Dice"
   # a em 2 docs, b em 1, juntos em 1: Dice = 2*1/(2+1)
   expect_equal(co$dice[co$word1 == "a" & co$word2 == "b"], 2 / 3)
 })
+
+
+test_that("ac_cooccurrence(unit = 'window') mantem o Dice entre 0 e 1 com palavras repetidas", {
+  # "a b a b": o par (a,b) aparece 4 vezes na janela, com so 2 ocorrencias de a e de b.
+  # Com a frequencia de token no marginal, o Dice dava 2 * 4 / (2 + 2) = 2.
+  df <- data.frame(id = "d1", t = "a b a b", stringsAsFactors = FALSE)
+  corp <- ac_corpus(df, text = t, docid = id)
+  co <- ac_cooccurrence(ac_tokenize(corp), window = 5L, min_count = 1L,
+                        measure = c("count", "dice"))
+  expect_equal(co$cooc[co$word1 == "a" & co$word2 == "b"], 4L)
+  expect_true(all(co$dice >= 0 & co$dice <= 1))
+  expect_equal(co$dice[co$word1 == "a" & co$word2 == "b"], 1)
+})
