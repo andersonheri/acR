@@ -37,6 +37,8 @@
 #' - **Word** (`.doc`, `.docx`): `readtext`
 #' - **Excel** (`.xlsx`, `.xls`): `readtext` (requer `text_field`)
 #' - **CSV**: `readtext` (requer `text_field`)
+#'   (em tabelas, **cada linha vira um documento**, com `doc_id`
+#'   `<arquivo>.<n>`, e as demais colunas viram metadados do corpus)
 #' - **TXT / JSON**: `readtext`
 #' - **Pasta inteira / glob**: todos os arquivos compativeis de uma vez
 #'
@@ -125,9 +127,10 @@ ac_import <- function(path,
   }
 
   # -- processar cada arquivo mantendo a ordem original ---------------------
-  # (OCR item-a-item; texto em lote com readtext, depois reordenado)
-  textos <- character(length(arquivos))
-  ids    <- character(length(arquivos))
+  # Cada posicao de `arquivos` vira um data.frame (doc_id, text, metadados)
+  # com uma linha por documento: 1 linha por arquivo (pdf, docx, txt, imagem)
+  # ou 1 linha por registro (xlsx, xls, csv).
+  partes <- vector("list", length(arquivos))
 
   if (any(is_ocr)) {
     .check_pkg('tesseract')
@@ -139,9 +142,12 @@ ac_import <- function(path,
       clear = TRUE
     )
     for (i in idx_ocr) {
-      textos[i] <- paste(tesseract::ocr(arquivos[i], engine = engine),
-                         collapse = ' ')
-      ids[i]    <- tools::file_path_sans_ext(basename(arquivos[i]))
+      partes[[i]] <- data.frame(
+        doc_id = tools::file_path_sans_ext(basename(arquivos[i])),
+        text   = paste(tesseract::ocr(arquivos[i], engine = engine),
+                       collapse = ' '),
+        stringsAsFactors = FALSE
+      )
       cli::cli_progress_update()
     }
     cli::cli_progress_done()
@@ -149,37 +155,57 @@ ac_import <- function(path,
 
   if (any(is_texto)) {
     .check_pkg('readtext')
-    arq_txt <- arquivos[is_texto]
+    idx_txt <- which(is_texto)
+    arq_txt <- arquivos[idx_txt]
 
     args <- list(file = arq_txt, ...)
     if (!is.null(text_field)) args$text_field <- text_field
 
-    rt <- do.call(readtext::readtext, args)
+    rt <- as.data.frame(do.call(readtext::readtext, args),
+                        stringsAsFactors = FALSE)
 
-    # readtext pode reordenar; realinhar pela chave basename
-    key_rt   <- tools::file_path_sans_ext(basename(rt$doc_id))
-    key_want <- tools::file_path_sans_ext(basename(arq_txt))
-    ord <- match(key_want, key_rt)
-    if (anyNA(ord)) {
+    # O readtext devolve 1 linha por arquivo, exceto em tabelas (xlsx, xls,
+    # csv), onde devolve 1 linha por registro com doc_id "arquivo.ext.N".
+    # Atribuimos cada linha ao arquivo de origem pelo basename (nao pela
+    # ordem), o que tambem protege contra reordenacao pelo readtext.
+    for (k in seq_along(arq_txt)) {
+      base_k <- basename(arq_txt[k])
+      resto  <- substring(rt$doc_id, nchar(base_k) + 1L)
+      linhas <- which(startsWith(rt$doc_id, base_k) & grepl("^(\\.[0-9]+)?$", resto))
+      if (length(linhas) == 0L) next
+
+      id_base <- tools::file_path_sans_ext(base_k)
+      tabular <- any(nzchar(resto[linhas]))
+      ids_k   <- if (tabular) paste0(id_base, resto[linhas]) else id_base
+
+      df <- rt[linhas, , drop = FALSE]
+      df$doc_id <- ids_k
+      partes[[idx_txt[k]]] <- df
+    }
+
+    if (any(vapply(idx_txt, function(i) is.null(partes[[i]]), logical(1)))) {
       cli::cli_warn(
         "Alguns arquivos foram descartados por {.pkg readtext} (formato invalido?)."
       )
-      ord <- ord[!is.na(ord)]
     }
-
-    idx_texto <- which(is_texto)[seq_along(ord)]
-    textos[idx_texto] <- rt$text[ord]
-    ids[idx_texto]    <- key_rt[ord]
   }
 
-  # -- filtrar posicoes descartadas -----------------------------------------
-  keep <- nzchar(ids)
-  textos <- textos[keep]
-  ids    <- ids[keep]
-
-  if (length(textos) == 0L) {
+  # -- empilhar na ordem de entrada (preenche metadados ausentes com NA) -----
+  partes <- Filter(Negate(is.null), partes)
+  if (length(partes) == 0L) {
     cli::cli_abort("Nenhum documento foi importado com sucesso.")
   }
+  cols_todas <- unique(unlist(lapply(partes, names), use.names = FALSE))
+  partes <- lapply(partes, function(df) {
+    for (cn in setdiff(cols_todas, names(df))) df[[cn]] <- NA
+    df[, cols_todas, drop = FALSE]
+  })
+  dados <- do.call(rbind, partes)
+  rownames(dados) <- NULL
+
+  textos <- dados$text
+  ids    <- dados$doc_id
+  meta_cols <- setdiff(names(dados), c("doc_id", "text"))
 
   # -- gerar IDs finais -----------------------------------------------------
   ids_finais <- if (is.character(id_from) && length(id_from) != 1L) {
@@ -206,10 +232,12 @@ ac_import <- function(path,
   }
 
   # -- retornar ac_corpus ----------------------------------------------------
+  dados$doc_id <- ids_finais
   ac_corpus(
-    data.frame(doc_id = ids_finais, text = textos, stringsAsFactors = FALSE),
-    text  = text,
-    docid = doc_id
+    dados[, c("doc_id", "text", meta_cols), drop = FALSE],
+    text  = "text",
+    docid = "doc_id",
+    meta  = if (length(meta_cols)) meta_cols else NULL
   )
 
 }
