@@ -178,7 +178,7 @@ cb  # imprime resumo do codebook
 #> • Categorias (2): "positivo" and "negativo"
 #> • Multilabel: FALSE
 #> • Idioma: "pt"
-#> • Criado em: 29/10/2026 02:49
+#> • Criado em: 29/10/2026 02:57
 #> 
 #> Instrução geral:
 #> Classifique o tom geral do discurso.

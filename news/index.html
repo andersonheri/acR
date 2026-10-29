@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">acR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,9 +54,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="acr-development-version">acR (development version)<a class="anchor" aria-label="anchor" href="#acr-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.1" id="acr-061">acR 0.6.1<a class="anchor" aria-label="anchor" href="#acr-061"></a></h2>
 <div class="section level3">
-<h3 id="correcoes-development-version">Correcoes<a class="anchor" aria-label="anchor" href="#correcoes-development-version"></a></h3>
+<h3 id="correcoes-0-6-1">Correcoes<a class="anchor" aria-label="anchor" href="#correcoes-0-6-1"></a></h3>
 <ul><li><p><code>ac_cooccurrence(unit = "window")</code>: o Dice passava de 1 (ex.: 1,88) quando as palavras se repetiam perto uma da outra, porque o numerador contava pares e o denominador, ocorrencias de token. O marginal agora e o numero de pares em que cada palavra entra, e o Dice fica entre 0 e 1. O PMI nao foi alterado.</p></li>
 <li><p><code>ac_export(format = "latex")</code>: o arquivo trazia dois <code>\begin{table}</code> aninhados (o <code><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">knitr::kable()</a></code> ja devolve o ambiente completo quando ha legenda) e o rotulo saia como <code>tab:tab:nome</code>. Agora ha um unico ambiente e o prefixo <code>tab:</code> nao se repete.</p></li>
 <li><p><code><a href="../reference/ac_qual_code.html">ac_qual_code()</a></code>: erros de limite de taxa (HTTP 429, “tokens per minute”, cota esgotada) eram classificados como <code>"estouro_contexto"</code> por a mensagem citar “tokens”, e por isso nao eram repetidos. Agora ganham o status <code>"limite_taxa"</code>, sao repetidos respeitando a dica do provedor (“try again in Ns”, ate 90s) e entram no <code>exclude_status</code> padrao de <code><a href="../reference/ac_qual_reliability.html">ac_qual_reliability()</a></code>. Pedidos grandes demais continuam como <code>"estouro_contexto"</code>.</p></li>
